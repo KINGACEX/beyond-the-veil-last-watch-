@@ -1,0 +1,37 @@
+name: BTV Godot Smoke Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/m1-godot-foundation
+    paths:
+      - "project.godot"
+      - "scenes/**"
+      - "scripts/**"
+      - ".github/workflows/godot-smoke-test.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  godot-smoke-test:
+    name: Godot 4 headless validation
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.4.1
+    steps:
+      - name: Check out BTV
+        uses: actions/checkout@v4
+
+      - name: Show Godot version
+        run: godot --version
+
+      - name: Import project resources
+        run: godot --headless --editor --path . --quit
+
+      - name: Run main scene smoke test
+        run: godot --headless --path . --quit-after 5
+
+      - name: Run GDScript execution probe
+        run: godot --headless --path . --script res://scripts/dev/repository_write_probe.gd
