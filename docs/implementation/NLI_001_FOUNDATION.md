@@ -13,7 +13,7 @@ NLI is the player-facing natural-language layer for NPC conversation and compani
 - `NLICommandParser`: exact allowlisted phrase grammar for the initial command vocabulary and basic question prefixes.
 - `NLIValidator`: validates question topics, companion targets and supported commands. The canonical `attack` command is recognised but deferred until its gameplay system is designed and reviewed.
 - `NLIRequestGate`: rejects empty/duplicate request IDs and manages pending, completed and cancelled request states.
-- `NLIKnowledgeBase`: stores authored NPC/topic responses only; unknown questions return an explicit knowledge-boundary response.
+- `NLIKnowledgeBase`: stores authored NPC/topic responses only; unknown questions return an explicit knowledge-boundary response. Provenance metadata is not yet implemented.
 - `NLIService`: orchestrates the pipeline and returns structured results. It does not directly mutate mission, inventory, relationship or world state.
 
 ## Canon and integrity rules
@@ -31,7 +31,8 @@ NLI is the player-facing natural-language layer for NPC conversation and compani
 
 ## Limitations
 - This is a deterministic prototype grammar, not a production natural-language understanding model.
-- Question topic extraction is deliberately basic and requires authored topic mapping.
+- The active parser/validator/service pipeline uses Dictionary intent envelopes. `NLIIntent` exists as a reserved schema but is not wired into the pipeline.
+- Question topic extraction currently guesses from the final word; explicit topic aliases are a required next change.
 - Request lifecycle is in-memory only; save/load persistence is not implemented.
 - The command handoff is not yet connected to an actual companion actor.
 - No Godot parser, editor, runtime or Android test has been recorded as passed.
