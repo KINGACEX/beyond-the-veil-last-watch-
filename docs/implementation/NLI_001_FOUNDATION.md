@@ -13,7 +13,7 @@ NLI is the player-facing natural-language layer for NPC conversation and compani
 - `NLICommandParser`: exact allowlisted command phrases and complete question aliases; unsupported questions return `clarification_required` rather than guessing a topic.
 - `NLIValidator`: validates question topics, companion targets and supported commands. The canonical `attack` command is recognised but deferred until its gameplay system is designed and reviewed.
 - `NLIRequestGate`: rejects empty/duplicate request IDs and manages pending, completed and cancelled request states.
-- `NLIKnowledgeBase`: accepts complete provenance-bearing records, enforces speaker/topic scope and the approved provenance/canon vocabularies, rejects evidence-marked dialogue and duplicate statement IDs, and returns ambiguity when multiple records conflict.
+- `NLIKnowledgeBase`: requires an explicitly registered per-NPC profile with an allowlist of source IDs; validates complete provenance-bearing records, enforces profile scope and approved provenance/canon vocabularies, rejects evidence-marked dialogue and duplicate statement IDs, and returns ambiguity when multiple records match.
 - `NLIService`: orchestrates the pipeline and returns structured results. It does not directly mutate mission, inventory, relationship or world state.
 
 ## Canon and integrity rules
@@ -37,16 +37,8 @@ NLI is the player-facing natural-language layer for NPC conversation and compani
 - The command handoff is not yet connected to an actual companion actor.
 - No Godot parser, editor, runtime or Android test has been recorded as passed.
 
-## Acceptance tests to run in Godot
-1. Empty input is rejected.
-2. `scout ahead` parses as a Scout companion command.
-3. A command without a companion ID is rejected.
-4. `attack` is recognised but rejected as deferred.
-5. A known NPC/topic returns its authored response.
-6. An unknown NPC/topic returns the explicit knowledge-boundary response.
-7. Reusing a request ID is rejected.
-8. Cancelling a pending request removes it from the pending set.
-9. NLI returns structured data and does not mutate authoritative game state.
+## Smoke-test coverage (source committed; execution pending)
+The harness covers empty/unknown input, explicit question aliases, clarification for unsupported questions, companion command validation, deferred Attack, NPC profile registration, authorized-source checks, profile-scope checks, provenance output, evidence rejection, duplicate statement IDs, ambiguity, unknown topics, request lifecycle and bounded service handoff.
 
 ## Local smoke-test harness
 
@@ -59,4 +51,4 @@ godot --headless --path . --script res://tests/nli_smoke_test.gd
 The script exits with code 0 when all assertions pass and code 1 when any fail. This harness has been committed but has not yet been executed in this environment.
 
 ## Next milestone
-Add a small automated test harness and connect the validated request/result contract to a neutral NPC and companion test double. Only after those tests pass should the project consider a constrained LLM adapter.
+Execute the smoke-test harness in Godot 4.7.2, resolve any parser/runtime errors, then add isolated NPC profile fixtures for the approved Ridgeview acceptance scenarios. No unresolved Ridgeview facts should be authored during this technical validation step.
