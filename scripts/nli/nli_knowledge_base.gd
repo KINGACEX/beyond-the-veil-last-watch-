@@ -2,17 +2,41 @@ extends RefCounted
 class_name NLIKnowledgeBase
 
 ## Authored, speaker-scoped knowledge only. Dialogue is never evidence.
-## Each topic stores one or more validated provenance-bearing records.
+## Profiles explicitly authorize the source records an NPC is allowed to know.
 
 const PROVENANCE_CATEGORIES: Array[String] = ["Observed", "Reported", "Inferred", "Unconfirmed"]
 const CANON_STATUSES: Array[String] = ["LOCKED", "SLICE", "RESERVED", "OPEN"]
 
+var _profiles: Dictionary = {}
 var _entries: Dictionary = {}
 var _statement_ids: Dictionary = {}
 
 
-## Adds a complete record conforming to NLI_002_RIDGEVIEW_KNOWLEDGE_CONTRACT.md.
-## Returns a validation result; invalid records are never stored.
+## Registers one NPC knowledge profile and its permitted source identifiers.
+## A source is not available to an NPC until it is explicitly allowlisted here.
+func register_profile(npc_id: StringName, knowledge_scope: String, authorized_source_ids: Array) -> Dictionary:
+	var clean_npc := String(npc_id).strip_edges()
+	var clean_scope := knowledge_scope.strip_edges()
+	if clean_npc.is_empty() or clean_scope.is_empty():
+		return _failure("invalid_profile", "NPC identifier and knowledge scope are required.")
+	if _profiles.has(StringName(clean_npc)):
+		return _failure("profile_already_registered", "An NPC knowledge profile can only be registered once.")
+	var sources: Dictionary = {}
+	for source_value in authorized_source_ids:
+		var source_id := String(source_value).strip_edges()
+		if source_id.is_empty():
+			return _failure("invalid_source_id", "Authorized source identifiers cannot be empty.")
+		if sources.has(source_id):
+			return _failure("duplicate_source_id", "Authorized source identifiers must be unique.")
+		sources[source_id] = true
+	_profiles[StringName(clean_npc)] = {
+		"knowledge_scope": clean_scope,
+		"authorized_sources": sources
+	}
+	return {"ok": true, "code": "profile_registered", "npc_id": clean_npc}
+
+
+## Adds a complete provenance-bearing record. Invalid records are never stored.
 func add_record(record: Dictionary) -> Dictionary:
 	var required := ["npc_id", "topic_id", "statement_id", "response_text", "provenance_category", "source_id", "knowledge_scope", "canon_status", "is_evidence"]
 	for field in required:
@@ -41,6 +65,16 @@ func add_record(record: Dictionary) -> Dictionary:
 	if _statement_ids.has(statement_id):
 		return _failure("duplicate_statement_id", "Statement identifiers must be unique within this knowledge dataset.")
 
+	var npc_key := StringName(npc_id)
+	if not _profiles.has(npc_key):
+		return _failure("unknown_knowledge_profile", "The NPC has no registered knowledge profile.")
+	var profile: Dictionary = _profiles[npc_key]
+	if knowledge_scope != String(profile["knowledge_scope"]):
+		return _failure("knowledge_scope_mismatch", "The record does not belong to this NPC's registered knowledge scope.")
+	var authorized_sources: Dictionary = profile["authorized_sources"]
+	if not authorized_sources.has(source_id):
+		return _failure("source_outside_knowledge_scope", "The source is not authorized for this NPC's knowledge profile.")
+
 	var stored := record.duplicate(true)
 	stored["npc_id"] = npc_id
 	stored["topic_id"] = topic_id
@@ -48,7 +82,6 @@ func add_record(record: Dictionary) -> Dictionary:
 	stored["response_text"] = response_text
 	stored["source_id"] = source_id
 	stored["knowledge_scope"] = knowledge_scope
-	var npc_key := StringName(npc_id)
 	var topic_key := StringName(topic_id)
 	var npc_entries: Dictionary = _entries.get(npc_key, {})
 	var topic_entries: Array = npc_entries.get(topic_key, [])
@@ -59,8 +92,7 @@ func add_record(record: Dictionary) -> Dictionary:
 	return {"ok": true, "code": "record_added", "statement_id": statement_id}
 
 
-## Returns an answer only from the named NPC's own knowledge profile.
-## Conflicting records are surfaced as ambiguity; no record is selected silently.
+## Returns only this NPC's authorized knowledge. Conflicts remain unresolved.
 func answer(npc_id: StringName, topic: StringName) -> Dictionary:
 	if not _entries.has(npc_id):
 		return _unknown()
@@ -74,7 +106,8 @@ func answer(npc_id: StringName, topic: StringName) -> Dictionary:
 			"ambiguous": true,
 			"source": "knowledge_ambiguity",
 			"statement_ids": _statement_ids_for(topic_entries),
-			"response": "I have conflicting information and cannot give you a reliable answer."
+			"response": "I have conflicting information and cannot give you a reliable answer.",
+			"is_evidence": false
 		}
 	var entry: Dictionary = topic_entries[0]
 	return {
