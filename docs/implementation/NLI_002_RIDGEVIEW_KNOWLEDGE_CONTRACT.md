@@ -1,6 +1,6 @@
 # NLI 002 — Ridgeview NPC Knowledge Contract
 
-**Status:** PROPOSED DATA CONTRACT — NO RIDGEVIEW STORY FACTS AUTHORED  
+**Status:** CONTRACT IMPLEMENTED IN NLI KNOWLEDGE BASE — NO RIDGEVIEW STORY FACTS AUTHORED  
 **Branch:** `btv/bootstrap-prototype-001`  
 **Scope:** Data shape and validation rules only. This document does not establish mystery truth, clue wording, witness testimony, or mission outcomes.
 
@@ -36,15 +36,16 @@ A source identifier records provenance; it does not by itself prove truth. A rep
 
 ## Knowledge access rules
 
-1. Resolve answers only against the current speaker's own knowledge profile.
-2. A speaker may know an event only if an authored observation or attributed report grants that knowledge.
-3. Never infer that a character witnessed an event because they were nearby, present in a scene, or important to the plot.
-4. If no authorized entry matches, return the knowledge-boundary response.
-5. If several entries match and conflict, do not silently choose one. Return an ambiguity result for authored dialogue handling.
-6. NLI dialogue is not an Evidence Board item and cannot satisfy an investigation requirement.
-7. The Evidence Board may separately store an observation or report through its own validated gameplay action; the NLI response is not that action.
-8. Companion commands remain requests. A companion actor or gameplay authority must explicitly accept or reject them.
-9. NLI cannot update mission state, relationships, inventory, objective completion or world state.
+1. Register each NPC profile with one `knowledge_scope` and an explicit allowlist of authorized `source_id` values before adding records.
+2. Resolve answers only against the current speaker's own knowledge profile.
+3. A speaker may know an event only if an authored observation or attributed report grants that knowledge.
+4. Never infer that a character witnessed an event because they were nearby, present in a scene, or important to the plot.
+5. If no authorized entry matches, return the knowledge-boundary response.
+6. If several entries match, do not silently choose one. Return an ambiguity result for authored dialogue handling.
+7. NLI dialogue is not an Evidence Board item and cannot satisfy an investigation requirement.
+8. The Evidence Board may separately store an observation or report through its own validated gameplay action; the NLI response is not that action.
+9. Companion commands remain requests. A companion actor or gameplay authority must explicitly accept or reject them.
+10. NLI cannot update mission state, relationships, inventory, objective completion or world state.
 
 ## Topic routing
 
@@ -54,17 +55,18 @@ The first safe topic set may include identity and location only when those entri
 
 ## Validation requirements
 
-A future validator should reject:
+The current knowledge-base structural validator rejects:
 - Missing NPC, topic, statement or source identifiers.
 - Empty dialogue text.
 - Unknown provenance categories.
 - Missing knowledge-scope or canon-status values.
 - Any NLI dialogue entry with `is_evidence=true`.
 - Duplicate statement IDs within the same knowledge dataset.
-- An NPC statement whose source is not present in that NPC's permitted knowledge scope.
-- A response that upgrades Reported, Inferred or Unconfirmed content into an Observed/confirmed assertion.
+- An NPC statement whose source is not in that NPC profile's explicit source allowlist.
+- An NPC statement whose `knowledge_scope` does not match its registered profile.
+- Semantic upgrades of Reported, Inferred or Unconfirmed content cannot be reliably detected by this structural validator; authors must review response wording and attribution.
 
-A validator should not attempt to judge whether a fictional claim is true. That remains an authored canon and narrative review responsibility.
+The structural validator does not judge whether a fictional claim is true. That remains an authored canon and narrative review responsibility.
 
 ## Acceptance scenarios
 
