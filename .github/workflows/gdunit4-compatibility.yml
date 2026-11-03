@@ -1,0 +1,54 @@
+name: BTV GdUnit4 Compatibility Probe
+
+on:
+  push:
+    branches:
+      - test/gdunit4-compatibility-001
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: btv-gdunit4-probe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compatibility:
+    name: Godot 4.7.2 and pinned GdUnit4 probe
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out BTV test branch
+        uses: actions/checkout@v4
+
+      - name: Check out GdUnit4 at a fixed commit
+        uses: actions/checkout@v4
+        with:
+          repository: KINGACEX/gdUnit4
+          ref: ec29dc9b044afc3bac852bc3a680b898fbc61085
+          path: _gdunit4-source
+
+      - name: Install Godot 4.7.2
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.2
+          use-dotnet: false
+          include-templates: false
+
+      - name: Install addon into isolated test checkout
+        run: |
+          mkdir -p addons
+          cp -R _gdunit4-source/addons/gdUnit4 addons/gdUnit4
+          cp _gdunit4-source/LICENSE addons/gdUnit4/LICENSE
+          test -f addons/gdUnit4/plugin.cfg
+          grep -q 'version="7.0.0"' addons/gdUnit4/plugin.cfg
+
+      - name: Import project and addon
+        run: godot --headless --editor --path . --quit
+
+      - name: Run focused GdUnit4 parser tests
+        run: bash addons/gdUnit4/runtest.sh --godot_binary "$(command -v godot)" --headless
+
+      - name: Run existing NLI regression suite
+        run: godot --headless --path . --script res://tests/nli_smoke_test.gd
