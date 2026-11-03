@@ -21,6 +21,7 @@
 - Player-owned forward proximity sensor configured to detect interactables on collision layer 2.
 - E keyboard action invokes the nearest nearby interactable.
 - Main test scene places the neutral interactable in front of the player.
+- Initial Android touch overlay with directional movement buttons and an INTERACT button, mapped to the same InputMap actions as keyboard controls.
 - Compact repository engineering rules in `AGENTS.md`.
 
 ## Deliberate constraints
@@ -51,10 +52,10 @@
 6. Leave sensor range and confirm E no longer invokes the target.
 7. Compare renderer options on the actual Android target before selecting one.
 8. Run `godot --headless --path . --script res://tests/nli_smoke_test.gd` and resolve any parser/test failures.
-9. Add touch controls and test on-device.
+9. Validate touch overlay layout, multi-touch and interaction on-device.
 10. Record actual device, frame time, memory, thermal behaviour and stability.
 
 **No Godot editor run, parser check, NLI smoke-test run, runtime test, Android export, or device test has yet been recorded as passed for this branch.**
 
 ## Next implementation task
-Run the expanded NLI smoke-test harness in Godot 4.7.2. After it passes, add isolated NPC test profiles and the ten Ridgeview knowledge-contract acceptance scenarios. In parallel, keep the touch-first interaction affordance as the next player-facing prototype task; do not add mission facts until canon review is complete.
+Run the expanded NLI smoke-test harness and import the updated main scene in Godot 4.7.2. Then validate the touch overlay on the Android target and add isolated NPC test profiles for the Ridgeview knowledge-contract acceptance scenarios. Do not add mission facts until canon review is complete.
