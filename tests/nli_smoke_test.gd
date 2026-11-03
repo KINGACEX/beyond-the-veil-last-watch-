@@ -54,6 +54,7 @@ func _test_parser_and_validation() -> void:
 
 func _test_knowledge_boundaries() -> void:
 	var knowledge = KnowledgeBase.new()
+	_check(knowledge.register_profile(&"npc_guard", "test-profile-npc_guard", ["test-source-guard-name-001", "test-source-guard-secret-001", "test-source-guard-name-002"]).get("ok", false), "NPC knowledge profile is registered")
 	_check(knowledge.add_record(_record("npc_guard", "name", "guard-name-001", "I am the outpost guard.")).get("ok", false), "Complete provenance-bearing record is accepted")
 	var known := knowledge.answer(&"npc_guard", &"name")
 	_check(known.get("known", false), "Authored NPC fact is returned")
@@ -72,6 +73,13 @@ func _test_knowledge_boundaries() -> void:
 	var incomplete := _record("npc_guard", "secret", "guard-secret-002", "A private claim.")
 	incomplete.erase("source_id")
 	_check(knowledge.add_record(incomplete).get("code") == "missing_field", "Missing provenance field is rejected")
+
+	var wrong_scope := _record("npc_guard", "secret", "guard-secret-wrong-scope", "Unauthorized source.")
+	wrong_scope["source_id"] = "source-from-another-character"
+	_check(knowledge.add_record(wrong_scope).get("code") == "source_outside_knowledge_scope", "Source outside NPC allowlist is rejected")
+	var wrong_profile := _record("npc_guard", "secret", "guard-secret-wrong-profile", "Wrong profile.")
+	wrong_profile["knowledge_scope"] = "another-npc-profile"
+	_check(knowledge.add_record(wrong_profile).get("code") == "knowledge_scope_mismatch", "Cross-profile record is rejected")
 
 	_check(knowledge.add_record(_record("npc_guard", "name", "guard-name-002", "I use a different name.")).get("ok", false), "Second authored entry is stored")
 	var conflict := knowledge.answer(&"npc_guard", &"name")
@@ -92,6 +100,7 @@ func _test_request_lifecycle() -> void:
 
 func _test_service_handoff() -> void:
 	var knowledge = KnowledgeBase.new()
+	knowledge.register_profile(&"npc_guard", "test-profile-npc_guard", ["test-source-service-guard-name-001"])
 	knowledge.add_record(_record("npc_guard", "name", "service-guard-name-001", "I am the outpost guard."))
 	var service = Service.new(knowledge)
 	var response: Dictionary = service.handle_utterance("what is your name?", "service-001", &"npc_guard")
