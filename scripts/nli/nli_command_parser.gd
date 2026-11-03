@@ -21,6 +21,21 @@ const COMMAND_PHRASES := {
 
 const QUESTION_PREFIXES: Array[String] = ["who ", "what ", "where ", "when ", "why ", "how ", "tell me about "]
 
+## Explicit aliases only. Add a topic only when the relevant canon/data contract exists.
+const TOPIC_ALIASES := {
+	"name": &"name",
+	"your name": &"name",
+	"who are you": &"name",
+	"ridgeview": &"ridgeview_outpost",
+	"ridgeview outpost": &"ridgeview_outpost",
+	"the ridgeview outpost": &"ridgeview_outpost",
+	"outpost": &"ridgeview_outpost",
+	"the outpost": &"ridgeview_outpost",
+	"location": &"location",
+	"our location": &"location",
+	"where are we": &"location"
+}
+
 
 static func parse(utterance: String, request_id: String, companion_id: String = "") -> Dictionary:
 	var clean := utterance.strip_edges().to_lower()
@@ -65,11 +80,11 @@ static func parse(utterance: String, request_id: String, companion_id: String = 
 
 
 static func _extract_topic(clean: String) -> StringName:
-	var words := clean.trim_suffix("?").split(" ", false)
-	if words.is_empty():
-		return &""
-	var candidate := String(words[words.size() - 1]).strip_edges()
-	return StringName(candidate)
+	var question := clean.trim_suffix("?").strip_edges()
+	for alias in TOPIC_ALIASES:
+		if question.ends_with(String(alias)) or question == String(alias):
+			return TOPIC_ALIASES[alias]
+	return &""
 
 
 static func _unparsed(code: String, message: String) -> Dictionary:
