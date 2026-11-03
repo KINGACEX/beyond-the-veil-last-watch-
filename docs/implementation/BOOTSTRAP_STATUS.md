@@ -1,7 +1,7 @@
 # BTV Prototype — Implementation Status
 
 **Branch:** `btv/bootstrap-prototype-001`  
-**Latest milestone:** Bootstrap 002 — reusable interaction foundation  
+**Latest source milestone:** NLI knowledge-profile isolation and explicit question routing  
 **Status:** SOURCE IMPLEMENTED — NOT ENGINE-VERIFIED
 
 ## Implemented in source
@@ -33,10 +33,13 @@
 ### NLI 001 — Natural Language Interaction
 - Deterministic phrase parser for initial question and companion-command vocabulary.
 - Typed intent envelope and validation rules.
-- Authored NPC knowledge boundary with explicit unknown-answer behaviour.
+- Structured NPC knowledge records with provenance metadata, registered per-NPC scopes and authorized source allowlists.
+- Explicit unknown-answer and conflicting-knowledge ambiguity behaviour.
+- Evidence-marked dialogue rejection and duplicate statement protection.
+- Exact question aliases; unsupported questions return clarification instead of guessed topics.
 - In-memory request lifecycle guard for duplicate, completion and cancellation handling.
 - NLI orchestration service that returns structured handoffs without directly mutating authoritative game state.
-- Headless smoke-test harness covering parsing, validation, knowledge boundaries, duplicate protection and handoff behaviour.
+- Expanded headless smoke-test harness covering parser routing, source authorization, profile isolation, provenance, evidence rejection, ambiguity, request lifecycle and bounded handoff.
 - Attack command is recognised but deferred pending its gameplay-system design gate.
 
 ## Verification still required
@@ -49,9 +52,9 @@
 7. Compare renderer options on the actual Android target before selecting one.
 8. Run `godot --headless --path . --script res://tests/nli_smoke_test.gd` and resolve any parser/test failures.
 9. Add touch controls and test on-device.
-9. Record actual device, frame time, memory, thermal behaviour and stability.
+10. Record actual device, frame time, memory, thermal behaviour and stability.
 
 **No Godot editor run, parser check, NLI smoke-test run, runtime test, Android export, or device test has yet been recorded as passed for this branch.**
 
 ## Next implementation task
-After Bootstrap 002 passes the editor smoke test, add a minimal touch-first interaction affordance and a reusable prompt/result presentation layer. Keep mission and narrative state outside the base interaction contract.
+Run the expanded NLI smoke-test harness in Godot 4.7.2. After it passes, add isolated NPC test profiles and the ten Ridgeview knowledge-contract acceptance scenarios. In parallel, keep the touch-first interaction affordance as the next player-facing prototype task; do not add mission facts until canon review is complete.
