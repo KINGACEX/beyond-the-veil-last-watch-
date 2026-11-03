@@ -12,7 +12,7 @@ NLI is the player-facing natural-language layer for NPC conversation and compani
 ## Implemented modules
 - `NLICommandParser`: exact allowlisted command phrases and complete question aliases; unsupported questions return `clarification_required` rather than guessing a topic.
 - `NLIValidator`: validates question topics, companion targets and supported commands. The canonical `attack` command is recognised but deferred until its gameplay system is designed and reviewed.
-- `NLIRequestGate`: rejects empty/duplicate request IDs and manages pending, completed and cancelled request states.
+- `NLIRequestGate`: rejects empty/reused request IDs and records pending, completed and cancelled states; cancelled identifiers cannot be replayed.
 - `NLIKnowledgeBase`: requires an explicitly registered per-NPC profile with an allowlist of source IDs; validates complete provenance-bearing records, enforces profile scope and approved provenance/canon vocabularies, rejects evidence-marked dialogue and duplicate statement IDs, and returns ambiguity when multiple records match.
 - `NLIService`: orchestrates the pipeline and returns structured results. It does not directly mutate mission, inventory, relationship or world state.
 
@@ -38,7 +38,7 @@ NLI is the player-facing natural-language layer for NPC conversation and compani
 - No Godot parser, editor, runtime or Android test has been recorded as passed.
 
 ## Smoke-test coverage (source committed; execution pending)
-The harness covers empty/unknown input, explicit question aliases, clarification for unsupported questions, companion command validation, deferred Attack, NPC profile registration, authorized-source checks, profile-scope checks, provenance output, evidence rejection, duplicate statement IDs, ambiguity, unknown topics, request lifecycle and bounded service handoff.
+The harness covers empty/unknown input, explicit question aliases, clarification for unsupported questions, companion command validation, deferred Attack, NPC profile registration, authorized-source checks, profile-scope checks, all four provenance categories, evidence rejection, duplicate statement IDs, ambiguity, unknown topics, request lifecycle/replay protection and bounded service handoff.
 
 ## Local smoke-test harness
 
