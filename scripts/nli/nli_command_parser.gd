@@ -21,19 +21,21 @@ const COMMAND_PHRASES := {
 
 const QUESTION_PREFIXES: Array[String] = ["who ", "what ", "where ", "when ", "why ", "how ", "tell me about "]
 
-## Explicit aliases only. Add a topic only when the relevant canon/data contract exists.
-const TOPIC_ALIASES := {
-	"name": &"name",
-	"your name": &"name",
+## Complete normalized question forms only. No suffix/last-word guessing.
+const QUESTION_ALIASES := {
+	"what is your name": &"name",
+	"what's your name": &"name",
 	"who are you": &"name",
-	"ridgeview": &"ridgeview_outpost",
-	"ridgeview outpost": &"ridgeview_outpost",
-	"the ridgeview outpost": &"ridgeview_outpost",
-	"outpost": &"ridgeview_outpost",
-	"the outpost": &"ridgeview_outpost",
-	"location": &"location",
-	"our location": &"location",
-	"where are we": &"location"
+	"tell me about your name": &"name",
+	"where are we": &"location",
+	"what is our location": &"location",
+	"where is our location": &"location",
+	"where is ridgeview": &"ridgeview_outpost",
+	"where is ridgeview outpost": &"ridgeview_outpost",
+	"where is the ridgeview outpost": &"ridgeview_outpost",
+	"where is the outpost": &"ridgeview_outpost",
+	"tell me about ridgeview": &"ridgeview_outpost",
+	"tell me about ridgeview outpost": &"ridgeview_outpost"
 }
 
 
@@ -64,26 +66,36 @@ static func parse(utterance: String, request_id: String, companion_id: String = 
 			}
 		}
 
-	for prefix in QUESTION_PREFIXES:
-		if clean.begins_with(prefix):
-			return {
-				"ok": true,
-				"intent": {
-					"kind": &"question",
-					"topic": _extract_topic(clean),
-					"request_id": request_id,
-					"utterance": clean
-				}
+	if _looks_like_question(clean):
+		var topic := _extract_topic(clean)
+		if topic == &"":
+			return _unparsed("clarification_required", "That question does not match an explicitly supported topic. Please rephrase it using a supported question form.")
+		return {
+			"ok": true,
+			"intent": {
+				"kind": &"question",
+				"topic": topic,
+				"request_id": request_id,
+				"utterance": clean
 			}
+		}
 
 	return _unparsed("unrecognised_phrase", "The phrase is not covered by the current deterministic grammar.")
 
 
+static func _looks_like_question(clean: String) -> bool:
+	if clean.ends_with("?"):
+		return true
+	for prefix in QUESTION_PREFIXES:
+		if clean.begins_with(prefix):
+			return true
+	return false
+
+
 static func _extract_topic(clean: String) -> StringName:
 	var question := clean.trim_suffix("?").strip_edges()
-	for alias in TOPIC_ALIASES:
-		if question.ends_with(String(alias)) or question == String(alias):
-			return TOPIC_ALIASES[alias]
+	if QUESTION_ALIASES.has(question):
+		return QUESTION_ALIASES[question]
 	return &""
 
 
