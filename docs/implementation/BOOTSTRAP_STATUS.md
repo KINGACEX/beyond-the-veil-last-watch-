@@ -30,6 +30,15 @@
 - No combat, enemies, Veil rules, Ember behaviour, faith systems, missions, economy, or narrative content has been introduced.
 - No paid assets, paid services, or external runtime dependencies have been added.
 
+### NLI 001 — Natural Language Interaction
+- Deterministic phrase parser for initial question and companion-command vocabulary.
+- Typed intent envelope and validation rules.
+- Authored NPC knowledge boundary with explicit unknown-answer behaviour.
+- In-memory request lifecycle guard for duplicate, completion and cancellation handling.
+- NLI orchestration service that returns structured handoffs without directly mutating authoritative game state.
+- Headless smoke-test harness covering parsing, validation, knowledge boundaries, duplicate protection and handoff behaviour.
+- Attack command is recognised but deferred pending its gameplay-system design gate.
+
 ## Verification still required
 1. Open with the intended Godot 4.7.2 editor and confirm project import.
 2. Check all scripts and scene resources for parse/load errors.
@@ -38,10 +47,11 @@
 5. Approach the marker and press E; confirm the diagnostic response appears in Output.
 6. Leave sensor range and confirm E no longer invokes the target.
 7. Compare renderer options on the actual Android target before selecting one.
-8. Add touch controls and test on-device.
+8. Run `godot --headless --path . --script res://tests/nli_smoke_test.gd` and resolve any parser/test failures.
+9. Add touch controls and test on-device.
 9. Record actual device, frame time, memory, thermal behaviour and stability.
 
-**No Godot editor run, parser check, runtime test, Android export, or device test has yet been recorded as passed for this branch.**
+**No Godot editor run, parser check, NLI smoke-test run, runtime test, Android export, or device test has yet been recorded as passed for this branch.**
 
 ## Next implementation task
 After Bootstrap 002 passes the editor smoke test, add a minimal touch-first interaction affordance and a reusable prompt/result presentation layer. Keep mission and narrative state outside the base interaction contract.
