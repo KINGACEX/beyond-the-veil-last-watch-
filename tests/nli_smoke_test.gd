@@ -55,6 +55,7 @@ func _test_parser_and_validation() -> void:
 func _test_knowledge_boundaries() -> void:
 	var knowledge = KnowledgeBase.new()
 	_check(knowledge.register_profile(&"npc_guard", "test-profile-npc_guard", ["test-source-guard-name-001", "test-source-guard-secret-001", "test-source-guard-name-002", "test-source-guard-reported-001", "test-source-guard-inferred-001", "test-source-guard-unconfirmed-001"]).get("ok", false), "NPC knowledge profile is registered")
+	_check(knowledge.register_profile(&"npc_guard", "duplicate-profile", []).get("code") == "profile_already_registered", "Duplicate NPC profile registration is rejected")
 	_check(knowledge.add_record(_record("npc_guard", "name", "guard-name-001", "I am the outpost guard.")).get("ok", false), "Complete provenance-bearing record is accepted")
 	var known := knowledge.answer(&"npc_guard", &"name")
 	_check(known.get("known", false), "Authored NPC fact is returned")
@@ -66,6 +67,7 @@ func _test_knowledge_boundaries() -> void:
 		_check(knowledge.add_record(category_record).get("ok", false), category + " record is accepted")
 		_check(knowledge.answer(&"npc_guard", StringName(category_id)).get("provenance_category") == category, category + " provenance is preserved")
 	_check(not known.get("is_evidence", true), "NLI dialogue is never evidence")
+	_check(knowledge.add_record(_record("npc_guard", "duplicate", "guard-name-001", "Duplicate identifier.")).get("code") == "duplicate_statement_id", "Duplicate statement identifier is rejected")
 
 	var unknown := knowledge.answer(&"npc_guard", &"secret")
 	_check(not unknown.get("known", true), "Unknown topic stays unknown")
