@@ -1,0 +1,42 @@
+name: BTV Godot Validation
+
+on:
+  push:
+    branches:
+      - btv/bootstrap-prototype-001
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: btv-godot-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Import, NLI smoke tests and scene launch
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Godot 4.7.2
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.2
+          use-dotnet: false
+          include-templates: false
+
+      - name: Verify engine version
+        run: godot --version
+
+      - name: Import project and validate editor parsing
+        run: godot --headless --editor --path . --quit
+
+      - name: Run NLI smoke tests
+        run: godot --headless --path . --script res://tests/nli_smoke_test.gd
+
+      - name: Launch main scene for 10 frames
+        run: godot --headless --path . --quit-after 10
