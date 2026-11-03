@@ -47,5 +47,15 @@ NLI is the player-facing natural-language layer for NPC conversation and compani
 8. Cancelling a pending request removes it from the pending set.
 9. NLI returns structured data and does not mutate authoritative game state.
 
+## Local smoke-test harness
+
+A lightweight test script is provided at `tests/nli_smoke_test.gd`. Run it from the project root with a local Godot executable:
+
+```sh
+godot --headless --path . --script res://tests/nli_smoke_test.gd
+```
+
+The script exits with code 0 when all assertions pass and code 1 when any fail. This harness has been committed but has not yet been executed in this environment.
+
 ## Next milestone
 Add a small automated test harness and connect the validated request/result contract to a neutral NPC and companion test double. Only after those tests pass should the project consider a constrained LLM adapter.
