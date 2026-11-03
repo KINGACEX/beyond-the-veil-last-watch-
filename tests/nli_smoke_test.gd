@@ -54,12 +54,17 @@ func _test_parser_and_validation() -> void:
 
 func _test_knowledge_boundaries() -> void:
 	var knowledge = KnowledgeBase.new()
-	_check(knowledge.register_profile(&"npc_guard", "test-profile-npc_guard", ["test-source-guard-name-001", "test-source-guard-secret-001", "test-source-guard-name-002"]).get("ok", false), "NPC knowledge profile is registered")
+	_check(knowledge.register_profile(&"npc_guard", "test-profile-npc_guard", ["test-source-guard-name-001", "test-source-guard-secret-001", "test-source-guard-name-002", "test-source-guard-reported-001", "test-source-guard-inferred-001", "test-source-guard-unconfirmed-001"]).get("ok", false), "NPC knowledge profile is registered")
 	_check(knowledge.add_record(_record("npc_guard", "name", "guard-name-001", "I am the outpost guard.")).get("ok", false), "Complete provenance-bearing record is accepted")
 	var known := knowledge.answer(&"npc_guard", &"name")
 	_check(known.get("known", false), "Authored NPC fact is returned")
 	_check(known.get("response") == "I am the outpost guard.", "Authored response is preserved")
-	_check(known.get("provenance_category") == "Observed", "Provenance is preserved in answer")
+	_check(known.get("provenance_category") == "Observed", "Observed provenance is preserved in answer")
+	for category in ["Reported", "Inferred", "Unconfirmed"]:
+		var category_id := String(category).to_lower()
+		var category_record := _record("npc_guard", category_id, "guard-" + category_id + "-001", "A test statement.", category)
+		_check(knowledge.add_record(category_record).get("ok", false), category + " record is accepted")
+		_check(knowledge.answer(&"npc_guard", StringName(category_id)).get("provenance_category") == category, category + " provenance is preserved")
 	_check(not known.get("is_evidence", true), "NLI dialogue is never evidence")
 
 	var unknown := knowledge.answer(&"npc_guard", &"secret")
@@ -115,13 +120,13 @@ func _test_service_handoff() -> void:
 	_check(command.get("result", {}).get("source") == "validated_command_handoff", "Command is handed off without direct world mutation")
 
 
-func _record(npc_id: String, topic_id: String, statement_id: String, response_text: String) -> Dictionary:
+func _record(npc_id: String, topic_id: String, statement_id: String, response_text: String, provenance: String = "Observed") -> Dictionary:
 	return {
 		"npc_id": npc_id,
 		"topic_id": topic_id,
 		"statement_id": statement_id,
 		"response_text": response_text,
-		"provenance_category": "Observed",
+		"provenance_category": provenance,
 		"source_id": "test-source-" + statement_id,
 		"knowledge_scope": "test-profile-" + npc_id,
 		"canon_status": "SLICE",
