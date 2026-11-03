@@ -47,6 +47,9 @@ func _test_parser_and_validation() -> void:
 
 	_check(not Parser.parse("", "req-004").get("ok", false), "Empty input is rejected")
 	_check(not Parser.parse("do something surprising", "req-005").get("ok", false), "Unknown phrase is rejected")
+	_check(Parser.parse("what is your name?", "req-006").get("intent", {}).get("topic") == &"name", "Exact question alias resolves")
+	_check(Parser.parse("where is Ridgeview Outpost?", "req-007").get("intent", {}).get("topic") == &"ridgeview_outpost", "Exact Ridgeview alias resolves")
+	_check(Parser.parse("what happened at Ridgeview?", "req-008").get("code") == "clarification_required", "Unsupported question requests clarification instead of guessing")
 
 
 func _test_knowledge_boundaries() -> void:
