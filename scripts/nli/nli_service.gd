@@ -22,6 +22,17 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 	if not validation.get("ok", false):
 		return validation
 
+	# Cancellation targets an existing pending request; it must not first try
+	# to register that same ID as a new request.
+	if StringName(intent["kind"]) == &"cancel":
+		var cancellation := _request_gate.cancel_request(String(intent["request_id"]))
+		return {
+			"ok": cancellation.get("ok", false),
+			"intent": intent,
+			"validation": validation,
+			"result": cancellation
+		}
+
 	var started := _request_gate.begin_request(request_id)
 	if not started.get("ok", false):
 		return started
@@ -38,12 +49,8 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 				"companion_id": companion_id,
 				"note": "No world state is changed by NLI. The companion gameplay system must explicitly accept and execute this command."
 			}
-		&"cancel":
-			result = _request_gate.cancel_request(String(intent["request_id"]))
 
-	if StringName(intent["kind"]) != &"cancel":
-		_request_gate.complete_request(request_id)
-
+	_request_gate.complete_request(request_id)
 	return {
 		"ok": true,
 		"intent": intent,
