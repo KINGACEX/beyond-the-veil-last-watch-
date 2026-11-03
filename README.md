@@ -13,12 +13,15 @@ The `btv/bootstrap-prototype-001` branch contains a Godot 4 3D greybox prototype
 - `scripts/interactable.gd` — reusable Area3D interaction contract.
 - `scripts/test_interactable.gd` — neutral test implementation.
 - `AGENTS.md` — concise repository engineering rules.
+- `scripts/nli/` — deterministic NLI parser, validator, request gate, authored knowledge base and orchestration service.
+- `tests/nli_smoke_test.gd` — headless NLI acceptance smoke-test harness.
 
 ## Read these first
 
 1. [Bootstrap 001 — One-Read Project Handoff](docs/implementation/BOOTSTRAP_001_ONE_READ.md) — original scaffold, decisions, boundaries and verification status.
 2. [Bootstrap 002 — Reusable Interaction](docs/implementation/BOOTSTRAP_002_INTERACTION.md) — current interaction architecture and acceptance checks.
-3. [Current Implementation Status](docs/implementation/BOOTSTRAP_STATUS.md) — concise scope, limitations and next gate.
+3. [NLI 001 — Natural Language Interaction](docs/implementation/NLI_001_FOUNDATION.md) — deterministic NPC questions, validated companion requests and knowledge boundaries.
+4. [Current Implementation Status](docs/implementation/BOOTSTRAP_STATUS.md) — concise scope, limitations and next gate.
 
 ## Intended toolchain
 
@@ -37,4 +40,4 @@ This is a greybox prototype, not a playable vertical slice or finished game. Tou
 
 ## Status
 
-**Bootstrap 001 and 002 source changes committed; engine validation pending.** Work remains on `btv/bootstrap-prototype-001`; it has not been merged into `main`.
+**Bootstrap 001 and 002 plus NLI 001 source changes committed; engine and test-harness validation pending.** Work remains on `btv/bootstrap-prototype-001`; it has not been merged into `main`.
