@@ -1,7 +1,7 @@
 # BTV Prototype — Implementation Status
 
 **Branch:** `btv/bootstrap-prototype-001`  
-**Latest source milestone:** NLI knowledge-profile isolation and explicit question routing  
+**Latest source milestones:** NLI knowledge-profile isolation, explicit question routing and initial Android touch overlay  
 **Status:** SOURCE IMPLEMENTED — NOT ENGINE-VERIFIED
 
 ## Implemented in source
@@ -27,7 +27,7 @@
 ## Deliberate constraints
 - No renderer is selected; compare supported options on the target Android device before deciding.
 - The capsule is a temporary placeholder, not Asher's final model.
-- Keyboard input is only a desktop smoke-test path. Touch-first controls remain required.
+- Keyboard input remains available for desktop smoke testing. The new touch overlay is a functional source prototype, but its layout and usability remain unverified on the Android target.
 - No combat, enemies, Veil rules, Ember behaviour, faith systems, missions, economy, or narrative content has been introduced.
 - No paid assets, paid services, or external runtime dependencies have been added.
 
