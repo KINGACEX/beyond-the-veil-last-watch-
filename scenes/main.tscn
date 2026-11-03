@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/test_interactable.tscn" id="2_test_interactable"]
+[ext_resource type="PackedScene" path="res://scenes/touch_controls.tscn" id="3_touch_controls"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(40, 1, 40)
@@ -29,3 +30,5 @@ position = Vector3(0, 0, 0)
 
 [node name="TestInteractable" parent="." instance=ExtResource("2_test_interactable")]
 position = Vector3(0, 0, -3.5)
+
+[node name="TouchControls" parent="." instance=ExtResource("3_touch_controls")]
