@@ -2,7 +2,7 @@
 
 **Branch:** `btv/bootstrap-prototype-001`  
 **Latest source milestones:** NLI knowledge-profile isolation, explicit question routing and initial Android touch overlay  
-**Status:** SOURCE IMPLEMENTED — NOT ENGINE-VERIFIED
+**Status:** GODOT 4.7.2 HEADLESS CI PASSED — ANDROID DEVICE VALIDATION PENDING
 
 ## Implemented in source
 
@@ -59,3 +59,11 @@
 
 ## Next implementation task
 Run the expanded NLI smoke-test harness and import the updated main scene in Godot 4.7.2. Then validate the touch overlay on the Android target and add isolated NPC test profiles for the Ridgeview knowledge-contract acceptance scenarios. Do not add mission facts until canon review is complete.
+
+## Automated validation
+- GitHub Actions workflow: `.github/workflows/godot-validation.yml`.
+- Uses the free standard Ubuntu runner and installs Godot 4.7.2; no paid API key or external game-hosting account is required.
+- Latest verified run: `41671243532` on commit `d3eb69280ae781b3a2cf3afd8bc9b069bd9ace72`.
+- Result: **SUCCESS** — project/editor import passed, all 49 NLI smoke assertions passed, and the main scene launched for 10 headless frames.
+- This confirms the current project imports and the tested scripts/scene start under Godot 4.7.2 on Ubuntu CI. It does not verify rendered appearance, physical touch input, Android export, device performance or actual phone behaviour.
+- Workflow runs automatically on pushes to this development branch and can also be manually dispatched from GitHub Actions.
