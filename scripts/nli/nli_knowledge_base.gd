@@ -48,11 +48,13 @@ func add_record(record: Dictionary) -> Dictionary:
 	stored["response_text"] = response_text
 	stored["source_id"] = source_id
 	stored["knowledge_scope"] = knowledge_scope
-	var npc_entries: Dictionary = _entries.get(npc_id, {})
-	var topic_entries: Array = npc_entries.get(topic_id, [])
+	var npc_key := StringName(npc_id)
+	var topic_key := StringName(topic_id)
+	var npc_entries: Dictionary = _entries.get(npc_key, {})
+	var topic_entries: Array = npc_entries.get(topic_key, [])
 	topic_entries.append(stored)
-	npc_entries[topic_id] = topic_entries
-	_entries[npc_id] = npc_entries
+	npc_entries[topic_key] = topic_entries
+	_entries[npc_key] = npc_entries
 	_statement_ids[statement_id] = true
 	return {"ok": true, "code": "record_added", "statement_id": statement_id}
 
