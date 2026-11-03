@@ -54,7 +54,8 @@ func _on_sensor_area_entered(area: Area3D) -> void:
 
 func _on_sensor_area_exited(area: Area3D) -> void:
 	if area is BTVInteractable:
-		_nearby_interactables.erase(area)
+		var interactable := area as BTVInteractable
+		_nearby_interactables.erase(interactable)
 
 
 func _try_interact() -> void:
