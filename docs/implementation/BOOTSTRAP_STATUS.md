@@ -1,7 +1,7 @@
 # BTV Prototype — Implementation Status
 
 **Branch:** `btv/bootstrap-prototype-001`  
-**Latest source milestones:** NLI knowledge-profile isolation, explicit question routing and initial Android touch overlay  
+**Latest source milestones:** Bootstrap 001/002, NLI 001, knowledge-profile isolation, explicit question routing and initial Android touch overlay  
 **Status:** GODOT 4.7.2 HEADLESS CI PASSED — ANDROID DEVICE VALIDATION PENDING
 
 ## Implemented in source
@@ -20,14 +20,13 @@
 - Neutral test interactable that returns a diagnostic result without changing game state.
 - Player-owned forward proximity sensor configured to detect interactables on collision layer 2.
 - E keyboard action invokes the nearest nearby interactable.
-- Main test scene places the neutral interactable in front of the player.
 - Initial Android touch overlay with directional movement buttons and an INTERACT button, mapped to the same InputMap actions as keyboard controls.
 - Compact repository engineering rules in `AGENTS.md`.
 
 ## Deliberate constraints
 - No renderer is selected; compare supported options on the target Android device before deciding.
 - The capsule is a temporary placeholder, not Asher's final model.
-- Keyboard input remains available for desktop smoke testing. The new touch overlay is a functional source prototype, but its layout and usability remain unverified on the Android target.
+- Keyboard input remains available for desktop smoke testing. The touch overlay is source-implemented, but its layout and usability remain unverified on the Android target.
 - No combat, enemies, Veil rules, Ember behaviour, faith systems, missions, economy, or narrative content has been introduced.
 - No paid assets, paid services, or external runtime dependencies have been added.
 
@@ -43,27 +42,35 @@
 - Expanded headless smoke-test harness covering parser routing, source authorization, profile isolation, provenance, evidence rejection, ambiguity, request lifecycle and bounded handoff.
 - Attack command is recognised but deferred pending its gameplay-system design gate.
 
+## Verification evidence
+
+**CONFIRMED — GitHub Actions run 41671365779** on commit `f990811bd387a34a2df1fb77329ae81a99008078`:
+- Godot 4.7.2 installation and version check passed.
+- Headless editor import and project parsing passed.
+- NLI smoke-test harness passed all 49 assertions.
+- Main scene launched for 10 headless frames.
+- Workflow: [BTV Godot Validation](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/41671365779).
+
+This verifies the project import, tested scripts and headless scene startup on the Ubuntu CI runner. It does not verify rendered appearance, interactive movement, touch input, Android export, APK installation, physical-device performance or actual phone behaviour.
+
 ## Verification still required
-1. Open with the intended Godot 4.7.2 editor and confirm project import.
-2. Check all scripts and scene resources for parse/load errors.
-3. Run the main scene and verify floor collision, movement, gravity, camera and rotation.
-4. Confirm the test marker appears ahead of the player.
-5. Approach the marker and press E; confirm the diagnostic response appears in Output.
-6. Leave sensor range and confirm E no longer invokes the target.
+1. Open with the intended Godot 4.7.2 editor on a desktop and inspect the rendered scene.
+2. Run the main scene and verify floor collision, movement, gravity, camera and rotation interactively.
+3. Confirm the test marker appears ahead of the player.
+4. Approach the marker and press E; confirm the diagnostic response appears in Output.
+5. Leave sensor range and confirm E no longer invokes the target.
+6. Move between targets and verify nearest-target selection.
 7. Compare renderer options on the actual Android target before selecting one.
-8. Run `godot --headless --path . --script res://tests/nli_smoke_test.gd` and resolve any parser/test failures.
-9. Validate touch overlay layout, multi-touch and interaction on-device.
-10. Record actual device, frame time, memory, thermal behaviour and stability.
+8. Validate touch overlay layout, safe areas, scaling, multi-touch and interaction on-device.
+9. Produce a debug APK with free tooling, install it, and record device/OS and test evidence.
+10. Record performance, memory, thermal behaviour and stability.
 
-**No Godot editor run, parser check, NLI smoke-test run, runtime test, Android export, or device test has yet been recorded as passed for this branch.**
+## Next implementation gate
 
-## Next implementation task
-Run the expanded NLI smoke-test harness and import the updated main scene in Godot 4.7.2. Then validate the touch overlay on the Android target and add isolated NPC test profiles for the Ridgeview knowledge-contract acceptance scenarios. Do not add mission facts until canon review is complete.
+The headless CI gate has passed. Next, perform a visual/interactivity review of the current prototype, then isolate and test the Ridgeview NPC knowledge-contract scenarios. Do not add mission facts until canon review is complete. Android export and device testing remain a separate gate.
 
 ## Automated validation
-- GitHub Actions workflow: `.github/workflows/godot-validation.yml`.
+- Workflow: `.github/workflows/godot-validation.yml`.
 - Uses the free standard Ubuntu runner and installs Godot 4.7.2; no paid API key or external game-hosting account is required.
-- Latest verified run: `41671243532` on commit `d3eb69280ae781b3a2cf3afd8bc9b069bd9ace72`.
-- Result: **SUCCESS** — project/editor import passed, all 49 NLI smoke assertions passed, and the main scene launched for 10 headless frames.
-- This confirms the current project imports and the tested scripts/scene start under Godot 4.7.2 on Ubuntu CI. It does not verify rendered appearance, physical touch input, Android export, device performance or actual phone behaviour.
-- Workflow runs automatically on pushes to this development branch and can also be manually dispatched from GitHub Actions.
+- The workflow runs on pushes to this development branch and can also be manually dispatched from GitHub Actions.
+- Latest verified run: [41671365779](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/41671365779).
