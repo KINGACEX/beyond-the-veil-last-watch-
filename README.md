@@ -12,9 +12,9 @@ The `btv/bootstrap-prototype-001` branch contains a Godot 4 3D greybox prototype
 - `scripts/player_controller.gd` — movement and nearest-interactable input handling.
 - `scripts/interactable.gd` — reusable Area3D interaction contract.
 - `scripts/test_interactable.gd` — neutral test implementation.
-- `AGENTS.md` — concise repository engineering rules.
 - `scripts/nli/` — deterministic NLI parser, validator, request gate, authored knowledge base and orchestration service.
 - `tests/nli_smoke_test.gd` — headless NLI acceptance smoke-test harness.
+- `AGENTS.md` — repository engineering rules.
 
 ## Read these first
 
@@ -25,7 +25,7 @@ The `btv/bootstrap-prototype-001` branch contains a Godot 4 3D greybox prototype
 
 ## Intended toolchain
 
-The current development gate identifies Godot 4.7.2 as the intended version. Confirm the installed editor and export templates before treating this as a validated project. The renderer is deliberately not selected yet; compare supported renderers on the actual target Android device before deciding.
+The current development gate identifies Godot 4.7.2 as the intended version. Confirm the installed editor and export templates before treating this as a validated local project. The renderer is deliberately not selected yet; compare supported renderers on the actual target Android device before deciding.
 
 ## Open and run
 
@@ -36,8 +36,12 @@ The current development gate identifies Godot 4.7.2 as the intended version. Con
 5. Use W/A/S/D or arrow keys to move the capsule.
 6. Approach the test marker ahead of the player and press E. The diagnostic interaction response should appear in the Output panel.
 
-This is a greybox prototype, not a playable vertical slice or finished game. Touch controls, on-screen prompts, saving, Android export, and performance validation are not implemented. No Godot editor import, parser check, runtime test, Android export, or physical-device test has yet been recorded as passed.
+## Verification status
 
-## Status
+**CONFIRMED — GitHub Actions CI:** Godot 4.7.2 installed successfully; headless editor import and project parsing passed; all 49 NLI smoke assertions passed; and the main scene launched for 10 headless frames. Latest recorded run: [41671365779](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/41671365779), on commit `f990811bd387a34a2df1fb77329ae81a99008078`.
 
-**Bootstrap 001 and 002 plus NLI 001 source changes committed; engine and test-harness validation pending.** Work remains on `btv/bootstrap-prototype-001`; it has not been merged into `main`.
+This is a greybox prototype, not a playable vertical slice or finished game. CI does not verify rendered appearance, interactive movement, physical touch input, Android export, installation, device performance, or actual phone behaviour.
+
+The source includes an initial directional-button and interaction overlay, but its layout and usability are unverified on Android. An on-screen interaction prompt, saving, Android export and physical-device validation remain outstanding.
+
+Work remains on `btv/bootstrap-prototype-001`; it has not been merged into `main`. No release has been published.
