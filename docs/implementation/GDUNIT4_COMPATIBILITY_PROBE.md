@@ -28,3 +28,24 @@ Evaluate whether GdUnit4 adds useful test discovery and assertion facilities wit
 - Human review is required before Scripture quotations, doctrinal dialogue or major theological claims are canon-locked. AI may assist research and consistency checks but cannot declare doctrine authoritative.
 
 These are project safeguards, not a substitute for biblical scholarship or church accountability. Doctrine-specific content must be checked against Scripture in context and reviewed before canon lock.
+
+
+## Review decision — 2026-11-04
+
+**DECISION: RETAIN THE PROBE AS AN ISOLATED TEST BRANCH; DO NOT INTEGRATE THE ADDON INTO THE ACTIVE PROTOTYPE YET.**
+
+### Evidence
+- The corrected CI invocation executed the GdUnit4 CLI test suite rather than merely displaying its usage screen.
+- The pinned GdUnit4 v7.0.0 parser suite completed **3/3 tests, 0 errors, 0 failures** in workflow run [41674587976](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/41674587976), attempt 2.
+- The same workflow independently ran the existing NLI regression harness; all 49 assertions passed.
+- The addon is checked out at a fixed commit and copied into the CI workspace only. It is not committed to the active game branch or shipped with the game.
+
+### Rationale
+The probe establishes Godot 4.7.2 compatibility and a working test-discovery path, but its three tests cover only basic parser cases. The existing SceneTree harness currently exercises a broader set of NLI behaviours. Integrating a framework now would add maintenance and dependency surface without enough demonstrated coverage benefit.
+
+### Reconsider adoption when
+- The project has a larger set of reusable unit/integration tests that benefit from GdUnit4 fixtures, parameterization or richer reporting.
+- The team can pin and review the addon version/license and keep CI runtime acceptable.
+- A migration plan preserves the existing 49-assertion regression suite during and after adoption.
+
+Until those conditions are met, keep the probe branch as compatibility evidence and keep the active branch dependency-free.
