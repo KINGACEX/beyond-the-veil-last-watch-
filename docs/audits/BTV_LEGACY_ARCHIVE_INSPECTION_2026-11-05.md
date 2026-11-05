@@ -60,7 +60,7 @@ The Library lists these packages:
 - `BeyondTheVeil_Visual_Design_Sandbox_v0_1.zip`
 - `BeyondTheVeil_VisualPrototype_Full_v0_4.zip`
 
-Attempted raw-byte materialization of the first five returned an authorization-path warning. No archive bytes were accessed, extracted, modified or uploaded. Their contents, project completeness and relationship to the current repository remain UNKNOWN. The remaining two were not inspected.
+Attempted raw-byte materialization of the first five returned an authorization-path warning. No archive bytes were accessed, extracted, modified or uploaded. Their contents, project completeness and relationship to the current repository remain UNKNOWN. The remaining two (Visual Design Sandbox v0.1 and VisualPrototype Full v0.4) were also attempted; both returned the same raw-byte authorization-path warning. Their contents remain uninspected.
 
 Other indexed packages include Android-ready/CanonAligned builds, Godot starter/repository foundation packages, Ridgeview work packs and a website archive. Their binaries have not been comprehensively inspected.
 
