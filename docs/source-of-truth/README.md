@@ -72,4 +72,4 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 
 ## Visual-reference provenance
 
-- The Library contains [Asher Vance Character Showcase Sheet.png] (Library original; not copied into runtime assets). Its printed age conflicts with current canon. See [Visual Reference Provenance Audit](../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md) before using it.
+- The Library contains `Asher Vance Character Showcase Sheet.png` (original retained in Library; not copied into runtime assets). Its printed age conflicts with current age 18. The specific sheet's approval as a gameplay reference is unverified. Ember's rare original canid lineage is LOCKED by Foundation #11; exact appearance remains OPEN. See [Visual Reference Provenance Audit](../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md) before using either reference.
