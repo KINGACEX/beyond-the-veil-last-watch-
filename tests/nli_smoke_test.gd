@@ -55,6 +55,8 @@ func _test_parser_and_validation() -> void:
 func _test_knowledge_boundaries() -> void:
 	var knowledge = KnowledgeBase.new()
 	_check(knowledge.register_profile(&"npc_guard", "test-profile-npc_guard", ["test-source-guard-name-001", "test-source-guard-secret-001", "test-source-guard-name-002", "test-source-guard-reported-001", "test-source-guard-inferred-001", "test-source-guard-unconfirmed-001"]).get("ok", false), "NPC knowledge profile is registered")
+	for source_id in ["test-source-guard-name-001", "test-source-guard-secret-001", "test-source-guard-name-002", "test-source-guard-reported-001", "test-source-guard-inferred-001", "test-source-guard-unconfirmed-001"]:
+		_register_test_source(knowledge, source_id, "test-profile-npc_guard")
 	_check(knowledge.register_profile(&"npc_guard", "duplicate-profile", []).get("code") == "profile_already_registered", "Duplicate NPC profile registration is rejected")
 	_check(knowledge.add_record(_record("npc_guard", "name", "guard-name-001", "I am the outpost guard.")).get("ok", false), "Complete provenance-bearing record is accepted")
 	var known := knowledge.answer(&"npc_guard", &"name")
@@ -111,6 +113,7 @@ func _test_request_lifecycle() -> void:
 func _test_service_handoff() -> void:
 	var knowledge = KnowledgeBase.new()
 	knowledge.register_profile(&"npc_guard", "test-profile-npc_guard", ["test-source-service-guard-name-001"])
+	_register_test_source(knowledge, "test-source-service-guard-name-001", "test-profile-npc_guard")
 	knowledge.add_record(_record("npc_guard", "name", "service-guard-name-001", "I am the outpost guard."))
 	var service = Service.new(knowledge)
 	var response: Dictionary = service.handle_utterance("what is your name?", "service-001", &"npc_guard")
@@ -120,6 +123,19 @@ func _test_service_handoff() -> void:
 	var command: Dictionary = service.handle_utterance("scout ahead", "service-002", &"", "companion-test")
 	_check(command.get("ok", false), "Service accepts validated companion command")
 	_check(command.get("result", {}).get("source") == "validated_command_handoff", "Command is handed off without direct world mutation")
+
+
+func _register_test_source(knowledge: NLIKnowledgeBase, source_id: String, scope: String) -> void:
+	knowledge.register_source({
+		"source_id": source_id,
+		"source_type": "test_fixture",
+		"title": "NLI smoke-test source",
+		"location": "res://tests/nli_smoke_test.gd",
+		"content_hash": "sha256:test-fixture",
+		"authority_status": "SLICE",
+		"review_status": "approved",
+		"permitted_scopes": [scope]
+	})
 
 
 func _record(npc_id: String, topic_id: String, statement_id: String, response_text: String, provenance: String = "Observed") -> Dictionary:
