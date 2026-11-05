@@ -37,15 +37,15 @@ func cancel_request(request_id: String) -> Dictionary:
 
 
 func is_pending(request_id: String) -> bool:
-	return _pending.has(request_id)
+	return _pending.has(request_id.strip_edges())
 
 
 func is_completed(request_id: String) -> bool:
-	return _completed.has(request_id)
+	return _completed.has(request_id.strip_edges())
 
 
 func is_cancelled(request_id: String) -> bool:
-	return _cancelled.has(request_id)
+	return _cancelled.has(request_id.strip_edges())
 
 
 static func _failure(code: String, message: String) -> Dictionary:
