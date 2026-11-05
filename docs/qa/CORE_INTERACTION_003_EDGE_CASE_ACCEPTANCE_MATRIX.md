@@ -86,3 +86,21 @@ Final prompt styling, camera-relative look, gamepad support, dialogue/inventory 
 **CI evidence:** Godot 4.7.2 headless run `42027258305` passed the then-current NLI contract suite and initial interaction acceptance suite. The expanded touch/lifecycle tests passed in run `42027583419` on commit `2021388bb7a337f8dd5c740b9d5c4c3df7a443a5`; they are now counted as passed only for the cases listed above.
 
 **Important:** Passing headless tests does not replace editor/runtime visual checks or Android device testing.
+
+
+## 8. Additional edge cases — 5 November 2026
+
+The test-first review identified two defects in the selector: temporarily disabled targets were removed from the nearby set, preventing re-enablement while still in range; and IDs were counted after trimming but looked up without trimming, causing valid padded IDs to be excluded.
+
+| ID | Scenario | Expected | Priority |
+|---|---|---|---|
+| INT-025 | Target disabled during selection, then re-enabled without leaving sensor range | Target becomes eligible again without requiring exit/re-entry | P1 |
+| INT-026 | Authored interaction ID contains leading/trailing whitespace | ID is normalized consistently; target remains eligible | P1 |
+| INT-027 | Two IDs differ only by surrounding whitespace | Normalized duplicate IDs are both excluded | P1 |
+
+**Automated test names:**
+- `_test_disabled_target_can_be_reenabled_in_range`
+- `_test_whitespace_padded_interaction_id_is_normalized`
+- `_test_ids_equal_after_whitespace_normalization_are_duplicates`
+
+**Verification status:** tests were added first and the initial CI run failed on INT-025 and INT-026 as expected. The selector correction was then committed. The third test was added after that correction and awaits CI verification. Do not mark these cases passed until a successful run on a commit containing all three tests.
