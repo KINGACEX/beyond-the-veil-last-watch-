@@ -2,9 +2,9 @@
 **Session ID:** `2026-11-05_1237Z_BTV_CONTINUITY`  
 **Date:** 5 November 2026  
 **Start:** 2026-11-05 12:37:45 UTC  
-**End:** 2026-11-05 12:38:34 UTC  
+**End:** 2026-11-05 12:38:43 UTC  
 **Status:** CLOSED — checkpoint created  
-**Work window:** 49 seconds of recorded wall-clock time for this specific request and protocol setup  
+**Work window:** 58 seconds of recorded wall-clock time for this specific request and protocol setup  
 **Project:** Beyond the Veil: The Last Watch  
 **Branch inspected/updated:** `btv/test-first-contracts-001`  
 **Branch head at start:** `3599d22bad375fd8b54f5d4ee18f6fc96f789053`
