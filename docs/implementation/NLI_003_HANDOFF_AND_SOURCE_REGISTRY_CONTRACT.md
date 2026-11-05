@@ -1,5 +1,5 @@
 # NLI 003 — Handoff State and Source Registry Contract
-**Status:** PROPOSED — NOT IMPLEMENTED  
+**Status:** PARTIALLY IMPLEMENTED — test-first contract and service correction landed on isolated branch; full actor lifecycle remains open  
 **Scope:** NLI service, companion adapter and NPC knowledge provenance. No canon changes.
 
 ## 1. Defect to resolve
@@ -68,3 +68,23 @@ Test duplicate pending/completed/cancelled IDs; cancel before/after completion; 
 7. Run Godot 4.7.2 import and NLI tests; record actual outcomes.
 
 No LLM/network dependency, new dialogue facts, command-list changes, or production save system are authorized by this specification.
+
+
+## 10. Implementation evidence — 5 November 2026
+
+**COMPLETED on isolated branch `btv/test-first-contracts-001`:**
+- Added contract tests before changing the service semantics.
+- Replaced the false `accepted: true` result with `stage: validated`; the result identifies the intended companion owner but does not claim that an adapter dispatched it.
+- Kept companion requests pending rather than marking them completed inside NLI.
+- Added source records with identity, type, title, location, content hash, authority status, review status and permitted scopes.
+- Added source resolution; unresolved, unapproved and out-of-scope records are rejected.
+- Updated smoke-test fixtures to register their test sources explicitly.
+
+**Still PROPOSED / NOT IMPLEMENTED:**
+- A real companion adapter that dispatches the validated request and reports `handoff_ready`.
+- Actor-owned `accepted`, `rejected_by_actor`, `executing`, `executed`, cancellation and failure transitions.
+- Expiry, timeout, stale callback handling, pause/quit/reload persistence and cancellation-after-execution semantics.
+- A separate production source-registry service or persistent registry lifecycle; the current prototype registry is in-memory and held by the knowledge-base component.
+- Cryptographic content-hash verification and source-version invalidation.
+
+**Verification:** CI run `42027258305` passed the first NLI contract tests before the final validated-vs-handoff wording refinement. The expanded suite and latest branch head are awaiting their own CI result. Do not claim the complete NLI lifecycle is finished.
