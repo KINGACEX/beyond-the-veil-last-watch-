@@ -43,11 +43,19 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 			result = _knowledge_base.answer(npc_id, StringName(intent["topic"]))
 		&"companion_command":
 			result = {
-				"accepted": true,
+				"stage": "handoff_ready",
 				"source": "validated_command_handoff",
+				"request_id": request_id,
+				"intent_kind": "companion_command",
+				"owner_id": companion_id,
 				"command": String(intent["command"]),
-				"companion_id": companion_id,
-				"note": "No world state is changed by NLI. The companion gameplay system must explicitly accept and execute this command."
+				"note": "Validation succeeded. The companion actor has not yet accepted or executed this request."
+			}
+			return {
+				"ok": true,
+				"intent": intent,
+				"validation": validation,
+				"result": result
 			}
 
 	_request_gate.complete_request(request_id)
