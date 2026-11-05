@@ -61,3 +61,11 @@ The Library also contains older DOCX/PDF records, generated concept images, app 
 ## Required rule
 
 When a newer accepted decision conflicts with an older source, preserve the older file as history, follow the higher-authority decision, and record a correction task. Never silently rewrite history or promote a proposal to canon.
+
+## Historical slice-source extracts
+
+The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 2026-11-05. They are archival and non-authoritative; use the merged Vertical Slice Specification v1.0 and latest creator decisions for current slice status.
+
+- [Part 1 — A Sunday at Logos Rhema Temple (historical extract)](legacy-extracts/BTV_Vertical_Slice_Part_1_Sunday_at_Logos_Rhema_legacy.extracted.md)
+- [Part 2 — The Scout Report (historical extract)](legacy-extracts/BTV_Vertical_Slice_Part_2_Scout_Report_legacy.extracted.md)
+- [Parts 1–2 vs merged v1.0 delta audit](../audits/BTV_VERTICAL_SLICE_PARTS_1_2_VS_MERGED_V1_DELTA_AUDIT_2026-11-05.md)
