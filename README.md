@@ -4,44 +4,63 @@ BTV is a Christian action-adventure survival RPG set in a modern world of spirit
 
 ## Current repository state
 
-The `btv/bootstrap-prototype-001` branch contains a Godot 4 3D greybox prototype foundation and the first reusable interaction test:
+The active isolated engineering/research branch is `btv/test-first-contracts-001`. It contains the Godot greybox foundation originally developed on `btv/bootstrap-prototype-001`, additional interaction and NLI contract tests, recovered source-of-truth design documents, audits and research.
 
-- `project.godot` — project entry point, movement actions and E interaction action.
-- `scenes/main.tscn` — greybox test area with a neutral interactable marker.
+The branch is not merged into `main`. Do not treat this branch as a finished game or a playable vertical slice.
+
+### Project foundation
+- `project.godot` — Godot project entry point and input actions.
+- `scenes/main.tscn` — greybox test area.
 - `scenes/player.tscn` — capsule placeholder, collision, third-person camera and proximity sensor.
-- `scripts/player_controller.gd` — movement and nearest-interactable input handling.
+- `scenes/touch_controls.tscn` / `scripts/touch_controls.gd` — initial touch overlay mapped to shared InputMap actions.
+- `scripts/player_controller.gd` — movement and nearest-interactable selection.
 - `scripts/interactable.gd` — reusable Area3D interaction contract.
-- `scripts/test_interactable.gd` — neutral test implementation.
 - `scripts/nli/` — deterministic NLI parser, validator, request gate, authored knowledge base and orchestration service.
-- `tests/nli_smoke_test.gd` — headless NLI acceptance smoke-test harness.
-- `AGENTS.md` — repository engineering rules.
+- `tests/` — NLI smoke/contract tests and core interaction acceptance tests.
+- `.github/workflows/godot-validation.yml` — headless Godot validation workflow.
 
-## Read these first
+### Read these first
+1. [BTV source-of-truth index](docs/source-of-truth/README.md).
+2. [Current implementation status](docs/implementation/BOOTSTRAP_STATUS.md).
+3. [NLI handoff and source-registry contract](docs/implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md).
+4. [Core interaction acceptance matrix](docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md).
+5. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
 
-1. [Bootstrap 001 — One-Read Project Handoff](docs/implementation/BOOTSTRAP_001_ONE_READ.md) — original scaffold, decisions, boundaries and verification status.
-2. [Bootstrap 002 — Reusable Interaction](docs/implementation/BOOTSTRAP_002_INTERACTION.md) — current interaction architecture and acceptance checks.
-3. [NLI 001 — Natural Language Interaction](docs/implementation/NLI_001_FOUNDATION.md) — deterministic NPC questions, validated companion requests and knowledge boundaries.
-4. [Current Implementation Status](docs/implementation/BOOTSTRAP_STATUS.md) — concise scope, limitations and next gate.
+### Research
+- [Game development practice — Phase 1](docs/research/BTV_GAME_DEVELOPMENT_PRACTICE_RESEARCH_PHASE_1_2026-11-05.md).
+- [Cinematic and narrative environment research](docs/research/BTV_CINEMATIC_AND_NARRATIVE_ENVIRONMENT_RESEARCH_2026-11-05.md).
+- [Godot 3D small-team postmortem](docs/research/BTV_GODOT_3D_SMALL_TEAM_POSTMORTEM_RESEARCH_2026-11-05.md).
+- [Blender–Godot asset pipeline research](docs/research/BTV_BLENDER_GODOT_ASSET_PIPELINE_RESEARCH_2026-11-05.md).
+- [Consensus academic synthesis](docs/research/academic/CONSENSUS_GAME_PRODUCTION_RESEARCH_2026-11-05.md).
 
-## Intended toolchain
+Research findings are not approved BTV canon or architecture until explicitly reviewed.
 
-The current development gate identifies Godot 4.7.2 as the intended version. Confirm the installed editor and export templates before treating this as a validated local project. The renderer is deliberately not selected yet; compare supported renderers on the actual target Android device before deciding.
+## Toolchain and platform status
+
+The GitHub Actions workflow currently installs Godot 4.7.2 for headless validation. This is the CI toolchain, not proof of the editor version installed on a developer's device. The renderer remains deliberately undecided pending comparison on the actual target Android device.
+
+Android export, installation, touch usability, sustained performance, memory and thermal behaviour remain unverified on a physical target device.
 
 ## Open and run
 
-1. Download or check out the `btv/bootstrap-prototype-001` branch.
-2. Open the project folder in Godot 4.7.x.
+1. Check out `btv/test-first-contracts-001` for the current isolated branch.
+2. Open the project folder in Godot 4.7.2 (matching the CI version).
 3. Allow the project to import and inspect the Output/debugger panels.
 4. Run the project (F5 / Run Project).
 5. Use W/A/S/D or arrow keys to move the capsule.
-6. Approach the test marker ahead of the player and press E. The diagnostic interaction response should appear in the Output panel.
+6. Approach the neutral test marker and press E; inspect the diagnostic response in Output.
 
-## Verification status
+## Verification
 
-**CONFIRMED — GitHub Actions CI:** Latest recorded run [42025346911](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42025346911) passed on commit `159da05640960a292e08ce48ea2489a2191ab39a`. Godot 4.7.2 installation/version check, headless editor import and project parsing, NLI smoke-test command, and 10-frame main-scene launch all passed. This confirms only the configured headless gate; it does not certify interactive, visual, Android or device behaviour.
+**CONFIRMED — GitHub Actions run 42030200114** passed on commit `cf30a1259e013d8701ede04aef9d874ba7780990`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests, core interaction acceptance tests and a 10-frame main-scene launch.
 
-This is a greybox prototype, not a playable vertical slice or finished game. CI does not verify rendered appearance, interactive movement, physical touch input, Android export, installation, device performance, or actual phone behaviour.
+[View the validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42030200114).
 
-The source includes an initial directional-button and interaction overlay, but its layout and usability are unverified on Android. An on-screen interaction prompt, saving, Android export and physical-device validation remain outstanding.
+This is headless CI evidence only. It does not verify rendered appearance, manual interaction feel, physical touch behaviour, Android export/installation, device performance or thermal stability.
 
-Work remains on `btv/bootstrap-prototype-001`; it has not been merged into `main`. No release has been published.
+## Branch and release boundaries
+
+- Active work remains on `btv/test-first-contracts-001`.
+- No merge to `main` has been performed.
+- No release has been published.
+- Do not merge, force-push, delete branches, publish or deploy without explicit approval.
