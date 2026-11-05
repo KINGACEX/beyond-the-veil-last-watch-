@@ -998,4 +998,1010 @@ Team members should not behave like simple stat containers.
 
 Their roles and personalities should affect their responses.
 
+---
 
+# 34. TEAMMATE REWARDS
+
+Teammates can provide meaningful rewards such as:
+
+- weapons
+- equipment
+- materials
+- information
+- special missions
+- tactical opportunities
+
+Relationships should matter.
+
+A teammate can become a source of knowledge, assistance, or unique opportunities.
+
+---
+
+# 35. EMBER
+
+Ember is an established companion.
+
+Ember is not merely a cosmetic pet.
+
+Ember develops physically, behaviorally, and spiritually.
+
+Physical development can include:
+
+- powerful jaws
+- claws
+- speed
+- jumping ability
+- endurance
+- tracking ability
+
+Bond development affects the relationship between Ember and the protagonist.
+
+---
+
+# 36. EMBER'S ABILITIES
+
+Established concepts include:
+
+## Veil Sight
+
+Ability to perceive relevant Veil phenomena.
+
+## Guardian Instinct
+
+Protective reactions.
+
+## Veil Energy
+
+Interaction with Veil-related phenomena.
+
+## Tracking Sense
+
+Enhanced tracking.
+
+## Spirit Guidance
+
+A form of spiritually meaningful guidance.
+
+Ember should remain an intelligent companion rather than becoming an overpowered weapon.
+
+---
+
+# 37. EMBER COMMANDS
+
+Potential established command framework:
+
+- Attack
+- Protect
+- Scout
+- Track
+- Retrieve
+- Hold
+- Regroup
+
+Ember should use adaptive AI.
+
+The companion should understand context rather than merely executing repetitive button commands.
+
+---
+
+# 38. GAMEPLAY PHILOSOPHY
+
+BTV should combine:
+
+- exploration
+- survival
+- combat
+- investigation
+- leadership
+- social interaction
+- narrative choice
+- community service
+- spiritual reflection
+- world discovery
+
+Not every mechanic needs to reward the player with conventional XP.
+
+Some activities can provide:
+
+- information
+- trust
+- relationships
+- access
+- equipment
+- story consequences
+- community changes
+- new opportunities
+
+---
+
+# 39. EQUIPMENT
+
+BTV can include:
+
+- weapons
+- armor
+- tools
+- equipment
+- resources
+- artifacts
+- specialized Covenant equipment
+
+Equipment should fit the modern setting and established visual language.
+
+The Armor of God should retain its unique symbolic identity.
+
+---
+
+# 40. COVENANT UNIFORM
+
+Established Covenant visual identity:
+
+- white base
+- restrained gold
+- cross-centered Christian insignia
+
+Variants can include:
+
+### Modern Tactical
+
+For field operations.
+
+### Formal / Ceremonial
+
+For official occasions.
+
+### Field / Stealth
+
+For reconnaissance or covert work.
+
+### Regional / Weather
+
+Adapted to environment.
+
+### Specialist
+
+Adapted to branch.
+
+Uniform variation can depend on:
+
+- branch
+- rank
+- gender
+- sleeve configuration
+- duty
+- environment
+- weather
+
+Rare older/potent variants may be discovered through meaningful story/spiritual circumstances, including guidance associated with God/Holy Spirit.
+
+Do not turn every variation into random fashion loot.
+
+---
+
+# 41. VISUAL DIRECTION
+
+BTV should aim for a premium modern RPG presentation.
+
+Useful external visual inspirations include the overall quality and design ambition associated with games such as:
+
+- Red Dead Redemption 2
+- The Witcher 3
+- Elden Ring
+- Cyberpunk 2077
+- God of War Ragnarök
+- Baldur's Gate 3
+- Ghost of Tsushima
+- The Legend of Zelda: Breath of the Wild
+- Black Myth: Wukong
+- The Blood of Dawnwalker
+
+These are references for:
+
+- quality
+- atmosphere
+- world design
+- interaction
+- cinematics
+- exploration
+- combat
+- environmental storytelling
+
+They are NOT instructions to copy their:
+
+- characters
+- lore
+- assets
+- UI
+- story
+- proprietary mechanics
+- art directly
+
+BTV must remain original.
+
+---
+
+# 42. UI / HUD
+
+BTV should use a premium RPG-style interface.
+
+The HUD should be consistent but contextual.
+
+Different situations may alter the interface.
+
+Examples:
+
+- exploration
+- combat
+- investigation
+- church
+- Communion
+- dialogue
+- tactical leadership
+- Veil activity
+
+Do not fill the screen with unnecessary permanent UI.
+
+The HUD should communicate information without destroying immersion.
+
+---
+
+# 43. CHAPEL UI / CONTEXT
+
+Church locations should feel like real places, not menus.
+
+Interaction should depend on context.
+
+Examples:
+
+- entering chapel
+- service preparation
+- worship
+- sermon
+- offering
+- Communion
+- reflection
+- conversations
+- community interaction
+
+---
+
+# 44. GAME WORLD ECONOMY
+
+The economy should distinguish ordinary resources from spiritual concepts.
+
+Ordinary resources can include:
+
+- currency
+- materials
+- equipment
+- supplies
+- tools
+
+Do not turn:
+
+- prayer
+- grace
+- salvation
+- the Holy Spirit
+- faith
+
+into ordinary purchasable commodities.
+
+---
+
+# 45. STORY STRUCTURE
+
+BTV should support:
+
+- major story arcs
+- regional arcs
+- character arcs
+- optional missions
+- community stories
+- Veil investigations
+- Covenant operations
+- boss encounters
+- moral/spiritual conflicts
+
+The main story should progressively reveal the larger conflict.
+
+Avoid explaining every mystery immediately.
+
+---
+
+# 46. REDEMPTION
+
+Redemption is a major thematic possibility.
+
+Characters should not necessarily be divided into:
+
+> Good people = perfect  
+> Bad people = irredeemable
+
+Some characters can:
+
+- fail
+- deceive
+- regret
+- change
+- resist
+- return
+- seek forgiveness
+- refuse redemption
+
+Choices should have consequences while leaving room for meaningful character development.
+
+---
+
+# 47. CHRISTIAN PRESENTATION
+
+Christian content must feel sincere rather than exploitative.
+
+Avoid:
+
+- treating Christianity as a cosmetic skin
+- making faith a superpower meter
+- implying money buys righteousness
+- portraying the protagonist as spiritually perfect
+- treating God as a vending machine
+- treating prayer as guaranteed magic
+- reducing Scripture to combat spells
+
+Use Christian ideas with respect and narrative purpose.
+
+---
+
+# 48. CHURCH VS COVENANT
+
+IMPORTANT DISTINCTION:
+
+The Covenant is NOT the Church.
+
+The Covenant serves people and protects them.
+
+Church communities have their own identity and purpose.
+
+A chapel should not feel like:
+
+> Covenant headquarters with pews.
+
+Likewise, the Covenant should not become:
+
+> the official government of Christianity.
+
+These distinctions must remain clear.
+
+---
+
+# 49. WORLD POPULATION RULE
+
+In normal public environments:
+
+Civilians should generally outnumber Covenant personnel by a significant margin.
+
+Examples:
+
+A city street might contain:
+
+- families
+- workers
+- students
+- merchants
+- travelers
+- visitors
+- service workers
+
+with only some Covenant presence.
+
+A Covenant base may have:
+
+- agents
+- commanders
+- specialists
+- recruits
+- support staff
+
+The population should change according to location and situation.
+
+---
+
+# 50. DEVELOPMENT ON ANDROID / PC
+
+BTV is intended to be developed with consideration for:
+
+- PC
+- Android/mobile workflows
+- scalable assets
+- performance
+- memory
+- loading
+- UI adaptation
+- controls
+- graphics scalability
+
+Technical decisions should avoid unnecessarily locking the project into assumptions that prevent future platform expansion.
+
+---
+
+# 51. TECHNICAL DEVELOPMENT PRINCIPLES
+
+When writing or designing systems:
+
+Prefer:
+
+- modular architecture
+- reusable systems
+- data-driven design
+- clear interfaces
+- maintainability
+- scalability
+- testability
+- separation of concerns
+
+Avoid:
+
+- giant monolithic scripts
+- duplicated logic
+- hardcoded values everywhere
+- undocumented assumptions
+- unnecessary dependencies
+
+When proposing code, clearly identify:
+
+- engine/framework assumptions
+- language
+- dependencies
+- file placement
+- integration points
+- testing method
+
+---
+
+# 52. AI DEVELOPMENT BEHAVIOR
+
+When asked:
+
+> "Build this feature."
+
+Do not immediately dump code.
+
+First determine:
+
+1. What the feature does.
+2. Which BTV systems it interacts with.
+3. What data it requires.
+4. What technical architecture is appropriate.
+5. What UI is needed.
+6. What testing is required.
+7. Whether it creates canon conflicts.
+
+For small tasks, concise implementation may be appropriate.
+
+For major systems, provide architecture before implementation.
+
+---
+
+# 53. QA
+
+Every significant BTV feature should be tested for:
+
+### Functional correctness
+
+Does it actually work?
+
+### Narrative consistency
+
+Does it fit the story?
+
+### Canon consistency
+
+Does it contradict established information?
+
+### Gameplay balance
+
+Is it excessively powerful or useless?
+
+### Performance
+
+Can the target hardware handle it?
+
+### UX
+
+Does the player understand what to do?
+
+### Accessibility
+
+Can players reasonably interact with it?
+
+### World consistency
+
+Does it make sense within the environment?
+
+---
+
+# 54. CANON AUDIT
+
+Before finalizing a major feature, perform:
+
+## BTV CANON AUDIT
+
+Check:
+
+- protagonist
+- age
+- characters
+- Covenant
+- ranks
+- branches
+- Armor of God
+- prayer
+- Holy Spirit
+- church
+- HCI
+- Communion
+- Ember
+- Veil
+- enemies
+- economy
+- population
+- HUD
+- visual identity
+
+Report:
+
+**PASS**
+
+or
+
+**CONFLICT FOUND**
+
+If conflict exists, explain exactly what conflicts.
+
+---
+
+# 55. INFORMATION PRIORITY
+
+When information conflicts, use this order:
+
+1. Explicitly confirmed project-canon decisions
+2. Latest explicit correction from the project creator
+3. Master BTV Canon
+4. Approved development documents
+5. Previously proposed designs
+6. AI-generated suggestions
+
+Never allow an older suggestion to override a newer explicit decision.
+
+---
+
+# 56. NO FALSE CERTAINTY
+
+If you do not know something:
+
+Say so.
+
+Do not create fake BTV history.
+
+Do not say:
+
+> "According to the BTV lore..."
+
+unless that lore was actually established.
+
+Use:
+
+> "This has not been established in the available canon."
+
+Then, if useful:
+
+> "Proposed option: ..."
+
+---
+
+# 57. FEATURE DEVELOPMENT TEMPLATE
+
+For substantial new features, use:
+
+## FEATURE NAME
+
+### Status
+CANON / PROPOSED / ALTERNATIVE / UNKNOWN
+
+### Purpose
+
+Why the feature exists.
+
+### Canon Check
+
+Relevant established lore.
+
+### Player Experience
+
+What the player actually experiences.
+
+### Gameplay
+
+How it works.
+
+### Narrative Integration
+
+How it affects story/world.
+
+### Systems Integration
+
+What existing systems it connects to.
+
+### UI/UX
+
+How the player interacts with it.
+
+### NPC/AI
+
+How characters respond.
+
+### Technical Architecture
+
+How it could be implemented.
+
+### Performance
+
+Potential performance concerns.
+
+### Testing
+
+How the feature should be tested.
+
+### Canon Risks
+
+Potential contradictions.
+
+### Future Expansion
+
+How the feature can scale.
+
+---
+
+# 58. CHARACTER DEVELOPMENT TEMPLATE
+
+For new characters:
+
+- Name
+- Age
+- Role
+- Background
+- Personality
+- Motivation
+- Strengths
+- Weaknesses
+- Relationships
+- Covenant affiliation if any
+- Spiritual/worldview considerations
+- Gameplay role
+- Combat role if applicable
+- Character arc
+- Key dialogue themes
+- Possible missions
+- Canon status
+
+Do not create characters that accidentally replace or contradict established major characters.
+
+---
+
+# 59. QUEST DEVELOPMENT TEMPLATE
+
+For quests:
+
+- Quest title
+- Quest type
+- Location
+- Trigger
+- Objective
+- Context
+- NPCs
+- Player choices
+- Gameplay
+- Combat requirements
+- Investigation
+- Dialogue
+- Faith/community dimension
+- Rewards
+- Consequences
+- Optional outcomes
+- Related world systems
+- Canon status
+
+---
+
+# 60. BOSS DESIGN TEMPLATE
+
+For bosses:
+
+- Name
+- Classification
+- Lore
+- Theme
+- Motivation
+- Environment
+- Mechanics
+- Phases
+- Counterplay
+- Narrative significance
+- Visual identity
+- Scripture/theme relationship where appropriate
+- Rewards
+- Consequences
+- Canon status
+
+A boss should not exist only because:
+
+> "The game needs a boss."
+
+It should have a reason to exist.
+
+---
+
+# 61. MISSION REWARD PRINCIPLE
+
+Rewards can include:
+
+- equipment
+- resources
+- information
+- relationships
+- access
+- missions
+- reputation/trust where appropriate
+- strategic advantages
+- story progression
+
+Not every meaningful action needs a monetary reward.
+
+---
+
+# 62. RESEARCH RULE
+
+When researching real-world Christianity, history, science, technology, game development, or other external subjects:
+
+Distinguish:
+
+- factual research
+- BTV canon
+- creative adaptation
+
+Do not automatically turn external research into BTV canon.
+
+---
+
+# 63. SCRIPTURE RESEARCH RULE
+
+When Scripture is relevant:
+
+- preserve intended meaning
+- avoid inventing quotations
+- distinguish paraphrase from quotation
+- use appropriate translations/permissions when necessary
+- avoid excessive quotation
+- integrate Scripture purposefully
+
+---
+
+# 64. ORIGINALITY RULE
+
+BTV can learn from successful games.
+
+It must not become a clone of them.
+
+When using an inspiration reference, ask:
+
+> What design principle can BTV learn from this?
+
+rather than:
+
+> How can BTV copy this?
+
+Examples:
+
+Instead of copying RDR2:
+
+> Learn environmental reactivity and world immersion.
+
+Instead of copying Elden Ring:
+
+> Learn environmental mystery and discovery.
+
+Instead of copying God of War:
+
+> Learn cinematic character-driven presentation.
+
+Instead of copying Zelda:
+
+> Learn systemic exploration.
+
+Then create an original BTV implementation.
+
+---
+
+# 65. DEVELOPMENT DOCUMENTATION
+
+Important BTV development documents should maintain consistent terminology.
+
+Use:
+
+**BTV** = Beyond the Veil: The Last Watch
+
+**Asher Vance** = established protagonist
+
+**Covenant** = hidden organization
+
+**Chosen** = protagonist designation
+
+**Ember** = established companion
+
+**Veil** = supernatural central concept
+
+**Aces** = general currency
+
+**Covenant Credits** = Covenant-focused currency
+
+Do not randomly rename established systems.
+
+---
+
+# 66. CHANGE MANAGEMENT
+
+When the project creator explicitly changes something:
+
+Record:
+
+### Previous
+
+What was previously established.
+
+### New
+
+What has now been established.
+
+### Impact
+
+Which systems/documents may need updating.
+
+### Status
+
+CANON UPDATED
+
+Do not continue using the old version as though nothing changed.
+
+---
+
+# 67. DESIGN DISCUSSION RULE
+
+When presenting several ideas:
+
+Clearly label them.
+
+Example:
+
+### Option A — Investigation Focus
+[PROPOSED]
+
+### Option B — Social Conflict
+[PROPOSED]
+
+### Option C — Combat Focus
+[PROPOSED]
+
+Then recommend one if appropriate.
+
+Do not silently choose a proposed option and make it canon.
+
+---
+
+# 68. WHEN THE CREATOR SAYS "MAKE IT CANON"
+
+That instruction promotes the specified concept to:
+
+# CANON
+
+Update dependent systems accordingly.
+
+---
+
+# 69. WHEN THE CREATOR SAYS "JUST AN IDEA"
+
+Treat the concept as:
+
+# PROPOSED
+
+Do not permanently incorporate it.
+
+---
+
+# 70. WHEN THE CREATOR CORRECTS SOMETHING
+
+The correction takes priority.
+
+Example:
+
+If an older document says one thing and the creator explicitly says:
+
+> "No, this is actually..."
+
+the new statement becomes authoritative.
+
+---
+
+# 71. BTV DEVELOPMENT GOAL
+
+The ultimate objective is to develop BTV into a coherent, original, high-quality RPG with:
+
+- memorable characters
+- meaningful story
+- immersive world
+- responsive NPCs
+- satisfying combat
+- exploration
+- investigation
+- survival elements
+- leadership
+- community systems
+- spiritual themes
+- strong visual identity
+- scalable technology
+- meaningful choices
+- strong replayability
+
+The game should feel like a complete world rather than a collection of disconnected features.
+
+---
+
+# 72. CORE CREATIVE TEST
+
+Before approving a major feature, ask:
+
+> Does this make Beyond the Veil: The Last Watch feel more like itself?
+
+If the answer is no, reconsider the feature.
+
+---
+
+# 73. FINAL OPERATING INSTRUCTION
+
+From this point forward:
+
+DO NOT treat BTV as a generic game-design prompt.
+
+Treat BTV as an ongoing original game-development project with established canon.
+
+Protect continuity.
+
+Distinguish facts from proposals.
+
+Ask for clarification when an important canon decision is genuinely unresolved.
+
+Use available BTV reference documents as authoritative sources.
+
+When implementing technical systems, prioritize maintainability and feasibility.
+
+When designing gameplay, preserve the project's narrative and spiritual identity.
+
+When generating new ideas, make them fit the established world rather than replacing it.
+
+When uncertain, say:
+
+> UNKNOWN — NOT ESTABLISHED IN CURRENT BTV CANON.
+
+When proposing something new, say:
+
+> PROPOSED — REQUIRES APPROVAL.
+
+When detecting a contradiction, say:
+
+> CANON CONFLICT — REQUIRES RESOLUTION.
+
+The goal is not merely to generate content.
+
+The goal is to help build:
+
+# BEYOND THE VEIL: THE LAST WATCH
+
+as a coherent, original, ambitious, technically feasible game.
