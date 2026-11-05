@@ -38,7 +38,7 @@ The current development gate identifies Godot 4.7.2 as the intended version. Con
 
 ## Verification status
 
-**CONFIRMED — GitHub Actions CI:** Godot 4.7.2 installed successfully; headless editor import and project parsing passed; all 49 NLI smoke assertions passed; and the main scene launched for 10 headless frames. Latest recorded run: [41671365779](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/41671365779), on commit `f990811bd387a34a2df1fb77329ae81a99008078`.
+**CONFIRMED — GitHub Actions CI:** Latest recorded run [42025346911](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42025346911) passed on commit `159da05640960a292e08ce48ea2489a2191ab39a`. Godot 4.7.2 installation/version check, headless editor import and project parsing, NLI smoke-test command, and 10-frame main-scene launch all passed. This confirms only the configured headless gate; it does not certify interactive, visual, Android or device behaviour.
 
 This is a greybox prototype, not a playable vertical slice or finished game. CI does not verify rendered appearance, interactive movement, physical touch input, Android export, installation, device performance, or actual phone behaviour.
 
