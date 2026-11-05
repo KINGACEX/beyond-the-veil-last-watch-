@@ -2,6 +2,7 @@ extends SceneTree
 
 const PlayerScene = preload("res://scenes/player.tscn")
 const RecordingInteractable = preload("res://tests/fixtures/recording_interactable.gd")
+const TouchScene = preload("res://scenes/touch_controls.tscn")
 
 var failures := 0
 var player: CharacterBody3D
@@ -18,6 +19,12 @@ func _run() -> void:
 	_test_disabled_target_is_excluded()
 	_test_duplicate_authored_ids_are_excluded()
 	_test_selection_api_and_stable_tie_break_are_present()
+	_test_duplicate_enter_signal_is_idempotent()
+	_test_moving_targets_recalculates_selection()
+	_test_non_interactable_area_is_ignored()
+	_test_touch_press_release_uses_shared_action()
+	_test_touch_focus_loss_releases_actions()
+	_test_touch_teardown_releases_actions()
 	if failures == 0:
 		print("CORE_INTERACTION_ACCEPTANCE_TESTS: PASS")
 		quit(0)
@@ -124,6 +131,75 @@ func _test_selection_api_and_stable_tie_break_are_present() -> void:
 		alpha.queue_free()
 		zeta.queue_free()
 	player.queue_free()
+
+func _test_duplicate_enter_signal_is_idempotent() -> void:
+	player = _new_player()
+	var target := _new_target("single-entry", Vector3(0, 0, -1))
+	player.call("_on_sensor_area_entered", target)
+	player.call("_on_sensor_area_entered", target)
+	player.call("_try_interact")
+	_check(int(target.get("interaction_count")) == 1, "Duplicate enter signals create one logical target")
+	player.queue_free()
+	target.queue_free()
+
+
+func _test_moving_targets_recalculates_selection() -> void:
+	player = _new_player()
+	var first := _new_target("first", Vector3(0, 0, -1))
+	var second := _new_target("second", Vector3(0, 0, -2))
+	player.call("_on_sensor_area_entered", first)
+	player.call("_on_sensor_area_entered", second)
+	_check(player.call("_select_nearest_interactable") == first, "Initial nearest target is selected")
+	first.position = Vector3(0, 0, -4)
+	_check(player.call("_select_nearest_interactable") == second, "Selection uses current target transforms")
+	player.queue_free()
+	first.queue_free()
+	second.queue_free()
+
+
+func _test_non_interactable_area_is_ignored() -> void:
+	player = _new_player()
+	var area := Area3D.new()
+	root.add_child(area)
+	player.call("_on_sensor_area_entered", area)
+	player.call("_try_interact")
+	_check(true, "Area without the interactable contract is ignored safely")
+	player.queue_free()
+	area.queue_free()
+
+
+func _test_touch_press_release_uses_shared_action() -> void:
+	var layer = TouchScene.instantiate()
+	root.add_child(layer)
+	var overlay: Control = layer.get_node("Overlay")
+	overlay.call("_press_action", &"interact")
+	_check(Input.is_action_pressed("interact"), "Touch press feeds the shared interact action")
+	overlay.call("_release_action", &"interact")
+	_check(not Input.is_action_pressed("interact"), "Touch release clears the shared interact action")
+	root.remove_child(layer)
+	layer.free()
+
+
+func _test_touch_focus_loss_releases_actions() -> void:
+	var layer = TouchScene.instantiate()
+	root.add_child(layer)
+	var overlay: Control = layer.get_node("Overlay")
+	overlay.call("_press_action", &"move_forward")
+	overlay.call("_notification", NOTIFICATION_APPLICATION_FOCUS_OUT)
+	_check(not Input.is_action_pressed("move_forward"), "Application focus loss releases held touch actions")
+	root.remove_child(layer)
+	layer.free()
+
+
+func _test_touch_teardown_releases_actions() -> void:
+	var layer = TouchScene.instantiate()
+	root.add_child(layer)
+	var overlay: Control = layer.get_node("Overlay")
+	overlay.call("_press_action", &"interact")
+	root.remove_child(layer)
+	_check(not Input.is_action_pressed("interact"), "Touch overlay teardown releases held actions")
+	layer.free()
+
 
 func _check(condition: bool, label: String) -> void:
 	if condition:
