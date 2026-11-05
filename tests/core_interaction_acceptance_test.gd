@@ -19,6 +19,7 @@ func _run() -> void:
 	_test_disabled_target_is_excluded()
 	_test_disabled_target_can_be_reenabled_in_range()
 	_test_whitespace_padded_interaction_id_is_normalized()
+	_test_ids_equal_after_whitespace_normalization_are_duplicates()
 	_test_duplicate_authored_ids_are_excluded()
 	_test_selection_api_and_stable_tie_break_are_present()
 	_test_duplicate_enter_signal_is_idempotent()
@@ -127,6 +128,19 @@ func _test_whitespace_padded_interaction_id_is_normalized() -> void:
 	_check(int(target.get("interaction_count")) == 1, "Whitespace around authored interaction ID does not exclude target")
 	player.queue_free()
 	target.queue_free()
+
+
+func _test_ids_equal_after_whitespace_normalization_are_duplicates() -> void:
+	player = _new_player()
+	var first := _new_target("shared-id", Vector3(0, 0, -1))
+	var second := _new_target(" shared-id ", Vector3(0, 0, -1.5))
+	player.call("_on_sensor_area_entered", first)
+	player.call("_on_sensor_area_entered", second)
+	player.call("_try_interact")
+	_check(int(first.get("interaction_count")) == 0 and int(second.get("interaction_count")) == 0, "IDs equal after whitespace normalization are treated as duplicates")
+	player.queue_free()
+	first.queue_free()
+	second.queue_free()
 
 
 func _test_duplicate_authored_ids_are_excluded() -> void:
