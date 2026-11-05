@@ -3,7 +3,7 @@
 **Active isolated branch:** `btv/test-first-contracts-001`  
 **Prototype origin:** `btv/bootstrap-prototype-001`  
 **Status:** HEADLESS CI PASSED; visual/runtime and Android device validation remain pending.  
-**Latest verified successful run at this document revision:** [42031119379](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42031119379), commit `7583d424f0140181e7d170e323d2a5377f9ded5e`.
+**Latest verified successful run at this document revision:** [42031646069](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42031646069), commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`.
 
 ## 1. Implemented source
 
@@ -54,9 +54,10 @@ The automated suite currently covers:
 - touch teardown release;
 - disabled target can be re-enabled while still in sensor range;
 - whitespace-padded interaction IDs are normalized;
-- IDs equal after whitespace normalization are rejected as duplicates.
+- IDs equal after whitespace normalization are rejected as duplicates;
+- case-only ID tie uses deterministic secondary lexical ordering.
 
-The acceptance matrix now has 27 cases. Some are covered only partially; the remaining cases are not passed merely because the overall CI workflow passes. Consult the matrix for per-case status.
+The acceptance matrix now has 28 cases. Some are covered only partially; the remaining cases are not passed merely because the overall CI workflow passes. Consult the matrix for per-case status.
 
 ## 3. NLI lifecycle still incomplete
 
