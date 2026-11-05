@@ -104,3 +104,14 @@ The test-first review identified two defects in the selector: temporarily disabl
 - `_test_ids_equal_after_whitespace_normalization_are_duplicates`
 
 **Verification status:** tests were added first and the initial CI run failed on INT-025 and INT-026 as expected. The selector correction was then committed. The third test was added after that correction and awaits CI verification. Do not mark these cases passed until a successful run on a commit containing all three tests.
+
+
+## 9. Case-insensitive comparison tie-break — 5 November 2026
+
+| ID | Scenario | Expected | Priority |
+|---|---|---|---|
+| INT-028 | Two unique IDs differ only by letter case and are at equal distance | Case-insensitive comparison is followed by deterministic exact-string ordering | P1 |
+
+**Automated test:** `_test_case_only_ids_have_deterministic_tie_break`.
+
+**Verification status:** test-first regression added; pending CI execution on a commit containing this case.
