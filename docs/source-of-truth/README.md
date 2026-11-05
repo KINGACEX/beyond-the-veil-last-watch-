@@ -70,6 +70,6 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 - [Part 2 — The Scout Report (historical extract)](legacy-extracts/BTV_Vertical_Slice_Part_2_Scout_Report_legacy.extracted.md)
 - [Parts 1–2 vs merged v1.0 delta audit](../audits/BTV_VERTICAL_SLICE_PARTS_1_2_VS_MERGED_V1_DELTA_AUDIT_2026-11-05.md)
 
-## Visual-reference provenance
+## Visual-reference provenance and character inventory
 
-- The Library contains `Asher Vance Character Showcase Sheet.png` (original retained in Library; not copied into runtime assets). Its printed age conflicts with current age 18. The specific sheet's approval as a gameplay reference is unverified. Ember's rare original canid lineage is LOCKED by Foundation #11; exact appearance remains OPEN. See [Visual Reference Provenance Audit](../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md) before using either reference.
+- The Library contains multiple Asher Vance images, including a character turnaround and older gameplay/UI mockups. Their approval status is not established by filenames. The turnaround's printed age conflicts with current age-18 presentation; the infiltration mockup contains legacy command/UI mechanics. Ember's rare original canid lineage is LOCKED by Foundation #11; exact appearance remains OPEN. See [Visual Reference Provenance Audit](../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md) and [Character & Visual Reference Inventory Audit](../audits/BTV_CHARACTER_AND_VISUAL_REFERENCE_INVENTORY_2026-11-05.md) before using these assets.
