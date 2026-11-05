@@ -16,6 +16,7 @@ func _run() -> void:
 	_test_exit_clears_target()
 	_test_freed_target_is_safe()
 	_test_disabled_target_is_excluded()
+	_test_duplicate_authored_ids_are_excluded()
 	_test_selection_api_and_stable_tie_break_are_present()
 	if failures == 0:
 		print("CORE_INTERACTION_ACCEPTANCE_TESTS: PASS")
@@ -94,6 +95,19 @@ func _test_disabled_target_is_excluded() -> void:
 	_check(int(target.get("interaction_count")) == 0, "Disabled target is immediately ineligible")
 	player.queue_free()
 	target.queue_free()
+
+
+func _test_duplicate_authored_ids_are_excluded() -> void:
+	player = _new_player()
+	var first := _new_target("duplicate", Vector3(0, 0, -1))
+	var second := _new_target("duplicate", Vector3(0, 0, -1.5))
+	player.call("_on_sensor_area_entered", first)
+	player.call("_on_sensor_area_entered", second)
+	player.call("_try_interact")
+	_check(int(first.get("interaction_count")) == 0 and int(second.get("interaction_count")) == 0, "Duplicate authored IDs are excluded instead of selecting nondeterministically")
+	player.queue_free()
+	first.queue_free()
+	second.queue_free()
 
 
 func _test_selection_api_and_stable_tie_break_are_present() -> void:
