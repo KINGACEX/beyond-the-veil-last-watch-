@@ -34,6 +34,8 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 - [Character and animation pipeline](docs/research/BTV_CHARACTER_AND_ANIMATION_PIPELINE_RESEARCH_2026-11-05.md).
 - [Character rigging and game-animation case study](docs/research/BTV_CHARACTER_RIGGING_AND_GAME_ANIMATION_CASE_STUDY_2026-11-05.md).
 - [World construction and environment art](docs/research/BTV_WORLD_CONSTRUCTION_AND_ENVIRONMENT_ART_RESEARCH_2026-11-05.md).
+- [Godot world navigation and region boundaries](docs/research/BTV_GODOT_WORLD_NAVIGATION_AND_REGION_BOUNDARY_RESEARCH_2026-11-05.md).
+- [Save/load, automated testing and QA](docs/research/BTV_SAVE_LOAD_AUTOMATED_TESTING_AND_QA_RESEARCH_2026-11-05.md).
 - [Blender–Godot asset pipeline research](docs/research/BTV_BLENDER_GODOT_ASSET_PIPELINE_RESEARCH_2026-11-05.md).
 - [Consensus academic synthesis](docs/research/academic/CONSENSUS_GAME_PRODUCTION_RESEARCH_2026-11-05.md).
 
@@ -56,7 +58,7 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Verification
 
-**CONFIRMED — GitHub Actions run 42031119379** passed on commit `7583d424f0140181e7d170e323d2a5377f9ded5e`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests, core interaction acceptance tests and a 10-frame main-scene launch.
+**CONFIRMED — GitHub Actions run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
 
 [View the validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42030200114).
 
