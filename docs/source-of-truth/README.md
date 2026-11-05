@@ -69,3 +69,7 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 - [Part 1 — A Sunday at Logos Rhema Temple (historical extract)](legacy-extracts/BTV_Vertical_Slice_Part_1_Sunday_at_Logos_Rhema_legacy.extracted.md)
 - [Part 2 — The Scout Report (historical extract)](legacy-extracts/BTV_Vertical_Slice_Part_2_Scout_Report_legacy.extracted.md)
 - [Parts 1–2 vs merged v1.0 delta audit](../audits/BTV_VERTICAL_SLICE_PARTS_1_2_VS_MERGED_V1_DELTA_AUDIT_2026-11-05.md)
+
+## Visual-reference provenance
+
+- The Library contains [Asher Vance Character Showcase Sheet.png] (Library original; not copied into runtime assets). Its printed age conflicts with current canon. See [Visual Reference Provenance Audit](../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md) before using it.
