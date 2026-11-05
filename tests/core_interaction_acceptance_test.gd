@@ -17,6 +17,8 @@ func _run() -> void:
 	_test_exit_clears_target()
 	_test_freed_target_is_safe()
 	_test_disabled_target_is_excluded()
+	_test_disabled_target_can_be_reenabled_in_range()
+	_test_whitespace_padded_interaction_id_is_normalized()
 	_test_duplicate_authored_ids_are_excluded()
 	_test_selection_api_and_stable_tie_break_are_present()
 	_test_duplicate_enter_signal_is_idempotent()
@@ -100,6 +102,29 @@ func _test_disabled_target_is_excluded() -> void:
 	player.call("_on_sensor_area_entered", target)
 	player.call("_try_interact")
 	_check(int(target.get("interaction_count")) == 0, "Disabled target is immediately ineligible")
+	player.queue_free()
+	target.queue_free()
+
+
+func _test_disabled_target_can_be_reenabled_in_range() -> void:
+	player = _new_player()
+	var target := _new_target("reenabled", Vector3(0, 0, -1))
+	target.set("interaction_enabled", false)
+	player.call("_on_sensor_area_entered", target)
+	player.call("_select_nearest_interactable")
+	target.set("interaction_enabled", true)
+	player.call("_try_interact")
+	_check(int(target.get("interaction_count")) == 1, "Target can become eligible again without leaving sensor range")
+	player.queue_free()
+	target.queue_free()
+
+
+func _test_whitespace_padded_interaction_id_is_normalized() -> void:
+	player = _new_player()
+	var target := _new_target("  padded-id  ", Vector3(0, 0, -1))
+	player.call("_on_sensor_area_entered", target)
+	player.call("_try_interact")
+	_check(int(target.get("interaction_count")) == 1, "Whitespace around authored interaction ID does not exclude target")
 	player.queue_free()
 	target.queue_free()
 
