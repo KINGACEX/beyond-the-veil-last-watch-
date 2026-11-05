@@ -42,14 +42,13 @@ The workflow is narrow. It does not perform Android export/install, physical-dev
 - Current branch head has a newer successful run `42025346911` on commit `159da056...`.
 - Correct the links and commit references while preserving the limited scope of what CI proves.
 
-### D-02 — Vertical Slice v1.0 is referenced but absent from inspected branch tree
-**Status:** CONFIRMED REPOSITORY GAP; SOURCE AVAILABILITY ELSEWHERE UNKNOWN.
+### D-02 — Vertical Slice v1.0 repository copy
+**Status:** COMPLETED — exact Library source imported.
 
-- The current source index and historical Ridgeview audit refer to a merged Vertical Slice Specification v1.0.
-- The inspected branch tree contains `BTV_Vertical_Slice_Specification_v0.2.md`, but no v1.0 file at the expected vertical-slice path.
-- The current Library/recovery notes indicate that a merged v1.0 exists as a separate source artifact. Its exact final file and approval provenance must be re-verified before import.
-- Do not silently relabel v0.2 as v1.0 or copy older drafts over it.
-- Required action: recover the exact merged v1.0 artifact, verify its content/hash and status, then add it as a distinct source-of-truth file. If unavailable, mark the canonical repository copy BLOCKED and request the original file.
+- The exact Library artifact `BTV_Vertical_Slice_Specification_v1.0.md` was recovered in full (363 source lines; 29,930 characters) and imported as a distinct file at `docs/source-of-truth/vertical-slice/BTV_Vertical_Slice_Specification_v1.0.md`.
+- Import commit: `dee3b0b8259cceb76e935435ecb8ae16bd121760`.
+- The existing v0.2 file was preserved and relabelled in the source index as a historical draft; it was not overwritten.
+- This resolves the repository-copy gap. It does not independently re-approve the source's design or promote slice-only details to global canon.
 
 ### D-03 — Historical bootstrap handoff is stale
 **Status:** CONFIRMED.
