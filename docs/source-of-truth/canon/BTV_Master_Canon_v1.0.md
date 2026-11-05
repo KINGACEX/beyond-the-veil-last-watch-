@@ -998,3 +998,693 @@ BTV must not clone:
 - lore,
 - environments,
 - mechanics,
+- UI,
+- visual assets,
+- terminology,
+- or distinctive copyrighted identities.
+
+---
+
+# 41. HUD AND UI
+
+**CANON DIRECTION**
+
+The HUD should be:
+- contextual,
+- situation-dependent,
+- readable,
+- premium,
+- immersive,
+- and minimally intrusive.
+
+The interface may change according to context such as:
+- exploration,
+- combat,
+- investigation,
+- dialogue,
+- church,
+- Communion,
+- tactical leadership,
+- or Veil activity.
+
+The exact final UI design remains open.
+
+---
+
+# 42. CHAPEL UI AND INTERACTION
+
+**CANON DIRECTION**
+
+Chapels should feel like spaces in the world, not menu screens.
+
+Interactions should be contextual and grounded in:
+- worship,
+- conversation,
+- community,
+- reflection,
+- service,
+- and appropriate church activities.
+
+---
+
+# 43. PROGRESSION PHILOSOPHY
+
+**CANON**
+
+Not all progression should be represented as numerical power.
+
+Important forms of progression include:
+- leadership,
+- trust,
+- relationships,
+- access,
+- knowledge,
+- responsibility,
+- equipment,
+- tactical capability,
+- and story consequences.
+
+The exact progression architecture remains open.
+
+---
+
+# 44. ECONOMY PHILOSOPHY
+
+**CANON PRINCIPLES**
+
+The economy must preserve the distinction between:
+- ordinary material resources,
+- Covenant resources,
+- and spiritual realities.
+
+Faith is never an ordinary commodity.
+
+Charity and generosity should not become a conventional "donate more to increase morality" score.
+
+---
+
+# 45. STORY AND NARRATIVE PHILOSOPHY
+
+**CANON DIRECTION**
+
+BTV's story should integrate:
+- personal stakes,
+- community consequences,
+- spiritual conflict,
+- mystery,
+- action,
+- investigation,
+- leadership,
+- and redemption.
+
+The story should avoid making Christian elements feel like disconnected cutscenes.
+
+Specific plot chronology, named locations, supporting cast, and ending structure remain open unless separately canonized.
+
+---
+
+# 46. REDEMPTION
+
+**CANON THEME**
+
+Redemption is an important theme.
+
+Characters should not automatically be reduced to:
+- good people,
+- evil people,
+- disposable enemies,
+- or morality meters.
+
+Where appropriate, BTV can explore:
+- repentance,
+- restoration,
+- forgiveness,
+- consequences,
+- reconciliation,
+- and the difficulty of change.
+
+Redemption does not mean consequences disappear.
+
+---
+
+# 47. CHURCH VS. COVENANT
+
+**CANON**
+
+The Church and Covenant must remain distinct.
+
+The Covenant is a hidden organization serving and protecting people.
+
+The Church represents Christian community and worship.
+
+The Covenant is not a replacement for:
+- the Church,
+- Christianity,
+- Christ,
+- or God.
+
+This distinction must remain intact in narrative, gameplay, UI, and worldbuilding.
+
+---
+
+# 48. WORLD POPULATION PRINCIPLE
+
+**CANON**
+
+The Covenant must not dominate the visible world.
+
+Ordinary people should make the world feel like a real society.
+
+Public areas should generally contain substantially more:
+- civilians,
+- families,
+- workers,
+- visitors,
+- worshippers,
+- merchants,
+- and ordinary residents
+
+than Covenant personnel.
+
+The ratio may change naturally in:
+- Covenant bases,
+- active crises,
+- restricted facilities,
+- battle zones,
+- or specialized operations.
+
+---
+
+# 49. ANDROID AND PC
+
+**CANON DEVELOPMENT REQUIREMENT**
+
+BTV development must account for PC and Android/mobile.
+
+Systems should consider:
+- scalable assets,
+- memory,
+- performance,
+- loading,
+- controls,
+- UI adaptation,
+- graphics scalability,
+- device variability,
+- and future platform expansion.
+
+The engine/framework is:
+
+**UNKNOWN — NOT ESTABLISHED IN CURRENT BTV CANON.**
+
+Do not assume an engine without explicitly stating it as a development proposal.
+
+---
+
+# 50. TECHNICAL DEVELOPMENT PRINCIPLES
+
+**CANON DEVELOPMENT PRINCIPLES**
+
+BTV should favor:
+- modular architecture,
+- data-driven systems,
+- clear interfaces,
+- separation of concerns,
+- reusable systems,
+- testability,
+- scalability,
+- maintainability,
+- and documented assumptions.
+
+Avoid:
+- monolithic systems,
+- undocumented dependencies,
+- unnecessary hardcoding,
+- fragile one-off solutions,
+- and architecture that prevents future expansion.
+
+Any concrete code proposal should state:
+- engine/framework assumption,
+- language,
+- dependencies,
+- file/module placement,
+- integration points,
+- and testing approach.
+
+These implementation details are not content canon until explicitly selected.
+
+---
+
+# 51. RESEARCH RULE
+
+External research can inform:
+- technical implementation,
+- historical context,
+- real-world church practices,
+- game-design principles,
+- visual research,
+- scientific concepts,
+- and other relevant subjects.
+
+Research does not automatically become BTV canon.
+
+When external information affects Christian theology or Scripture, accuracy and intended meaning must be prioritized.
+
+---
+
+# 52. ORIGINALITY AND IP PROTECTION
+
+**CANON**
+
+BTV must remain original.
+
+Reference games are used to study:
+- quality,
+- pacing,
+- systems thinking,
+- environmental storytelling,
+- world density,
+- combat feel,
+- presentation,
+- and player immersion.
+
+They are not templates to copy.
+
+No BTV feature should be described as a clone of another game's distinctive system merely because it serves a similar gameplay purpose.
+
+---
+
+# 53. CANON AUDIT
+
+Before finalizing a major BTV feature, conduct a canon audit.
+
+Result must be one of:
+
+### PASS
+No known canon conflict.
+
+### CONFLICT FOUND
+A specific contradiction or unresolved collision exists.
+
+The audit should check:
+- character continuity,
+- theological boundaries,
+- Covenant identity,
+- world rules,
+- Veil logic,
+- economy,
+- progression,
+- visual identity,
+- technical constraints,
+- and originality.
+
+---
+
+# 54. INFORMATION PRIORITY
+
+When information conflicts, use this order:
+
+1. Explicit creator canon decisions
+2. Latest creator corrections
+3. BTV Master Canon
+4. Approved specialized BTV reference documents
+5. Earlier approved material
+6. Prior proposals
+7. AI suggestions
+
+If a newer creator decision changes established canon, the newer decision wins.
+
+---
+
+# 55. CHANGE MANAGEMENT
+
+When canon changes, record:
+
+**Previous:**  
+What the old canon stated.
+
+**New:**  
+What the new canon states.
+
+**Impact:**  
+Which systems, documents, characters, quests, UI, technical structures, or assets may need revision.
+
+**CANON UPDATED:**  
+Yes / No.
+
+Never silently rewrite history.
+
+---
+
+# 56. UNKNOWN INFORMATION POLICY
+
+The absence of information is not permission to invent.
+
+Examples currently unknown include:
+- engine/framework,
+- Ember's species,
+- Ember's origin,
+- female Chosen identity,
+- specific world map,
+- named cities,
+- many supporting characters,
+- detailed combat model,
+- exact character-selection structure,
+- complete service order,
+- exact KITFIT acronym expansion,
+- exact HCI naming/representation,
+- final Armor of God mechanics.
+
+These can be proposed later, but must remain clearly labeled until approved.
+
+---
+
+# 57. MAJOR DEVELOPMENT FEATURE STANDARD
+
+A major feature should document:
+
+1. Feature name
+2. Purpose
+3. Canon status
+4. Player experience
+5. Narrative purpose
+6. Gameplay behavior
+7. World interaction
+8. NPC interaction
+9. UI/HUD
+10. Progression/economy effects
+11. Technical architecture
+12. Android/PC considerations
+13. Dependencies
+14. Risks
+15. Testing
+16. Canon audit
+17. Originality check
+
+---
+
+# 58. CHARACTER STANDARD
+
+A substantial character document should include:
+
+- Name
+- Canon status
+- Age, if established
+- Role
+- Affiliation
+- Branch/rank, if applicable
+- Personality
+- Motivations
+- Strengths
+- Weaknesses
+- Relationships
+- Narrative function
+- Gameplay function
+- Character arc
+- Visual identity
+- Dialogue principles
+- Canon dependencies
+- Unknown information
+
+No unknown field should be invented simply to complete a template.
+
+---
+
+# 59. QUEST STANDARD
+
+A substantial quest should include:
+
+- Quest name
+- Status
+- Location
+- Trigger
+- Context
+- Objective
+- Player approaches
+- NPCs
+- Enemy involvement
+- Spiritual/thematic purpose
+- World consequences
+- Rewards
+- Failure/alternate outcomes
+- Relationship effects
+- UI requirements
+- Technical requirements
+- Canon audit
+
+---
+
+# 60. BOSS STANDARD
+
+A major boss should include:
+
+- Identity
+- Status
+- Narrative purpose
+- Connection to the Veil
+- Enemy classification
+- Motivation or thematic function
+- Encounter environment
+- Combat design
+- Non-combat possibilities where appropriate
+- Narrative consequences
+- Scripture/thematic considerations where appropriate
+- Rewards
+- Post-boss world effects
+- Canon audit
+
+A boss should not exist merely because the game needs a large enemy.
+
+---
+
+# 61. REWARD PRINCIPLE
+
+Rewards should reinforce the nature of the activity.
+
+Possible reward categories include:
+- equipment,
+- materials,
+- information,
+- access,
+- relationships,
+- missions,
+- tactical opportunities,
+- Covenant resources,
+- world-state changes,
+- or narrative consequences.
+
+Spiritual realities should not be reduced to loot.
+
+---
+
+# 62. BTV DEVELOPMENT PHILOSOPHY
+
+BTV development should proceed from:
+
+**Canon → Design → Architecture → Implementation → Testing → Canon Audit → Documentation**
+
+not:
+
+**Random feature idea → code immediately → retrofit the lore later.**
+
+The project should remain coherent as it grows.
+
+---
+
+# 63. MISTRAL / AI DEVELOPMENT BEHAVIOR
+
+When working on BTV, an AI development partner must:
+
+- protect canon,
+- distinguish facts from proposals,
+- identify unknowns,
+- flag contradictions,
+- avoid false certainty,
+- avoid inventing missing lore,
+- ask for creator decisions when necessary,
+- explain dependencies,
+- design before coding major systems,
+- and perform canon audits.
+
+The AI is a development partner, not the owner of BTV canon.
+
+---
+
+# 64. BTV CREATIVE TEST
+
+Every major proposed feature should answer:
+
+> **Does this make BTV feel more like itself?**
+
+A feature that is impressive but could belong to any generic fantasy/action RPG should be reconsidered.
+
+The strongest BTV features should reinforce multiple aspects of its identity where appropriate:
+- modern world,
+- Christian worldview,
+- spiritual conflict,
+- human stakes,
+- service,
+- investigation,
+- survival,
+- leadership,
+- community,
+- redemption,
+- and the Veil.
+
+---
+
+# 65. CURRENT OPEN CANON DECISIONS
+
+The following require creator decisions before they should be locked:
+
+### A. Chosen structure
+Is Asher Vance the fixed protagonist, or does the male/female Chosen selection remain?
+
+### B. Female Chosen
+If the dual-Chosen structure remains, who is the female Chosen and what is her canonical role?
+
+### C. HCI representation
+Should HCI appear directly by its real identity in-game, or should BTV use a fictionalized organization inspired by it?
+
+### D. Ember
+Confirm the seven companion commands as fully CANON:
+Attack / Protect / Scout / Track / Retrieve / Hold / Regroup.
+
+### E. Engine/framework
+Not yet established.
+
+### F. Ember species/origin
+Not yet established.
+
+### G. World map and named locations
+Not yet established.
+
+### H. Combat model
+Not yet established.
+
+### I. Exact church service order
+Not yet fully established.
+
+### J. Armor of God mechanics
+Not yet fully established.
+
+---
+
+# 66. CURRENT BTV CANON SNAPSHOT
+
+At v1.0, the most important locked anchors are:
+
+**Title:** Beyond the Veil: The Last Watch  
+**Genre:** Modern Christian action-adventure survival RPG  
+**World:** Large interconnected/semi-open modern world  
+**Protagonist:** Asher Vance  
+**Age:** 16–19  
+**Organization:** The Covenant  
+**Covenant role:** Hidden service/protection organization  
+**Ranks:** Recruit → Agent/Specialist → Team Leader → Commander → General  
+**Branches:** Guardians, Messengers, Watchers, Shepherds, Scouts, Keepers  
+**Oath:** "By truth we stand. By faith we endure. By the Light we rise. Darkness will not prevail."  
+**Armor:** Belt, Breastplate, Shoes, Shield, Helmet, Sword  
+**Supernatural center:** The Veil  
+**Enemy classes:** Destroyers, Persuaders, Deceivers, Commanders/Bosses  
+**Companion:** Ember  
+**Currencies:** Aces and Covenant Credits  
+**Church inspiration:** Harvest Chapel International  
+**Communion:** Communion Set + CommunionContextZone  
+**Faith rule:** Faith is never purchasable  
+**World rule:** Civilians substantially outnumber Covenant personnel in ordinary public spaces  
+**Platforms:** PC + Android/mobile considered from the beginning  
+**Originality:** Mandatory  
+**Canon protection:** Mandatory
+
+---
+
+# 67. WHAT THIS DOCUMENT DOES NOT DO
+
+This document does not yet attempt to define:
+- the complete story,
+- every character,
+- every enemy,
+- the complete Veil mythology,
+- every city,
+- the full map,
+- every quest,
+- the complete combat system,
+- the final engine,
+- the full technical implementation,
+- or every visual asset.
+
+Those belong in specialized BTV reference documents.
+
+The Master Canon exists to make sure those future documents have a stable foundation.
+
+---
+
+# 68. SPECIALIZED CANON LIBRARY — NEXT DOCUMENTS
+
+The next reference documents should expand the Master Canon without contradicting it.
+
+Recommended sequence:
+
+1. **BTV Story & Lore Bible**
+2. **BTV Character Bible**
+3. **BTV Covenant Bible**
+4. **BTV Faith, Prayer & Armor of God Bible**
+5. **BTV Church / HCI / Service / Communion Bible**
+6. **BTV Veil & Enemy Encyclopedia**
+7. **BTV World & NPC Bible**
+8. **BTV Mission / Progression / Economy Bible**
+9. **BTV Ember Companion Bible**
+10. **BTV Visual / UI / HUD Bible**
+11. **BTV Technical Development Bible**
+12. **BTV Canon Changelog**
+
+Each document must inherit this Master Canon and flag conflicts rather than silently changing it.
+
+---
+
+# 69. FINAL MASTER-CANON PRINCIPLE
+
+BTV should be ambitious without becoming incoherent.
+
+It should be:
+- spiritually meaningful without becoming preachy in every interaction,
+- action-oriented without reducing everything to combat,
+- open and explorable without becoming empty,
+- Christian without becoming a superficial reskin,
+- modern without losing its distinctive spiritual identity,
+- technologically ambitious while remaining buildable,
+- and expansive without abandoning canon discipline.
+
+The goal is not merely to make a large game.
+
+The goal is to make **Beyond the Veil: The Last Watch** unmistakably itself.
+
+**END OF BTV MASTER CANON v1.0**
+
+
+---
+
+## 70. Creator-approved economy/progression and production-discipline addendum — 2026-10-11
+
+**Status: APPROVED DESIGN.** This addendum records approved cross-project design principles. It does not replace established content canon, authorize changes to reserved collaborative areas, or claim code implementation or testing.
+
+1. **Three reward categories:** ordinary money (Aces), Covenant resources (Covenant Credits and authorized supplies), and non-monetary outcomes remain distinct. Avoid unnecessary new currencies.
+2. **Progression without spiritual scoring:** practical capability, Covenant responsibility, Ember growth, and contextual relationships remain distinct. None measures spiritual worth. Sacred Christian realities and practices are not purchasable, tradable, grindable, or commercialized rewards.
+3. **World recovery:** appropriate rescue, investigation, restoration, and community outcomes may change future access, NPC reactions, available information, services, safety, and local conditions. Consequences should be understandable and proportionate.
+4. **Lore-grounded Covenant logistics:** Keepers, Scouts, Watchers, and leadership ground supply, reports, equipment, and operational authorizations in the established organization and its responsibilities. Detailed mechanics remain open unless separately approved.
+5. **Evidence-based gates:** documentation, implementation, integration, verification, and acceptance are separate states, each requiring evidence. A design document alone proves documentation only; do not claim code implementation or tests without evidence.
+6. **One source of truth:** the Master Canon remains the primary content-canon authority; each existing specialized Bible is the domain reference for its system. Record a decision in its proper existing reference and cross-reference material changes rather than creating contradictory parallel specifications.
+
+### Change-control note
+
+**Previous:** The principles above were distributed across established direction and proposals; their combined approval status was not recorded consistently.
+
+**New:** The six principles above are explicitly recorded as APPROVED DESIGN as of 2026-10-11.
+
+**Impact:** Mission/Progression/Economy Bible; Economy, Progression & Production Readiness reference; future feature specifications and development records.
+
+**CANON UPDATED:** No change to content canon. Approved design guidance recorded.
+
+**Implementation status:** Not asserted by this document. Repository, build, integration, device, and test evidence must be recorded separately.
+
+**Reserved areas remain protected:** story, characters, Christian-identity decisions, technical/update-readiness audit decisions, vertical-slice scope/completion, and UI/audio/accessibility/visual consistency remain collaborative/reserved.
