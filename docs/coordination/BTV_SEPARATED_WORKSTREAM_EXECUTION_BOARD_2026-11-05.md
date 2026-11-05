@@ -30,7 +30,7 @@
 - Unknowns and conflicts remain visible, not silently resolved.
 
 **Dependencies:** Creator Library/source availability.  
-**Current status:** BLOCKED on exact repository copy of Vertical Slice v1.0.
+**Current status:** COMPLETED — exact 363-line Library source recovered and imported at `docs/source-of-truth/vertical-slice/BTV_Vertical_Slice_Specification_v1.0.md` (commit `dee3b0b8259cceb76e935435ecb8ae16bd121760`). v0.2 is preserved as historical draft.
 
 ## Workstream B — Character identity and asset provenance
 **Priority:** P0  
@@ -191,7 +191,7 @@ A/B/C/D/E/F/G ──────────────> H Governance and deliv
 
 | Order | Workstream | Action | Status |
 |---:|---|---|---|
-| 1 | A | Recover exact Vertical Slice v1.0 source artifact | BLOCKED |
+| 1 | A | Recover exact Vertical Slice v1.0 source artifact | COMPLETED |
 | 2 | B | Continue visual asset discovery and create approved-reference manifest | IN PROGRESS |
 | 3 | H | Refresh stale CI references in README/status | READY |
 | 4 | D | Write NLI result-state and source-registry contract | PROPOSED |
