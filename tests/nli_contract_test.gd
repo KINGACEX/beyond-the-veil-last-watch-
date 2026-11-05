@@ -12,6 +12,7 @@ func _run() -> void:
 	_test_handoff_does_not_claim_actor_acceptance()
 	_test_source_registry_resolves_authoritative_records()
 	_test_allowlist_does_not_replace_source_resolution()
+	_test_nonapproved_and_wrong_scope_sources_are_blocked()
 	if failures == 0:
 		print("NLI_CONTRACT_TESTS: PASS")
 		quit(0)
@@ -67,6 +68,45 @@ func _test_allowlist_does_not_replace_source_resolution() -> void:
 	var result: Dictionary = knowledge.add_record(record)
 	_check(not result.get("ok", false), "Allowlisted but unresolved source is rejected")
 	_check(result.get("code") == "source_unresolved", "Unresolved source has a stable failure code")
+
+func _test_nonapproved_and_wrong_scope_sources_are_blocked() -> void:
+	var knowledge = KnowledgeBase.new()
+	var pending_source := {
+		"source_id": "source-pending-001",
+		"source_type": "canon_document",
+		"title": "Pending source",
+		"location": "res://docs/pending.md",
+		"content_hash": "sha256:pending",
+		"authority_status": "SLICE",
+		"review_status": "pending",
+		"permitted_scopes": ["profile-pending"]
+	}
+	_check(knowledge.register_source(pending_source).get("ok", false), "Pending source can be recorded for review")
+	_check(knowledge.resolve_source("source-pending-001").get("code") == "source_not_approved", "Pending source cannot authorize NPC knowledge")
+	knowledge.register_profile(&"npc_scope", "profile-scope", ["source-wrong-scope"])
+	knowledge.register_source({
+		"source_id": "source-wrong-scope",
+		"source_type": "canon_document",
+		"title": "Approved but out-of-scope source",
+		"location": "res://docs/other.md",
+		"content_hash": "sha256:other",
+		"authority_status": "SLICE",
+		"review_status": "approved",
+		"permitted_scopes": ["different-profile"]
+	})
+	var wrong_scope_record := {
+		"npc_id": "npc_scope",
+		"topic_id": "fact",
+		"statement_id": "statement-wrong-scope",
+		"response_text": "A scoped statement.",
+		"provenance_category": "Observed",
+		"source_id": "source-wrong-scope",
+		"knowledge_scope": "profile-scope",
+		"canon_status": "SLICE",
+		"is_evidence": false
+	}
+	_check(knowledge.add_record(wrong_scope_record).get("code") == "source_scope_mismatch", "Approved source outside the NPC scope is rejected")
+
 
 func _check(condition: bool, label: String) -> void:
 	if condition:
