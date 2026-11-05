@@ -58,3 +58,40 @@ The prior access attempt returned an authorization/materialization block for eac
 - **UNKNOWN:** Ember/environment concept art availability in the searched results; older ZIP contents; relationship between this sheet and the Asher GLB.
 - **NO CODE CHANGE:** No runtime asset or project file modified.
 - **NO BUILD/TEST:** No Godot import, scene, Android or device test performed.
+
+## Correction — governing visual and Ember sources checked after initial issue
+
+This section supersedes any earlier implication in this report that Ember's species/lineage is UNKNOWN.
+
+### Ember: source-of-truth correction
+
+The Library's **Foundation #11 — Ember Companion Bible v1.0** (PDF; 4 pages) was materialized read-only and its complete text inspected. It is marked **ESTABLISHED CANON-CANDIDATE / RECOMMENDED CANON LOCK** and its canon-lock summary/appendix explicitly marks the following as LOCK:
+- rare original canid lineage (original wild-dog/canid lineage);
+- natural created origin, with innate/limited Veil sensitivity;
+- remote wilderness and long-term Veil exposure;
+- companion and field-partner relationship with Asher;
+- no conventional RPG skill tree;
+- layered context-aware companion AI;
+- survival/protection priorities and contextual commands;
+- no replacement of God, Christ, Scripture, prayer or the Holy Spirit.
+
+The exact appearance and breed characteristics remain OPEN. The v1.1 Visual/UI/HUD Consistency Lock independently describes Ember as a believable canid and locks the continuity direction (no wings, demonic anatomy, cybernetics, angelic transformation or human speech).
+
+**Correction to previous wording:** “Ember species UNKNOWN” is not supported by the available Foundation #11 source. The correct distinction is **lineage LOCKED; exact appearance OPEN**. The old Character Bible v1.0 contains an older generic “species/origin/history UNKNOWN” entry and should be treated as stale where it conflicts with the more specific Foundation #11 lock and v1.1 visual lock. This is a documentation reconciliation issue, not a new canon decision.
+
+### Asher: visual continuity source
+
+The v1.1 Visual/UI/HUD Consistency Lock identifies the approved Asher gameplay references as the visual baseline and requires a young field-operative presentation with consistent face, hairstyle, proportions and practical equipment. It also explicitly says not to redesign Asher as an older adult action hero. The older Character Bible v1.0 records age 16–19; the later explicit creator decision establishes age 18. Therefore the showcase sheet's printed “Early 20s” remains a clear conflict.
+
+The sheet is still useful as a provisional face/shape/expression and clothing reference, but its printed age, approximate 1.85 m height, and equipment details are not authority. Its dark tactical outfit does not by itself satisfy the Covenant's white base, restrained gold and cross-centered insignia direction. The necklace and loadout remain proposed visual details unless separately confirmed.
+
+### Important distinction
+
+The v1.1 visual lock refers to supplied **gameplay references** as approved visual baseline. This audit has directly inspected only the named Asher showcase sheet and the Asher GLB package metadata/contents previously reported. It has **not** yet established that the showcase sheet itself is one of the approved gameplay references, nor that the GLB visually matches it. That link remains UNKNOWN.
+
+### Updated outcome
+- **CONFIRMED:** Ember's original rare canid lineage is locked by Foundation #11; exact appearance remains open.
+- **CONFIRMED:** v1.1 Visual/UI/HUD lock provides a cross-document continuity baseline for Asher, Ember, Covenant, environment and HUD.
+- **CONFLICT:** Asher showcase sheet's “Early 20s” conflicts with current age 18.
+- **STALE SOURCE:** Character Bible v1.0's generic Ember species/origin UNKNOWN entry is superseded in this domain by the more specific Foundation #11 lock and v1.1 consistency lock.
+- **UNKNOWN:** Whether this specific Asher showcase sheet is among the approved gameplay references; whether the GLB matches it; whether additional original Ember/environment gameplay-reference images can be surfaced.
