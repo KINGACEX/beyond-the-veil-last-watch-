@@ -2,6 +2,7 @@ extends SceneTree
 
 const Service = preload("res://scripts/nli/nli_service.gd")
 const KnowledgeBase = preload("res://scripts/nli/nli_knowledge_base.gd")
+const RequestGate = preload("res://scripts/nli/nli_request_gate.gd")
 
 var failures := 0
 
@@ -13,6 +14,7 @@ func _run() -> void:
 	_test_source_registry_resolves_authoritative_records()
 	_test_allowlist_does_not_replace_source_resolution()
 	_test_nonapproved_and_wrong_scope_sources_are_blocked()
+	_test_request_gate_normalizes_identifiers_across_state_queries()
 	if failures == 0:
 		print("NLI_CONTRACT_TESTS: PASS")
 		quit(0)
@@ -106,6 +108,17 @@ func _test_nonapproved_and_wrong_scope_sources_are_blocked() -> void:
 		"is_evidence": false
 	}
 	_check(knowledge.add_record(wrong_scope_record).get("code") == "source_scope_mismatch", "Approved source outside the NPC scope is rejected")
+
+
+func _test_request_gate_normalizes_identifiers_across_state_queries() -> void:
+	var gate = RequestGate.new()
+	_check(gate.begin_request("  padded-request  ").get("ok", false), "Request gate accepts a whitespace-padded identifier")
+	_check(gate.is_pending(" padded-request "), "Pending lookup normalizes the request identifier")
+	_check(gate.complete_request("padded-request").get("ok", false), "Completion accepts the normalized identifier")
+	_check(gate.is_completed("  padded-request  "), "Completed lookup normalizes the request identifier")
+	_check(gate.begin_request("  cancel-request  ").get("ok", false), "Second normalized request begins")
+	_check(gate.cancel_request(" cancel-request ").get("ok", false), "Cancellation accepts the normalized identifier")
+	_check(gate.is_cancelled("cancel-request  "), "Cancelled lookup normalizes the request identifier")
 
 
 func _check(condition: bool, label: String) -> void:
