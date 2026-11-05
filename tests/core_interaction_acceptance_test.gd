@@ -20,6 +20,7 @@ func _run() -> void:
 	_test_disabled_target_can_be_reenabled_in_range()
 	_test_whitespace_padded_interaction_id_is_normalized()
 	_test_ids_equal_after_whitespace_normalization_are_duplicates()
+	_test_case_only_ids_have_deterministic_tie_break()
 	_test_duplicate_authored_ids_are_excluded()
 	_test_selection_api_and_stable_tie_break_are_present()
 	_test_duplicate_enter_signal_is_idempotent()
@@ -141,6 +142,19 @@ func _test_ids_equal_after_whitespace_normalization_are_duplicates() -> void:
 	player.queue_free()
 	first.queue_free()
 	second.queue_free()
+
+
+func _test_case_only_ids_have_deterministic_tie_break() -> void:
+	player = _new_player()
+	var lowercase_target := _new_target("alpha", Vector3(0, 0, -1))
+	var uppercase_target := _new_target("Alpha", Vector3(0, 0, -1))
+	player.call("_on_sensor_area_entered", lowercase_target)
+	player.call("_on_sensor_area_entered", uppercase_target)
+	var selected = player.call("_select_nearest_interactable")
+	_check(selected == uppercase_target, "Case-only ID tie resolves with deterministic exact-string secondary order")
+	player.queue_free()
+	lowercase_target.queue_free()
+	uppercase_target.queue_free()
 
 
 func _test_duplicate_authored_ids_are_excluded() -> void:
