@@ -33,7 +33,8 @@ The controlling reconciliation document is [BTV Canon Reconciliation & Story/Vei
 ## Gameplay and vertical-slice design
 
 - [Core Gameplay Specification v1.0](gameplay/BTV_Core_Gameplay_Specification_v1.0.md)
-- [Vertical Slice Specification v0.2](vertical-slice/BTV_Vertical_Slice_Specification_v0.2.md)
+- [Vertical Slice Specification v1.0 (Merged; controlling slice source)](vertical-slice/BTV_Vertical_Slice_Specification_v1.0.md)
+- [Vertical Slice Specification v0.2 (historical draft)](vertical-slice/BTV_Vertical_Slice_Specification_v0.2.md)
 - [Ridgeview Case Design v0.2](vertical-slice/BTV_Ridgeview_Case_Design_v0.2.md)
 - [Investigation & Evidence Bible v0.1](investigation/BTV_Investigation_and_Evidence_Bible_v0.1.md)
 - [Mystery & Revelation Register (Library filename v0.3; body title v0.2)](investigation/BTV_Mystery_and_Revelation_Register_v0.3.md)
