@@ -59,3 +59,30 @@ Use one `interact` gameplay action for keyboard and touch. Touch must release on
 Current CI covers project import/parsing, NLI smoke tests and a ten-frame headless scene launch. It does not execute this matrix. No case is passed until its test is implemented and run.
 
 Final prompt styling, camera-relative look, gamepad support, dialogue/inventory behavior, final character assets and Android performance certification are out of scope.
+
+
+## 7. Automated coverage status — 5 November 2026
+
+**CONFIRMED:** The first headless automated acceptance suite is at `tests/core_interaction_acceptance_test.gd`. It currently exercises these matrix cases or direct contract equivalents:
+
+| Matrix ID | Automated evidence | Status |
+|---|---|---|
+| INT-001 | No-target safe no-op | AUTOMATED |
+| INT-002 | One target registered and invoked | AUTOMATED |
+| INT-003 | Exit removes target | AUTOMATED |
+| INT-004 | Nearest target wins | AUTOMATED |
+| INT-005 | Equal-distance stable authored-ID tie-break | AUTOMATED |
+| INT-006 | Freed target safely ignored | AUTOMATED |
+| INT-007 | Disabled target excluded | AUTOMATED |
+| INT-013 | Duplicate target-enter notification is idempotent | PARTIAL — duplicate enter tested; rapid enter/exit still needed |
+| INT-019 | Touch press/release uses shared InputMap action | AUTOMATED |
+| INT-021 | Application focus loss releases held touch actions | AUTOMATED |
+| INT-022 | Moving target changes current nearest selection | AUTOMATED |
+| INT-023 | Non-interactable Area3D is ignored | AUTOMATED |
+| INT-024 | Touch teardown releases actions; freed target is ignored | PARTIAL — both teardown paths covered, interaction-in-progress teardown still needed |
+
+**Not yet automated:** INT-008, INT-009, INT-010, INT-011, INT-012, INT-014, INT-015, INT-016, INT-017, INT-018, INT-020 and the remaining portions of INT-013/024. Some require explicit input-context, pause policy or scene-lifecycle seams before reliable headless testing. Do not mark them passed from the general scene-launch smoke test.
+
+**CI evidence:** Godot 4.7.2 headless run `42027258305` passed the then-current NLI contract suite and initial interaction acceptance suite. The expanded touch/lifecycle tests added afterward are awaiting their own run; they are not yet counted as passed.
+
+**Important:** Passing headless tests does not replace editor/runtime visual checks or Android device testing.
