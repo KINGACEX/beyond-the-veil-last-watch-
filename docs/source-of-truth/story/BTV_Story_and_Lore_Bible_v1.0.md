@@ -998,3 +998,75 @@ or
 # 44. CURRENT STORY/LORE UNKNOWN REGISTER
 
 The following are deliberately unresolved:
+
+- Complete BTV history
+- Veil origin
+- Veil metaphysics
+- Veil rules and limitations
+- Beginning-to-ending story chronology
+- Main antagonist identity
+- Complete antagonist hierarchy
+- Named Covenant leadership
+- Named teammates
+- Female Chosen identity, if applicable
+- Major cities
+- World map
+- Specific settlements
+- Specific facilities
+- Detailed faction history
+- Combat narrative model
+- Final ending
+- Exact church service order
+- HCI representation level
+- KITFIT acronym expansion
+- Exact Armor of God mechanics
+- Ember species
+- Ember origin
+
+These are not omissions to be silently filled.
+
+They are the next areas for deliberate creator-led development.
+
+---
+
+# 45. NEXT STORY DEVELOPMENT DOCUMENTS
+
+After this Story & Lore Bible, the specialized library should continue with:
+
+1. **BTV Character Bible**
+2. **BTV Covenant Bible**
+3. **BTV Faith, Prayer & Armor of God Bible**
+4. **BTV Church / HCI / Service / Communion Bible**
+5. **BTV Veil & Enemy Encyclopedia**
+6. **BTV World & NPC Bible**
+7. **BTV Mission / Progression / Economy Bible**
+8. **BTV Ember Companion Bible**
+9. **BTV Visual / UI / HUD Bible**
+10. **BTV Technical Development Bible**
+11. **BTV Canon Changelog**
+
+---
+
+# 46. FINAL STORY PRINCIPLE
+
+BTV's story should make the player care about what happens **to people**, not merely what happens **around them**.
+
+The spiritual conflict should have human consequences.
+
+The action should have meaning.
+
+The mystery should have rules.
+
+The Covenant should serve rather than dominate.
+
+The Chosen should remain human.
+
+The Church should remain distinct from the Covenant.
+
+Faith should remain faith rather than becoming a stat.
+
+The Veil should remain uniquely BTV.
+
+And redemption should remain meaningful precisely because consequences are real.
+
+**END OF BTV STORY & LORE BIBLE v1.0**
