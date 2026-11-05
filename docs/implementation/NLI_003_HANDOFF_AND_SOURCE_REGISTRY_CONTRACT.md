@@ -88,3 +88,23 @@ No LLM/network dependency, new dialogue facts, command-list changes, or producti
 - Cryptographic content-hash verification and source-version invalidation.
 
 **Verification:** CI run `42027258305` passed the first NLI contract tests before the final validated-vs-handoff wording refinement. The expanded suite and latest branch head are awaiting their own CI result. Do not claim the complete NLI lifecycle is finished.
+
+
+## 11. Additional lifecycle regression evidence — 5 November 2026
+
+A test-first review found that `begin_request`, `complete_request` and `cancel_request` normalized request IDs with `strip_edges()`, but the read-only state queries `is_pending`, `is_completed` and `is_cancelled` did not. This made equivalent whitespace-padded IDs behave inconsistently across the same lifecycle.
+
+**Regression tests added first** in `tests/nli_contract_test.gd`:
+- pending lookup normalizes request ID;
+- completed lookup normalizes request ID;
+- cancelled lookup normalizes request ID.
+
+The initial test run `42031539741` failed on all three lookup assertions while the begin/complete/cancel operations passed. This confirmed the inconsistency.
+
+**Correction:** the three read-only query methods now call `strip_edges()` before checking their state dictionaries.
+
+**Fix commit:** `67b799558b4a7690275dfb383b3a23e7cb8599cc`.
+
+**Verification:** GitHub Actions run `42031646069` passed on that commit, including NLI smoke tests, NLI contract tests, core interaction acceptance tests and the 10-frame main-scene launch.
+
+This fixes identifier normalization only. It does not implement actor-owned companion lifecycle, persistence, expiry, timeout, stale callbacks or cryptographic source-hash verification.
