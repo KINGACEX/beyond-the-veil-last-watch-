@@ -6,10 +6,45 @@ class_name NLIKnowledgeBase
 
 const PROVENANCE_CATEGORIES: Array[String] = ["Observed", "Reported", "Inferred", "Unconfirmed"]
 const CANON_STATUSES: Array[String] = ["LOCKED", "SLICE", "RESERVED", "OPEN"]
+const AUTHORITY_STATUSES: Array[String] = ["LOCKED", "SLICE", "RESERVED", "OPEN", "HISTORICAL"]
+const REVIEW_STATUSES: Array[String] = ["approved", "pending", "stale", "withdrawn"]
 
+var _sources: Dictionary = {}
 var _profiles: Dictionary = {}
 var _entries: Dictionary = {}
 var _statement_ids: Dictionary = {}
+
+
+## Registers a source record before any NPC knowledge record can cite it.
+func register_source(source: Dictionary) -> Dictionary:
+	var required := ["source_id", "source_type", "title", "location", "content_hash", "authority_status", "review_status", "permitted_scopes"]
+	for field in required:
+		if not source.has(field):
+			return _failure("source_missing_field", "Source record is missing: " + field)
+	var source_id := String(source["source_id"]).strip_edges()
+	if source_id.is_empty() or String(source["title"]).strip_edges().is_empty() or String(source["location"]).strip_edges().is_empty() or String(source["content_hash"]).strip_edges().is_empty():
+		return _failure("invalid_source_record", "Source identity, title, location and content hash are required.")
+	if String(source["authority_status"]) not in AUTHORITY_STATUSES:
+		return _failure("invalid_source_authority", "Source authority status is not recognized.")
+	if String(source["review_status"]) not in REVIEW_STATUSES:
+		return _failure("invalid_source_review_status", "Source review status is not recognized.")
+	if not source["permitted_scopes"] is Array or source["permitted_scopes"].is_empty():
+		return _failure("invalid_source_scopes", "At least one permitted knowledge scope is required.")
+	if _sources.has(source_id):
+		return _failure("duplicate_source_id", "A source identifier can only be registered once.")
+	_sources[source_id] = source.duplicate(true)
+	return {"ok": true, "code": "source_registered", "source_id": source_id}
+
+
+## Resolves an identifier to its authoritative registry record.
+func resolve_source(source_id: String) -> Dictionary:
+	var clean_id := source_id.strip_edges()
+	if not _sources.has(clean_id):
+		return _failure("source_unresolved", "The source identifier has no registered source record.")
+	var record: Dictionary = _sources[clean_id]
+	if String(record["review_status"]) != "approved":
+		return _failure("source_not_approved", "The source is pending, stale or withdrawn and cannot authorize NPC knowledge.")
+	return {"ok": true, "code": "source_resolved", "record": record.duplicate(true)}
 
 
 ## Registers one NPC knowledge profile and its permitted source identifiers.
@@ -74,6 +109,13 @@ func add_record(record: Dictionary) -> Dictionary:
 	var authorized_sources: Dictionary = profile["authorized_sources"]
 	if not authorized_sources.has(source_id):
 		return _failure("source_outside_knowledge_scope", "The source is not authorized for this NPC's knowledge profile.")
+	var source_resolution := resolve_source(source_id)
+	if not source_resolution.get("ok", false):
+		return source_resolution
+	var source_record: Dictionary = source_resolution["record"]
+	var permitted_scopes: Array = source_record["permitted_scopes"]
+	if knowledge_scope not in permitted_scopes:
+		return _failure("source_scope_mismatch", "The resolved source is not approved for this NPC knowledge scope.")
 
 	var stored := record.duplicate(true)
 	stored["npc_id"] = npc_id
