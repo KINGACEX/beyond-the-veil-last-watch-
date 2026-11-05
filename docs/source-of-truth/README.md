@@ -81,3 +81,8 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 - [Separated Workstream Execution Board](../coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md) — distinct workstreams, dependencies, owners/gates and execution order.
 - [Repository Verification & Documentation Drift Audit](../audits/BTV_REPOSITORY_VERIFICATION_AND_DOCUMENTATION_DRIFT_2026-11-05.md) — latest CI evidence, source gaps, stale handoffs and NLI contract findings.
 - [Character & Visual Reference Inventory Audit](../audits/BTV_CHARACTER_AND_VISUAL_REFERENCE_INVENTORY_2026-11-05.md) — Asher, Ember and wider character visual references.
+
+## Engineering and QA contracts
+
+- [NLI 003 — Handoff State and Source Registry Contract](../implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md) — proposed contract; not implemented.
+- [Core Interaction 003 — Edge-Case Acceptance Matrix](../qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md) — proposed QA cases; not yet executed.
