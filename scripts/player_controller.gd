@@ -46,33 +46,48 @@ func _on_sensor_area_exited(area: Area3D) -> void:
 
 func _select_nearest_interactable() -> BTVInteractable:
 	var candidates: Array[BTVInteractable] = []
+	var retained_nearby: Array[BTVInteractable] = []
 	var id_counts: Dictionary = {}
 	for interactable in _nearby_interactables:
-		if not is_instance_valid(interactable):
+		if not is_instance_valid(interactable) or interactable.is_queued_for_deletion():
 			continue
-		if interactable.is_queued_for_deletion() or not interactable.can_interact(self):
+		if not interactable.is_inside_tree():
 			continue
-		var authored_id := interactable.interaction_id.strip_edges()
+		retained_nearby.append(interactable)
+		if not interactable.can_interact(self):
+			continue
+		var authored_id := _normalized_interaction_id(interactable)
 		if authored_id.is_empty():
 			continue
 		candidates.append(interactable)
 		id_counts[authored_id] = int(id_counts.get(authored_id, 0)) + 1
+	_nearby_interactables = retained_nearby
 	var eligible: Array[BTVInteractable] = []
 	for interactable in candidates:
-		if int(id_counts.get(interactable.interaction_id, 0)) == 1:
+		var authored_id := _normalized_interaction_id(interactable)
+		if int(id_counts.get(authored_id, 0)) == 1:
 			eligible.append(interactable)
-	_nearby_interactables = eligible
 	eligible.sort_custom(_interaction_order)
 	if eligible.is_empty():
 		return null
 	return eligible[0]
+
+
+func _normalized_interaction_id(interactable: BTVInteractable) -> String:
+	return interactable.interaction_id.strip_edges()
+
 
 func _interaction_order(a: BTVInteractable, b: BTVInteractable) -> bool:
 	var distance_a := global_position.distance_squared_to(a.global_position)
 	var distance_b := global_position.distance_squared_to(b.global_position)
 	if not is_equal_approx(distance_a, distance_b):
 		return distance_a < distance_b
-	return a.interaction_id.naturalnocasecmp_to(b.interaction_id) < 0
+	var id_a := _normalized_interaction_id(a)
+	var id_b := _normalized_interaction_id(b)
+	var insensitive_order := id_a.naturalnocasecmp_to(id_b)
+	if insensitive_order != 0:
+		return insensitive_order < 0
+	return id_a < id_b
 
 
 func _try_interact() -> String:
