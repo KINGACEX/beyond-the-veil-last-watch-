@@ -122,7 +122,7 @@ func _test_service_handoff() -> void:
 
 	var command: Dictionary = service.handle_utterance("scout ahead", "service-002", &"", "companion-test")
 	_check(command.get("ok", false), "Service accepts validated companion command")
-	_check(command.get("result", {}).get("source") == "validated_command_handoff", "Command is handed off without direct world mutation")
+	_check(command.get("result", {}).get("source") == "validated_command_request", "Command is handed off without direct world mutation")
 
 
 func _register_test_source(knowledge: NLIKnowledgeBase, source_id: String, scope: String) -> void:
