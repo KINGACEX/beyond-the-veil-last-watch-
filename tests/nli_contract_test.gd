@@ -25,8 +25,8 @@ func _test_handoff_does_not_claim_actor_acceptance() -> void:
 	var result: Dictionary = response.get("result", {})
 	_check(response.get("ok", false), "Valid companion command reaches NLI handoff")
 	_check(not result.has("accepted"), "NLI never claims companion acceptance")
-	_check(result.get("stage") == "handoff_ready", "NLI reports handoff_ready rather than accepted")
-	_check(result.get("owner_id") == "ember", "Handoff identifies the owning companion actor")
+	_check(result.get("stage") == "validated", "NLI reports validated before actor dispatch")
+	_check(result.get("target_owner_id") == "ember", "Validated request identifies its intended companion owner")
 
 func _test_source_registry_resolves_authoritative_records() -> void:
 	var knowledge = KnowledgeBase.new()
