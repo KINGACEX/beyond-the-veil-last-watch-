@@ -1,76 +1,105 @@
 # BTV Prototype — Implementation Status
 
-**Branch:** `btv/bootstrap-prototype-001`  
-**Latest source milestones:** Bootstrap 001/002, NLI 001, knowledge-profile isolation, explicit question routing and initial Android touch overlay  
-**Status:** GODOT 4.7.2 HEADLESS CI PASSED — ANDROID DEVICE VALIDATION PENDING
+**Active isolated branch:** `btv/test-first-contracts-001`  
+**Prototype origin:** `btv/bootstrap-prototype-001`  
+**Status:** HEADLESS CI PASSED; visual/runtime and Android device validation remain pending.  
+**Last recorded successful run at this document revision:** [42030200114](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42030200114), commit `cf30a1259e013d8701ede04aef9d874ba7780990`.
 
-## Implemented in source
+## 1. Implemented source
 
-### Bootstrap 001 — 3D greybox foundation
-- Godot project configuration and main scene.
-- W/A/S/D and arrow-key movement actions.
-- Flat collision floor and directional light.
-- Capsule placeholder using CharacterBody3D.
-- SpringArm3D and Camera3D rig.
-- Basic GDScript movement controller.
-- Generated Godot cache and export folders excluded from Git.
+### Bootstrap / interaction foundation
+- Godot project configuration and main greybox scene.
+- CharacterBody3D capsule placeholder, collision, third-person camera and proximity sensor.
+- Keyboard movement actions and E interaction action.
+- Reusable BTVInteractable Area3D contract.
+- Initial Android touch overlay feeding the same InputMap actions as keyboard.
+- Nearest eligible interactable selection, stable authored-ID tie-break, disabled/freed/duplicate-ID exclusion.
+- Touch release on button-up, application focus loss and overlay teardown.
 
-### Bootstrap 002 — interaction foundation
-- `BTVInteractable` base Area3D contract with an overridable `interact(actor)` method.
-- Neutral test interactable that returns a diagnostic result without changing game state.
-- Player-owned forward proximity sensor configured to detect interactables on collision layer 2.
-- E keyboard action invokes the nearest nearby interactable.
-- Initial Android touch overlay with directional movement buttons and an INTERACT button, mapped to the same InputMap actions as keyboard controls.
-- Compact repository engineering rules in `AGENTS.md`.
+### NLI
+- Deterministic phrase parser and typed intent validation.
+- Authored NPC knowledge records with source provenance and per-NPC scope.
+- Unknown-answer, conflict and evidence-marked dialogue handling.
+- Request gate and structured orchestration service.
+- Service reports validation; it does not claim companion actor acceptance or execution.
+- Source records include identity, type, title, location, hash/version field, authority/review status and permitted scopes.
+- Unresolved, unapproved and out-of-scope sources are rejected.
 
-## Deliberate constraints
-- No renderer is selected; compare supported options on the target Android device before deciding.
-- The capsule is a temporary placeholder, not Asher's final model.
-- Keyboard input remains available for desktop smoke testing. The touch overlay is source-implemented, but its layout and usability remain unverified on the Android target.
-- No combat, enemies, Veil rules, Ember behaviour, faith systems, missions, economy, or narrative content has been introduced.
-- No paid assets, paid services, or external runtime dependencies have been added.
+## 2. Automated test coverage
 
-### NLI 001 — Natural Language Interaction
-- Deterministic phrase parser for initial question and companion-command vocabulary.
-- Typed intent envelope and validation rules.
-- Structured NPC knowledge records with provenance metadata, registered per-NPC scopes and authorized source allowlists.
-- Explicit unknown-answer and conflicting-knowledge ambiguity behaviour.
-- Evidence-marked dialogue rejection and duplicate statement protection.
-- Exact question aliases; unsupported questions return clarification instead of guessed topics.
-- In-memory request lifecycle guard for duplicate, completion and cancellation handling.
-- NLI orchestration service that returns structured handoffs without directly mutating authoritative game state.
-- Expanded headless smoke-test harness covering parser routing, source authorization, profile isolation, provenance, evidence rejection, ambiguity, request lifecycle and bounded handoff.
-- Attack command is recognised but deferred pending its gameplay-system design gate.
+The current CI workflow runs:
+1. Godot 4.7.2 version check.
+2. Headless editor import and project parsing.
+3. NLI smoke tests.
+4. NLI handoff/source-registry contract tests.
+5. Core interaction acceptance tests.
+6. Ten-frame main-scene launch.
 
-## Verification evidence
+The interaction test file is `tests/core_interaction_acceptance_test.gd`. The acceptance matrix is `docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md`.
 
-**CONFIRMED — latest GitHub Actions run 42025346911** on commit `159da05640960a292e08ce48ea2489a2191ab39a`:
-- Godot 4.7.2 installation and version check passed.
-- Headless editor import and project parsing passed.
-- NLI smoke-test command completed successfully.
-- Main scene launched for 10 headless frames.
-- Workflow: [BTV Godot Validation](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42025346911).
+The automated suite currently covers:
+- no-target safe no-op;
+- one eligible target invoked once;
+- nearest target selection;
+- target exit;
+- freed target;
+- disabled target;
+- duplicate authored IDs excluded;
+- stable tie-break;
+- duplicate enter notification idempotence;
+- moving-target selection recalculation;
+- non-interactable Area3D exclusion;
+- touch press/release through shared actions;
+- focus-loss release;
+- touch teardown release.
 
-This verifies the project import, tested scripts and headless scene startup on the Ubuntu CI runner. It does not verify rendered appearance, interactive movement, touch input, Android export, APK installation, physical-device performance or actual phone behaviour.
+The acceptance matrix has 24 cases. Some are covered only partially; the remaining cases are not passed merely because the overall CI workflow passes. Consult the matrix for per-case status.
 
-## Verification still required
-1. Open with the intended Godot 4.7.2 editor on a desktop and inspect the rendered scene.
-2. Run the main scene and verify floor collision, movement, gravity, camera and rotation interactively.
-3. Confirm the test marker appears ahead of the player.
-4. Approach the marker and press E; confirm the diagnostic response appears in Output.
-5. Leave sensor range and confirm E no longer invokes the target.
-6. Move between targets and verify nearest-target selection.
-7. Compare renderer options on the actual Android target before selecting one.
-8. Validate touch overlay layout, safe areas, scaling, multi-touch and interaction on-device.
-9. Produce a debug APK with free tooling, install it, and record device/OS and test evidence.
-10. Record performance, memory, thermal behaviour and stability.
+## 3. NLI lifecycle still incomplete
 
-## Next implementation gate
+**Implemented:** validation and source resolution; NLI does not claim actor acceptance.
 
-The headless CI gate has passed. Next, perform a visual/interactivity review of the current prototype, then isolate and test the Ridgeview NPC knowledge-contract scenarios. Do not add mission facts until canon review is complete. Android export and device testing remain a separate gate.
+**Still open:**
+- real companion adapter and actor-owned handoff acknowledgement;
+- actor-owned accepted/rejected/executing/executed/cancelled/expired/failed transitions;
+- expiry/timeout and stale callback handling;
+- pause/quit/reload persistence;
+- cancellation after execution starts;
+- persistent source-registry lifecycle;
+- cryptographic hash verification and source-version invalidation.
 
-## Automated validation
-- Workflow: `.github/workflows/godot-validation.yml`.
-- Uses the free standard Ubuntu runner and installs Godot 4.7.2; no paid API key or external game-hosting account is required.
-- The workflow runs on pushes to this development branch and can also be manually dispatched from GitHub Actions.
-- Latest verified run: [41671365779](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/41671365779).
+Do not mark NLI lifecycle complete.
+
+## 4. Deliberate constraints
+
+- No renderer selected; compare options on the actual target Android device.
+- Capsule is a placeholder, not Asher's final model.
+- Touch overlay source exists, but layout, safe areas, scaling and multitouch remain unverified on a physical device.
+- No combat, enemies, Veil rules, Ember behaviour, faith systems, mission content or narrative content has been introduced into the prototype.
+- No paid assets, paid services or external runtime dependencies have been added.
+- The recovered vertical slice specification remains a design target; the playable vertical slice is not implemented.
+
+## 5. Verification boundary
+
+**CONFIRMED — run 42030200114:** headless CI passed on Ubuntu with Godot 4.7.2, including import/parsing, NLI tests, interaction tests and main-scene startup.
+
+Not verified:
+1. Editor visual inspection.
+2. Manual movement, camera and interaction feel.
+3. Physical touch input and multitouch.
+4. Android export and APK installation.
+5. Renderer comparison on target device.
+6. Frame time, memory, thermal behaviour and sustained stability.
+7. Save/load and full vertical-slice behaviour.
+
+A successful headless run is not Android readiness.
+
+## 6. Next engineering gate
+
+1. Complete remaining interaction acceptance cases where a stable test seam exists.
+2. Design and test the NLI companion adapter/lifecycle without claiming actor state prematurely.
+3. Keep Ridgeview data contracts aligned with the recovered Vertical Slice v1.0.
+4. Prototype a neutral Blender-to-Godot test asset only after writing its acceptance contract; do not use Asher or Ember as the test asset.
+5. Defer renderer selection and Android export until the target device is identified and tested.
+
+All changes remain on the isolated engineering branch. Do not merge to main, change canon or introduce paid dependencies without explicit approval.
