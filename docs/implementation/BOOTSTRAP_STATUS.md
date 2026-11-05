@@ -3,7 +3,7 @@
 **Active isolated branch:** `btv/test-first-contracts-001`  
 **Prototype origin:** `btv/bootstrap-prototype-001`  
 **Status:** HEADLESS CI PASSED; visual/runtime and Android device validation remain pending.  
-**Last recorded successful run at this document revision:** [42030200114](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42030200114), commit `cf30a1259e013d8701ede04aef9d874ba7780990`.
+**Latest verified successful run at this document revision:** [42031119379](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42031119379), commit `7583d424f0140181e7d170e323d2a5377f9ded5e`.
 
 ## 1. Implemented source
 
@@ -35,7 +35,7 @@ The current CI workflow runs:
 5. Core interaction acceptance tests.
 6. Ten-frame main-scene launch.
 
-The interaction test file is `tests/core_interaction_acceptance_test.gd`. The acceptance matrix is `docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md`.
+The interaction test file is `tests/core_interaction_acceptance_test.gd`. The acceptance matrix is `docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md`. The latest regression additions cover temporary disable/re-enable and normalized ID handling.
 
 The automated suite currently covers:
 - no-target safe no-op;
@@ -51,9 +51,12 @@ The automated suite currently covers:
 - non-interactable Area3D exclusion;
 - touch press/release through shared actions;
 - focus-loss release;
-- touch teardown release.
+- touch teardown release;
+- disabled target can be re-enabled while still in sensor range;
+- whitespace-padded interaction IDs are normalized;
+- IDs equal after whitespace normalization are rejected as duplicates.
 
-The acceptance matrix has 24 cases. Some are covered only partially; the remaining cases are not passed merely because the overall CI workflow passes. Consult the matrix for per-case status.
+The acceptance matrix now has 27 cases. Some are covered only partially; the remaining cases are not passed merely because the overall CI workflow passes. Consult the matrix for per-case status.
 
 ## 3. NLI lifecycle still incomplete
 
