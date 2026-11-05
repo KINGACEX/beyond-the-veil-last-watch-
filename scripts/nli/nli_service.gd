@@ -43,13 +43,13 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 			result = _knowledge_base.answer(npc_id, StringName(intent["topic"]))
 		&"companion_command":
 			result = {
-				"stage": "handoff_ready",
-				"source": "validated_command_handoff",
+				"stage": "validated",
+				"source": "validated_command_request",
 				"request_id": request_id,
 				"intent_kind": "companion_command",
-				"owner_id": companion_id,
+				"target_owner_id": companion_id,
 				"command": String(intent["command"]),
-				"note": "Validation succeeded. The companion actor has not yet accepted or executed this request."
+				"note": "Validation succeeded. The companion adapter has not yet dispatched this request to the actor."
 			}
 			return {
 				"ok": true,
