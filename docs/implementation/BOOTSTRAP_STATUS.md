@@ -44,12 +44,12 @@
 
 ## Verification evidence
 
-**CONFIRMED — GitHub Actions run 41671365779** on commit `f990811bd387a34a2df1fb77329ae81a99008078`:
+**CONFIRMED — latest GitHub Actions run 42025346911** on commit `159da05640960a292e08ce48ea2489a2191ab39a`:
 - Godot 4.7.2 installation and version check passed.
 - Headless editor import and project parsing passed.
-- NLI smoke-test harness passed all 49 assertions.
+- NLI smoke-test command completed successfully.
 - Main scene launched for 10 headless frames.
-- Workflow: [BTV Godot Validation](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/41671365779).
+- Workflow: [BTV Godot Validation](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42025346911).
 
 This verifies the project import, tested scripts and headless scene startup on the Ubuntu CI runner. It does not verify rendered appearance, interactive movement, touch input, Android export, APK installation, physical-device performance or actual phone behaviour.
 
