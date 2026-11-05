@@ -2,9 +2,9 @@
 **Session ID:** `2026-11-05_1237Z_BTV_CONTINUITY`  
 **Date:** 5 November 2026  
 **Start:** 2026-11-05 12:37:45 UTC  
-**End:** 2026-11-05 12:38:17 UTC  
+**End:** 2026-11-05 12:38:34 UTC  
 **Status:** CLOSED — checkpoint created  
-**Work window:** 32 seconds of recorded wall-clock time for this specific request and protocol setup  
+**Work window:** 49 seconds of recorded wall-clock time for this specific request and protocol setup  
 **Project:** Beyond the Veil: The Last Watch  
 **Branch inspected/updated:** `btv/test-first-contracts-001`  
 **Branch head at start:** `3599d22bad375fd8b54f5d4ee18f6fc96f789053`
@@ -74,8 +74,8 @@ This baseline must be rechecked against the current branch before further implem
 
 ## 6. Not completed / open
 
-- [ ] **IN PROGRESS:** Add this checkpoint to the repository.
-- [ ] **IN PROGRESS:** Add the protocol and checkpoint links to the source/coordination index.
+- [x] **COMPLETED:** Add this checkpoint to the repository.
+- [x] **COMPLETED:** Add the protocol and checkpoint links to the source/coordination index.
 - [ ] **NOT STARTED:** Use this protocol for the next substantial BTV work window.
 - [ ] **NOT STARTED:** Create a separate checkpoint at the end of every future long BTV work session.
 - [ ] **NOT STARTED:** Verify whether a generic, non-BTV version should be maintained outside the BTV repository. This BTV copy is already usable as a template for other chats.
@@ -88,8 +88,8 @@ This baseline must be rechecked against the current branch before further implem
 | Branch existence and head | PASS | GitHub branch list |
 | Existing protocol check | PASS | File not found before creation |
 | Protocol file creation | PASS | Commit `54955797e238c688d93d822988a9974f7105db3a` |
-| Checkpoint file | PENDING | Must be committed after this record is created |
-| Source index update | PENDING | Must be committed after checkpoint link is added |
+| Checkpoint file | PASS | Commit `3300d91aaf9c3d12c6bbdecfb4509bf143ccd567` |
+| Source index update | PASS | Commit `7ea339b4844647c8999b358d356ae6f02ab5d374` |
 
 ## 8. Next actions
 
@@ -111,7 +111,7 @@ Start by opening this checkpoint and `SESSION_CONTINUITY_PROTOCOL.md`. Then insp
 - [x] No code implementation claimed in this session.
 - [x] Previous engineering work separated from current session work.
 - [x] Approval boundaries recorded.
-- [ ] Checkpoint and source index committed and verified.
+- [x] Checkpoint and source index committed and verified.
 - [ ] Latest branch head rechecked after documentation commits.
 
 ---
