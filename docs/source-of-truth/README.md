@@ -86,3 +86,9 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 
 - [NLI 003 — Handoff State and Source Registry Contract](../implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md) — proposed contract; not implemented.
 - [Core Interaction 003 — Edge-Case Acceptance Matrix](../qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md) — proposed QA cases; not yet executed.
+
+
+## Session continuity and coordination
+
+- [Session Continuity Protocol](../coordination/SESSION_CONTINUITY_PROTOCOL.md) — reusable rules for detailed, timestamped long-chat checkpoints and new-chat handoffs.
+- [BTV continuity setup checkpoint — 5 November 2026, 12:37–12:38 UTC](../coordination/session-logs/SESSION_2026-11-05_1237Z_BTV_CONTINUITY_SYSTEM_SETUP.md) — records this setup window, previous verified engineering baseline, open tasks and exact resume point.
