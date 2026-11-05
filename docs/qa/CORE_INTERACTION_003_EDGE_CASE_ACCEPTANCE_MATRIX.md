@@ -83,6 +83,6 @@ Final prompt styling, camera-relative look, gamepad support, dialogue/inventory 
 
 **Not yet automated:** INT-008, INT-009, INT-010, INT-011, INT-012, INT-014, INT-015, INT-016, INT-017, INT-018, INT-020 and the remaining portions of INT-013/024. Some require explicit input-context, pause policy or scene-lifecycle seams before reliable headless testing. Do not mark them passed from the general scene-launch smoke test.
 
-**CI evidence:** Godot 4.7.2 headless run `42027258305` passed the then-current NLI contract suite and initial interaction acceptance suite. The expanded touch/lifecycle tests added afterward are awaiting their own run; they are not yet counted as passed.
+**CI evidence:** Godot 4.7.2 headless run `42027258305` passed the then-current NLI contract suite and initial interaction acceptance suite. The expanded touch/lifecycle tests passed in run `42027583419` on commit `2021388bb7a337f8dd5c740b9d5c4c3df7a443a5`; they are now counted as passed only for the cases listed above.
 
 **Important:** Passing headless tests does not replace editor/runtime visual checks or Android device testing.
