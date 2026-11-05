@@ -32,6 +32,7 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 - [Godot 3D small-team postmortem](docs/research/BTV_GODOT_3D_SMALL_TEAM_POSTMORTEM_RESEARCH_2026-11-05.md).
 - [Blender–Godot asset pipeline](docs/research/BTV_BLENDER_GODOT_ASSET_PIPELINE_RESEARCH_2026-11-05.md).
 - [Character and animation pipeline](docs/research/BTV_CHARACTER_AND_ANIMATION_PIPELINE_RESEARCH_2026-11-05.md).
+- [Character rigging and game-animation case study](docs/research/BTV_CHARACTER_RIGGING_AND_GAME_ANIMATION_CASE_STUDY_2026-11-05.md).
 - [Blender–Godot asset pipeline research](docs/research/BTV_BLENDER_GODOT_ASSET_PIPELINE_RESEARCH_2026-11-05.md).
 - [Consensus academic synthesis](docs/research/academic/CONSENSUS_GAME_PRODUCTION_RESEARCH_2026-11-05.md).
 
@@ -54,7 +55,7 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Verification
 
-**CONFIRMED — GitHub Actions run 42030200114** passed on commit `cf30a1259e013d8701ede04aef9d874ba7780990`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests, core interaction acceptance tests and a 10-frame main-scene launch.
+**CONFIRMED — GitHub Actions run 42031119379** passed on commit `7583d424f0140181e7d170e323d2a5377f9ded5e`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests, core interaction acceptance tests and a 10-frame main-scene launch.
 
 [View the validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42030200114).
 
