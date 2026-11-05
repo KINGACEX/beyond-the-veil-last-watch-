@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - btv/bootstrap-prototype-001
+      - btv/test-first-contracts-001
   workflow_dispatch:
 
 permissions:
@@ -15,7 +16,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Import, NLI smoke tests and scene launch
+    name: Import, contract tests and scene launch
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -37,6 +38,12 @@ jobs:
 
       - name: Run NLI smoke tests
         run: godot --headless --path . --script res://tests/nli_smoke_test.gd
+
+      - name: Run NLI handoff and source-registry contract tests
+        run: godot --headless --path . --script res://tests/nli_contract_test.gd
+
+      - name: Run core interaction acceptance tests
+        run: godot --headless --path . --script res://tests/core_interaction_acceptance_test.gd
 
       - name: Launch main scene for 10 frames
         run: godot --headless --path . --quit-after 10
