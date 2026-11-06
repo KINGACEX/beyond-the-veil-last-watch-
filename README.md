@@ -28,6 +28,9 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 6. [Research-to-design traceability matrix — 6 November 2026](docs/coordination/BTV_RESEARCH_TO_DESIGN_TRACEABILITY_MATRIX_2026-11-06.md).
 7. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
 
+### Implementation contracts
+- [Proposed mission data validation contract](docs/implementation/MISSION_DATA_VALIDATION_CONTRACT_001.md) — proposed checks only; no mission validator or Ridgeview content implemented.
+
 ### Research
 - [Game development practice — Phase 1](docs/research/BTV_GAME_DEVELOPMENT_PRACTICE_RESEARCH_PHASE_1_2026-11-05.md).
 - [Cinematic and narrative environment research](docs/research/BTV_CINEMATIC_AND_NARRATIVE_ENVIRONMENT_RESEARCH_2026-11-05.md).
@@ -60,6 +63,10 @@ Android export, installation, touch usability, sustained performance, memory and
 6. Approach the neutral test marker and press E; inspect the diagnostic response in Output.
 
 ## Verification
+
+**CONFIRMED — latest code/test validation run 42187126704** passed on commit `c4134c8098f0f86c68d462463fd029e8013b74b1`. It includes the canonical NLI request-ID boundary tests, query/action lifecycle semantics, cancellation tests, existing NLI tests, core interaction acceptance tests and a 10-frame main-scene launch.
+
+[View latest code/test validation run 42187126704](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42187126704).
 
 **CONFIRMED — code/test validation run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
 
