@@ -17,6 +17,8 @@ func _run() -> void:
 	_test_request_gate_normalizes_identifiers_across_state_queries()
 	_test_service_uses_one_canonical_request_id()
 	_test_service_rejects_blank_request_ids_consistently()
+	_test_query_and_action_requests_have_distinct_terminal_semantics()
+	_test_cancellation_only_cancels_a_pending_action_request()
 	if failures == 0:
 		print("NLI_CONTRACT_TESTS: PASS")
 		quit(0)
@@ -144,6 +146,38 @@ func _test_service_rejects_blank_request_ids_consistently() -> void:
 	var cancel_response: Dictionary = service.handle_utterance("cancel", "   ")
 	_check(not cancel_response.get("ok", false), "Blank cancellation request ID is rejected")
 	_check(cancel_response.get("code") == "missing_request_id", "Blank cancellation request has stable missing-ID error")
+
+func _test_query_and_action_requests_have_distinct_terminal_semantics() -> void:
+	var service = Service.new()
+	var command: Dictionary = service.handle_utterance("scout ahead", "lifecycle-command-001", &"", "ember")
+	_check(command.get("ok", false), "Companion command request validates")
+	var duplicate_command: Dictionary = service.handle_utterance("scout ahead", "lifecycle-command-001", &"", "ember")
+	_check(duplicate_command.get("code") == "duplicate_request", "Companion action request remains pending and single-use")
+
+	var question: Dictionary = service.handle_utterance("who are you", "lifecycle-question-001", &"npc_unknown")
+	_check(question.get("ok", false), "Knowledge query completes its processing path")
+	var duplicate_question: Dictionary = service.handle_utterance("who are you", "lifecycle-question-001", &"npc_unknown")
+	_check(duplicate_question.get("code") == "duplicate_request", "Completed knowledge query ID cannot be reused")
+
+
+func _test_cancellation_only_cancels_a_pending_action_request() -> void:
+	var service = Service.new()
+	var command: Dictionary = service.handle_utterance("scout ahead", "lifecycle-cancel-001", &"", "ember")
+	_check(command.get("ok", false), "Companion request is created before cancellation")
+	var cancellation: Dictionary = service.handle_utterance("cancel", "lifecycle-cancel-001")
+	var cancellation_result: Dictionary = cancellation.get("result", {})
+	_check(cancellation.get("ok", false), "Pending companion request can be cancelled")
+	_check(cancellation_result.get("code") == "request_cancelled", "Cancellation returns explicit cancelled state")
+	var reused: Dictionary = service.handle_utterance("scout ahead", "lifecycle-cancel-001", &"", "ember")
+	_check(reused.get("code") == "duplicate_request", "Cancelled request ID cannot be reused")
+
+	var completed_service = Service.new()
+	completed_service.handle_utterance("who are you", "lifecycle-question-cancel-001", &"npc_unknown")
+	var completed_cancellation: Dictionary = completed_service.handle_utterance("cancel", "lifecycle-question-cancel-001")
+	var completed_result: Dictionary = completed_cancellation.get("result", {})
+	_check(not completed_cancellation.get("ok", false), "Completed knowledge query cannot be cancelled")
+	_check(completed_result.get("code") == "request_not_pending", "Cancellation rejects a non-pending request")
+
 
 func _check(condition: bool, label: String) -> void:
 	if condition:
