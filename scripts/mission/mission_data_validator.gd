@@ -78,7 +78,7 @@ static func _find_matches(index: Dictionary, type_namespace: String, record_id: 
 static func _add_diagnostic(
 	diagnostics: Array[Dictionary],
 	code: String,
-	namespace: String,
+	type_namespace: String,
 	record_id: String,
 	field: String,
 	path: String,
@@ -87,7 +87,7 @@ static func _add_diagnostic(
 	diagnostics.append({
 		"code": code,
 		"severity": "error",
-			"namespace": type_namespace,
+		"namespace": type_namespace,
 		"record_id": record_id,
 		"field": field,
 		"path": path,
