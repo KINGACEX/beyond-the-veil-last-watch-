@@ -23,8 +23,9 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 1. [BTV source-of-truth index](docs/source-of-truth/README.md).
 2. [Current implementation status](docs/implementation/BOOTSTRAP_STATUS.md).
 3. [NLI handoff and source-registry contract](docs/implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md).
-4. [Core interaction acceptance matrix](docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md).
-5. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
+4. [NLI contract gap audit — 6 November 2026](docs/audits/BTV_NLI_CONTRACT_GAP_AUDIT_2026-11-06.md).
+5. [Core interaction acceptance matrix](docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md).
+6. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
 
 ### Research
 - [Game development practice — Phase 1](docs/research/BTV_GAME_DEVELOPMENT_PRACTICE_RESEARCH_PHASE_1_2026-11-05.md).
@@ -36,7 +37,7 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 - [World construction and environment art](docs/research/BTV_WORLD_CONSTRUCTION_AND_ENVIRONMENT_ART_RESEARCH_2026-11-05.md).
 - [Godot world navigation and region boundaries](docs/research/BTV_GODOT_WORLD_NAVIGATION_AND_REGION_BOUNDARY_RESEARCH_2026-11-05.md).
 - [Save/load, automated testing and QA](docs/research/BTV_SAVE_LOAD_AUTOMATED_TESTING_AND_QA_RESEARCH_2026-11-05.md).
-- [Blender–Godot asset pipeline research](docs/research/BTV_BLENDER_GODOT_ASSET_PIPELINE_RESEARCH_2026-11-05.md).
+- [UI accessibility, input and presentation](docs/research/BTV_UI_ACCESSIBILITY_INPUT_AND_PRESENTATION_RESEARCH_2026-11-06.md).
 - [Consensus academic synthesis](docs/research/academic/CONSENSUS_GAME_PRODUCTION_RESEARCH_2026-11-05.md).
 
 Research findings are not approved BTV canon or architecture until explicitly reviewed.
@@ -58,11 +59,15 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Verification
 
-**CONFIRMED — GitHub Actions run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
+**CONFIRMED — code/test validation run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
 
-[View the validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42030200114).
+[View code/test validation run 42031646069](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42031646069).
 
-This is headless CI evidence only. It does not verify rendered appearance, manual interaction feel, physical touch behaviour, Android export/installation, device performance or thermal stability.
+**CONFIRMED — research documentation run 42180281566** passed on commit `a19666107f24a61029fb39717938d76aa5197ad3`.
+
+[View research documentation validation run 42180281566](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42180281566).
+
+The latest audit commit may have a newer documentation-only workflow run; check the branch Actions page for its current result. A headless CI pass does not verify rendered appearance, manual interaction feel, physical touch behaviour, Android export/installation, device performance or thermal stability.
 
 ## Branch and release boundaries
 
