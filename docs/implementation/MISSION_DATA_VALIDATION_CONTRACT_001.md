@@ -163,7 +163,8 @@ No external test framework is selected. Use the existing headless harness first 
 - **CONFIRMED:** Mission/dialogue research recommends separating authored definitions, runtime state, presentation and validation.
 - **PROPOSED:** This validation contract and diagnostic model.
 - **UNKNOWN:** Final Resource schema, ID namespace policy, condition grammar, dialogue loop policy and validator API.
-- **NOT IMPLEMENTED:** No mission data validator, dialogue graph validator, mission-state service or Ridgeview content data is added here.
+- **COMPLETED — Phase 1 only:** A neutral typed-registry validator now checks non-empty namespace/ID values, duplicate IDs within a namespace, reference-owner resolution, target resolution and ambiguous targets. IDs/namespaces are trimmed and case-sensitive. Diagnostics include stable codes and source paths where available. Tests are in tests/mission_data_validator_test.gd.
+- **NOT IMPLEMENTED:** Full mission/objective graph validation, dialogue graph validation, evidence/claim semantic validation, final Resource schema, mission-state service or Ridgeview content data.
 - **BLOCKED:** Mission authoring remains gated on approved content sources and unresolved character/fact details.
 
 ## 14. Source references
