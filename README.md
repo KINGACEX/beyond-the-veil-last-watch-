@@ -96,5 +96,7 @@ These are headless CI/documentation checks only. They do not verify rendered app
 
 - [BTV Visual Art Bible v1.0](docs/art/BTV_VISUAL_ART_BIBLE_v1.0.md) — approved cinematic semi-realism direction, reference-game study matrix, character/environment art rules, originality, lighting, animation and art review gates.
 - [BTV Technical Graphics Specification v1.0](docs/technical/BTV_TECHNICAL_GRAPHICS_SPECIFICATION_v1.0.md) — renderer decision gate, Android/PC quality tiers, provisional frame-time objectives, asset acceptance and device-validation plan.
+- [Android Graphics and Device Benchmark Research](docs/research/BTV_ANDROID_GRAPHICS_AND_DEVICE_BENCHMARK_RESEARCH_2026-11-06.md) — Godot 4.7 renderer trade-offs, Android sustained performance and device-tier methodology.
+- [Neutral Graphics Benchmark Scene Acceptance Contract](docs/qa/BTV_NEUTRAL_GRAPHICS_BENCHMARK_SCENE_ACCEPTANCE_CONTRACT_v1.0.md) — canon-neutral scene composition, telemetry, test protocol and acceptance gates.
 
 These documents record approved visual intent and proposed production standards. The renderer, target Android hardware, fixed asset budgets and physical-device performance remain unresolved until measured. Neither document claims the production art or Android build is implemented.
