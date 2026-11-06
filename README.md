@@ -90,3 +90,11 @@ These are headless CI/documentation checks only. They do not verify rendered app
 - No merge to `main` has been performed.
 - No release has been published.
 - Do not merge, force-push, delete branches, publish or deploy without explicit approval.
+
+
+## Approved visual direction and graphics production
+
+- [BTV Visual Art Bible v1.0](docs/art/BTV_VISUAL_ART_BIBLE_v1.0.md) — approved cinematic semi-realism direction, reference-game study matrix, character/environment art rules, originality, lighting, animation and art review gates.
+- [BTV Technical Graphics Specification v1.0](docs/technical/BTV_TECHNICAL_GRAPHICS_SPECIFICATION_v1.0.md) — renderer decision gate, Android/PC quality tiers, provisional frame-time objectives, asset acceptance and device-validation plan.
+
+These documents record approved visual intent and proposed production standards. The renderer, target Android hardware, fixed asset budgets and physical-device performance remain unresolved until measured. Neither document claims the production art or Android build is implemented.
