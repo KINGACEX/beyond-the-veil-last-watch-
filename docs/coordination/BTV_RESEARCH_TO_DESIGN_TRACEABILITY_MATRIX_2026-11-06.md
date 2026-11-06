@@ -72,3 +72,18 @@ This matrix is a working register, not a canon document. Updating a row to APPRO
 - Developer case studies and talks are linked in their corresponding research reports, with access limitations recorded there.
 - Repository source paths and test files are linked by exact path in the table.
 - No external claims in this matrix are intended to exceed the cited research documents.
+
+
+## 7. Visual identity and technical graphics specification
+
+| Domain | Evidence / repository source | BTV relevance | Failure / loophole check | Acceptance evidence | Current status |
+|---|---|---|---|---|---|
+| Visual art direction | Creator-approved visual identity decision, `docs/art/BTV_VISUAL_ART_BIBLE_v1.0.md` | Establish cinematic semi-realism, original character/environment language, art review and reference-game study rules | Reference games mistaken for assets to copy; unresolved Asher/Ember details invented; decorative detail obscures gameplay; visual effects contradict canon | Approved character references; region visual keys; provenance/licence records; concept/model/rig/import/gameplay review gates | APPROVED DESIGN direction; art bible committed; production assets not implemented |
+| Technical graphics | `docs/technical/BTV_TECHNICAL_GRAPHICS_SPECIFICATION_v1.0.md`; `BOOTSTRAP_STATUS.md`; official Godot documentation | Translate Android-first quality ambition into renderer comparison, scalable tiers, asset acceptance and measurable device tests | Renderer selected without target device; frame-rate targets presented as achieved; fixed budgets invented before profiling; desktop/headless success mistaken for Android readiness | Named device matrix; neutral Blender-to-glTF-to-Godot test assets; renderer comparison; representative scene profile; sustained frame-time/memory/thermal and Android export/install record | Specification committed; renderer and device remain BLOCKED; 30/60 FPS are PROPOSED objectives only |
+
+### Visual production gates added
+1. Identify minimum supported Android hardware before renderer selection.
+2. Validate a neutral asset pipeline before using production Asher or Ember assets.
+3. Compare renderer options on representative scenes and actual hardware.
+4. Establish asset budgets from measured representative assets/scenes, not guesses.
+5. Preserve canon and asset provenance throughout concept, modelling, rigging, import and gameplay review.
