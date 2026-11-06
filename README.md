@@ -39,6 +39,7 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 - [Godot world navigation and region boundaries](docs/research/BTV_GODOT_WORLD_NAVIGATION_AND_REGION_BOUNDARY_RESEARCH_2026-11-05.md).
 - [Save/load, automated testing and QA](docs/research/BTV_SAVE_LOAD_AUTOMATED_TESTING_AND_QA_RESEARCH_2026-11-05.md).
 - [UI accessibility, input and presentation](docs/research/BTV_UI_ACCESSIBILITY_INPUT_AND_PRESENTATION_RESEARCH_2026-11-06.md).
+- [Mission scripting and dialogue pipeline](docs/research/BTV_MISSION_SCRIPTING_AND_DIALOGUE_PIPELINE_RESEARCH_2026-11-06.md).
 - [Consensus academic synthesis](docs/research/academic/CONSENSUS_GAME_PRODUCTION_RESEARCH_2026-11-05.md).
 
 Research findings are not approved BTV canon or architecture until explicitly reviewed.
