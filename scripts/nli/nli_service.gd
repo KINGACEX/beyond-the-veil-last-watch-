@@ -13,7 +13,17 @@ func _init(knowledge_base: NLIKnowledgeBase = null) -> void:
 
 
 func handle_utterance(utterance: String, request_id: String, npc_id: StringName = &"", companion_id: String = "") -> Dictionary:
-	var parsed := NLICommandParser.parse(utterance, request_id, companion_id)
+	# Canonicalize identity once at the service boundary. Every downstream
+	# component and returned envelope uses this exact identifier.
+	var canonical_request_id := request_id.strip_edges()
+	if canonical_request_id.is_empty():
+		return {
+			"ok": false,
+			"code": "missing_request_id",
+			"message": "A request identifier is required."
+		}
+
+	var parsed := NLICommandParser.parse(utterance, canonical_request_id, companion_id)
 	if not parsed.get("ok", false):
 		return parsed
 
@@ -25,7 +35,7 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 	# Cancellation targets an existing pending request; it must not first try
 	# to register that same ID as a new request.
 	if StringName(intent["kind"]) == &"cancel":
-		var cancellation := _request_gate.cancel_request(String(intent["request_id"]))
+		var cancellation := _request_gate.cancel_request(canonical_request_id)
 		return {
 			"ok": cancellation.get("ok", false),
 			"intent": intent,
@@ -33,7 +43,7 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 			"result": cancellation
 		}
 
-	var started := _request_gate.begin_request(request_id)
+	var started := _request_gate.begin_request(canonical_request_id)
 	if not started.get("ok", false):
 		return started
 
@@ -45,7 +55,7 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 			result = {
 				"stage": "validated",
 				"source": "validated_command_request",
-				"request_id": request_id,
+				"request_id": canonical_request_id,
 				"intent_kind": "companion_command",
 				"target_owner_id": companion_id,
 				"command": String(intent["command"]),
@@ -58,7 +68,7 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 				"result": result
 			}
 
-	_request_gate.complete_request(request_id)
+	_request_gate.complete_request(canonical_request_id)
 	return {
 		"ok": true,
 		"intent": intent,
