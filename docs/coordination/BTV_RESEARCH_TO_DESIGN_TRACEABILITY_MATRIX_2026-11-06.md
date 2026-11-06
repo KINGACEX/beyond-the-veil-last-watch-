@@ -87,3 +87,16 @@ This matrix is a working register, not a canon document. Updating a row to APPRO
 3. Compare renderer options on representative scenes and actual hardware.
 4. Establish asset budgets from measured representative assets/scenes, not guesses.
 5. Preserve canon and asset provenance throughout concept, modelling, rigging, import and gameplay review.
+
+
+## 8. Android graphics benchmark research and acceptance contract
+
+| Domain | Evidence / repository source | BTV relevance | Failure / loophole check | Acceptance evidence | Current status |
+|---|---|---|---|---|---|
+| Renderer research | `docs/research/BTV_ANDROID_GRAPHICS_AND_DEVICE_BENCHMARK_RESEARCH_2026-11-06.md`; Godot 4.7 rendering architecture | Compare Mobile, Compatibility and Forward+ using the pinned engine and real target hardware | Choosing by screenshots/features alone; assuming Mobile has every post effect; relying on desktop performance | Renderer comparison on named Android hardware with representative scenes, frame-time, memory, thermal and visual records | Research committed; renderer intentionally undecided |
+| Benchmark scene contract | `docs/qa/BTV_NEUTRAL_GRAPHICS_BENCHMARK_SCENE_ACCEPTANCE_CONTRACT_v1.0.md` | Defines neutral materials, lighting, vegetation, humanoid and settlement test zones plus telemetry | Testing only a blank scene; using production character/canon assumptions; fake debug toggles; missing device metadata | Scene passes structural/visual acceptance; reproducible traversal and test logs; physical-device run after hardware selection | Contract committed; scene not implemented |
+| Android sustained performance | Android Developers game optimization and ADPF guidance | Requires frame pacing, thermal and memory evaluation across device tiers | Short cold-start test mistaken for sustained performance; average FPS hides hitches; device heats/throttles | At least 15-minute sustained session, frame-time distribution, thermal state, memory, input response and repeated runs | Test protocol documented; physical-device evidence blocked |
+| Graphics budgets | Godot LOD/HLOD, MultiMesh and baked-lighting guidance | Supports evidence-based environment/vegetation optimization | Invented polygon/texture/draw-call budgets; assuming LOD works perfectly on skinned meshes; assuming instancing fixes transparency overdraw | Representative asset/scene profile on target device; inspected LOD transitions and overdraw | Fixed budgets remain UNKNOWN until measurement |
+
+### Next graphics milestone
+Implement the neutral benchmark scene only after reviewing its acceptance contract. Keep renderer and Android certification blocked until the user identifies an available target phone and minimum intended support class. A CI/headless pass is not a substitute for physical-device validation.
