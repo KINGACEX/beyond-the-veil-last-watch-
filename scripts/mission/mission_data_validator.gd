@@ -53,16 +53,19 @@ static func validate_registry(records: Array, references: Array) -> Dictionary:
 			continue
 
 		var owner_matches: Array = _find_matches(index, from_namespace, from_id)
+		var diagnostic_path := String(reference.get("path", ""))
+		if diagnostic_path.is_empty() and owner_matches.size() == 1:
+			diagnostic_path = String(owner_matches[0].get("path", ""))
 		if owner_matches.is_empty():
-			_add_diagnostic(diagnostics, "unresolved_reference_owner", from_namespace, from_id, field, "", "The record owning this reference does not exist.")
+			_add_diagnostic(diagnostics, "unresolved_reference_owner", from_namespace, from_id, field, diagnostic_path, "The record owning this reference does not exist.")
 		elif owner_matches.size() > 1:
-			_add_diagnostic(diagnostics, "ambiguous_reference_owner", from_namespace, from_id, field, "", "The record owning this reference is ambiguous.")
+			_add_diagnostic(diagnostics, "ambiguous_reference_owner", from_namespace, from_id, field, diagnostic_path, "The record owning this reference is ambiguous.")
 
 		var target_matches: Array = _find_matches(index, to_namespace, to_id)
 		if target_matches.is_empty():
-			_add_diagnostic(diagnostics, "unresolved_reference_target", from_namespace, from_id, field, "", "The referenced target does not exist in the requested namespace.")
+			_add_diagnostic(diagnostics, "unresolved_reference_target", from_namespace, from_id, field, diagnostic_path, "The referenced target does not exist in the requested namespace.")
 		elif target_matches.size() > 1:
-			_add_diagnostic(diagnostics, "ambiguous_reference_target", from_namespace, from_id, field, "", "The referenced target resolves to more than one record.")
+			_add_diagnostic(diagnostics, "ambiguous_reference_target", from_namespace, from_id, field, diagnostic_path, "The referenced target resolves to more than one record.")
 
 	return {
 		"ok": diagnostics.is_empty(),
