@@ -257,3 +257,28 @@ For every graphics/performance test, record:
 
 ---
 **Governance note:** This document records approved intent and proposed technical gates. It does not select a renderer, certify a device, change canon, approve paid dependencies or claim production visuals are implemented.
+
+## 15. Research update and benchmark contract
+
+The following research has been reviewed against Godot 4.7 documentation and Android Developers guidance:
+- `docs/research/BTV_ANDROID_GRAPHICS_AND_DEVICE_BENCHMARK_RESEARCH_2026-11-06.md`
+- `docs/qa/BTV_NEUTRAL_GRAPHICS_BENCHMARK_SCENE_ACCEPTANCE_CONTRACT_v1.0.md`
+
+Key implementation implications:
+- Mobile renderer is the first Android candidate, not a preselected result. Godot 4.7 documents Forward+ as substantially less efficient on mobile; Mobile is designed around mobile GPU constraints but has feature and HDR trade-offs.
+- Mobile's documented lighting limits and post-processing trade-offs mean the art direction must not depend on expensive glow/depth-of-field effects or many overlapping shadowed local lights.
+- Godot mesh LOD, visibility ranges/HLOD, MultiMesh and baked lighting are candidate optimization techniques. Validate skinned-character LOD visually and measure vegetation overdraw.
+- Android tests must include sustained sessions, thermal state, frame pacing, memory and touch response. Android's current game guidance recommends testing across device tiers and extended sessions of 15+ minutes for thermal evaluation.
+- The project must not set fixed geometry or memory budgets before the target device and representative asset scene are measured.
+
+The neutral benchmark scene now has a separate acceptance contract. It defines five zones (materials, lighting, vegetation, neutral character, settlement blockout), fixed camera traversal, debug controls, telemetry, test procedure and acceptance gates. It deliberately excludes production Asher/Ember assets and canon content.
+
+### Research source links
+- Godot 4.7 rendering architecture: https://docs.godotengine.org/en/4.7/engine_details/architecture/internal_rendering_architecture.html
+- Godot 4.7 3D optimization: https://docs.godotengine.org/en/4.7/tutorials/performance/optimizing_3d_performance.html
+- Godot 4.7 mesh LOD: https://docs.godotengine.org/en/4.7/tutorials/3d/mesh_lod.html
+- Android game optimization: https://developer.android.com/games/optimize
+- Android ADPF best practices: https://developer.android.com/games/optimize/adpf/best-practices-adpf?hl=en
+- Android game optimization tools: https://developer.android.com/games/tools
+
+**No renderer is selected by this research update.** Device identification and physical-device testing remain blocking prerequisites.
