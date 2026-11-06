@@ -66,9 +66,9 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Verification
 
-**CONFIRMED — latest code/test validation run 42189489572** passed on commit `13a1064de42857efc7d507f9799c9d83e5382944`. It includes the canonical NLI request-ID boundary tests, query/action lifecycle semantics, cancellation tests, neutral mission-registry validation tests, core interaction acceptance tests and a 10-frame main-scene launch.
+**CONFIRMED — latest code/test validation run 42189615410** passed on commit `c91094d99b5462d8b69f249ba579e8316dc09137`. It includes the canonical NLI request-ID boundary tests, query/action lifecycle semantics, cancellation tests, neutral mission-registry validation tests, core interaction acceptance tests and a 10-frame main-scene launch.
 
-[View latest code/test validation run 42189489572](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42189489572).
+[View latest code/test validation run 42189615410](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42189615410).
 
 **CONFIRMED — code/test validation run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
 
