@@ -16,7 +16,8 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 - `scripts/player_controller.gd` — movement and nearest-interactable selection.
 - `scripts/interactable.gd` — reusable Area3D interaction contract.
 - `scripts/nli/` — deterministic NLI parser, validator, request gate, authored knowledge base and orchestration service.
-- `tests/` — NLI smoke/contract tests and core interaction acceptance tests.
+- `scripts/mission/mission_data_validator.gd` — neutral typed-registry ID/reference validation utility (Phase 1 only).
+- `tests/` — NLI smoke/contract tests, neutral mission-validator tests and core interaction acceptance tests.
 - `.github/workflows/godot-validation.yml` — headless Godot validation workflow.
 
 ### Read these first
@@ -29,7 +30,7 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 7. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
 
 ### Implementation contracts
-- [Proposed mission data validation contract](docs/implementation/MISSION_DATA_VALIDATION_CONTRACT_001.md) — proposed checks only; no mission validator or Ridgeview content implemented.
+- [Mission data validation contract](docs/implementation/MISSION_DATA_VALIDATION_CONTRACT_001.md) — Phase 1 neutral registry validator implemented; full mission/dialogue graph validation and Ridgeview content remain unimplemented.
 
 ### Research
 - [Game development practice — Phase 1](docs/research/BTV_GAME_DEVELOPMENT_PRACTICE_RESEARCH_PHASE_1_2026-11-05.md).
@@ -43,6 +44,7 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 - [Save/load, automated testing and QA](docs/research/BTV_SAVE_LOAD_AUTOMATED_TESTING_AND_QA_RESEARCH_2026-11-05.md).
 - [UI accessibility, input and presentation](docs/research/BTV_UI_ACCESSIBILITY_INPUT_AND_PRESENTATION_RESEARCH_2026-11-06.md).
 - [Mission scripting and dialogue pipeline](docs/research/BTV_MISSION_SCRIPTING_AND_DIALOGUE_PIPELINE_RESEARCH_2026-11-06.md).
+- [AI coding-agent alternatives — 6 November 2026](docs/research/BTV_AI_CODING_AGENT_ALTERNATIVES_2026-11-06.md) — research only; no installations or paid services.
 - [Consensus academic synthesis](docs/research/academic/CONSENSUS_GAME_PRODUCTION_RESEARCH_2026-11-05.md).
 
 Research findings are not approved BTV canon or architecture until explicitly reviewed.
@@ -64,9 +66,9 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Verification
 
-**CONFIRMED — latest code/test validation run 42187126704** passed on commit `c4134c8098f0f86c68d462463fd029e8013b74b1`. It includes the canonical NLI request-ID boundary tests, query/action lifecycle semantics, cancellation tests, existing NLI tests, core interaction acceptance tests and a 10-frame main-scene launch.
+**CONFIRMED — latest code/test validation run 42189489572** passed on commit `13a1064de42857efc7d507f9799c9d83e5382944`. It includes the canonical NLI request-ID boundary tests, query/action lifecycle semantics, cancellation tests, neutral mission-registry validation tests, core interaction acceptance tests and a 10-frame main-scene launch.
 
-[View latest code/test validation run 42187126704](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42187126704).
+[View latest code/test validation run 42189489572](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42189489572).
 
 **CONFIRMED — code/test validation run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
 
