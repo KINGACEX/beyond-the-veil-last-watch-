@@ -25,6 +25,7 @@ A row may have confirmed research evidence while its BTV application remains pro
 | Navigation and region boundaries | `BTV_GODOT_WORLD_NAVIGATION_AND_REGION_BOUNDARY_RESEARCH_2026-11-05.md` | Use explicit region/navmesh boundaries and simplified navigation geometry | Decorative meshes bloat nav bake; overlapping regions or frequent map updates cause path issues | Navmesh connectivity, agent reachability, boundary and runtime bake tests in representative region | PROPOSED; world partitioning undecided |
 | Save/load and recovery | `BTV_SAVE_LOAD_AUTOMATED_TESTING_AND_QA_RESEARCH_2026-11-05.md` | Define explicit persistent state, versioning, migration and safe recovery | Arbitrary scene-tree serialization, duplicate entities, partial writes, invalid mission state | Schema contract, corruption/interrupted-write/migration tests and recovery review | BLOCKED; save architecture not approved |
 | UI/accessibility/input | `BTV_UI_ACCESSIBILITY_INPUT_AND_PRESENTATION_RESEARCH_2026-11-06.md` | Separate UI and gameplay actions; plan focus, subtitles, text scaling, audio channels and localization | Modal input leaks into gameplay; focus order guessed; colour/audio-only information; text clipping | UI-001–UI-012 acceptance gates in the research document | PROPOSED; no production UI |
+| Mission scripting and dialogue | `BTV_MISSION_SCRIPTING_AND_DIALOGUE_PIPELINE_RESEARCH_2026-11-06.md`; Godot Resources docs; GDC dialogue-tool case studies | Separate authored mission/dialogue definitions, authoritative runtime state, presentation and validation | Shared Resource mutation leaks state; dialogue creates evidence; missing/unreachable branches; custom editor built prematurely | Stable-ID/reference/reachability checks, Resource isolation test, evidence-ownership test, all slice approaches reach coherent report | PROPOSED; no mission scripting or dialogue system implemented |
 | Core interaction | `CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md`; `tests/core_interaction_acceptance_test.gd` | Deterministic nearest eligible interaction using shared keyboard/touch action | Disabled target cannot re-enable; stale/freed target; duplicate IDs; focus/pause/multitouch gaps | Automated tests for implemented cases; manual/device evidence for spatial/touch cases | PARTIAL — 28 matrix cases; subset automated |
 | NLI request lifecycle | `NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md`; `BTV_NLI_CONTRACT_GAP_AUDIT_2026-11-06.md` | Keep validation, handoff, actor acceptance and execution distinct | NLI claims actor acceptance; stale callback; duplicate or competing requests; indefinite pending state | Adapter/actor contract tests, canonical request ID, expiry, cancellation and recovery tests | PARTIAL foundation; actor lifecycle BLOCKED |
 | Source integrity and NPC knowledge | `nli_knowledge_base.gd`; NLI gap audit | Only approved, in-scope source records authorize speaker-scoped knowledge; dialogue is not evidence | Asserted hash mistaken for verified digest; withdrawn source remains usable; response text overstates source | Hash verification tests, source version/withdrawal tests and editorial passage review | PARTIAL; cryptographic verification and registry lifecycle absent |
@@ -55,10 +56,11 @@ Research must not expand the project into a full open world or introduce spiritu
 2. **P0:** Define source hashing/versioning/withdrawal contracts before any mutable or external source ingestion.
 3. **P1:** Close interaction acceptance gaps that have stable seams, especially unavailable target, held input, pause/resume and scene lifecycle.
 4. **P1:** Define UI input contexts before building dialogue or HUD screens.
-5. **P1:** Create a neutral Blender-to-Godot asset acceptance contract; do not use Asher or Ember as the first test asset.
-6. **P1:** Continue Ridgeview content only after mission data contracts and source authority are reconciled.
-7. **P2:** Keep save/load architecture deferred until persistent gameplay state and recovery semantics are approved.
-8. **BLOCKED:** Record target Android device details before renderer comparison and device QA.
+5. **P1:** Define a minimal authored mission/dialogue data contract and tests before writing production dialogue.
+6. **P1:** Create a neutral Blender-to-Godot asset acceptance contract; do not use Asher or Ember as the first test asset.
+7. **P1:** Continue Ridgeview content only after mission data contracts and source authority are reconciled.
+8. **P2:** Keep save/load architecture deferred until persistent gameplay state and recovery semantics are approved.
+9. **BLOCKED:** Record target Android device details before renderer comparison and device QA.
 
 ## 5. Change control
 
