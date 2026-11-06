@@ -48,7 +48,7 @@ static func validate_registry(records: Array, references: Array) -> Dictionary:
 		var to_namespace := String(reference.get("to_namespace", "")).strip_edges()
 		var to_id := String(reference.get("to_id", "")).strip_edges()
 
-		if from_record_namespace.is_empty() or from_id.is_empty() or field.is_empty() or to_record_namespace.is_empty() or to_id.is_empty():
+		if from_namespace.is_empty() or from_id.is_empty() or field.is_empty() or to_namespace.is_empty() or to_id.is_empty():
 			_add_diagnostic(diagnostics, "invalid_reference", from_namespace, from_id, field, "", "A reference requires owner namespace/ID, field, and target namespace/ID.")
 			continue
 
@@ -71,7 +71,7 @@ static func validate_registry(records: Array, references: Array) -> Dictionary:
 
 
 static func _find_matches(index: Dictionary, type_namespace: String, record_id: String) -> Array:
-	var namespace_bucket: Dictionary = index.get(record_namespace, {})
+	var namespace_bucket: Dictionary = index.get(type_namespace, {})
 	return namespace_bucket.get(record_id, [])
 
 
@@ -87,7 +87,7 @@ static func _add_diagnostic(
 	diagnostics.append({
 		"code": code,
 		"severity": "error",
-		"namespace": type_namespace,
+			"namespace": type_namespace,
 		"record_id": record_id,
 		"field": field,
 		"path": path,
