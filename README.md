@@ -25,7 +25,8 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 3. [NLI handoff and source-registry contract](docs/implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md).
 4. [NLI contract gap audit — 6 November 2026](docs/audits/BTV_NLI_CONTRACT_GAP_AUDIT_2026-11-06.md).
 5. [Core interaction acceptance matrix](docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md).
-6. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
+6. [Research-to-design traceability matrix — 6 November 2026](docs/coordination/BTV_RESEARCH_TO_DESIGN_TRACEABILITY_MATRIX_2026-11-06.md).
+7. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
 
 ### Research
 - [Game development practice — Phase 1](docs/research/BTV_GAME_DEVELOPMENT_PRACTICE_RESEARCH_PHASE_1_2026-11-05.md).
@@ -67,7 +68,11 @@ Android export, installation, touch usability, sustained performance, memory and
 
 [View research documentation validation run 42180281566](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42180281566).
 
-The latest audit commit may have a newer documentation-only workflow run; check the branch Actions page for its current result. A headless CI pass does not verify rendered appearance, manual interaction feel, physical touch behaviour, Android export/installation, device performance or thermal stability.
+**CONFIRMED — NLI audit documentation run 42180351027** passed on commit `2bb40fd5c14e03fd721b9a262b84396ae982b243`.
+
+[View NLI audit documentation validation run 42180351027](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42180351027).
+
+These are headless CI/documentation checks only. They do not verify rendered appearance, manual interaction feel, physical touch behaviour, Android export/installation, device performance or thermal stability. Check the branch Actions page for the current result on the latest commit.
 
 ## Branch and release boundaries
 
