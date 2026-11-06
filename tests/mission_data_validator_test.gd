@@ -17,6 +17,8 @@ func _run() -> void:
 	_test_missing_reference_target_is_rejected()
 	_test_duplicate_target_is_ambiguous()
 	_test_whitespace_is_normalized_without_case_folding()
+	_test_malformed_entries_are_rejected()
+	_test_diagnostics_preserve_owner_source_path()
 	if failures == 0:
 		print("MISSION_DATA_VALIDATOR_TESTS: PASS")
 		quit(0)
@@ -164,6 +166,50 @@ func _test_whitespace_is_normalized_without_case_folding() -> void:
 		[]
 	)
 	_check(case_sensitive.get("ok", false), "ID matching remains case-sensitive")
+
+
+func _test_malformed_entries_are_rejected() -> void:
+	var result: Dictionary = Validator.validate_registry(
+		[null],
+		[
+			{
+				"from_namespace": "mission",
+				"from_id": "mission_intro",
+				"field": "entry_objective_id",
+				"to_namespace": "objective"
+			}
+		]
+	)
+	_check(not result.get("ok", true), "Malformed records and references are rejected")
+	_check(_has_code(result, "invalid_record"), "Malformed record has stable diagnostic code")
+	_check(_has_code(result, "invalid_reference"), "Malformed reference has stable diagnostic code")
+
+
+func _test_diagnostics_preserve_owner_source_path() -> void:
+	var result: Dictionary = Validator.validate_registry(
+		[
+			{"namespace": "mission", "id": "mission_intro", "path": "res://fixtures/intro.json"}
+		],
+		[
+			{
+				"from_namespace": "mission",
+				"from_id": "mission_intro",
+				"field": "entry_objective_id",
+				"to_namespace": "objective",
+				"to_id": "objective_missing"
+			}
+		]
+	)
+	var diagnostic := _find_diagnostic(result, "unresolved_reference_target")
+	_check(not diagnostic.is_empty(), "Dangling target produces a diagnostic")
+	_check(diagnostic.get("path") == "res://fixtures/intro.json", "Reference diagnostic identifies its owning source file")
+
+
+func _find_diagnostic(result: Dictionary, code: String) -> Dictionary:
+	for diagnostic in result.get("diagnostics", []):
+		if diagnostic is Dictionary and diagnostic.get("code") == code:
+			return diagnostic
+	return {}
 
 
 func _has_code(result: Dictionary, code: String) -> bool:
