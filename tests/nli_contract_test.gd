@@ -15,6 +15,8 @@ func _run() -> void:
 	_test_allowlist_does_not_replace_source_resolution()
 	_test_nonapproved_and_wrong_scope_sources_are_blocked()
 	_test_request_gate_normalizes_identifiers_across_state_queries()
+	_test_service_uses_one_canonical_request_id()
+	_test_service_rejects_blank_request_ids_consistently()
 	if failures == 0:
 		print("NLI_CONTRACT_TESTS: PASS")
 		quit(0)
@@ -109,7 +111,6 @@ func _test_nonapproved_and_wrong_scope_sources_are_blocked() -> void:
 	}
 	_check(knowledge.add_record(wrong_scope_record).get("code") == "source_scope_mismatch", "Approved source outside the NPC scope is rejected")
 
-
 func _test_request_gate_normalizes_identifiers_across_state_queries() -> void:
 	var gate = RequestGate.new()
 	_check(gate.begin_request("  padded-request  ").get("ok", false), "Request gate accepts a whitespace-padded identifier")
@@ -120,6 +121,29 @@ func _test_request_gate_normalizes_identifiers_across_state_queries() -> void:
 	_check(gate.cancel_request(" cancel-request ").get("ok", false), "Cancellation accepts the normalized identifier")
 	_check(gate.is_cancelled("cancel-request  "), "Cancelled lookup normalizes the request identifier")
 
+func _test_service_uses_one_canonical_request_id() -> void:
+	var service = Service.new()
+	var response: Dictionary = service.handle_utterance("scout ahead", "  canonical-command-001  ", &"", "ember")
+	var intent: Dictionary = response.get("intent", {})
+	var result: Dictionary = response.get("result", {})
+	_check(response.get("ok", false), "Padded service request ID is accepted")
+	_check(intent.get("request_id") == "canonical-command-001", "Parsed intent exposes canonical request ID")
+	_check(result.get("request_id") == "canonical-command-001", "Handoff result exposes the same canonical request ID")
+
+	var question_response: Dictionary = service.handle_utterance("who are you", "  canonical-question-001  ", &"npc_unknown")
+	var question_intent: Dictionary = question_response.get("intent", {})
+	_check(question_response.get("ok", false), "Padded question request ID is accepted")
+	_check(question_intent.get("request_id") == "canonical-question-001", "Question intent exposes canonical request ID")
+
+func _test_service_rejects_blank_request_ids_consistently() -> void:
+	var service = Service.new()
+	var command_response: Dictionary = service.handle_utterance("scout ahead", "   ", &"", "ember")
+	_check(not command_response.get("ok", false), "Blank companion request ID is rejected")
+	_check(command_response.get("code") == "missing_request_id", "Blank companion request has stable missing-ID error")
+
+	var cancel_response: Dictionary = service.handle_utterance("cancel", "   ")
+	_check(not cancel_response.get("ok", false), "Blank cancellation request ID is rejected")
+	_check(cancel_response.get("code") == "missing_request_id", "Blank cancellation request has stable missing-ID error")
 
 func _check(condition: bool, label: String) -> void:
 	if condition:
