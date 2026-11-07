@@ -11,6 +11,8 @@ The NLI service validates a bounded command and returns a handoff envelope. The 
 
 - `scripts/nli/nli_companion_adapter.gd`: validates the handoff envelope and actor contract, starts lifecycle tracking, and passes the request to the actor.
 - `scripts/nli/nli_request_lifecycle.gd`: owns the request state machine.
+- `scripts/nli/nli_service.gd`: exposes `dispatch_companion_handoff(...)`, `get_companion_request_state(...)`, and routes cancellation to a dispatched adapter. It reconciles terminal adapter outcomes into the service's single-use request-ID reservation.
+- `tests/nli_contract_test.gd`: verifies service-to-adapter dispatch, terminal-state reconciliation, cancellation propagation and delayed completion.
 - `tests/fixtures/mock_nli_companion_actor.gd`: test double only; not a production Ember actor.
 - `tests/nli_lifecycle_guard_test.gd`: tests the adapter boundary and lifecycle outcomes.
 
@@ -53,8 +55,9 @@ The caller supplies `now_msec` from the same monotonic clock domain used by `Tim
 ## Explicit integration gaps
 
 - No production Ember actor implements this contract yet.
-- The adapter is not yet wired into `NLIService` or a scene controller.
-- The service's existing request gate and the new adapter lifecycle are not yet unified. Do not treat their states as one source of truth.
+- The service now has an explicit dispatch/reconciliation boundary to the adapter, but no scene controller calls it yet.
+- The adapter remains the authority for actor execution state; the service request gate reserves request IDs and is reconciled when the service reads adapter state or processes cancellation. The service does not independently claim actor acceptance or execution.
+- Scene-controller polling/notification must call `get_companion_request_state` or otherwise trigger reconciliation after asynchronous terminal callbacks.
 - Pause, scene teardown, application quit, save/reload and actor interruption still need explicit policies.
 - Actor command execution must be separately constrained by gameplay permissions, distance, navigation, line-of-sight, cooldowns and mission rules where applicable.
 - The current mock actor exists solely to verify callback ordering and lifecycle behaviour.
