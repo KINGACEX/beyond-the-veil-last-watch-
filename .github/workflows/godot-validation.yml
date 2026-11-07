@@ -43,6 +43,9 @@ jobs:
       - name: Run NLI handoff and source-registry contract tests
         run: godot --headless --path . --script res://tests/nli_contract_test.gd
 
+      - name: Run NLI actor lifecycle guard tests
+        run: godot --headless --path . --script res://tests/nli_lifecycle_guard_test.gd
+
       - name: Run mission data validator contract tests
         run: godot --headless --path . --script res://tests/mission_data_validator_test.gd
 
