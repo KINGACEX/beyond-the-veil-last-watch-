@@ -10,6 +10,7 @@ var _knowledge_base: NLIKnowledgeBase
 # retains the request-ID reservation and reconciles terminal adapter outcomes.
 var _companion_adapters: Dictionary = {}
 var _companion_reconciled: Dictionary = {}
+var _validated_handoffs: Dictionary = {}
 
 
 func _init(knowledge_base: NLIKnowledgeBase = null) -> void:
@@ -47,6 +48,8 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 				_reconcile_companion_request(canonical_request_id)
 		else:
 			cancellation = _request_gate.cancel_request(canonical_request_id)
+			if cancellation.get("ok", false):
+				_validated_handoffs.erase(canonical_request_id)
 		return {
 			"ok": cancellation.get("ok", false),
 			"intent": intent,
@@ -72,6 +75,7 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 				"command": String(intent["command"]),
 				"note": "Validation succeeded. The companion adapter has not yet dispatched this request to the actor."
 			}
+			_validated_handoffs[canonical_request_id] = result.duplicate(true)
 			return {
 				"ok": true,
 				"intent": intent,
@@ -96,6 +100,8 @@ func dispatch_companion_handoff(handoff: Dictionary, adapter: Object, actor: Obj
 		return _failure("missing_request_id", "A companion handoff requires a request identifier.")
 	if not _request_gate.is_pending(request_id):
 		return _failure("request_not_pending", "The service has no pending reservation for this handoff.")
+	if not _validated_handoffs.has(request_id) or _validated_handoffs[request_id] != handoff:
+		return _failure("handoff_mismatch", "The handoff does not exactly match the service-validated request.")
 	if not is_instance_valid(adapter) or not adapter.has_method("dispatch") or not adapter.has_method("get_state"):
 		return _failure("adapter_contract_missing", "A compatible companion adapter is required.")
 	if _companion_adapters.has(request_id):
@@ -104,8 +110,10 @@ func dispatch_companion_handoff(handoff: Dictionary, adapter: Object, actor: Obj
 	var dispatched: Dictionary = adapter.call("dispatch", handoff, actor, scene_generation, now_msec, timeout_msec)
 	if not dispatched.get("ok", false):
 		_request_gate.cancel_request(request_id)
+		_validated_handoffs.erase(request_id)
 		return dispatched
 
+	_validated_handoffs.erase(request_id)
 	_companion_adapters[request_id] = adapter
 	_reconcile_companion_request(request_id)
 	return dispatched
