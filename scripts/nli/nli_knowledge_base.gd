@@ -24,6 +24,9 @@ func register_source(source: Dictionary) -> Dictionary:
 	var source_id := String(source["source_id"]).strip_edges()
 	if source_id.is_empty() or String(source["title"]).strip_edges().is_empty() or String(source["location"]).strip_edges().is_empty() or String(source["content_hash"]).strip_edges().is_empty():
 		return _failure("invalid_source_record", "Source identity, title, location and content hash are required.")
+	var integrity := _verify_source_integrity(source)
+	if not integrity.get("ok", false):
+		return integrity
 	if String(source["authority_status"]) not in AUTHORITY_STATUSES:
 		return _failure("invalid_source_authority", "Source authority status is not recognized.")
 	if String(source["review_status"]) not in REVIEW_STATUSES:
@@ -32,7 +35,9 @@ func register_source(source: Dictionary) -> Dictionary:
 		return _failure("invalid_source_scopes", "At least one permitted knowledge scope is required.")
 	if _sources.has(source_id):
 		return _failure("duplicate_source_id", "A source identifier can only be registered once.")
-	_sources[source_id] = source.duplicate(true)
+	var stored_source := source.duplicate(true)
+	stored_source["content_hash"] = String(source["content_hash"]).to_lower()
+	_sources[source_id] = stored_source
 	return {"ok": true, "code": "source_registered", "source_id": source_id}
 
 
@@ -42,9 +47,34 @@ func resolve_source(source_id: String) -> Dictionary:
 	if not _sources.has(clean_id):
 		return _failure("source_unresolved", "The source identifier has no registered source record.")
 	var record: Dictionary = _sources[clean_id]
+	var integrity := _verify_source_integrity(record)
+	if not integrity.get("ok", false):
+		return _failure("source_integrity_mismatch", "The registered source file is missing or its contents no longer match the approved SHA-256 digest.")
 	if String(record["review_status"]) != "approved":
 		return _failure("source_not_approved", "The source is pending, stale or withdrawn and cannot authorize NPC knowledge.")
 	return {"ok": true, "code": "source_resolved", "record": record.duplicate(true)}
+
+
+## Source files are restricted to project resources and checked against a real
+## SHA-256 digest both when registered and whenever they are resolved.
+func _verify_source_integrity(source: Dictionary) -> Dictionary:
+	var location := String(source.get("location", "")).strip_edges()
+	var expected_hash := String(source.get("content_hash", "")).strip_edges().to_lower()
+	if not location.begins_with("res://") or location.contains("/../") or location.ends_with("/.."):
+		return _failure("invalid_source_location", "Source locations must remain inside the project's res:// resources.")
+	if expected_hash.length() != 64:
+		return _failure("invalid_source_hash", "A SHA-256 digest must contain exactly 64 hexadecimal characters.")
+	for character in expected_hash:
+		if not "0123456789abcdef".contains(character):
+			return _failure("invalid_source_hash", "The source digest must be hexadecimal.")
+	if not FileAccess.file_exists(location):
+		return _failure("source_file_missing", "The registered project source file does not exist.")
+	var actual_hash := FileAccess.get_sha256(location).to_lower()
+	if actual_hash.is_empty():
+		return _failure("source_hash_unavailable", "Godot could not calculate the source file's SHA-256 digest.")
+	if actual_hash != expected_hash:
+		return _failure("source_hash_mismatch", "The supplied SHA-256 digest does not match the source file.")
+	return {"ok": true, "content_hash": actual_hash}
 
 
 ## Registers one NPC knowledge profile and its permitted source identifiers.
