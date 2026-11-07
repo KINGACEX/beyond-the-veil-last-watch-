@@ -38,7 +38,7 @@ func dispatch(validated_handoff: Dictionary, actor: Object, scene_generation: in
 		_on_actor_decision(request_id, owner_id, accepted, reason)
 
 	var completion_callback := func(succeeded: bool, reason: String = "") -> void:
-		_on_actor_completion(request_id, succeeded, reason)
+		_on_actor_completion(request_id, owner_id, scene_generation, succeeded, reason)
 
 	var actor_envelope := {
 		"request_id": request_id,
@@ -83,11 +83,16 @@ func _on_actor_decision(request_id: String, actor_id: String, accepted: bool, re
 		_lifecycle.actor_reject(request_id, actor_id, _active_scene_generation, reason, Time.get_ticks_msec())
 
 
-func _on_actor_completion(request_id: String, succeeded: bool, reason: String) -> void:
+func _on_actor_completion(request_id: String, actor_id: String, scene_generation: int, succeeded: bool, reason: String) -> void:
+	# Completion callbacks are scene-scoped just like acceptance callbacks.
+	# A callback retained by an actor from a previous scene must not advance
+	# the lifecycle after the active scene generation changes.
+	if scene_generation != _active_scene_generation:
+		return
 	if succeeded:
-		_lifecycle.complete_request(request_id)
+		_lifecycle.complete_request(request_id, actor_id, scene_generation)
 	else:
-		_lifecycle.fail_request(request_id, reason)
+		_lifecycle.fail_request(request_id, actor_id, scene_generation, reason)
 
 
 static func _failure(code: String, message: String) -> Dictionary:
