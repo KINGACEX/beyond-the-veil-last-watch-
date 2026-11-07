@@ -64,15 +64,13 @@ func mark_executing(request_id: String) -> Dictionary:
 	return _success("execution_started", clean_id, "executing")
 
 
-func complete_request(request_id: String) -> Dictionary:
-	var clean_id := request_id.strip_edges()
-	if not _requests.has(clean_id):
-		return _failure("request_not_found", "The request does not exist.")
-	var record: Dictionary = _requests[clean_id]
-	if String(record["state"]) != "executing":
-		return _failure("request_not_executing", "Only an executing request can complete.")
+func complete_request(request_id: String, actor_id: String, scene_generation: int) -> Dictionary:
+	var checked := _validate_execution_callback(request_id, actor_id, scene_generation)
+	if not checked.get("ok", false):
+		return checked
+	var record: Dictionary = checked["record"]
 	record["state"] = "executed"
-	return _success("request_executed", clean_id, "executed")
+	return _success("request_executed", String(record["request_id"]), "executed")
 
 
 func cancel_request(request_id: String, now_msec: int) -> Dictionary:
@@ -130,6 +128,23 @@ func _validate_actor_callback(request_id: String, actor_id: String, scene_genera
 	return {"ok": true, "record": record}
 
 
+func _validate_execution_callback(request_id: String, actor_id: String, scene_generation: int) -> Dictionary:
+	var clean_id := request_id.strip_edges()
+	var clean_actor := actor_id.strip_edges()
+	if clean_id.is_empty():
+		return _failure("missing_request_id", "A request identifier is required.")
+	if not _requests.has(clean_id):
+		return _failure("request_not_found", "The request does not exist.")
+	var record: Dictionary = _requests[clean_id]
+	if String(record["state"]) != "executing":
+		return _failure("request_not_executing", "Only an executing request can receive a completion callback.")
+	if scene_generation != int(record["scene_generation"]):
+		return _failure("stale_scene_callback", "The completion belongs to a different scene generation.")
+	if clean_actor != String(record["owner_id"]):
+		return _failure("actor_mismatch", "The completion actor does not own this request.")
+	return {"ok": true, "record": record}
+
+
 static func _success(code: String, request_id: String, state: String, extra: Dictionary = {}) -> Dictionary:
 	var result := {
 		"ok": true,
@@ -146,15 +161,13 @@ static func _failure(code: String, message: String) -> Dictionary:
 	return {"ok": false, "code": code, "message": message}
 
 
-func fail_request(request_id: String, reason: String) -> Dictionary:
-	var clean_id := request_id.strip_edges()
-	if not _requests.has(clean_id):
-		return _failure("request_not_found", "The request does not exist.")
-	var record: Dictionary = _requests[clean_id]
-	if String(record["state"]) != "executing":
-		return _failure("request_not_executing", "Only an executing request can enter the failed state.")
+func fail_request(request_id: String, actor_id: String, scene_generation: int, reason: String) -> Dictionary:
+	var checked := _validate_execution_callback(request_id, actor_id, scene_generation)
+	if not checked.get("ok", false):
+		return checked
+	var record: Dictionary = checked["record"]
 	record["state"] = "failed"
 	record["failure_reason"] = reason.strip_edges()
-	return _success("request_failed", clean_id, "failed", {
+	return _success("request_failed", String(record["request_id"]), "failed", {
 		"reason": String(record["failure_reason"])
 	})
