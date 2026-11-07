@@ -8,6 +8,7 @@ class_name NLICompanionAdapter
 const Lifecycle = preload("res://scripts/nli/nli_request_lifecycle.gd")
 
 var _lifecycle = Lifecycle.new()
+var _active_scene_generation := -1
 
 
 func dispatch(validated_handoff: Dictionary, actor: Object, scene_generation: int, now_msec: int, timeout_msec: int) -> Dictionary:
@@ -28,12 +29,13 @@ func dispatch(validated_handoff: Dictionary, actor: Object, scene_generation: in
 	if actual_owner_id != owner_id:
 		return _failure("actor_mismatch", "The supplied actor does not match the intended handoff owner.")
 
+	_active_scene_generation = scene_generation
 	var started: Dictionary = _lifecycle.begin_request(request_id, owner_id, scene_generation, now_msec, timeout_msec)
 	if not started.get("ok", false):
 		return started
 
 	var decision_callback := func(accepted: bool, reason: String = "") -> void:
-		_on_actor_decision(request_id, owner_id, scene_generation, accepted, reason)
+		_on_actor_decision(request_id, owner_id, accepted, reason)
 
 	var completion_callback := func(succeeded: bool, reason: String = "") -> void:
 		_on_actor_completion(request_id, succeeded, reason)
@@ -64,13 +66,17 @@ func get_state(request_id: String) -> String:
 	return _lifecycle.get_state(request_id)
 
 
-func _on_actor_decision(request_id: String, actor_id: String, scene_generation: int, accepted: bool, reason: String) -> void:
+func set_active_scene_generation(scene_generation: int) -> void:
+	_active_scene_generation = scene_generation
+
+
+func _on_actor_decision(request_id: String, actor_id: String, accepted: bool, reason: String) -> void:
 	if accepted:
-		var accepted_result: Dictionary = _lifecycle.actor_accept(request_id, actor_id, scene_generation, Time.get_ticks_msec())
+		var accepted_result: Dictionary = _lifecycle.actor_accept(request_id, actor_id, _active_scene_generation, Time.get_ticks_msec())
 		if accepted_result.get("ok", false):
 			_lifecycle.mark_executing(request_id)
 	else:
-		_lifecycle.actor_reject(request_id, actor_id, scene_generation, reason, Time.get_ticks_msec())
+		_lifecycle.actor_reject(request_id, actor_id, _active_scene_generation, reason, Time.get_ticks_msec())
 
 
 func _on_actor_completion(request_id: String, succeeded: bool, reason: String) -> void:
