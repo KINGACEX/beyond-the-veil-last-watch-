@@ -9,6 +9,7 @@ var _knowledge_base: NLIKnowledgeBase
 # The adapter remains the authority for companion execution state. The service
 # retains the request-ID reservation and reconciles terminal adapter outcomes.
 var _companion_adapters: Dictionary = {}
+var _companion_reconciled: Dictionary = {}
 
 
 func _init(knowledge_base: NLIKnowledgeBase = null) -> void:
@@ -43,8 +44,7 @@ func handle_utterance(utterance: String, request_id: String, npc_id: StringName 
 			var adapter = _companion_adapters[canonical_request_id]
 			cancellation = adapter.cancel_request(canonical_request_id, Time.get_ticks_msec())
 			if cancellation.get("ok", false):
-				_request_gate.cancel_request(canonical_request_id)
-				_companion_adapters.erase(canonical_request_id)
+				_reconcile_companion_request(canonical_request_id)
 		else:
 			cancellation = _request_gate.cancel_request(canonical_request_id)
 		return {
@@ -125,6 +125,8 @@ func get_companion_request_state(request_id: String) -> String:
 
 
 func _reconcile_companion_request(request_id: String) -> void:
+	if _companion_reconciled.has(request_id):
+		return
 	if not _companion_adapters.has(request_id):
 		return
 	var adapter = _companion_adapters[request_id]
@@ -134,10 +136,10 @@ func _reconcile_companion_request(request_id: String) -> void:
 	match state:
 		"executed", "failed", "rejected_by_actor", "expired":
 			_request_gate.complete_request(request_id)
-			_companion_adapters.erase(request_id)
+			_companion_reconciled[request_id] = true
 		"cancelled":
 			_request_gate.cancel_request(request_id)
-			_companion_adapters.erase(request_id)
+			_companion_reconciled[request_id] = true
 
 
 static func _failure(code: String, message: String) -> Dictionary:
