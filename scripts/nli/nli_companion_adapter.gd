@@ -66,6 +66,10 @@ func get_state(request_id: String) -> String:
 	return _lifecycle.get_state(request_id)
 
 
+func cancel_request(request_id: String, now_msec: int) -> Dictionary:
+	return _lifecycle.cancel_request(request_id, now_msec)
+
+
 func set_active_scene_generation(scene_generation: int) -> void:
 	_active_scene_generation = scene_generation
 
