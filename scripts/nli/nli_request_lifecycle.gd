@@ -144,3 +144,17 @@ static func _success(code: String, request_id: String, state: String, extra: Dic
 
 static func _failure(code: String, message: String) -> Dictionary:
 	return {"ok": false, "code": code, "message": message}
+
+
+func fail_request(request_id: String, reason: String) -> Dictionary:
+	var clean_id := request_id.strip_edges()
+	if not _requests.has(clean_id):
+		return _failure("request_not_found", "The request does not exist.")
+	var record: Dictionary = _requests[clean_id]
+	if String(record["state"]) != "executing":
+		return _failure("request_not_executing", "Only an executing request can enter the failed state.")
+	record["state"] = "failed"
+	record["failure_reason"] = reason.strip_edges()
+	return _success("request_failed", clean_id, "failed", {
+		"reason": String(record["failure_reason"])
+	})
