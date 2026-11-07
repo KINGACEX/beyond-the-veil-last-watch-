@@ -83,7 +83,7 @@ func _test_execution_cannot_be_cancelled_as_pending() -> void:
 	lifecycle.actor_accept("r-executing", "ember", 1, 1)
 	_check(lifecycle.mark_executing("r-executing").get("ok", false), "Accepted request enters executing")
 	_check(lifecycle.cancel_request("r-executing", 2).get("code") == "execution_already_started", "Cancellation after execution requires a separate interrupt contract")
-	_check(lifecycle.complete_request("r-executing").get("state") == "executed", "Actor completion is explicit")
+	_check(lifecycle.complete_request("r-executing", "ember", 1).get("state") == "executed", "Actor completion is explicit")
 
 func _test_request_ids_are_single_use() -> void:
 	var lifecycle = Lifecycle.new()
@@ -96,10 +96,10 @@ func _test_execution_failure_is_retained() -> void:
 	lifecycle.begin_request("r-failed", "ember", 1, 0, 1000)
 	lifecycle.actor_accept("r-failed", "ember", 1, 1)
 	lifecycle.mark_executing("r-failed")
-	var failed: Dictionary = lifecycle.fail_request("r-failed", "Path unavailable")
+	var failed: Dictionary = lifecycle.fail_request("r-failed", "ember", 1, "Path unavailable")
 	_check(failed.get("ok", false), "Executing request can record actor failure")
 	_check(failed.get("state") == "failed", "Failure is retained as terminal state")
-	_check(lifecycle.complete_request("r-failed").get("code") == "request_not_executing", "Failed request cannot later complete")
+	_check(lifecycle.complete_request("r-failed", "ember", 1).get("code") == "request_not_executing", "Failed request cannot later complete")
 
 func _test_adapter_dispatches_only_validated_handoffs() -> void:
 	var adapter = CompanionAdapter.new()
