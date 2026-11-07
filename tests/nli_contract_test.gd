@@ -14,6 +14,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_test_handoff_does_not_claim_actor_acceptance()
 	_test_source_registry_resolves_authoritative_records()
+	_test_source_registry_rejects_missing_and_mismatched_hashes()
 	_test_allowlist_does_not_replace_source_resolution()
 	_test_nonapproved_and_wrong_scope_sources_are_blocked()
 	_test_request_gate_normalizes_identifiers_across_state_queries()
@@ -50,8 +51,8 @@ func _test_source_registry_resolves_authoritative_records() -> void:
 		"source_id": "source-contract-001",
 		"source_type": "canon_document",
 		"title": "Approved test source",
-		"location": "res://docs/test-source.md",
-		"content_hash": "sha256:test-fixture",
+		"location": "res://tests/fixtures/nli_source_registry_fixture.md",
+		"content_hash": FileAccess.get_sha256("res://tests/fixtures/nli_source_registry_fixture.md"),
 		"authority_status": "SLICE",
 		"review_status": "approved",
 		"permitted_scopes": ["profile-ember"]
@@ -61,6 +62,30 @@ func _test_source_registry_resolves_authoritative_records() -> void:
 	var resolved: Dictionary = knowledge.call("resolve_source", "source-contract-001")
 	_check(resolved.get("ok", false), "Registered source ID resolves")
 	_check(resolved.get("record", {}).get("review_status") == "approved", "Resolver returns review status")
+
+func _test_source_registry_rejects_missing_and_mismatched_hashes() -> void:
+	var knowledge = KnowledgeBase.new()
+	var missing_source := {
+		"source_id": "source-missing-file",
+		"source_type": "test_fixture",
+		"title": "Missing source file",
+		"location": "res://tests/fixtures/does-not-exist.md",
+		"content_hash": FileAccess.get_sha256("res://tests/fixtures/nli_source_registry_fixture.md"),
+		"authority_status": "SLICE",
+		"review_status": "approved",
+		"permitted_scopes": ["profile-integrity"]
+	}
+	_check(knowledge.register_source(missing_source).get("code") == "source_file_missing", "Missing source files cannot be registered")
+	var mismatched_source := missing_source.duplicate(true)
+	mismatched_source["source_id"] = "source-wrong-digest"
+	mismatched_source["location"] = "res://tests/fixtures/nli_source_registry_fixture.md"
+	mismatched_source["content_hash"] = "0000000000000000000000000000000000000000000000000000000000000000"
+	_check(knowledge.register_source(mismatched_source).get("code") == "source_hash_mismatch", "A forged digest cannot be registered")
+	var malformed_source := mismatched_source.duplicate(true)
+	malformed_source["source_id"] = "source-malformed-digest"
+	malformed_source["content_hash"] = "sha256:not-a-real-digest"
+	_check(knowledge.register_source(malformed_source).get("code") == "invalid_source_hash", "Malformed digest strings are rejected")
+
 
 func _test_allowlist_does_not_replace_source_resolution() -> void:
 	var knowledge = KnowledgeBase.new()
@@ -86,8 +111,8 @@ func _test_nonapproved_and_wrong_scope_sources_are_blocked() -> void:
 		"source_id": "source-pending-001",
 		"source_type": "canon_document",
 		"title": "Pending source",
-		"location": "res://docs/pending.md",
-		"content_hash": "sha256:pending",
+		"location": "res://tests/fixtures/nli_source_registry_fixture.md",
+		"content_hash": FileAccess.get_sha256("res://tests/fixtures/nli_source_registry_fixture.md"),
 		"authority_status": "SLICE",
 		"review_status": "pending",
 		"permitted_scopes": ["profile-pending"]
@@ -99,8 +124,8 @@ func _test_nonapproved_and_wrong_scope_sources_are_blocked() -> void:
 		"source_id": "source-wrong-scope",
 		"source_type": "canon_document",
 		"title": "Approved but out-of-scope source",
-		"location": "res://docs/other.md",
-		"content_hash": "sha256:other",
+		"location": "res://tests/fixtures/nli_source_registry_fixture.md",
+		"content_hash": FileAccess.get_sha256("res://tests/fixtures/nli_source_registry_fixture.md"),
 		"authority_status": "SLICE",
 		"review_status": "approved",
 		"permitted_scopes": ["different-profile"]
