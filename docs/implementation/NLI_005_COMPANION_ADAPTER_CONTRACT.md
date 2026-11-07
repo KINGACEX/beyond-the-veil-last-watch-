@@ -46,7 +46,7 @@ The adapter reports dispatch, not acceptance. Actor rejection is retained as `re
 
 ## Scene generation and time
 
-The adapter is informed when the active scene generation changes through `set_active_scene_generation`. A callback from an old scene is rejected by the lifecycle guard. The host must call this method as part of its authoritative scene-transition handling.
+Pending requests can be cancelled through `cancel_request(request_id, now_msec)`; callbacks arriving after cancellation are ignored by the lifecycle guard.\n\nThe adapter is informed when the active scene generation changes through `set_active_scene_generation`. A callback from an old scene is rejected by the lifecycle guard. The host must call this method as part of its authoritative scene-transition handling.
 
 The caller supplies `now_msec` from the same monotonic clock domain used by `Time.get_ticks_msec()`. The adapter uses Godot's monotonic tick clock for asynchronous callbacks. The host must call `expire_due(now_msec)` periodically; the adapter does not create a timer or background process.
 
