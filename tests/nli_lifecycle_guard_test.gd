@@ -19,6 +19,7 @@ func _run() -> void:
 	_test_execution_cannot_be_cancelled_as_pending()
 	_test_request_ids_are_single_use()
 	_test_execution_failure_is_retained()
+	_test_completion_requires_owner_and_scene()
 	_test_adapter_dispatches_only_validated_handoffs()
 	_test_actor_rejection_is_actor_owned()
 	_test_actor_failure_is_reported()
@@ -100,6 +101,18 @@ func _test_execution_failure_is_retained() -> void:
 	_check(failed.get("ok", false), "Executing request can record actor failure")
 	_check(failed.get("state") == "failed", "Failure is retained as terminal state")
 	_check(lifecycle.complete_request("r-failed", "ember", 1).get("code") == "request_not_executing", "Failed request cannot later complete")
+
+func _test_completion_requires_owner_and_scene() -> void:
+	var lifecycle = Lifecycle.new()
+	lifecycle.begin_request("r-completion-owner", "ember", 21, 0, 1000)
+	lifecycle.actor_accept("r-completion-owner", "ember", 21, 1)
+	lifecycle.mark_executing("r-completion-owner")
+	_check(lifecycle.complete_request("r-completion-owner", "other_actor", 21).get("code") == "actor_mismatch", "Wrong actor cannot complete execution")
+	_check(lifecycle.complete_request("r-completion-owner", "ember", 22).get("code") == "stale_scene_callback", "Wrong scene generation cannot complete execution")
+	_check(lifecycle.get_state("r-completion-owner") == "executing", "Rejected completion callbacks leave execution unchanged")
+	_check(lifecycle.complete_request("r-completion-owner", "ember", 21).get("state") == "executed", "Correct actor in correct scene can complete execution")
+	_check(lifecycle.complete_request("r-completion-owner", "ember", 21).get("code") == "request_not_executing", "Duplicate completion cannot transition twice")
+
 
 func _test_adapter_dispatches_only_validated_handoffs() -> void:
 	var adapter = CompanionAdapter.new()
