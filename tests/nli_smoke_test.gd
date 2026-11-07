@@ -130,8 +130,8 @@ func _register_test_source(knowledge: NLIKnowledgeBase, source_id: String, scope
 		"source_id": source_id,
 		"source_type": "test_fixture",
 		"title": "NLI smoke-test source",
-		"location": "res://tests/nli_smoke_test.gd",
-		"content_hash": "sha256:test-fixture",
+		"location": "res://tests/fixtures/nli_source_registry_fixture.md",
+		"content_hash": FileAccess.get_sha256("res://tests/fixtures/nli_source_registry_fixture.md"),
 		"authority_status": "SLICE",
 		"review_status": "approved",
 		"permitted_scopes": [scope]
