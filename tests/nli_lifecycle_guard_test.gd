@@ -25,6 +25,8 @@ func _run() -> void:
 	_test_stale_scene_callback_cannot_complete_request()
 	_test_duplicate_actor_acknowledgement_is_ignored()
 	_test_actor_identity_must_match_handoff()
+	_test_adapter_cancellation_rejects_late_actor_callback()
+	_test_actor_without_contract_is_not_dispatched()
 	if failures == 0:
 		print("NLI_LIFECYCLE_GUARD_TESTS: PASS")
 		quit(0)
@@ -158,6 +160,25 @@ func _test_actor_identity_must_match_handoff() -> void:
 	var handoff := {"stage": "validated", "request_id": "adapter-wrong-actor", "target_owner_id": "ember", "command": "scout"}
 	var result: Dictionary = adapter.dispatch(handoff, actor, 16, Time.get_ticks_msec(), 30000)
 	_check(result.get("code") == "actor_mismatch", "Adapter rejects actor identity mismatch before dispatch")
+
+
+func _test_adapter_cancellation_rejects_late_actor_callback() -> void:
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	actor.mode = "delayed"
+	var now := Time.get_ticks_msec()
+	var handoff := {"stage": "validated", "request_id": "adapter-cancel", "target_owner_id": "ember", "command": "scout"}
+	adapter.dispatch(handoff, actor, 17, now, 30000)
+	_check(adapter.cancel_request("adapter-cancel", Time.get_ticks_msec()).get("ok", false), "Adapter can cancel a pending actor request")
+	actor.accept_saved()
+	_check(adapter.get_state("adapter-cancel") == "cancelled", "Late actor callback cannot revive cancelled request")
+
+func _test_actor_without_contract_is_not_dispatched() -> void:
+	var adapter = CompanionAdapter.new()
+	var actor = RefCounted.new()
+	var handoff := {"stage": "validated", "request_id": "adapter-no-contract", "target_owner_id": "ember", "command": "scout"}
+	var result: Dictionary = adapter.dispatch(handoff, actor, 18, Time.get_ticks_msec(), 30000)
+	_check(result.get("code") == "actor_contract_missing", "Actor without the required interface is rejected")
 
 
 func _check(condition: bool, label: String) -> void:
