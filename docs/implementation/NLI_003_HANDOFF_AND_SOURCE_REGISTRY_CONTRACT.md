@@ -108,3 +108,16 @@ The initial test run `42031539741` failed on all three lookup assertions while t
 **Verification:** GitHub Actions run `42031646069` passed on that commit, including NLI smoke tests, NLI contract tests, core interaction acceptance tests and the 10-frame main-scene launch.
 
 This fixes identifier normalization only. It does not implement actor-owned companion lifecycle, persistence, expiry, timeout, stale callbacks or cryptographic source-hash verification.
+
+
+## 12. Source-file integrity verification — 7 November 2026
+
+**IMPLEMENTED on isolated branch `btv/nli-lifecycle-guard-001`; CI verification pending:**
+- Source registration now requires a 64-character hexadecimal SHA-256 digest.
+- Source locations are restricted to project `res://` resources.
+- Registration calculates the digest with Godot `FileAccess.get_sha256` and rejects missing files, malformed digests and mismatches.
+- Source resolution recalculates the digest so changed or missing content cannot continue authorizing NPC knowledge.
+- Tests use a dedicated non-canon fixture and verify missing-file, malformed-digest and incorrect-digest rejection.
+- The fixture is explicitly test-only and must never be registered as production canon.
+
+**Boundary:** This is file-integrity verification, not a full provenance or authorization system. A matching hash proves that the bytes match the registered digest; it does not prove that a document is authoritative, approved by the user, semantically supports a statement, or is safe to expose to a particular NPC. Existing review status, authority status, permitted scopes and NPC allowlists remain separate checks.
