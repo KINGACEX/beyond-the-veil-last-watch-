@@ -3,6 +3,8 @@ extends SceneTree
 const Service = preload("res://scripts/nli/nli_service.gd")
 const KnowledgeBase = preload("res://scripts/nli/nli_knowledge_base.gd")
 const RequestGate = preload("res://scripts/nli/nli_request_gate.gd")
+const CompanionAdapter = preload("res://scripts/nli/nli_companion_adapter.gd")
+const MockActor = preload("res://tests/fixtures/mock_nli_companion_actor.gd")
 
 var failures := 0
 
@@ -19,6 +21,9 @@ func _run() -> void:
 	_test_service_rejects_blank_request_ids_consistently()
 	_test_query_and_action_requests_have_distinct_terminal_semantics()
 	_test_cancellation_only_cancels_a_pending_action_request()
+	_test_service_reconciles_adapter_terminal_state()
+	_test_service_cancellation_reaches_dispatched_adapter()
+	_test_service_keeps_delayed_execution_pending_until_terminal()
 	if failures == 0:
 		print("NLI_CONTRACT_TESTS: PASS")
 		quit(0)
@@ -177,6 +182,46 @@ func _test_cancellation_only_cancels_a_pending_action_request() -> void:
 	var completed_result: Dictionary = completed_cancellation.get("result", {})
 	_check(not completed_cancellation.get("ok", false), "Completed knowledge query cannot be cancelled")
 	_check(completed_result.get("code") == "request_not_pending", "Cancellation rejects a non-pending request")
+
+
+func _test_service_reconciles_adapter_terminal_state() -> void:
+	var service = Service.new()
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	var validated: Dictionary = service.handle_utterance("scout ahead", "service-adapter-success", &"", "ember")
+	var handoff: Dictionary = validated.get("result", {})
+	var dispatched: Dictionary = service.dispatch_companion_handoff(handoff, adapter, actor, 31, Time.get_ticks_msec(), 30000)
+	_check(dispatched.get("ok", false), "Service dispatches its validated handoff through the adapter")
+	_check(service.get_companion_request_state("service-adapter-success") == "executed", "Service reads adapter-owned executed state")
+	var duplicate: Dictionary = service.handle_utterance("scout ahead", "service-adapter-success", &"", "ember")
+	_check(duplicate.get("code") == "duplicate_request", "Reconciled terminal request ID remains single-use")
+
+
+func _test_service_cancellation_reaches_dispatched_adapter() -> void:
+	var service = Service.new()
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	actor.mode = "delayed"
+	var validated: Dictionary = service.handle_utterance("scout ahead", "service-adapter-cancel", &"", "ember")
+	service.dispatch_companion_handoff(validated.get("result", {}), adapter, actor, 32, Time.get_ticks_msec(), 30000)
+	var cancellation: Dictionary = service.handle_utterance("cancel", "service-adapter-cancel")
+	_check(cancellation.get("ok", false), "Service cancellation reaches the dispatched adapter")
+	_check(adapter.get_state("service-adapter-cancel") == "cancelled", "Adapter lifecycle records the cancellation")
+	actor.accept_saved()
+	_check(adapter.get_state("service-adapter-cancel") == "cancelled", "Late actor acknowledgement cannot revive service cancellation")
+
+
+func _test_service_keeps_delayed_execution_pending_until_terminal() -> void:
+	var service = Service.new()
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	actor.mode = "delayed"
+	var validated: Dictionary = service.handle_utterance("scout ahead", "service-adapter-delayed", &"", "ember")
+	service.dispatch_companion_handoff(validated.get("result", {}), adapter, actor, 33, Time.get_ticks_msec(), 30000)
+	actor.accept_saved()
+	_check(service.get_companion_request_state("service-adapter-delayed") == "executing", "Service preserves adapter executing state without premature completion")
+	actor.complete_saved()
+	_check(service.get_companion_request_state("service-adapter-delayed") == "executed", "Service reconciles the adapter after actor completion")
 
 
 func _check(condition: bool, label: String) -> void:
