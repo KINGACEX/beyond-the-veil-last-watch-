@@ -23,6 +23,7 @@ func _run() -> void:
 	_test_actor_rejection_is_actor_owned()
 	_test_actor_failure_is_reported()
 	_test_stale_scene_callback_cannot_complete_request()
+	_test_stale_scene_completion_cannot_advance_request()
 	_test_duplicate_actor_acknowledgement_is_ignored()
 	_test_actor_identity_must_match_handoff()
 	_test_adapter_cancellation_rejects_late_actor_callback()
@@ -143,6 +144,20 @@ func _test_stale_scene_callback_cannot_complete_request() -> void:
 	_check(adapter.get_state("adapter-stale") == "pending", "Callback from an old scene cannot accept the request")
 	adapter.expire_due(now + 30001)
 	_check(adapter.get_state("adapter-stale") == "expired", "Unacknowledged stale request can expire")
+
+func _test_stale_scene_completion_cannot_advance_request() -> void:
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	actor.mode = "delayed"
+	var now := Time.get_ticks_msec()
+	var handoff := {"stage": "validated", "request_id": "adapter-stale-completion", "target_owner_id": "ember", "command": "scout"}
+	adapter.dispatch(handoff, actor, 19, now, 30000)
+	actor.accept_saved()
+	_check(adapter.get_state("adapter-stale-completion") == "executing", "Actor acceptance starts execution before delayed completion")
+	adapter.set_active_scene_generation(20)
+	actor.complete_saved()
+	_check(adapter.get_state("adapter-stale-completion") == "executing", "Completion callback from an old scene cannot advance execution")
+
 
 func _test_duplicate_actor_acknowledgement_is_ignored() -> void:
 	var adapter = CompanionAdapter.new()
