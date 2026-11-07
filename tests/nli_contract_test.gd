@@ -190,8 +190,12 @@ func _test_service_reconciles_adapter_terminal_state() -> void:
 	var actor = MockActor.new()
 	var validated: Dictionary = service.handle_utterance("scout ahead", "service-adapter-success", &"", "ember")
 	var handoff: Dictionary = validated.get("result", {})
+	var forged: Dictionary = handoff.duplicate(true)
+	forged["command"] = "protect"
+	var forged_result: Dictionary = service.dispatch_companion_handoff(forged, adapter, actor, 31, Time.get_ticks_msec(), 30000)
+	_check(forged_result.get("code") == "handoff_mismatch", "Service rejects a modified handoff even when its request ID is valid")
 	var dispatched: Dictionary = service.dispatch_companion_handoff(handoff, adapter, actor, 31, Time.get_ticks_msec(), 30000)
-	_check(dispatched.get("ok", false), "Service dispatches its validated handoff through the adapter")
+	_check(dispatched.get("ok", false), "Service dispatches its exact validated handoff through the adapter")
 	_check(service.get_companion_request_state("service-adapter-success") == "executed", "Service reads adapter-owned executed state")
 	var duplicate: Dictionary = service.handle_utterance("scout ahead", "service-adapter-success", &"", "ember")
 	_check(duplicate.get("code") == "duplicate_request", "Reconciled terminal request ID remains single-use")
