@@ -1,6 +1,8 @@
 extends SceneTree
 
 const Lifecycle = preload("res://scripts/nli/nli_request_lifecycle.gd")
+const CompanionAdapter = preload("res://scripts/nli/nli_companion_adapter.gd")
+const MockActor = preload("res://tests/fixtures/mock_nli_companion_actor.gd")
 
 var failures := 0
 
@@ -16,6 +18,13 @@ func _run() -> void:
 	_test_duplicate_acknowledgement_is_rejected()
 	_test_execution_cannot_be_cancelled_as_pending()
 	_test_request_ids_are_single_use()
+	_test_execution_failure_is_retained()
+	_test_adapter_dispatches_only_validated_handoffs()
+	_test_actor_rejection_is_actor_owned()
+	_test_actor_failure_is_reported()
+	_test_stale_scene_callback_cannot_complete_request()
+	_test_duplicate_actor_acknowledgement_is_ignored()
+	_test_actor_identity_must_match_handoff()
 	if failures == 0:
 		print("NLI_LIFECYCLE_GUARD_TESTS: PASS")
 		quit(0)
@@ -78,6 +87,78 @@ func _test_request_ids_are_single_use() -> void:
 	lifecycle.begin_request("r-once", "ember", 1, 0, 1000)
 	lifecycle.cancel_request("r-once", 1)
 	_check(lifecycle.begin_request("r-once", "ember", 1, 2, 1000).get("code") == "duplicate_request", "Terminal request ID cannot be reused")
+
+func _test_execution_failure_is_retained() -> void:
+	var lifecycle = Lifecycle.new()
+	lifecycle.begin_request("r-failed", "ember", 1, 0, 1000)
+	lifecycle.actor_accept("r-failed", "ember", 1, 1)
+	lifecycle.mark_executing("r-failed")
+	var failed: Dictionary = lifecycle.fail_request("r-failed", "Path unavailable")
+	_check(failed.get("ok", false), "Executing request can record actor failure")
+	_check(failed.get("state") == "failed", "Failure is retained as terminal state")
+	_check(lifecycle.complete_request("r-failed").get("code") == "request_not_executing", "Failed request cannot later complete")
+
+func _test_adapter_dispatches_only_validated_handoffs() -> void:
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	var now := Time.get_ticks_msec()
+	var handoff := {"stage": "validated", "request_id": "adapter-success", "target_owner_id": "ember", "command": "scout"}
+	var result: Dictionary = adapter.dispatch(handoff, actor, 10, now, 30000)
+	_check(result.get("ok", false), "Validated handoff is dispatched")
+	_check(adapter.get_state("adapter-success") == "executed", "Actor acceptance and completion advance the request")
+	var invalid := handoff.duplicate(true)
+	invalid["request_id"] = "adapter-unvalidated"
+	invalid["stage"] = "draft"
+	_check(adapter.dispatch(invalid, actor, 10, Time.get_ticks_msec(), 30000).get("code") == "handoff_not_validated", "Unvalidated envelope is blocked before actor dispatch")
+
+func _test_actor_rejection_is_actor_owned() -> void:
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	actor.mode = "reject"
+	var now := Time.get_ticks_msec()
+	var handoff := {"stage": "validated", "request_id": "adapter-reject", "target_owner_id": "ember", "command": "scout"}
+	adapter.dispatch(handoff, actor, 11, now, 30000)
+	_check(adapter.get_state("adapter-reject") == "rejected_by_actor", "Actor rejection is retained without adapter approval")
+
+func _test_actor_failure_is_reported() -> void:
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	actor.mode = "fail"
+	var now := Time.get_ticks_msec()
+	var handoff := {"stage": "validated", "request_id": "adapter-fail", "target_owner_id": "ember", "command": "scout"}
+	adapter.dispatch(handoff, actor, 12, now, 30000)
+	_check(adapter.get_state("adapter-fail") == "failed", "Actor execution failure is retained")
+
+func _test_stale_scene_callback_cannot_complete_request() -> void:
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	actor.mode = "delayed"
+	var now := Time.get_ticks_msec()
+	var handoff := {"stage": "validated", "request_id": "adapter-stale", "target_owner_id": "ember", "command": "scout"}
+	adapter.dispatch(handoff, actor, 13, now, 30000)
+	adapter.set_active_scene_generation(14)
+	actor.accept_saved()
+	_check(adapter.get_state("adapter-stale") == "pending", "Callback from an old scene cannot accept the request")
+	adapter.expire_due(now + 30001)
+	_check(adapter.get_state("adapter-stale") == "expired", "Unacknowledged stale request can expire")
+
+func _test_duplicate_actor_acknowledgement_is_ignored() -> void:
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	actor.mode = "duplicate"
+	var now := Time.get_ticks_msec()
+	var handoff := {"stage": "validated", "request_id": "adapter-duplicate", "target_owner_id": "ember", "command": "scout"}
+	adapter.dispatch(handoff, actor, 15, now, 30000)
+	_check(adapter.get_state("adapter-duplicate") == "executed", "Duplicate acknowledgement cannot prevent one successful completion")
+
+func _test_actor_identity_must_match_handoff() -> void:
+	var adapter = CompanionAdapter.new()
+	var actor = MockActor.new()
+	actor.actor_id = "not_ember"
+	var handoff := {"stage": "validated", "request_id": "adapter-wrong-actor", "target_owner_id": "ember", "command": "scout"}
+	var result: Dictionary = adapter.dispatch(handoff, actor, 16, Time.get_ticks_msec(), 30000)
+	_check(result.get("code") == "actor_mismatch", "Adapter rejects actor identity mismatch before dispatch")
+
 
 func _check(condition: bool, label: String) -> void:
 	if condition:
