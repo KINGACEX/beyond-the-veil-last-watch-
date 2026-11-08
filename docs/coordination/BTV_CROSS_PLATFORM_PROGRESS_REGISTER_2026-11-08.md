@@ -160,3 +160,17 @@ Implemented camera-relative horizontal movement, diagonal normalization, pitch l
 A prior test attempt failed because a headless display server cannot capture a real desktop pointer. The OS pointer-capture assertions are now explicitly skipped in headless CI. Actual desktop capture/focus behaviour still needs a windowed runtime test. Android touch-look, virtual joystick, multitouch and physical-device testing remain open. No scene, story/canon, mission content or paid dependency was added. No merge or release was performed.
 
 Implementation report: `docs/implementation/BTV_M1_CAMERA_RELATIVE_MOUSE_LOOK_IMPLEMENTATION_2026-11-08.md`.
+
+
+
+## 15. M2 touch input adapter — 8 November 2026
+
+**COMPLETED — isolated input-state adapter:** Branch `btv/mobile-touch-input-adapter-001`, head `9151e92f87a4e7971d3f44138fae1ec4c78ae0a3`, based on the M1 camera branch. Added `scripts/touch_input_adapter.gd` and `tests/touch_input_adapter_test.gd`, plus a CI step.
+
+The adapter tracks one movement finger and one independent look finger, computes a clamped/deadzoned joystick vector, returns incremental look deltas, rejects conflicting finger ownership, and resets on cancellation. A wrong-finger movement event returns the unchanged active movement vector so a separate look gesture cannot accidentally cancel movement.
+
+**CONFIRMED:** Godot 4.7.2 run [42499779484](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42499779484) passed the configured workflow, including `TOUCH_INPUT_ADAPTER_TESTS: PASS`.
+
+**NOT IMPLEMENTED:** Adapter-to-HUD integration, visible virtual joystick, right-side touch-look surface, contextual Interact placement and physical Android testing. The existing four-button touch overlay remains unchanged. This is not Android readiness.
+
+Implementation report: `docs/implementation/BTV_M2_TOUCH_INPUT_ADAPTER_2026-11-08.md`.
