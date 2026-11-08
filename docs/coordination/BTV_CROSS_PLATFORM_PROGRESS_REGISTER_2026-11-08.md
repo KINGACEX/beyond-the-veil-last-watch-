@@ -165,12 +165,10 @@ Implementation report: `docs/implementation/BTV_M1_CAMERA_RELATIVE_MOUSE_LOOK_IM
 
 ## 15. M2 touch input adapter — 8 November 2026
 
-**COMPLETED — isolated input-state adapter:** Branch `btv/mobile-touch-input-adapter-001`, head `9151e92f87a4e7971d3f44138fae1ec4c78ae0a3`, based on the M1 camera branch. Added `scripts/touch_input_adapter.gd` and `tests/touch_input_adapter_test.gd`, plus a CI step.
+**COMPLETED — independent touch adapter and HUD integration:** Branch `btv/mobile-touch-input-adapter-001`, head `3484672809ad95e4e36591e7ca7d49d5f61dfd5e`, based on the M1 camera branch. Added the independent movement/look finger adapter, analog joystick UI, right-side camera-look region, shared InputMap action-strength routing, Interact-area exclusion, viewport-sized overlay layout and cleanup on focus loss/scene teardown. The legacy directional pad remains available through the exported fallback switch.
 
-The adapter tracks one movement finger and one independent look finger, computes a clamped/deadzoned joystick vector, returns incremental look deltas, rejects conflicting finger ownership, and resets on cancellation. A wrong-finger movement event returns the unchanged active movement vector so a separate look gesture cannot accidentally cancel movement.
+**CONFIRMED:** Godot 4.7.2 run [42500466981](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42500466981) passed editor parsing, all existing NLI/mission/interaction/camera suites, touch adapter tests, touch HUD integration tests and the 10-frame main-scene launch. The integration suite reports `TOUCH_CONTROLS_INTEGRATION_TESTS: PASS`.
 
-**CONFIRMED:** Godot 4.7.2 run [42499779484](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42499779484) passed the configured workflow, including `TOUCH_INPUT_ADAPTER_TESTS: PASS`.
-
-**NOT IMPLEMENTED:** Adapter-to-HUD integration, visible virtual joystick, right-side touch-look surface, contextual Interact placement and physical Android testing. The existing four-button touch overlay remains unchanged. This is not Android readiness.
+**NOT VERIFIED:** physical Android touch behaviour, thumb reach, safe-area insets, orientation changes, sensitivity, frame pacing and device performance. Headless synthetic input is not device acceptance.
 
 Implementation report: `docs/implementation/BTV_M2_TOUCH_INPUT_ADAPTER_2026-11-08.md`.
