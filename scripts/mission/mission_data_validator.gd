@@ -1,7 +1,7 @@
 extends RefCounted
 
 ## Validates a neutral typed registry without imposing a final Godot Resource schema.
-## IDs and namespaces are trimmed but remain case-sensitive.
+## IDs and namespaces must be Strings; their contents are trimmed but remain case-sensitive.
 ## Each record is a Dictionary with namespace, id and optional path.
 ## Each reference is a Dictionary with from_namespace, from_id, field,
 ## to_namespace and to_id.
@@ -16,9 +16,19 @@ static func validate_registry(records: Array, references: Array) -> Dictionary:
 			continue
 
 		var record: Dictionary = record_variant
-		var record_namespace := String(record.get("namespace", "")).strip_edges()
-		var record_id := String(record.get("id", "")).strip_edges()
+		var raw_namespace: Variant = record.get("namespace", "")
+		var raw_id: Variant = record.get("id", "")
 		var path := String(record.get("path", ""))
+
+		if typeof(raw_namespace) != TYPE_STRING:
+			_add_diagnostic(diagnostics, "invalid_namespace_type", "", "", "namespace", path, "A registry namespace must be a String.")
+			continue
+		if typeof(raw_id) != TYPE_STRING:
+			_add_diagnostic(diagnostics, "invalid_id_type", String(raw_namespace).strip_edges(), "", "id", path, "A registry ID must be a String.")
+			continue
+
+		var record_namespace := String(raw_namespace).strip_edges()
+		var record_id := String(raw_id).strip_edges()
 
 		if record_namespace.is_empty():
 			_add_diagnostic(diagnostics, "missing_namespace", record_namespace, record_id, "namespace", path, "A registry record requires a non-empty namespace.")
@@ -42,6 +52,16 @@ static func validate_registry(records: Array, references: Array) -> Dictionary:
 			continue
 
 		var reference: Dictionary = reference_variant
+		var required_string_fields := ["from_namespace", "from_id", "field", "to_namespace", "to_id"]
+		var invalid_type := false
+		for field_name_variant in required_string_fields:
+			var field_name := String(field_name_variant)
+			if reference.has(field_name) and typeof(reference[field_name]) != TYPE_STRING:
+				_add_diagnostic(diagnostics, "invalid_reference_field_type", "", "", field_name, String(reference.get("path", "")), "Reference field '%s' must be a String." % field_name)
+				invalid_type = true
+		if invalid_type:
+			continue
+
 		var from_namespace := String(reference.get("from_namespace", "")).strip_edges()
 		var from_id := String(reference.get("from_id", "")).strip_edges()
 		var field := String(reference.get("field", "")).strip_edges()
@@ -49,7 +69,7 @@ static func validate_registry(records: Array, references: Array) -> Dictionary:
 		var to_id := String(reference.get("to_id", "")).strip_edges()
 
 		if from_namespace.is_empty() or from_id.is_empty() or field.is_empty() or to_namespace.is_empty() or to_id.is_empty():
-			_add_diagnostic(diagnostics, "invalid_reference", from_namespace, from_id, field, "", "A reference requires owner namespace/ID, field, and target namespace/ID.")
+			_add_diagnostic(diagnostics, "invalid_reference", from_namespace, from_id, field, String(reference.get("path", "")), "A reference requires owner namespace/ID, field, and target namespace/ID.")
 			continue
 
 		var owner_matches: Array = _find_matches(index, from_namespace, from_id)
