@@ -56,5 +56,8 @@ jobs:
       - name: Run touch input adapter tests
         run: godot --headless --path . --script res://tests/touch_input_adapter_test.gd
 
+      - name: Run touch controls integration tests
+        run: godot --headless --path . --script res://tests/touch_controls_integration_test.gd
+
       - name: Launch main scene for 10 frames
         run: godot --headless --path . --quit-after 10
