@@ -1,9 +1,10 @@
 # BTV Prototype — Implementation Status
 
-**Active isolated branch:** `btv/test-first-contracts-001`  
+**Engineering reference branch:** `btv/test-first-contracts-001`  
+**Separate camera/input feature branch:** `btv/camera-relative-mouselook-001` (unmerged)  
 **Prototype origin:** `btv/bootstrap-prototype-001`  
 **Status:** HEADLESS CI PASSED; visual/runtime and Android device validation remain pending.  
-**Latest verified successful run at this document revision:** [42497741908](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42497741908), code commit `81570c095f90b0b9c1d4e3ab38ebb40c7c3a9efd` on `btv/mission-validator-strict-types-001`.
+**Latest verified successful camera/input feature run at this document revision:** [42499393434](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42499393434), commit `de2cb1d29f81a011ddb5319e6c32d95ac3418e45` on `btv/camera-relative-mouselook-001`. The strict-type PR #2 run `42497741908` also passed on its separate feature branch.
 
 ## 1. Implemented source
 
@@ -15,6 +16,14 @@
 - Initial Android touch overlay feeding the same InputMap actions as keyboard.
 - Nearest eligible interactable selection, stable authored-ID tie-break, disabled/freed/duplicate-ID exclusion.
 - Touch release on button-up, application focus loss and overlay teardown.
+
+### Camera/input M1 — isolated feature branch
+- Camera-relative horizontal movement and diagonal normalization.
+- Mouse-look yaw/pitch logic with pitch limits.
+- Camera yaw remains independent of player-body facing rotation.
+- Desktop pointer capture/release handling is implemented in source; actual pointer capture is not exercised by headless CI.
+- New camera input tests pass in run 42499393434.
+- Mobile camera-look surface, virtual joystick and physical Android verification remain open.
 
 ### NLI
 - Deterministic phrase parser and typed intent validation.
