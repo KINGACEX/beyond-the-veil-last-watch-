@@ -50,3 +50,12 @@
 - No GitHub security settings, branch protection, OAuth applications or credentials were changed.
 - No files were deleted, no merge was performed and no content was published.
 - No CI result is recorded for this documentation branch; the engineering branch's existing CI evidence is separate.
+
+
+## Additional specification work
+
+| ID | Date (UTC) | Platform/actor | Activity | Evidence | Status |
+|---|---|---|---|---|---|
+| ACT-MA-013 | 2026-11-08 | ChatGPT / GitHub repository tool | Authored the Lore Bridge v1.1 remediation and acceptance specification, then linked it from project indexes. | `docs/implementation/BTV_LORE_BRIDGE_V1_1_REMEDIATION_SPEC.md`; commit `acb6938cc961ba54270dd47e2434b3ffc1708e2d`. | COMPLETED — SPECIFICATION ONLY |
+
+No Lore Bridge code was changed, installed, registered or executed as part of this specification task.
