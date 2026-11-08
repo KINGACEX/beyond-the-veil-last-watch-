@@ -155,3 +155,13 @@ GitHub Actions run `42497741908` was observed in progress while installing Godot
 ### Strict-type PR verification update
 
 **CONFIRMED:** Draft PR #2 workflow run `42497741908` completed successfully on Godot 4.7.2. The mission data validator suite reports `MISSION_DATA_VALIDATOR_TESTS: PASS`, and NLI smoke, NLI contract, core interaction acceptance and the 10-frame main-scene launch also passed. The change is still in a draft PR and has not been merged. Keep creator review as the merge gate.
+
+
+
+## Engineering review update — interaction matrix, 8 November 2026
+
+**COMPLETED — inspection and evidence accounting:** The controller, touch overlay, main scene, core interaction test suite, acceptance matrix and cross-platform input brief were reviewed against the successful Godot 4.7.2 run [42497741908](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42497741908). The matrix now records 15 automated cases, 2 partial cases and 11 not yet automated. Headless CI is not treated as device or manual verification.
+
+**CONFIRMED source gaps:** camera-relative movement and mouse-look are not implemented in the current player controller. The touch overlay is a four-direction-button scaffold plus Interact; it is not a complete mobile control scheme. Scene transition/re-entry, pause/UI input context, unavailable-target handling, multitouch, multiple-shape deduplication and player/self-sensor exclusion remain untested or unimplemented.
+
+**Next bounded task:** on a fresh isolated engineering branch from the latest verified base, implement only camera-relative movement and desktop mouse-look, preserving current keyboard actions and interaction. Add focused logic tests for camera-relative direction, diagonal normalization and pitch limits where practical. Do not combine this with a virtual joystick, mobile camera-look surface, responsive menus or gameplay features. Verify Godot 4.7.2 CI and report manual/device limitations explicitly.
