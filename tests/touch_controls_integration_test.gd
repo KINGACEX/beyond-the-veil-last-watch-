@@ -93,7 +93,8 @@ func _test_look_surface_rotates_camera_without_cancelling_movement() -> void:
 	var look_start := _screen_point(look_surface, Vector2(look_surface.size.x * 0.65, look_surface.size.y * 0.4))
 	var pivot: Node3D = player.get_node("CameraPivot")
 	var initial_yaw := pivot.global_rotation.y
-	print("DEBUG look_size=", look_surface.size, " look_start=", look_start, " player_group=", player.is_in_group("btv_player"), " touch_player=", overlay.get("_player"))	overlay.call("_input", _touch(2, true, move_center))
+	print("DEBUG look_size=", look_surface.size, " look_start=", look_start, " player_group=", player.is_in_group("btv_player"), " touch_player=", overlay.get("_player"))
+	overlay.call("_input", _touch(2, true, move_center))
 	overlay.call("_input", _touch(3, true, look_start))
 	overlay.call("_input", _drag(2, move_center + Vector2(50, 0)))
 	overlay.call("_input", _drag(3, look_start + Vector2(12, 0)))
