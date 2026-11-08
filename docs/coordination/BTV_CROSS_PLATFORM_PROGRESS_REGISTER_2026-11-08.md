@@ -169,6 +169,6 @@ Implementation report: `docs/implementation/BTV_M1_CAMERA_RELATIVE_MOUSE_LOOK_IM
 
 **CONFIRMED:** Godot 4.7.2 run [42500466981](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42500466981) passed editor parsing, all existing NLI/mission/interaction/camera suites, touch adapter tests, touch HUD integration tests and the 10-frame main-scene launch. The integration suite reports `TOUCH_CONTROLS_INTEGRATION_TESTS: PASS`.
 
-**NOT VERIFIED:** physical Android touch behaviour, thumb reach, safe-area insets, orientation changes, sensitivity, frame pacing and device performance. Headless synthetic input is not device acceptance.
+**NOT VERIFIED:** physical Android touch behaviour, thumb reach, safe-area insets, orientation changes, sensitivity, frame pacing and device performance. Headless synthetic input is not device acceptance. The inspected branch has no export_presets.cfg or Android export job, and no package identifier has been selected; an installable debug APK is therefore a prerequisite to device review.
 
 Implementation report: `docs/implementation/BTV_M2_TOUCH_INPUT_ADAPTER_2026-11-08.md`.
