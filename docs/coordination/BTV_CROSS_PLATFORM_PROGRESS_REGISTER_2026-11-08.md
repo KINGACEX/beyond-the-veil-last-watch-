@@ -126,7 +126,7 @@ Created `docs/story/BTV_RIDGEVIEW_REVELATION_AND_EVIDENCE_MATRIX_v0.1.md` from t
 
 A bounded engineering change is under review on `btv/mission-validator-strict-types-001`. The neutral mission registry validator previously converted arbitrary Variant values to Strings before checking them, allowing wrong-type IDs or reference fields to be silently coerced. Test-first cases now require actual String values and the implementation emits stable type diagnostics. The contract document was updated. Draft PR #2 targets `btv/test-first-contracts-001`: https://github.com/KINGACEX/beyond-the-veil-last-watch-/pull/2.
 
-**Verification at register update:** GitHub Actions run `42497741908` was in progress at the Godot 4.7.2 installation step. No test pass is claimed. The PR remains draft and unmerged pending CI and review.
+**Historical verification note:** At the time of the original register entry, run `42497741908` was still in progress. The subsequent completion is recorded immediately below. The PR remains draft and unmerged pending creator review.
 
 
 ### Strict-type PR verification update
