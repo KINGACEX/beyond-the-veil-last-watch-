@@ -62,4 +62,4 @@ The analog layout is enabled by default on touchscreen devices. The old directio
 
 ## Decision boundary
 
-This is an isolated, unmerged feature branch. No release, merge, store upload, paid asset, external dependency, story/canon change or mission content was added. The next gate is manual Android device validation and any required responsive/safe-area adjustments.
+This is an isolated, unmerged feature branch. No release, merge, store upload, paid asset, external dependency, story/canon change or mission content was added. The next gate is an installable Android debug build, followed by manual device validation and any required responsive/safe-area adjustments. The inspected repository has no `export_presets.cfg` and the current CI workflow has no Android export step; a package identifier decision is also still required. No identifier has been assumed.
