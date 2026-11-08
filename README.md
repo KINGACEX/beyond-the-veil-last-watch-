@@ -46,6 +46,7 @@ The cross-platform project records and Lore Bridge static review are being conso
 - [MiniMax Code Implementation charter](docs/agents/MINIMAX_CODE_IMPLEMENTATION_CHARTER_v1.0.md).
 - [ChatGPT Lead Coordinator charter](docs/agents/CHATGPT_LEAD_COORDINATOR_CHARTER_v1.0.md).
 - [Task and handoff protocol](docs/agents/BTV_AGENT_TASK_AND_HANDOFF_PROTOCOL_v1.0.md).
+- [Current cross-agent handoff XH-001](docs/coordination/BTV_CROSS_AGENT_HANDOFF_2026-11-08.md) — shared MiniMax/Claude/ChatGPT review task; dispatch and acknowledgement still pending.
 - [Visual production quality standard](docs/visual/BTV_VISUAL_PRODUCTION_QUALITY_STANDARD_v1.0.md).
 - [GitHub MCP and branch rules](docs/agents/BTV_GITHUB_MCP_AND_BRANCH_RULES_v1.0.md).
 - [Story Development Agent charter](docs/agents/BTV_STORY_DEVELOPMENT_AGENT_CHARTER_v0.1.md).
