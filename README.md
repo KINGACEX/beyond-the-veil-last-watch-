@@ -133,3 +133,7 @@ These are headless CI/documentation checks only. They do not verify rendered app
 - [Neutral Graphics Benchmark Scene Acceptance Contract](docs/qa/BTV_NEUTRAL_GRAPHICS_BENCHMARK_SCENE_ACCEPTANCE_CONTRACT_v1.0.md) — canon-neutral scene composition, telemetry, test protocol and acceptance gates.
 
 These documents record approved visual intent and proposed production standards. The renderer, target Android hardware, fixed asset budgets and physical-device performance remain unresolved until measured. Neither document claims the production art or Android build is implemented.
+
+
+### Lore Bridge remediation
+- [Lore Bridge v1.1 remediation and acceptance specification](docs/implementation/BTV_LORE_BRIDGE_V1_1_REMEDIATION_SPEC.md) — proposed safety, privacy, provenance, evidence-tier and test requirements; no source-code changes have been made.
