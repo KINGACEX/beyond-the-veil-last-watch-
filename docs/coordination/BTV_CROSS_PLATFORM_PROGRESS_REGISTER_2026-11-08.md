@@ -146,3 +146,17 @@ Inspected the current controller, touch overlay, main scene, automated test file
 **Next bounded engineering task:** add testable camera-relative movement and mouse-look on an isolated branch, only after checking the latest engineering head and CI state. Keep existing keyboard movement and interaction intact. Do not bundle the mobile virtual joystick/right-side touch-look region into that same change; it requires separate multi-touch and device acceptance work.
 
 **Changed documentation:** `docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md` and `docs/implementation/BOOTSTRAP_STATUS.md` were refreshed on this documentation branch. No gameplay code, scene files, canon or mission content changed during this review.
+
+
+
+## 14. M1 camera-relative movement and desktop mouse-look — 8 November 2026
+
+**COMPLETED ON ISOLATED FEATURE BRANCH:** `btv/camera-relative-mouselook-001`, head `de2cb1d29f81a011ddb5319e6c32d95ac3418e45`.
+
+Implemented camera-relative horizontal movement, diagonal normalization, pitch limits, desktop mouse-look logic, click-to-capture, Escape release and focus-loss pointer release. Camera yaw is tracked independently from player-body facing rotation because the camera pivot is parented to the player. Added `tests/player_camera_input_test.gd` and a dedicated CI step.
+
+**CONFIRMED:** Godot 4.7.2 run [42499393434](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42499393434) passed editor import/parsing, NLI smoke and contract tests, mission validator tests, core interaction acceptance tests, camera input tests and the 10-frame main-scene launch.
+
+A prior test attempt failed because a headless display server cannot capture a real desktop pointer. The OS pointer-capture assertions are now explicitly skipped in headless CI. Actual desktop capture/focus behaviour still needs a windowed runtime test. Android touch-look, virtual joystick, multitouch and physical-device testing remain open. No scene, story/canon, mission content or paid dependency was added. No merge or release was performed.
+
+Implementation report: `docs/implementation/BTV_M1_CAMERA_RELATIVE_MOUSE_LOOK_IMPLEMENTATION_2026-11-08.md`.
