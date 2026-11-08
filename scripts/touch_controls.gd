@@ -24,6 +24,8 @@ var _pressed_actions: Dictionary = {}
 
 
 func _ready() -> void:
+	_sync_overlay_rect()
+	get_viewport().size_changed.connect(_sync_overlay_rect)
 	visible = DisplayServer.is_touchscreen_available()
 	_legacy_pad.visible = not use_analog_touch_controls
 	_joystick_base.visible = use_analog_touch_controls
@@ -36,6 +38,18 @@ func _ready() -> void:
 	_bind_action(_interact, &"interact")
 	_adapter.joystick_radius = _joystick_radius()
 	_update_joystick_visual(Vector2.ZERO)
+
+
+func _sync_overlay_rect() -> void:
+	anchor_left = 0.0
+	anchor_top = 0.0
+	anchor_right = 0.0
+	anchor_bottom = 0.0
+	offset_left = 0.0
+	offset_top = 0.0
+	size = get_viewport_rect().size
+	if is_node_ready():
+		_update_joystick_visual(_adapter.get_movement_vector())
 
 
 func _input(event: InputEvent) -> void:
