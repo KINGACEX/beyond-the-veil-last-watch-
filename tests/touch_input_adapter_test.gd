@@ -90,6 +90,8 @@ func _test_same_finger_cannot_own_both_controls() -> void:
 	_check(adapter.begin_movement(5, Vector2.ZERO), "Finger first claims movement")
 	_check(not adapter.begin_look(5, Vector2.ZERO), "One finger cannot also claim camera look")
 	_check(adapter.begin_look(6, Vector2.ZERO), "A separate finger can claim camera look")
+	_check(adapter.is_movement_finger(5), "Movement ownership query identifies its finger")
+	_check(adapter.is_look_finger(6), "Look ownership query identifies its finger")
 
 
 func _test_release_only_clears_matching_finger() -> void:
