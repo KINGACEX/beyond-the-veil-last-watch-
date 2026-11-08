@@ -12,17 +12,21 @@ class_name BTVPlayerController
 @onready var _camera_pivot: Node3D = $CameraPivot
 
 var _gravity: float = 9.8
+var _camera_yaw_radians: float = 0.0
 var _nearby_interactables: Array[BTVInteractable] = []
 
 
 func _ready() -> void:
 	_gravity = float(ProjectSettings.get_setting("physics/3d/default_gravity", 9.8))
+	_camera_yaw_radians = _camera_pivot.global_rotation.y
+	_sync_camera_yaw()
 	var sensor: Area3D = $InteractionSensor
 	sensor.area_entered.connect(_on_sensor_area_entered)
 	sensor.area_exited.connect(_on_sensor_area_exited)
 
 
 func _physics_process(delta: float) -> void:
+	_sync_camera_yaw()
 	var input_vector := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var move_direction := _get_camera_relative_move_direction(input_vector)
 	if not is_on_floor():
@@ -35,6 +39,7 @@ func _physics_process(delta: float) -> void:
 		var target_yaw := atan2(-move_direction.x, -move_direction.z)
 		rotation.y = lerp_angle(rotation.y, target_yaw, min(turn_speed * delta, 1.0))
 	move_and_slide()
+	_sync_camera_yaw()
 	if Input.is_action_just_pressed("interact"):
 		_try_interact()
 
@@ -55,13 +60,20 @@ func _get_camera_relative_move_direction(input_vector: Vector2) -> Vector3:
 
 
 func _apply_look_delta(mouse_delta: Vector2) -> void:
-	_camera_pivot.rotation.y -= deg_to_rad(mouse_delta.x * look_sensitivity_degrees_per_pixel)
+	_camera_yaw_radians -= deg_to_rad(mouse_delta.x * look_sensitivity_degrees_per_pixel)
 	var pitch_delta := deg_to_rad(mouse_delta.y * look_sensitivity_degrees_per_pixel)
 	_camera_pivot.rotation.x = clampf(
 		_camera_pivot.rotation.x + pitch_delta,
 		deg_to_rad(min_pitch_degrees),
 		deg_to_rad(max_pitch_degrees)
 	)
+	_sync_camera_yaw()
+
+
+func _sync_camera_yaw() -> void:
+	var pivot_global_rotation := _camera_pivot.global_rotation
+	pivot_global_rotation.y = _camera_yaw_radians
+	_camera_pivot.global_rotation = pivot_global_rotation
 
 
 func _unhandled_input(event: InputEvent) -> void:
