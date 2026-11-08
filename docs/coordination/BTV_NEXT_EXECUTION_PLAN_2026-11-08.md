@@ -175,3 +175,11 @@ GitHub Actions run `42497741908` was observed in progress while installing Godot
 **LIMITATIONS:** Actual desktop pointer capture is not verified because the CI runner is headless. Android camera-look, virtual joystick, multitouch, physical-device feel/performance and manual editor/runtime review remain unverified. The implementation branch remains isolated and unmerged.
 
 **Next bounded workstream:** M2 mobile control surface. First design a small testable input adapter for independent movement-finger and look-finger tracking, touch cancellation, focus loss and teardown. Preserve the current directional buttons until the joystick/look surface passes automated tests and device review. Do not claim Android readiness from CI.
+
+
+
+## M2 adapter update — 8 November 2026
+
+**CONFIRMED COMPLETED:** The independent movement/look finger-state adapter is implemented and passes Godot 4.7.2 headless CI on `btv/mobile-touch-input-adapter-001`, head `9151e92f87a4e7971d3f44138fae1ec4c78ae0a3`. See `docs/implementation/BTV_M2_TOUCH_INPUT_ADAPTER_2026-11-08.md`.
+
+**Next bounded task:** Integrate the adapter into the touch HUD with a left virtual joystick, right-side camera-look surface and separate Interact button. Preserve the current directional buttons as a fallback. Test action strengths, independent finger ownership, cancellation, focus loss, teardown and overlapping touch regions. Do not remove the old controls or claim Android readiness until physical-device review passes.
