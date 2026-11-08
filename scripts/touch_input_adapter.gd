@@ -96,5 +96,13 @@ func has_movement_finger() -> bool:
 	return _movement_finger_id >= 0
 
 
+func is_movement_finger(finger_id: int) -> bool:
+	return finger_id == _movement_finger_id
+
+
 func has_look_finger() -> bool:
 	return _look_finger_id >= 0
+
+
+func is_look_finger(finger_id: int) -> bool:
+	return finger_id == _look_finger_id
