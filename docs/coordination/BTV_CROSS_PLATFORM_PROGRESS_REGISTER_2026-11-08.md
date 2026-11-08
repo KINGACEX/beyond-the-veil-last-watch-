@@ -143,7 +143,7 @@ Inspected the current controller, touch overlay, main scene, automated test file
 
 **Source-inspection findings:** the main scene instantiates the touch overlay; touch buttons feed shared InputMap actions and release on button-up, focus loss and teardown. At the time of this inspection, before the subsequent M1 implementation, the player controller had no camera-look input or camera-relative movement. M1 is recorded in Section 14. Explicit pause/UI input-context policy, touch multitouch coverage, scene-transition/re-entry tests, unavailable-target result handling, multiple-shape deduplication and player/self-sensor exclusion remain open.
 
-**Historical next-task note:** camera-relative movement and mouse-look were the next bounded task at the time of this review. That task is now completed on `btv/camera-relative-mouselook-001` as recorded in Section 14. The next workstream is M2 mobile controls, with separate multi-touch and device acceptance.
+**Historical next-task note:** camera-relative movement and mouse-look were the next bounded task at the time of this review; it was completed on `btv/camera-relative-mouselook-001`. M2 mobile controls are now integrated on `btv/mobile-touch-input-adapter-001` as recorded in Section 15. Physical Android acceptance remains pending.
 
 **Changed documentation:** `docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md` and `docs/implementation/BOOTSTRAP_STATUS.md` were refreshed on this documentation branch. No gameplay code, scene files, canon or mission content changed during this review.
 
