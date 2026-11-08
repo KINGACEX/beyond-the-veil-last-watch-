@@ -137,3 +137,7 @@ These documents record approved visual intent and proposed production standards.
 
 ### Lore Bridge remediation
 - [Lore Bridge v1.1 remediation and acceptance specification](docs/implementation/BTV_LORE_BRIDGE_V1_1_REMEDIATION_SPEC.md) — proposed safety, privacy, provenance, evidence-tier and test requirements; no source-code changes have been made.
+
+
+### Ridgeview investigation design
+- [Ridgeview Revelation & Evidence Matrix v0.1](docs/story/BTV_RIDGEVIEW_REVELATION_AND_EVIDENCE_MATRIX_v0.1.md) — source-traced claim/evidence relationships, uncertainty limits, outcome mapping and QA acceptance scenarios. Proposed analytical aid only; it does not add canon or final dialogue.
