@@ -110,3 +110,8 @@ Preserve distinctions between observed, reported, inferred and unconfirmed infor
 ## 9. Immediate next actions
 
 See `docs/coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md`. The priority is to make the Lore Bridge safe to evaluate, prove a minimal end-to-end agent handoff, and continue the engineering branch's existing test-first work. No new gameplay system should be invented merely to make the project appear more complete.
+
+
+## 10. Lore Bridge v1.1 remediation specification
+
+A follow-on engineering specification has been added at `docs/implementation/BTV_LORE_BRIDGE_V1_1_REMEDIATION_SPEC.md`. It defines the non-destructive corpus layout, provenance/status schema, privacy-first ingestion, safe configuration registration, evidence-tier gap reporting, client compatibility tests and staged acceptance gates. It is a proposed specification only; the external ZIP source code remains unchanged and unexecuted.
