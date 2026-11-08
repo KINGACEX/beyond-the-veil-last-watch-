@@ -18,6 +18,8 @@ func _run() -> void:
 	_test_zero_input_stays_zero()
 	_test_mouse_look_changes_yaw_and_pitch()
 	_test_mouse_look_respects_pitch_limits()
+	_test_mouse_capture_motion_and_escape_release()
+	_test_focus_loss_releases_mouse_capture()
 	if failures == 0:
 		print("PLAYER_CAMERA_INPUT_TESTS: PASS")
 		quit(0)
@@ -103,6 +105,46 @@ func _test_mouse_look_respects_pitch_limits() -> void:
 	_check(is_equal_approx(pivot.rotation.x, deg_to_rad(-70.0)), "Camera pitch is clamped at its upward limit")
 	player.call("_apply_look_delta", Vector2(0, 10000))
 	_check(is_equal_approx(pivot.rotation.x, deg_to_rad(35.0)), "Camera pitch is clamped at its downward limit")
+	player.queue_free()
+
+
+func _test_mouse_capture_motion_and_escape_release() -> void:
+	if DisplayServer.is_touchscreen_available():
+		_check(true, "Desktop mouse capture test is skipped on a touchscreen runtime")
+		return
+	var player := _new_player()
+	var original_mouse_mode := Input.mouse_mode
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	player.call("_unhandled_input", click)
+	_check(Input.mouse_mode == Input.MOUSE_MODE_CAPTURED, "Left click captures the desktop mouse")
+	var pivot: Node3D = player.get_node("CameraPivot")
+	var initial_yaw := pivot.global_rotation.y
+	var motion := InputEventMouseMotion.new()
+	motion.relative = Vector2(10, 10)
+	player.call("_unhandled_input", motion)
+	_check(pivot.global_rotation.y < initial_yaw, "Captured mouse motion reaches the camera look handler")
+	var escape := InputEventKey.new()
+	escape.pressed = true
+	escape.keycode = KEY_ESCAPE
+	player.call("_unhandled_input", escape)
+	_check(Input.mouse_mode == Input.MOUSE_MODE_VISIBLE, "Escape releases the captured desktop mouse")
+	Input.mouse_mode = original_mouse_mode
+	player.queue_free()
+
+
+func _test_focus_loss_releases_mouse_capture() -> void:
+	if DisplayServer.is_touchscreen_available():
+		_check(true, "Desktop mouse focus test is skipped on a touchscreen runtime")
+		return
+	var player := _new_player()
+	var original_mouse_mode := Input.mouse_mode
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	player.call("_notification", NOTIFICATION_APPLICATION_FOCUS_OUT)
+	_check(Input.mouse_mode == Input.MOUSE_MODE_VISIBLE, "Application focus loss releases captured mouse")
+	Input.mouse_mode = original_mouse_mode
 	player.queue_free()
 
 
