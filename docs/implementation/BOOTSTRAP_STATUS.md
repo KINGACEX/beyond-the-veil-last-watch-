@@ -3,7 +3,7 @@
 **Active isolated branch:** `btv/test-first-contracts-001`  
 **Prototype origin:** `btv/bootstrap-prototype-001`  
 **Status:** HEADLESS CI PASSED; visual/runtime and Android device validation remain pending.  
-**Latest verified successful run at this document revision:** [42031646069](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42031646069), commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`.
+**Latest verified successful run at this document revision:** [42497741908](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42497741908), code commit `81570c095f90b0b9c1d4e3ab38ebb40c7c3a9efd` on `btv/mission-validator-strict-types-001`.
 
 ## 1. Implemented source
 
@@ -57,7 +57,7 @@ The automated suite currently covers:
 - IDs equal after whitespace normalization are rejected as duplicates;
 - case-only ID tie uses deterministic secondary lexical ordering.
 
-The acceptance matrix now has 28 cases. Some are covered only partially; the remaining cases are not passed merely because the overall CI workflow passes. Consult the matrix for per-case status.
+The acceptance matrix has 28 cases. At run `42497741908`, 15 cases had direct automated coverage and 2 were partial; the remaining 11 were not automated. Consult the matrix for exact case mapping. The workflow's overall success does not pass unimplemented cases.
 
 ## 3. NLI lifecycle still incomplete
 
@@ -85,7 +85,7 @@ Do not mark NLI lifecycle complete.
 
 ## 5. Verification boundary
 
-**CONFIRMED — run 42030200114:** headless CI passed on Ubuntu with Godot 4.7.2, including import/parsing, NLI tests, interaction tests and main-scene startup.
+**CONFIRMED — run 42497741908:** completed successfully on Godot 4.7.2. It includes headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests, mission validator tests, core interaction acceptance tests and a 10-frame main-scene launch. The interaction suite prints `CORE_INTERACTION_ACCEPTANCE_TESTS: PASS`; this verifies only the automated cases listed in the matrix.
 
 Not verified:
 1. Editor visual inspection.
