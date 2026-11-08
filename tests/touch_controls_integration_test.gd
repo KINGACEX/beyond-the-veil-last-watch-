@@ -11,6 +11,8 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	root.size = Vector2i(1280, 720)
+	await process_frame
 	await _test_virtual_joystick_drives_shared_movement_actions()
 	await _test_look_surface_rotates_camera_without_cancelling_movement()
 	await _test_interact_button_area_is_excluded_from_camera_look()
