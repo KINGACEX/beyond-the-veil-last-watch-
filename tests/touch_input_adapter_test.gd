@@ -72,7 +72,7 @@ func _test_movement_finger_isolated_from_other_fingers() -> void:
 	adapter.begin_movement(4, Vector2.ZERO)
 	var expected: Vector2 = adapter.update_movement(4, Vector2(30, 0))
 	var wrong_finger: Vector2 = adapter.update_movement(9, Vector2(0, 100))
-	_check(wrong_finger.is_zero_approx(), "A different finger cannot update movement")
+	_check(wrong_finger.is_equal_approx(expected), "A different finger receives the unchanged active movement vector")
 	_check(adapter.get_movement_vector().is_equal_approx(expected), "Wrong-finger input leaves movement state unchanged")
 
 
