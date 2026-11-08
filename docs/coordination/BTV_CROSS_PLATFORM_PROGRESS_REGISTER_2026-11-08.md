@@ -172,3 +172,14 @@ Implementation report: `docs/implementation/BTV_M1_CAMERA_RELATIVE_MOUSE_LOOK_IM
 **NOT VERIFIED:** physical Android touch behaviour, thumb reach, safe-area insets, orientation changes, sensitivity, frame pacing and device performance. Headless synthetic input is not device acceptance. The inspected branch has no export_presets.cfg or Android export job, and no package identifier has been selected; an installable debug APK is therefore a prerequisite to device review.
 
 Implementation report: `docs/implementation/BTV_M2_TOUCH_INPUT_ADAPTER_2026-11-08.md`.
+
+
+## 16. Cross-agent handoff XH-001 — 8 November 2026
+
+Created `docs/coordination/BTV_CROSS_AGENT_HANDOFF_2026-11-08.md` on `btv/project-history-and-lore-bridge-001`. It packages current M1/M2 implementation evidence, role-specific review requests for MiniMax Code and Claude, ChatGPT coordination duties, Android export blockers, and a common acknowledgement/report schema.
+
+**CONFIRMED:** M2 branch `btv/mobile-touch-input-adapter-001` head `3484672809ad95e4e36591e7ca7d49d5f61dfd5e`; Godot 4.7.2 run [42500466981](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42500466981) completed successfully, including touch adapter and integration suites.
+
+**NOT VERIFIED:** The document has been committed and indexed, but no direct message was sent to MiniMax or Claude by this action. Their repository access, client connections and acknowledgements remain unknown. The shared document is a handoff source, not proof of live agent-to-agent communication.
+
+**Next gate:** obtain each platform's acknowledgement and evidence-backed review. Keep Android export blocked until the creator chooses the application identifier and the export/device requirements are established. No code, client configuration, credentials, package identifier, export preset, merge or publication was changed.
