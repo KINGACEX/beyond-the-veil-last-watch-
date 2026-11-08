@@ -19,6 +19,8 @@ func _run() -> void:
 	_test_whitespace_is_normalized_without_case_folding()
 	_test_malformed_entries_are_rejected()
 	_test_diagnostics_preserve_owner_source_path()
+	_test_non_string_record_identity_is_rejected()
+	_test_non_string_reference_fields_are_rejected()
 	if failures == 0:
 		print("MISSION_DATA_VALIDATOR_TESTS: PASS")
 		quit(0)
@@ -225,3 +227,36 @@ func _check(condition: bool, label: String) -> void:
 	else:
 		failures += 1
 		printerr("FAIL: ", label)
+
+
+func _test_non_string_record_identity_is_rejected() -> void:
+	var result: Dictionary = Validator.validate_registry(
+		[
+			{"namespace": 17, "id": "mission_intro", "path": "fixture-a"},
+			{"namespace": "objective", "id": true, "path": "fixture-b"}
+		],
+		[]
+	)
+	_check(not result.get("ok", true), "Non-string registry identity fields are rejected")
+	_check(_has_code(result, "invalid_namespace_type"), "Non-string namespace has a stable type diagnostic")
+	_check(_has_code(result, "invalid_id_type"), "Non-string ID has a stable type diagnostic")
+
+
+func _test_non_string_reference_fields_are_rejected() -> void:
+	var result: Dictionary = Validator.validate_registry(
+		[
+			{"namespace": "mission", "id": "mission_intro", "path": "fixture-a"},
+			{"namespace": "objective", "id": "objective_entry", "path": "fixture-a"}
+		],
+		[
+			{
+				"from_namespace": "mission",
+				"from_id": "mission_intro",
+				"field": 42,
+				"to_namespace": "objective",
+				"to_id": "objective_entry"
+			}
+		]
+	)
+	_check(not result.get("ok", true), "Non-string reference fields are rejected")
+	_check(_has_code(result, "invalid_reference_field_type"), "Non-string reference field has a stable type diagnostic")
