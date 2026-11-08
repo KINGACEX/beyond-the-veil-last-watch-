@@ -62,3 +62,6 @@ No Lore Bridge code was changed, installed, registered or executed as part of th
 
 
 | ACT-MA-014 | 2026-11-08 | ChatGPT / GitHub repository tool | Created the Ridgeview Revelation & Evidence Matrix v0.1 from the controlling merged Vertical Slice Specification and existing narrative flow; indexed it in the README, source index, progress register and next execution plan. | `docs/story/BTV_RIDGEVIEW_REVELATION_AND_EVIDENCE_MATRIX_v0.1.md`; matrix commit `59670bef9c29bbcef2d4009ad088e4d1496633b9`. | COMPLETED — SOURCE-TRACED DESIGN AID ONLY |
+
+
+| ACT-MA-015 | 2026-11-08 | ChatGPT / GitHub repository tool | Created isolated engineering branch `btv/mission-validator-strict-types-001`; added tests before implementation for non-string registry IDs/namespaces and non-string reference fields; implemented strict type diagnostics; updated the mission validation contract; enabled PR validation; opened draft PR #2 to the engineering branch. | PR https://github.com/KINGACEX/beyond-the-veil-last-watch-/pull/2; head commit `81570c095f90b0b9c1d4e3ab38ebb40c7c3a9efd`; workflow run `42497741908`. | IN PROGRESS — CI RUNNING; NOT MERGED |
