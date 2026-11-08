@@ -165,3 +165,13 @@ GitHub Actions run `42497741908` was observed in progress while installing Godot
 **CONFIRMED source gaps:** camera-relative movement and mouse-look are not implemented in the current player controller. The touch overlay is a four-direction-button scaffold plus Interact; it is not a complete mobile control scheme. Scene transition/re-entry, pause/UI input context, unavailable-target handling, multitouch, multiple-shape deduplication and player/self-sensor exclusion remain untested or unimplemented.
 
 **Next bounded task:** on a fresh isolated engineering branch from the latest verified base, implement only camera-relative movement and desktop mouse-look, preserving current keyboard actions and interaction. Add focused logic tests for camera-relative direction, diagonal normalization and pitch limits where practical. Do not combine this with a virtual joystick, mobile camera-look surface, responsive menus or gameplay features. Verify Godot 4.7.2 CI and report manual/device limitations explicitly.
+
+
+
+## M1 implementation update — 8 November 2026
+
+**CONFIRMED COMPLETED:** Camera-relative horizontal movement and desktop mouse-look logic are implemented on `btv/camera-relative-mouselook-001`, head `de2cb1d29f81a011ddb5319e6c32d95ac3418e45`. Godot 4.7.2 run [42499393434](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42499393434) passed the full configured headless validation workflow, including the new camera input tests.
+
+**LIMITATIONS:** Actual desktop pointer capture is not verified because the CI runner is headless. Android camera-look, virtual joystick, multitouch, physical-device feel/performance and manual editor/runtime review remain unverified. The implementation branch remains isolated and unmerged.
+
+**Next bounded workstream:** M2 mobile control surface. First design a small testable input adapter for independent movement-finger and look-finger tracking, touch cancellation, focus loss and teardown. Preserve the current directional buttons until the joystick/look surface passes automated tests and device review. Do not claim Android readiness from CI.
