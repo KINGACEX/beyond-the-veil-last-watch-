@@ -174,7 +174,7 @@ GitHub Actions run `42497741908` was observed in progress while installing Godot
 
 **LIMITATIONS:** Actual desktop pointer capture is not verified because the CI runner is headless. Android camera-look, virtual joystick, multitouch, physical-device feel/performance and manual editor/runtime review remain unverified. The implementation branch remains isolated and unmerged.
 
-**Next bounded workstream:** M2 mobile control surface. First design a small testable input adapter for independent movement-finger and look-finger tracking, touch cancellation, focus loss and teardown. Preserve the current directional buttons until the joystick/look surface passes automated tests and device review. Do not claim Android readiness from CI.
+**Historical next-workstream note:** M2 mobile controls were the next bounded workstream at the time of this review. The adapter and HUD integration are now completed as recorded in the M2 update below. Physical Android QA remains the next gate.
 
 
 
