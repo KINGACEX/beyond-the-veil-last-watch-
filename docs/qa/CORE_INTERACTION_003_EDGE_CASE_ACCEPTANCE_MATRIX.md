@@ -1,5 +1,5 @@
 # CORE INTERACTION 003 — Edge-Case Acceptance Matrix
-**Status:** PROPOSED QA SPECIFICATION — NOT IMPLEMENTED OR EXECUTED  
+**Status:** PROPOSED QA SPECIFICATION — PARTIALLY AUTOMATED; MANUAL/DEVICE EXECUTION PENDING  
 **Scope:** Player controller, proximity sensor, interactable contract and touch-input lifecycle.
 
 ## 1. Invariants
@@ -56,7 +56,7 @@ Use one `interact` gameplay action for keyboard and touch. Touch must release on
 8. Android testing on a named device before DEVICE-VERIFIED status.
 
 ## 6. Evidence boundary
-Current CI covers project import/parsing, NLI smoke tests and a ten-frame headless scene launch. It does not execute this matrix. No case is passed until its test is implemented and run.
+The matrix is only partially automated. Per-case status is recorded below; a general project-launch smoke test does not pass an unimplemented matrix case. Headless test evidence does not establish editor/runtime feel or Android device behaviour.
 
 Final prompt styling, camera-relative look, gamepad support, dialogue/inventory behavior, final character assets and Android performance certification are out of scope.
 
@@ -103,7 +103,7 @@ The test-first review identified two defects in the selector: temporarily disabl
 - `_test_whitespace_padded_interaction_id_is_normalized`
 - `_test_ids_equal_after_whitespace_normalization_are_duplicates`
 
-**Verification status:** tests were added first and the initial CI run failed on INT-025 and INT-026 as expected. The selector correction was then committed. The third test was added after that correction and awaits CI verification. Do not mark these cases passed until a successful run on a commit containing all three tests.
+**Historical verification note:** the initial regression run failed on INT-025 and INT-026 as expected; the selector correction followed. Current verification is recorded in Section 10.
 
 
 ## 9. Case-insensitive comparison tie-break — 5 November 2026
@@ -114,4 +114,4 @@ The test-first review identified two defects in the selector: temporarily disabl
 
 **Automated test:** `_test_case_only_ids_have_deterministic_tie_break`.
 
-**Verification status:** test-first regression added; pending CI execution on a commit containing this case.
+**Historical verification note:** test-first regression was added after the earlier baseline. Current verification is recorded in Section 10.
