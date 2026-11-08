@@ -68,3 +68,6 @@ No Lore Bridge code was changed, installed, registered or executed as part of th
 
 
 | ACT-MA-016 | 2026-11-08 | GitHub Actions / Godot 4.7.2 | Verified draft PR #2 workflow run completed successfully. Headless editor import, NLI smoke tests, NLI contract tests, mission data validator tests (including the new strict-type cases), core interaction acceptance tests and 10-frame main-scene launch all completed successfully. | Run https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42497741908; job `128783630009`; PR #2 head `81570c095f90b0b9c1d4e3ab38ebb40c7c3a9efd`. | COMPLETED — HEADLESS CI PASS; PR STILL DRAFT / UNMERGED |
+
+
+| ACT-MA-017 | 2026-11-08 | ChatGPT / GitHub repository tool | Reconciled stale strict-type CI wording; inspected the interaction controller, touch controls, main scene, 28-case acceptance matrix and current test suite; refreshed matrix and bootstrap status; recorded next isolated camera/input task. | Engineering evidence: run `42497741908`, code commit `81570c095f90b0b9c1d4e3ab38ebb40c7c3a9efd`. Documentation commits: matrix `9aa362c963a42fe555b85dea0185b0122d309cd2`; bootstrap status `b05db46fd55ad82facf4902e0f098173c9b010b2`; progress/plan/activity entries recorded on `btv/project-history-and-lore-bridge-001`. | COMPLETED — REVIEW AND DOCUMENTATION ONLY; NO GAMEPLAY CODE CHANGED |
