@@ -158,3 +158,25 @@ XH-001 is complete only when:
 - no unapproved repository, account, export or publication action has occurred.
 
 **Current status:** Handoff document prepared for dispatch. No message has been sent directly to MiniMax or Claude by this document creation. Their acknowledgements and live access remain UNKNOWN.
+
+
+## 8. ChatGPT initial source scan — not a device review
+
+Before external review, ChatGPT inspected the M2 adapter, HUD scene, integration tests and project configuration on `btv/mobile-touch-input-adapter-001`.
+
+**CONFIRMED from source:**
+- `BTVTouchInputAdapter` maintains separate movement and look finger IDs; rejects negative IDs and prevents one finger from owning both controls.
+- Movement is clamped to a unit circle and applies a configurable deadzone.
+- The HUD routes joystick strengths into the existing movement actions and sends incremental look deltas to the player camera.
+- The Interact button rectangle is excluded from camera-look ownership.
+- Focus-loss and scene-teardown paths cancel touch ownership and release movement actions.
+- The legacy directional pad remains available when `use_analog_touch_controls` is false.
+- The HUD responds to viewport-size changes.
+
+**Review risks to test, not confirmed defects:**
+- Joystick and Interact controls use fixed pixel offsets and dimensions. No explicit safe-area inset handling is visible in the inspected scene/script.
+- The look surface spans the right half of the viewport. Actual overlap, thumb reach and accidental camera movement require device review.
+- The integration suite fixes the test viewport at 1280×720; it does not establish behaviour across real device aspect ratios, system bars, cutouts or orientation changes.
+- The tests inject synthetic touch events into the overlay's input handler. They do not prove physical touchscreen event delivery, latency or hardware multitouch behaviour.
+
+No defect is declared from this source scan alone. MiniMax and Claude are asked to independently review these risks and provide evidence. Physical Android validation remains NOT TESTED.
