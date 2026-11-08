@@ -44,12 +44,7 @@ Read `docs/implementation/BOOTSTRAP_STATUS.md` and the README for the detailed i
 
 The repository README identifies run **42189615410**, commit `c91094d99b5462d8b69f249ba579e8316dc09137`, as the latest successful code/test validation at the time of that README revision. It includes canonical NLI request-ID boundary tests, query/action lifecycle semantics, cancellation tests, neutral mission-registry validation, core interaction acceptance and a 10-frame main-scene launch.
 
-CI does not establish:
-- physical Android export or installation;
-- touch usability or multitouch on a real device;
-- renderer suitability, sustained frame time, memory or thermal stability;
-- visual quality or manual gameplay feel;
-- save/load completeness or a playable vertical slice.
+CI does not establish physical Android export or installation, real-device touch usability, renderer suitability, sustained frame time, memory or thermal stability, visual quality, manual gameplay feel, save/load completeness or a playable vertical slice.
 
 ### NLI and source integrity
 
@@ -57,27 +52,27 @@ Prior implementation work added a deterministic NLI parser/validator/request gat
 
 ## 3. Multi-agent development framework
 
-The nine multi-agent documents originally created on `btv/multi-agent-system-v1` have been ported into this branch:
+The nine multi-agent governance documents originally created on `btv/multi-agent-system-v1` have been ported into this branch. They define the creator-led roles for Claude (Visual Director), MiniMax Code (Implementation Agent) and ChatGPT (Lead Coordinator), with task handoffs, visual standards, repository boundaries, decision logging and activity logging.
 
-1. `docs/agents/BTV_MULTI_AGENT_DEVELOPMENT_SYSTEM_v1.0.md`
-2. `docs/agents/CLAUDE_VISUAL_DIRECTOR_CHARTER_v1.0.md`
-3. `docs/agents/MINIMAX_CODE_IMPLEMENTATION_CHARTER_v1.0.md`
-4. `docs/agents/CHATGPT_LEAD_COORDINATOR_CHARTER_v1.0.md`
-5. `docs/agents/BTV_AGENT_TASK_AND_HANDOFF_PROTOCOL_v1.0.md`
-6. `docs/visual/BTV_VISUAL_PRODUCTION_QUALITY_STANDARD_v1.0.md`
-7. `docs/agents/BTV_GITHUB_MCP_AND_BRANCH_RULES_v1.0.md`
-8. `docs/agents/BTV_SHARED_DECISION_LOG.md`
-9. `docs/agents/BTV_AGENT_ACTIVITY_LOG.md`
+The nine paths are indexed in the root README and source-of-truth index. These are documented roles, not proof of active MCP connectivity. Each external client still needs a separately verified, least-privilege connection and a successful handoff test.
 
-The intended division is:
-- **Creator:** final authority over canon, approvals, scope and consequential actions.
-- **Claude:** Visual Director — visual concepts, storyboards, cinematography and visual critique.
-- **MiniMax Code:** Implementation Agent — approved Godot implementation and test evidence.
-- **ChatGPT:** Lead Coordinator — source hierarchy, task coordination, independent review and status reporting.
+## 4. Story, character and world-design records ported
 
-These are documented roles, not proof of active MCP connectivity. Each external client still needs a separately verified, least-privilege connection and a successful handoff test.
+The following existing records have also been ported from the earlier design branch into this branch:
 
-## 4. MiniMax BTV Lore Bridge — external artifact review
+- `docs/characters/KAY_FAMILY_CHARACTER_BIBLE_v1.0.md`
+- `docs/characters/KAY_FAMILY_NAMING_ADDENDUM_v1.1.md`
+- `docs/design/BTV_GLOBAL_CHARACTER_NAMING_AND_CULTURAL_REPRESENTATION_FRAMEWORK_v0.1.md`
+- `docs/design/BTV_ANNUAL_COMMUNITY_CALENDAR_FRAMEWORK_PROPOSAL_v0.1.md`
+- `docs/design/CHURCH_FESTIVAL_AND_COMMUNITY_EVENT_FRAMEWORK_PROPOSAL_v0.1.md`
+- `docs/design/BTV_NEW_GAME_NPC_GENERATION_AND_CHRISTIAN_NAME_LEXICON_PROPOSAL_v0.1.md`
+- `docs/agents/BTV_STORY_DEVELOPMENT_AGENT_CHARTER_v0.1.md`
+- `docs/story/BTV_STORY_GAP_REGISTER_INITIAL_TRIAGE_v0.1.md`
+- `docs/story/BTV_VERTICAL_SLICE_OPENING_TO_RIDGEVIEW_NARRATIVE_FLOW_v0.1.md`
+
+The calendar, festival and NPC-generation records are proposals, not approved canon. The story charter defines review workflow, not authority to invent unresolved lore. The controlling source-of-truth hierarchy and creator decisions remain higher authority.
+
+## 5. MiniMax BTV Lore Bridge — external artifact review
 
 The creator supplied `btv-lore-bridge.zip` for review. SHA-256 of the reviewed ZIP:
 
@@ -87,67 +82,31 @@ The project is a local Node.js/MCP knowledge bridge intended to make a curated B
 
 The review was static only. No installation, dependency execution, MCP registration, network exposure or live test was performed.
 
-Key review findings:
-1. The rebuild path appears capable of deleting the whole Markdown corpus directory, including manually maintained material. Rebuild must become non-destructive or require an explicit, narrowly scoped generated-output directory.
-2. Registration scripts can remove an existing MCP registration before adding the new one. They need backup, merge-preserving edits, idempotence and rollback.
-3. MiniMax configuration error handling may replace an invalid configuration with a minimal file, risking unrelated settings. It should fail closed and preserve the original.
-4. `lore_gap` uses keyword-oriented matching. A matching code word is not proof that a feature is implemented or tested.
-5. The ChatGPT export parser may follow only the active conversation branch and omit alternate branches.
-6. The Claude pipeline drafts code but does not apply it automatically or prove Godot validation.
-7. Full ChatGPT exports may contain unrelated private conversations. The corpus builder needs BTV-only selection, sensitive-data exclusion and a strict no-private-export-to-Git rule.
-8. The Claude pipeline targets Claude Code; compatibility with Claude mobile is not established. A local Node MCP server may require an execution environment unavailable in the mobile app.
-
-Recommended direction: keep the Lore Bridge as a promising external prototype, but do not install or trust it until the risks are addressed and its behavior is tested in a disposable environment. See `docs/audits/BTV_LORE_BRIDGE_STATIC_REVIEW_2026-11-08.md`.
-
-## 5. Story, canon and design work
-
-The repository's recovered source-of-truth library contains the controlling Master Canon, reconciliation document, domain bibles and merged Vertical Slice Specification. Its authority hierarchy must be followed; imported historical documents, generated mockups and agent suggestions do not automatically become canon.
-
-The intended opening slice remains:
-1. Sunday/community sequence at Logos Rhema Temple.
-2. Covenant Scout Report.
-3. Travel and investigation at Ridgeview.
-4. Evidence gathering and a meaningful response.
-5. A final report grounded in what the player actually observed and verified.
-
-The story must preserve distinctions between observed, reported, inferred and unconfirmed information. The player should not be rewarded for overclaiming certainty. The local Ridgeview case should reach a meaningful conclusion without prematurely resolving the wider Veil mystery.
-
-A separate character/naming and NPC-generation proposal has been documented on the earlier multi-agent branch; it must remain labelled as a proposal until reconciled with the current source-of-truth hierarchy and explicitly accepted. Do not procedurally generate fixed canon characters or critical story secrets.
+Key risks identified: destructive corpus rebuild scope; registration scripts that may remove existing configuration; unsafe invalid-config recovery; keyword-only gap analysis; incomplete conversation-branch coverage; generated code not validated by Godot; privacy risks from broad ChatGPT exports; and unverified Claude mobile compatibility. See `docs/audits/BTV_LORE_BRIDGE_STATIC_REVIEW_2026-11-08.md` for required remediations and acceptance gates.
 
 ## 6. Trailer and channel production
 
-### Screel visual cut
+A separate Screel project produced a 55-second, 720p draft render using five generated still images, subtle motion, five Charon narration clips and captions. It is illustrative material, not gameplay footage; it does not establish canonical Asher or Ember designs. The render requires human playback review. Screel had zero remaining credits at the last audit.
 
-A separate Screel project was created so the original Descript project remained untouched.
+The original Descript project remains incomplete. A Mike narration asset was imported to its media bin only; the AI edit attempt failed for insufficient free credits. No final Descript export was verified.
 
-- Project: **BTV Official Trailer — Visual Cut v2**
-- Project URL: https://screel.ai/editor/01a1b6fe-db9a-7408-876c-1f5cd31d0c03
-- Render: 55-second, 720p MP4; 18.1 MB; render job completed without reported render errors.
-- Render URL: https://media.screel.ai/videos/01a1b6fe-db9a-7408-876c-1f5cd31d0c03/renders/01a1b6ff-b097-7532-8e1f-9f2ff75d884b.mp4
+The official YouTube channel has draft concepts and release metadata only. No public upload or publication was performed. Full references and review gates are in `docs/media/BTV_TRAILER_PRODUCTION_STATUS_2026-11-08.md`.
 
-The cut uses five generated stills with subtle motion, five Charon narration clips and captions. It has no music. It is an illustrative visual draft, not captured gameplay. All five scenes report no actual video clip status. It does not establish the final Asher or Ember designs; an anonymous silhouette is not the canonical Asher. Captions, audio balance, timing, artefacts and fades still require human playback review.
+## 7. Story and canon direction
 
-The Screel account had zero remaining credits at the last audit. No upscale or additional generation should be attempted without a fresh cost/credit check and explicit approval.
+The intended opening slice remains Sunday/community at Logos Rhema Temple → Covenant Scout Report → travel and investigation at Ridgeview → evidence-based response → final report grounded in what the player actually observed and verified.
 
-### Descript
+Preserve distinctions between observed, reported, inferred and unconfirmed information. A meaningful local conclusion must not prematurely resolve the wider Veil mystery. Do not treat generated mockups, old handoffs or proposals as canon.
 
-Descript project: https://web.descript.com/project/1afe5f3e-1127-48f5-b259-73bbc0fd8567
-
-A Mike narration asset was imported into the media bin only. The composition was not edited with it. A later AI editing attempt failed because the free AI credit allowance was insufficient. The Descript project remains incomplete; do not claim a final export exists.
-
-### YouTube
-
-The official channel is `@beyondtheveilofficial-btv`. Three Shorts concepts and a trailer release package were drafted, but no public upload or publication was performed. The channel must remain unchanged until the creator reviews and approves the actual final media and metadata.
-
-## 7. Safety, privacy and creator-control constraints
+## 8. Safety, privacy and creator-control constraints
 
 - Do not commit API keys, OAuth secrets, access tokens, passwords or private exports.
-- A credential previously pasted in chat should be treated as compromised; revoke it at its issuer. Never copy it into this repository.
+- Treat any credential pasted into chat as compromised and revoke it at its issuer; never copy it into this repository.
 - Do not ingest a full personal ChatGPT export into a shared corpus without BTV-only filtering and privacy review.
-- Do not delete repository content, rewrite history, change GitHub security settings, merge, publish, deploy, purchase, or spend paid credits without explicit creator approval.
+- Do not delete repository content, rewrite history, change GitHub security settings, merge, publish, deploy, purchase or spend paid credits without explicit creator approval.
 - Prefer feature branches, small reversible changes, evidence-linked commits and append-only logs.
 - Keep canon, approved design, proposal, implementation and test evidence as distinct states.
 
-## 8. Immediate next actions
+## 9. Immediate next actions
 
-See `docs/coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md`. The priority is to consolidate source records and make the Lore Bridge safe to evaluate, then prove a minimal end-to-end agent handoff, while continuing the engineering branch's existing test-first work. No new gameplay system should be invented merely to make the project appear more complete.
+See `docs/coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md`. The priority is to make the Lore Bridge safe to evaluate, prove a minimal end-to-end agent handoff, and continue the engineering branch's existing test-first work. No new gameplay system should be invented merely to make the project appear more complete.
