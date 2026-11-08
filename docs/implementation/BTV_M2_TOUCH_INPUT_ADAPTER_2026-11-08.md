@@ -52,7 +52,7 @@ Integrate an analog movement surface and independent camera-look surface while r
 - Touch controls integration tests passed with `TOUCH_CONTROLS_INTEGRATION_TESTS: PASS`.
 - 10-frame headless main-scene launch passed.
 
-The integration suite verifies independent movement and look fingers, movement release, focus-loss cleanup, scene-teardown cleanup, Interact-area exclusion and the ability to restore the legacy directional pad.
+The integration suite verifies independent movement and look fingers, movement release, focus-loss cleanup, scene-teardown cleanup, Interact-area exclusion and the ability to restore the legacy directional pad. The test viewport is explicitly set to 1280×720 so anchor/viewport geometry is tested against the project's configured landscape logical size.
 
 ## Verification boundary
 
