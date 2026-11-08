@@ -6,6 +6,7 @@ on:
       - btv/bootstrap-prototype-001
       - btv/test-first-contracts-001
       - btv/camera-relative-mouselook-001
+      - btv/mobile-touch-input-adapter-001
   workflow_dispatch:
 
 permissions:
@@ -51,6 +52,9 @@ jobs:
 
       - name: Run player camera input tests
         run: godot --headless --path . --script res://tests/player_camera_input_test.gd
+
+      - name: Run touch input adapter tests
+        run: godot --headless --path . --script res://tests/touch_input_adapter_test.gd
 
       - name: Launch main scene for 10 frames
         run: godot --headless --path . --quit-after 10
