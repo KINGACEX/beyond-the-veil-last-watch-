@@ -2,6 +2,7 @@
 
 **Engineering reference branch:** `btv/test-first-contracts-001`  
 **Separate camera/input feature branch:** `btv/camera-relative-mouselook-001` (unmerged)  
+**Separate mobile input adapter branch:** `btv/mobile-touch-input-adapter-001` (unmerged; adapter only)  
 **Prototype origin:** `btv/bootstrap-prototype-001`  
 **Status:** HEADLESS CI PASSED; visual/runtime and Android device validation remain pending.  
 **Latest verified successful camera/input feature run at this document revision:** [42499393434](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42499393434), commit `de2cb1d29f81a011ddb5319e6c32d95ac3418e45` on `btv/camera-relative-mouselook-001`. The strict-type PR #2 run `42497741908` also passed on its separate feature branch.
@@ -23,7 +24,8 @@
 - Camera yaw remains independent of player-body facing rotation.
 - Desktop pointer capture/release handling is implemented in source; actual pointer capture is not exercised by headless CI.
 - New camera input tests pass in run 42499393434.
-- Mobile camera-look surface, virtual joystick and physical Android verification remain open.
+- Mobile camera-look surface, virtual joystick UI integration and physical Android verification remain open.
+- Independent touch movement/look finger-state adapter is implemented and tested on `btv/mobile-touch-input-adapter-001`; it is not yet connected to the running touch HUD.
 
 ### NLI
 - Deterministic phrase parser and typed intent validation.
