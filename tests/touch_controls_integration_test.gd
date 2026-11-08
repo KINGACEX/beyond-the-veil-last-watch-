@@ -32,10 +32,14 @@ func _new_setup() -> Dictionary:
 	root.add_child(player)
 	var layer := TouchScene.instantiate()
 	root.add_child(layer)
+	var overlay: Control = layer.get_node("Overlay")
+	# The shipped HUD is hidden when no touchscreen is available. This suite
+	# exercises touch behaviour, so it must run with the HUD visible.
+	overlay.visible = true
 	return {
 		"player": player,
 		"layer": layer,
-		"overlay": layer.get_node("Overlay")
+		"overlay": overlay
 	}
 
 
@@ -165,6 +169,7 @@ func _test_legacy_directional_controls_remain_available() -> void:
 	root.add_child(player)
 	var layer := TouchScene.instantiate()
 	var overlay: Control = layer.get_node("Overlay")
+	overlay.visible = true
 	overlay.set("use_analog_touch_controls", false)
 	root.add_child(layer)
 	await process_frame

@@ -60,15 +60,23 @@ func _get_camera_relative_move_direction(input_vector: Vector2) -> Vector3:
 	return direction
 
 
-func _apply_look_delta(mouse_delta: Vector2) -> void:
-	_camera_yaw_radians -= deg_to_rad(mouse_delta.x * look_sensitivity_degrees_per_pixel)
-	var pitch_delta := deg_to_rad(mouse_delta.y * look_sensitivity_degrees_per_pixel)
+## Applies a look delta expressed in screen pixels.
+## Public so the touch HUD can drive the camera through the same path the
+## desktop mouse uses.
+func apply_look_delta(look_delta: Vector2) -> void:
+	_camera_yaw_radians -= deg_to_rad(look_delta.x * look_sensitivity_degrees_per_pixel)
+	var pitch_delta := deg_to_rad(look_delta.y * look_sensitivity_degrees_per_pixel)
 	_camera_pivot.rotation.x = clampf(
 		_camera_pivot.rotation.x + pitch_delta,
 		deg_to_rad(min_pitch_degrees),
 		deg_to_rad(max_pitch_degrees)
 	)
 	_sync_camera_yaw()
+
+
+## Compatibility alias for the M1 camera input suite.
+func _apply_look_delta(mouse_delta: Vector2) -> void:
+	apply_look_delta(mouse_delta)
 
 
 func _sync_camera_yaw() -> void:
@@ -94,7 +102,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if button_event.pressed and button_event.button_index == MOUSE_BUTTON_LEFT:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	elif event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		_apply_look_delta((event as InputEventMouseMotion).relative)
+		apply_look_delta((event as InputEventMouseMotion).relative)
 
 
 func _notification(what: int) -> void:
