@@ -142,6 +142,8 @@ Each diagnostic includes stable code, severity (error/warning/review), file/reso
 | MDV-022 | Runtime state mutates shared authored Resource | Error |
 | MDV-023 | Two runtime instances share mutable progress | Error |
 | MDV-024 | Invalid Ridgeview flag key or enum value | Error |
+| MDV-025 | Registry namespace or ID is not a String | Error; no implicit coercion |
+| MDV-026 | Required reference field is not a String | Error; no implicit coercion |
 
 ## 12. Test-first implementation sequence
 
@@ -163,7 +165,8 @@ No external test framework is selected. Use the existing headless harness first 
 - **CONFIRMED:** Mission/dialogue research recommends separating authored definitions, runtime state, presentation and validation.
 - **PROPOSED:** This validation contract and diagnostic model.
 - **UNKNOWN:** Final Resource schema, ID namespace policy, condition grammar, dialogue loop policy and validator API.
-- **COMPLETED — Phase 1 only:** A neutral typed-registry validator now checks non-empty namespace/ID values, duplicate IDs within a namespace, reference-owner resolution, target resolution and ambiguous targets. IDs/namespaces are trimmed and case-sensitive. Diagnostics include stable codes and source paths where available. Tests are in tests/mission_data_validator_test.gd.
+- **COMPLETED — Phase 1 baseline:** A neutral typed-registry validator checks non-empty namespace/ID values, duplicate IDs within a namespace, reference-owner resolution, target resolution and ambiguous targets. IDs/namespaces are trimmed and case-sensitive. Diagnostics include stable codes and source paths where available. Tests are in tests/mission_data_validator_test.gd.
+- **IN PROGRESS — strict type hardening on `btv/mission-validator-strict-types-001`:** Added test-first cases requiring registry namespaces/IDs and required reference fields to be actual Strings rather than values silently coerced by `String()`. Implementation now emits `invalid_namespace_type`, `invalid_id_type` and `invalid_reference_field_type`. CI/runtime result is not yet confirmed.
 - **NOT IMPLEMENTED:** Full mission/objective graph validation, dialogue graph validation, evidence/claim semantic validation, final Resource schema, mission-state service or Ridgeview content data.
 - **BLOCKED:** Mission authoring remains gated on approved content sources and unresolved character/fact details.
 
