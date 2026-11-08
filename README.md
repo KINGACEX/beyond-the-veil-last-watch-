@@ -14,7 +14,7 @@ The cross-platform project records and Lore Bridge static review are being conso
 - `project.godot` — Godot project entry point and input actions.
 - `scenes/main.tscn` — greybox test area.
 - `scenes/player.tscn` — capsule placeholder, collision, third-person camera and proximity sensor.
-- `scenes/touch_controls.tscn` / `scripts/touch_controls.gd` — initial touch overlay mapped to shared InputMap actions.
+- `scenes/touch_controls.tscn` / `scripts/touch_controls.gd` — analog joystick, right-side camera-look surface, shared InputMap actions and legacy directional-pad fallback.
 - `scripts/player_controller.gd` — movement and nearest-interactable selection.
 - `scripts/interactable.gd` — reusable Area3D interaction contract.
 - `scripts/nli/` — deterministic NLI parser, validator, request gate, authored knowledge base and orchestration service.
