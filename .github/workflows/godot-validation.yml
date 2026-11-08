@@ -6,6 +6,9 @@ on:
       - btv/bootstrap-prototype-001
       - btv/test-first-contracts-001
       - btv/mission-validator-strict-types-001
+  pull_request:
+    branches:
+      - btv/test-first-contracts-001
   workflow_dispatch:
 
 permissions:
