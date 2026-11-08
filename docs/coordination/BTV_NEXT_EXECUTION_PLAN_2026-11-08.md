@@ -134,3 +134,12 @@ A task is complete only when its owner supplies:
 - status of creator approval.
 
 A plan, generated draft, static code match or successful headless launch must not be reported as a completed gameplay feature.
+
+
+## Execution update — 2026-11-08
+
+**Completed on this documentation branch:** Priority 4, item 2, the Ridgeview revelation/evidence matrix has been drafted and source-traced at `docs/story/BTV_RIDGEVIEW_REVELATION_AND_EVIDENCE_MATRIX_v0.1.md`.
+
+**Next bounded work:** Inspect the current neutral mission-data validator, claim/evidence interfaces and existing tests on the engineering branch. Do not author Ridgeview dialogue or mission content yet. First determine whether the validator can safely express source IDs, evidence references, claim labels, and unresolved states without embedding canon in code. Any code work must remain isolated, test-first and neutral until creator approval of the matrix.
+
+**Current status:** Matrix drafted; implementation not started; no story dialogue or new canon authored.
