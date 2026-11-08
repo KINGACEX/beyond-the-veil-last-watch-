@@ -143,3 +143,10 @@ A plan, generated draft, static code match or successful headless launch must no
 **Next bounded work:** Inspect the current neutral mission-data validator, claim/evidence interfaces and existing tests on the engineering branch. Do not author Ridgeview dialogue or mission content yet. First determine whether the validator can safely express source IDs, evidence references, claim labels, and unresolved states without embedding canon in code. Any code work must remain isolated, test-first and neutral until creator approval of the matrix.
 
 **Current status:** Matrix drafted; implementation not started; no story dialogue or new canon authored.
+
+
+## Engineering execution update — strict registry types
+
+A separate engineering branch `btv/mission-validator-strict-types-001` now contains test-first strict-type checks for registry namespaces, IDs and required reference fields. Draft PR #2 targets `btv/test-first-contracts-001`: https://github.com/KINGACEX/beyond-the-veil-last-watch-/pull/2.
+
+GitHub Actions run `42497741908` was observed in progress while installing Godot 4.7.2. Await the full result before describing the change as tested. Do not merge the draft PR without creator review. If CI fails, inspect the failing step/logs, make the smallest correction on the same feature branch, and rerun.
