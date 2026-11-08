@@ -46,10 +46,23 @@ The cross-platform project records and Lore Bridge static review are being conso
 - [Task and handoff protocol](docs/agents/BTV_AGENT_TASK_AND_HANDOFF_PROTOCOL_v1.0.md).
 - [Visual production quality standard](docs/visual/BTV_VISUAL_PRODUCTION_QUALITY_STANDARD_v1.0.md).
 - [GitHub MCP and branch rules](docs/agents/BTV_GITHUB_MCP_AND_BRANCH_RULES_v1.0.md).
+- [Story Development Agent charter](docs/agents/BTV_STORY_DEVELOPMENT_AGENT_CHARTER_v0.1.md).
 - [Shared decision log](docs/agents/BTV_SHARED_DECISION_LOG.md).
 - [Agent activity log](docs/agents/BTV_AGENT_ACTIVITY_LOG.md).
 
 The multi-agent system is documented, not yet operationally connected. Claude/MiniMax MCP access and client compatibility require separate verification.
+
+### Story, character and world-design records
+- [Kay family character bible](docs/characters/KAY_FAMILY_CHARACTER_BIBLE_v1.0.md).
+- [Kay family naming addendum](docs/characters/KAY_FAMILY_NAMING_ADDENDUM_v1.1.md).
+- [Global character naming and cultural representation framework](docs/design/BTV_GLOBAL_CHARACTER_NAMING_AND_CULTURAL_REPRESENTATION_FRAMEWORK_v0.1.md).
+- [Annual community calendar framework proposal](docs/design/BTV_ANNUAL_COMMUNITY_CALENDAR_FRAMEWORK_PROPOSAL_v0.1.md).
+- [Church festival and community event framework proposal](docs/design/CHURCH_FESTIVAL_AND_COMMUNITY_EVENT_FRAMEWORK_PROPOSAL_v0.1.md).
+- [New-game NPC generation and Christian name lexicon proposal](docs/design/BTV_NEW_GAME_NPC_GENERATION_AND_CHRISTIAN_NAME_LEXICON_PROPOSAL_v0.1.md).
+- [Story gap register — initial triage](docs/story/BTV_STORY_GAP_REGISTER_INITIAL_TRIAGE_v0.1.md).
+- [Opening-to-Ridgeview narrative flow](docs/story/BTV_VERTICAL_SLICE_OPENING_TO_RIDGEVIEW_NARRATIVE_FLOW_v0.1.md).
+
+These are supporting character/design records and proposals. They do not supersede the controlling Master Canon, creator decisions or merged Vertical Slice Specification. Calendar, festival and NPC-generation documents remain proposals unless separately approved.
 
 ### Research
 - [Game development practice — Phase 1](docs/research/BTV_GAME_DEVELOPMENT_PRACTICE_RESEARCH_PHASE_1_2026-11-05.md).
