@@ -25,6 +25,7 @@ The cross-platform project records and Lore Bridge static review are being conso
 ### Read these first
 1. [BTV source-of-truth index](docs/source-of-truth/README.md).
 2. [Current implementation status](docs/implementation/BOOTSTRAP_STATUS.md).
+3. [M1 camera-relative movement and desktop mouse-look report](docs/implementation/BTV_M1_CAMERA_RELATIVE_MOUSE_LOOK_IMPLEMENTATION_2026-11-08.md).
 3. [NLI handoff and source-registry contract](docs/implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md).
 4. [NLI contract gap audit — 6 November 2026](docs/audits/BTV_NLI_CONTRACT_GAP_AUDIT_2026-11-06.md).
 5. [Core interaction acceptance matrix](docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md).
