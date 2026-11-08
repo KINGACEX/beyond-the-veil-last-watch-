@@ -59,3 +59,6 @@
 | ACT-MA-013 | 2026-11-08 | ChatGPT / GitHub repository tool | Authored the Lore Bridge v1.1 remediation and acceptance specification, then linked it from project indexes. | `docs/implementation/BTV_LORE_BRIDGE_V1_1_REMEDIATION_SPEC.md`; commit `acb6938cc961ba54270dd47e2434b3ffc1708e2d`. | COMPLETED — SPECIFICATION ONLY |
 
 No Lore Bridge code was changed, installed, registered or executed as part of this specification task.
+
+
+| ACT-MA-014 | 2026-11-08 | ChatGPT / GitHub repository tool | Created the Ridgeview Revelation & Evidence Matrix v0.1 from the controlling merged Vertical Slice Specification and existing narrative flow; indexed it in the README, source index, progress register and next execution plan. | `docs/story/BTV_RIDGEVIEW_REVELATION_AND_EVIDENCE_MATRIX_v0.1.md`; matrix commit `59670bef9c29bbcef2d4009ad088e4d1496633b9`. | COMPLETED — SOURCE-TRACED DESIGN AID ONLY |
