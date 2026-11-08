@@ -19,22 +19,22 @@ The cross-platform project records and Lore Bridge static review are being conso
 - `scripts/interactable.gd` — reusable Area3D interaction contract.
 - `scripts/nli/` — deterministic NLI parser, validator, request gate, authored knowledge base and orchestration service.
 - `scripts/mission/mission_data_validator.gd` — neutral typed-registry ID/reference validation utility (Phase 1 only).
-- `tests/` — NLI smoke/contract tests, neutral mission-validator tests and core interaction acceptance tests.
+- `tests/` — NLI smoke/contract tests, neutral mission-validator tests, core interaction acceptance tests and camera input tests.
 - `.github/workflows/godot-validation.yml` — headless Godot validation workflow.
 
 ### Read these first
 1. [BTV source-of-truth index](docs/source-of-truth/README.md).
 2. [Current implementation status](docs/implementation/BOOTSTRAP_STATUS.md).
 3. [M1 camera-relative movement and desktop mouse-look report](docs/implementation/BTV_M1_CAMERA_RELATIVE_MOUSE_LOOK_IMPLEMENTATION_2026-11-08.md).
-3. [NLI handoff and source-registry contract](docs/implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md).
-4. [NLI contract gap audit — 6 November 2026](docs/audits/BTV_NLI_CONTRACT_GAP_AUDIT_2026-11-06.md).
-5. [Core interaction acceptance matrix](docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md).
-6. [Research-to-design traceability matrix — 6 November 2026](docs/coordination/BTV_RESEARCH_TO_DESIGN_TRACEABILITY_MATRIX_2026-11-06.md).
-7. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
-8. [Cross-platform progress register — 8 November 2026](docs/coordination/BTV_CROSS_PLATFORM_PROGRESS_REGISTER_2026-11-08.md).
-9. [Next execution plan — 8 November 2026](docs/coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md).
-10. [MiniMax Lore Bridge static review — 8 November 2026](docs/audits/BTV_LORE_BRIDGE_STATIC_REVIEW_2026-11-08.md).
-11. [Trailer production status — 8 November 2026](docs/media/BTV_TRAILER_PRODUCTION_STATUS_2026-11-08.md).
+4. [NLI handoff and source-registry contract](docs/implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md).
+5. [NLI contract gap audit — 6 November 2026](docs/audits/BTV_NLI_CONTRACT_GAP_AUDIT_2026-11-06.md).
+6. [Core interaction acceptance matrix](docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md).
+7. [Research-to-design traceability matrix — 6 November 2026](docs/coordination/BTV_RESEARCH_TO_DESIGN_TRACEABILITY_MATRIX_2026-11-06.md).
+8. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
+9. [Cross-platform progress register — 8 November 2026](docs/coordination/BTV_CROSS_PLATFORM_PROGRESS_REGISTER_2026-11-08.md).
+10. [Next execution plan — 8 November 2026](docs/coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md).
+11. [MiniMax Lore Bridge static review — 8 November 2026](docs/audits/BTV_LORE_BRIDGE_STATIC_REVIEW_2026-11-08.md).
+12. [Trailer production status — 8 November 2026](docs/media/BTV_TRAILER_PRODUCTION_STATUS_2026-11-08.md).
 
 ### Implementation contracts
 - [Mission data validation contract](docs/implementation/MISSION_DATA_VALIDATION_CONTRACT_001.md) — Phase 1 neutral registry validator implemented; full mission/dialogue graph validation and Ridgeview content remain unimplemented.
