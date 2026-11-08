@@ -8,6 +8,8 @@ The active isolated engineering/research branch is `btv/test-first-contracts-001
 
 The branch is not merged into `main`. Do not treat this branch as a finished game or a playable vertical slice.
 
+The cross-platform project records and Lore Bridge static review are being consolidated on `btv/project-history-and-lore-bridge-001`, created from the active engineering branch. This is a documentation/review branch; it does not replace the engineering branch or imply that external agent connections are live.
+
 ### Project foundation
 - `project.godot` — Godot project entry point and input actions.
 - `scenes/main.tscn` — greybox test area.
@@ -28,9 +30,26 @@ The branch is not merged into `main`. Do not treat this branch as a finished gam
 5. [Core interaction acceptance matrix](docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md).
 6. [Research-to-design traceability matrix — 6 November 2026](docs/coordination/BTV_RESEARCH_TO_DESIGN_TRACEABILITY_MATRIX_2026-11-06.md).
 7. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
+8. [Cross-platform progress register — 8 November 2026](docs/coordination/BTV_CROSS_PLATFORM_PROGRESS_REGISTER_2026-11-08.md).
+9. [Next execution plan — 8 November 2026](docs/coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md).
+10. [MiniMax Lore Bridge static review — 8 November 2026](docs/audits/BTV_LORE_BRIDGE_STATIC_REVIEW_2026-11-08.md).
+11. [Trailer production status — 8 November 2026](docs/media/BTV_TRAILER_PRODUCTION_STATUS_2026-11-08.md).
 
 ### Implementation contracts
 - [Mission data validation contract](docs/implementation/MISSION_DATA_VALIDATION_CONTRACT_001.md) — Phase 1 neutral registry validator implemented; full mission/dialogue graph validation and Ridgeview content remain unimplemented.
+
+### Multi-agent collaboration
+- [Multi-agent development system](docs/agents/BTV_MULTI_AGENT_DEVELOPMENT_SYSTEM_v1.0.md).
+- [Claude Visual Director charter](docs/agents/CLAUDE_VISUAL_DIRECTOR_CHARTER_v1.0.md).
+- [MiniMax Code Implementation charter](docs/agents/MINIMAX_CODE_IMPLEMENTATION_CHARTER_v1.0.md).
+- [ChatGPT Lead Coordinator charter](docs/agents/CHATGPT_LEAD_COORDINATOR_CHARTER_v1.0.md).
+- [Task and handoff protocol](docs/agents/BTV_AGENT_TASK_AND_HANDOFF_PROTOCOL_v1.0.md).
+- [Visual production quality standard](docs/visual/BTV_VISUAL_PRODUCTION_QUALITY_STANDARD_v1.0.md).
+- [GitHub MCP and branch rules](docs/agents/BTV_GITHUB_MCP_AND_BRANCH_RULES_v1.0.md).
+- [Shared decision log](docs/agents/BTV_SHARED_DECISION_LOG.md).
+- [Agent activity log](docs/agents/BTV_AGENT_ACTIVITY_LOG.md).
+
+The multi-agent system is documented, not yet operationally connected. Claude/MiniMax MCP access and client compatibility require separate verification.
 
 ### Research
 - [Game development practice — Phase 1](docs/research/BTV_GAME_DEVELOPMENT_PRACTICE_RESEARCH_PHASE_1_2026-11-05.md).
@@ -57,7 +76,7 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Open and run
 
-1. Check out `btv/test-first-contracts-001` for the current isolated branch.
+1. Check out `btv/test-first-contracts-001` for the current isolated engineering branch.
 2. Open the project folder in Godot 4.7.2 (matching the CI version).
 3. Allow the project to import and inspect the Output/debugger panels.
 4. Run the project (F5 / Run Project).
@@ -86,11 +105,12 @@ These are headless CI/documentation checks only. They do not verify rendered app
 
 ## Branch and release boundaries
 
-- Active work remains on `btv/test-first-contracts-001`.
+- Active engineering work remains on `btv/test-first-contracts-001`.
+- Cross-platform documentation and Lore Bridge review are on `btv/project-history-and-lore-bridge-001`.
+- The earlier `btv/multi-agent-system-v1` branch is retained as historical work; its nine documents have been ported into the current documentation branch.
 - No merge to `main` has been performed.
 - No release has been published.
 - Do not merge, force-push, delete branches, publish or deploy without explicit approval.
-
 
 ## Approved visual direction and graphics production
 
