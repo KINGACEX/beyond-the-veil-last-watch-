@@ -19,7 +19,7 @@ The cross-platform project records and Lore Bridge static review are being conso
 - `scripts/interactable.gd` — reusable Area3D interaction contract.
 - `scripts/nli/` — deterministic NLI parser, validator, request gate, authored knowledge base and orchestration service.
 - `scripts/mission/mission_data_validator.gd` — neutral typed-registry ID/reference validation utility (Phase 1 only).
-- `tests/` — NLI smoke/contract tests, neutral mission-validator tests, core interaction acceptance tests and camera input tests.
+- `tests/` — NLI smoke/contract tests, neutral mission-validator tests, core interaction acceptance tests, camera input tests and touch adapter/HUD integration tests.
 - `.github/workflows/godot-validation.yml` — headless Godot validation workflow.
 
 ### Read these first
