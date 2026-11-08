@@ -65,3 +65,6 @@ No Lore Bridge code was changed, installed, registered or executed as part of th
 
 
 | ACT-MA-015 | 2026-11-08 | ChatGPT / GitHub repository tool | Created isolated engineering branch `btv/mission-validator-strict-types-001`; added tests before implementation for non-string registry IDs/namespaces and non-string reference fields; implemented strict type diagnostics; updated the mission validation contract; enabled PR validation; opened draft PR #2 to the engineering branch. | PR https://github.com/KINGACEX/beyond-the-veil-last-watch-/pull/2; head commit `81570c095f90b0b9c1d4e3ab38ebb40c7c3a9efd`; workflow run `42497741908`. | IN PROGRESS — CI RUNNING; NOT MERGED |
+
+
+| ACT-MA-016 | 2026-11-08 | GitHub Actions / Godot 4.7.2 | Verified draft PR #2 workflow run completed successfully. Headless editor import, NLI smoke tests, NLI contract tests, mission data validator tests (including the new strict-type cases), core interaction acceptance tests and 10-frame main-scene launch all completed successfully. | Run https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42497741908; job `128783630009`; PR #2 head `81570c095f90b0b9c1d4e3ab38ebb40c7c3a9efd`. | COMPLETED — HEADLESS CI PASS; PR STILL DRAFT / UNMERGED |
