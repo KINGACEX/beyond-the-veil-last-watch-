@@ -2,7 +2,7 @@
 
 **Engineering reference branch:** `btv/test-first-contracts-001`  
 **Separate camera/input feature branch:** `btv/camera-relative-mouselook-001` (unmerged)  
-**Separate mobile input adapter branch:** `btv/mobile-touch-input-adapter-001` (unmerged; adapter only)  
+**Separate mobile controls branch:** `btv/mobile-touch-input-adapter-001` (unmerged; analog joystick and touch-look integrated)  
 **Prototype origin:** `btv/bootstrap-prototype-001`  
 **Status:** HEADLESS CI PASSED; visual/runtime and Android device validation remain pending.  
 **Latest verified successful camera/input feature run at this document revision:** [42499393434](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42499393434), commit `de2cb1d29f81a011ddb5319e6c32d95ac3418e45` on `btv/camera-relative-mouselook-001`. The strict-type PR #2 run `42497741908` also passed on its separate feature branch.
