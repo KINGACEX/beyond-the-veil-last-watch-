@@ -25,7 +25,9 @@
 - Desktop pointer capture/release handling is implemented in source; actual pointer capture is not exercised by headless CI.
 - New camera input tests pass in run 42499393434.
 - Mobile camera-look surface, virtual joystick UI integration and physical Android verification remain open.
-- Independent touch movement/look finger-state adapter is implemented and tested on `btv/mobile-touch-input-adapter-001`; it is not yet connected to the running touch HUD.
+- Independent movement/look finger-state adapter is integrated into the touch HUD on `btv/mobile-touch-input-adapter-001`.
+- Analog joystick and right-side camera-look surface are enabled on touchscreen devices; legacy directional pad remains available through `use_analog_touch_controls = false`.
+- Synthetic headless integration tests pass; physical Android QA, safe-area checks and real-device performance remain pending.
 
 ### NLI
 - Deterministic phrase parser and typed intent validation.
