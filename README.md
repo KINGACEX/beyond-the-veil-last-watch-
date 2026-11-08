@@ -4,7 +4,7 @@ BTV is a Christian action-adventure survival RPG set in a modern world of spirit
 
 ## Current repository state
 
-The active isolated engineering/research branch is `btv/test-first-contracts-001`. It contains the Godot greybox foundation originally developed on `btv/bootstrap-prototype-001`, additional interaction and NLI contract tests, recovered source-of-truth design documents, audits and research.
+The engineering reference branch is `btv/test-first-contracts-001`. The isolated feature branch `btv/camera-relative-mouselook-001` adds camera-relative movement and desktop mouse-look on top of that baseline; it has passed headless CI but is not merged. The Godot greybox foundation originated on `btv/bootstrap-prototype-001`.
 
 The branch is not merged into `main`. Do not treat this branch as a finished game or a playable vertical slice.
 
