@@ -86,3 +86,6 @@ No Lore Bridge code was changed, installed, registered or executed as part of th
 
 
 | ACT-MA-021 | 2026-11-08 | ChatGPT / GitHub repository tool | Inspected Android export readiness after M2 HUD CI pass. Confirmed the feature branch root has no export_presets.cfg and the current workflow performs headless validation only; documented that a package identifier decision and debug APK export path are prerequisites for physical-device QA. | Evidence: repository root listing and .github/workflows/godot-validation.yml on btv/mobile-touch-input-adapter-001; updates in BOOTSTRAP_STATUS.md, the M2 report and next execution plan. | COMPLETED — BLOCKER DOCUMENTED; NO APP ID ASSUMED; NO APK BUILT |
+
+
+| ACT-MA-022 | 2026-11-08 | ChatGPT / GitHub repository tool | Created shared cross-agent handoff XH-001 for MiniMax Code, Claude and ChatGPT. It records M1/M2 branch and CI evidence, Android export blocker, role-specific review tasks and a common acknowledgement/report format. | `docs/coordination/BTV_CROSS_AGENT_HANDOFF_2026-11-08.md`; initial commit `0e2e657eba3eaba1c2fcaf4ae6b2e3edeff342cf`; indexed in root README and source-of-truth README. | COMPLETED — HANDOFF DOCUMENT ONLY; NOT SENT DIRECTLY; EXTERNAL ACKNOWLEDGEMENTS UNKNOWN |
