@@ -93,7 +93,7 @@ func _test_look_surface_rotates_camera_without_cancelling_movement() -> void:
 	var look_start := _screen_point(look_surface, Vector2(look_surface.size.x * 0.65, look_surface.size.y * 0.4))
 	var pivot: Node3D = player.get_node("CameraPivot")
 	var initial_yaw := pivot.global_rotation.y
-	overlay.call("_input", _touch(2, true, move_center))
+	print("DEBUG look_size=", look_surface.size, " look_start=", look_start, " player_group=", player.is_in_group("btv_player"), " touch_player=", overlay.get("_player"))	overlay.call("_input", _touch(2, true, move_center))
 	overlay.call("_input", _touch(3, true, look_start))
 	overlay.call("_input", _drag(2, move_center + Vector2(50, 0)))
 	overlay.call("_input", _drag(3, look_start + Vector2(12, 0)))
@@ -114,6 +114,7 @@ func _test_interact_button_area_is_excluded_from_camera_look() -> void:
 	var look_surface: Control = overlay.get_node("LookSurface")
 	var button_point := _screen_point(interact, interact.size * 0.5)
 	var button_local := look_surface.get_global_transform_with_canvas().affine_inverse() * button_point
+	print("DEBUG overlay_size=", overlay.size, " look_size=", look_surface.size, " button_size=", interact.size, " button_point=", button_point, " button_local=", button_local, " look_rect=", Rect2(Vector2.ZERO, look_surface.size))
 	_check(Rect2(Vector2.ZERO, look_surface.size).has_point(button_local), "Interact button is positioned within the camera-look region")
 	overlay.call("_input", _touch(4, true, button_point))
 	overlay.call("_input", _drag(4, button_point + Vector2(20, 0)))
