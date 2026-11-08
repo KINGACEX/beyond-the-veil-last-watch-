@@ -1,15 +1,15 @@
-# BTV M2 — Independent Touch Input Adapter
+# BTV M2 — Integrated Mobile Touch Controls
 
-**Status:** ADAPTER IMPLEMENTED; HEADLESS CI PASS; NOT YET CONNECTED TO THE MOBILE HUD  
+**Status:** IMPLEMENTED IN ISOLATED FEATURE BRANCH; HEADLESS CI PASS; PHYSICAL ANDROID QA PENDING  
 **Date:** 8 November 2026  
 **Feature branch:** `btv/mobile-touch-input-adapter-001`  
 **Base:** `btv/camera-relative-mouselook-001` at `de2cb1d29f81a011ddb5319e6c32d95ac3418e45`  
-**Head commit:** `9151e92f87a4e7971d3f44138fae1ec4c78ae0a3`  
-**CI:** [GitHub Actions run 42499779484](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42499779484)
+**Head commit:** `3484672809ad95e4e36591e7ca7d49d5f61dfd5e`  
+**CI:** [GitHub Actions run 42500466981](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42500466981)
 
 ## Purpose
 
-Build a small, testable input-state layer before changing the visible Android controls. It assigns one touch finger to movement and a different touch finger to camera look, so a movement gesture cannot also rotate the camera.
+Integrate an analog movement surface and independent camera-look surface while retaining the existing directional pad as a fallback. Movement, look and Interact must not steal one another's touch ownership.
 
 ## Changes
 
@@ -17,40 +17,49 @@ Build a small, testable input-state layer before changing the visible Android co
   - Tracks one movement finger and one independent look finger.
   - Rejects negative finger IDs, duplicate ownership and attempts by one finger to own both controls.
   - Converts joystick displacement into a normalized unit-circle vector with a configurable radius and deadzone.
-  - Rescales movement outside the deadzone.
-  - Returns incremental look deltas from the look finger.
-  - Ignores unrelated finger updates without changing the authoritative movement vector.
-  - Releases matching finger ownership and clears both controls on cancellation.
-- `tests/touch_input_adapter_test.gd`
-  - Covers invalid IDs, joystick centre, horizontal movement, unit-circle clamping, deadzone, finger isolation, incremental look deltas, same-finger rejection, matching release, simultaneous independent fingers and cancel-all cleanup.
+  - Returns incremental look deltas.
+  - Ignores unrelated finger events without changing the authoritative movement vector.
+  - Supports matching release and cancel-all cleanup.
+- `scripts/touch_controls.gd`
+  - Routes screen-touch and screen-drag events by finger ID.
+  - Feeds analog strengths into the same four movement InputMap actions used by the keyboard.
+  - Sends look deltas to the player camera.
+  - Excludes the Interact button rectangle from camera-look tracking.
+  - Releases actions and finger ownership on touch release, application focus loss and scene teardown.
+  - Resizes the overlay to the active viewport and responds to viewport-size changes.
+  - Exposes `use_analog_touch_controls`; setting it to false restores the legacy directional pad.
+- `scenes/touch_controls.tscn`
+  - Adds a left-side circular joystick and knob.
+  - Adds a transparent right-side camera-look region.
+  - Retains the existing Interact button and legacy directional pad.
+- `scripts/player_controller.gd`
+  - Registers the player in the `btv_player` group for camera-look routing.
+- Tests:
+  - `tests/touch_input_adapter_test.gd` covers finger ownership, deadzone, clamping, independent fingers, release and cancellation.
+  - `tests/touch_controls_integration_test.gd` covers movement action strengths, simultaneous movement/look, Interact-area exclusion, focus loss, scene teardown and legacy fallback.
 - `.github/workflows/godot-validation.yml`
-  - Adds the adapter test suite to the feature-branch CI workflow.
+  - Runs both adapter and integrated touch-control suites.
 
 ## Verification
 
-**CONFIRMED — Godot 4.7.2 run 42499779484:**
+**CONFIRMED — Godot 4.7.2 run 42500466981:**
 - Headless editor import/project parsing passed.
-- NLI smoke and handoff/source-registry tests passed.
+- NLI smoke and handoff/source-registry contract tests passed.
 - Mission data validator tests passed.
 - Core interaction acceptance tests passed.
 - Camera input tests passed.
-- Touch input adapter tests passed with `TOUCH_INPUT_ADAPTER_TESTS: PASS`.
-- 10-frame main-scene launch passed.
+- Touch input adapter tests passed.
+- Touch controls integration tests passed with `TOUCH_CONTROLS_INTEGRATION_TESTS: PASS`.
+- 10-frame headless main-scene launch passed.
 
-## Boundaries
+The integration suite verifies independent movement and look fingers, movement release, focus-loss cleanup, scene-teardown cleanup, Interact-area exclusion and the ability to restore the legacy directional pad.
 
-This is an input-state adapter, not a finished mobile control scheme. It is not connected to `touch_controls.gd`, no joystick or camera-look surface has been drawn, no movement actions are being driven by this adapter in the running scene, and no physical Android touch test has occurred.
+## Verification boundary
 
-The current four-button touch overlay remains unchanged. Preserve it until the integrated joystick/look controls pass automated tests and physical-device review.
+**Not yet verified on a physical Android device:** touch latency, thumb reach, actual multitouch hardware behaviour, portrait/landscape changes, safe-area insets, UI scale/readability, camera sensitivity, frame pacing and device performance. Headless synthetic input tests do not establish these properties.
 
-## Next bounded step
+The analog layout is enabled by default on touchscreen devices. The old directional pad remains in the scene and can be restored by setting `use_analog_touch_controls = false`. Do not remove that fallback until physical-device review is complete.
 
-Integrate the adapter into a separate touch-control UI layer:
-1. Add a left-side virtual joystick that feeds the shared movement actions with analog strengths.
-2. Add a right-side camera-look surface that forwards incremental deltas to the player camera.
-3. Keep the Interact action separate and ensure it cannot steal either active finger.
-4. Release all movement actions and finger ownership on touch-up, cancellation, focus loss and scene teardown.
-5. Test movement + look simultaneously, wrong-finger events, cancellation and UI overlap.
-6. Keep the old directional buttons available as a fallback until the integrated surface is reviewed on the actual Android device.
+## Decision boundary
 
-No game canon, story, mission data, combat, external dependency or paid asset was added. The branch remains isolated and unmerged.
+This is an isolated, unmerged feature branch. No release, merge, store upload, paid asset, external dependency, story/canon change or mission content was added. The next gate is manual Android device validation and any required responsive/safe-area adjustments.
