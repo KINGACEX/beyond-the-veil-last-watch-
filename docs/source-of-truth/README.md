@@ -79,7 +79,7 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 
 - [Separated Workstream Execution Board](../coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md) — distinct workstreams, dependencies, owners/gates and execution order.
 - [Repository Verification & Documentation Drift Audit](../audits/BTV_REPOSITORY_VERIFICATION_AND_DOCUMENTATION_DRIFT_2026-11-05.md) — latest CI evidence, source gaps, stale handoffs and NLI contract findings.
-- [Character & Visual Reference Inventory Audit](../audits/BTV_CHARACTER_AND_VISUAL_REFERENCE_INVENTORY_2026-11-05.md) — Asher, Ember and wider character visual references.
+- [Character & Visual Reference Inventory Audit](../audits/BTV_CHARACTER_AND_VISUAL_REFERENCE_INVENTORY_AUDIT_2026-11-05.md) — Asher, Ember and wider character visual references.
 
 ## Engineering and QA contracts
 
@@ -94,8 +94,21 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 ## Cross-platform governance and latest project records
 
 - [Multi-agent development system](../agents/BTV_MULTI_AGENT_DEVELOPMENT_SYSTEM_v1.0.md) — creator-led Claude / MiniMax Code / ChatGPT collaboration model; documented, not yet connected.
+- [Story Development Agent charter](../agents/BTV_STORY_DEVELOPMENT_AGENT_CHARTER_v0.1.md) — story-review workflow and source hierarchy.
 - [Shared decision log](../agents/BTV_SHARED_DECISION_LOG.md) and [agent activity log](../agents/BTV_AGENT_ACTIVITY_LOG.md) — approval and evidence history.
-- [Cross-platform progress register](../coordination/BTV_CROSS_PLATFORM_PROGRESS_REGISTER_2026-11-08.md) — engineering, agent, Lore Bridge and media status.
+- [Cross-platform progress register](../coordination/BTV_CROSS_PLATFORM_PROGRESS_REGISTER_2026-11-08.md) — engineering, story, agent, Lore Bridge and media status.
 - [Next execution plan](../coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md) — prioritized and gated work.
 - [MiniMax Lore Bridge static review](../audits/BTV_LORE_BRIDGE_STATIC_REVIEW_2026-11-08.md) — archive review and safety requirements; code not executed.
 - [Trailer production status](../media/BTV_TRAILER_PRODUCTION_STATUS_2026-11-08.md) — Screel draft render, Descript status and publication gate.
+
+## Supporting character, story and world-design records
+
+- [Kay family character bible](../characters/KAY_FAMILY_CHARACTER_BIBLE_v1.0.md) and [naming addendum](../characters/KAY_FAMILY_NAMING_ADDENDUM_v1.1.md).
+- [Global character naming and cultural representation framework](../design/BTV_GLOBAL_CHARACTER_NAMING_AND_CULTURAL_REPRESENTATION_FRAMEWORK_v0.1.md).
+- [Annual community calendar proposal](../design/BTV_ANNUAL_COMMUNITY_CALENDAR_FRAMEWORK_PROPOSAL_v0.1.md).
+- [Church festival and community event proposal](../design/CHURCH_FESTIVAL_AND_COMMUNITY_EVENT_FRAMEWORK_PROPOSAL_v0.1.md).
+- [New-game NPC generation and Christian name lexicon proposal](../design/BTV_NEW_GAME_NPC_GENERATION_AND_CHRISTIAN_NAME_LEXICON_PROPOSAL_v0.1.md).
+- [Initial story gap register](../story/BTV_STORY_GAP_REGISTER_INITIAL_TRIAGE_v0.1.md).
+- [Opening-to-Ridgeview narrative flow](../story/BTV_VERTICAL_SLICE_OPENING_TO_RIDGEVIEW_NARRATIVE_FLOW_v0.1.md).
+
+These supporting records retain their original labels. Proposals do not become canon merely because they are indexed here.
