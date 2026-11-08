@@ -113,7 +113,8 @@ func _test_interact_button_area_is_excluded_from_camera_look() -> void:
 	var interact: Control = overlay.get_node("Interact")
 	var look_surface: Control = overlay.get_node("LookSurface")
 	var button_point := _screen_point(interact, interact.size * 0.5)
-	_check(look_surface.get_global_transform_with_canvas().affine_inverse() * button_point >= Vector2.ZERO, "Interact button is positioned within the overlay coordinate space")
+	var button_local := look_surface.get_global_transform_with_canvas().affine_inverse() * button_point
+	_check(Rect2(Vector2.ZERO, look_surface.size).has_point(button_local), "Interact button is positioned within the camera-look region")
 	overlay.call("_input", _touch(4, true, button_point))
 	overlay.call("_input", _drag(4, button_point + Vector2(20, 0)))
 	var player: CharacterBody3D = setup.get("player")
