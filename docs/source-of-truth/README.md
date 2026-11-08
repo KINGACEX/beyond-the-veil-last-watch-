@@ -115,3 +115,6 @@ These supporting records retain their original labels. Proposals do not become c
 
 
 - [Lore Bridge v1.1 remediation specification](../implementation/BTV_LORE_BRIDGE_V1_1_REMEDIATION_SPEC.md) — proposed engineering requirements; not yet implemented.
+
+
+- [Ridgeview Revelation & Evidence Matrix v0.1](../story/BTV_RIDGEVIEW_REVELATION_AND_EVIDENCE_MATRIX_v0.1.md) — source-traced analytical matrix and test scenarios derived from the merged Vertical Slice Specification; not new canon.
