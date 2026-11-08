@@ -109,8 +109,8 @@ func _test_mouse_look_respects_pitch_limits() -> void:
 
 
 func _test_mouse_capture_motion_and_escape_release() -> void:
-	if DisplayServer.is_touchscreen_available():
-		_check(true, "Desktop mouse capture test is skipped on a touchscreen runtime")
+	if DisplayServer.get_name() == "headless" or DisplayServer.is_touchscreen_available():
+		_check(true, "Desktop pointer capture test is skipped without a desktop window")
 		return
 	var player := _new_player()
 	var original_mouse_mode := Input.mouse_mode
@@ -136,8 +136,8 @@ func _test_mouse_capture_motion_and_escape_release() -> void:
 
 
 func _test_focus_loss_releases_mouse_capture() -> void:
-	if DisplayServer.is_touchscreen_available():
-		_check(true, "Desktop mouse focus test is skipped on a touchscreen runtime")
+	if DisplayServer.get_name() == "headless" or DisplayServer.is_touchscreen_available():
+		_check(true, "Desktop pointer focus test is skipped without a desktop window")
 		return
 	var player := _new_player()
 	var original_mouse_mode := Input.mouse_mode
