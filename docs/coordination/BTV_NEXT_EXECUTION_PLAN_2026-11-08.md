@@ -164,7 +164,7 @@ GitHub Actions run `42497741908` was observed in progress while installing Godot
 
 **CONFIRMED source gaps:** camera-relative movement and mouse-look are not implemented in the current player controller. The touch overlay is a four-direction-button scaffold plus Interact; it is not a complete mobile control scheme. Scene transition/re-entry, pause/UI input context, unavailable-target handling, multitouch, multiple-shape deduplication and player/self-sensor exclusion remain untested or unimplemented.
 
-**Next bounded task:** on a fresh isolated engineering branch from the latest verified base, implement only camera-relative movement and desktop mouse-look, preserving current keyboard actions and interaction. Add focused logic tests for camera-relative direction, diagonal normalization and pitch limits where practical. Do not combine this with a virtual joystick, mobile camera-look surface, responsive menus or gameplay features. Verify Godot 4.7.2 CI and report manual/device limitations explicitly.
+**Historical next-task note:** the camera-relative movement and desktop mouse-look task described above is now completed on `btv/camera-relative-mouselook-001`; see the M1 implementation update below. Do not repeat that task. The next bounded workstream is M2 mobile controls.
 
 
 
