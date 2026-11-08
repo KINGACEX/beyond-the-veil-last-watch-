@@ -5,6 +5,11 @@ class_name BTVPlayerController
 
 @export_range(0.5, 12.0, 0.1) var move_speed: float = 4.0
 @export_range(0.0, 30.0, 0.1) var turn_speed: float = 12.0
+@export_range(0.01, 1.0, 0.01) var look_sensitivity_degrees_per_pixel: float = 0.12
+@export_range(-89.0, 0.0, 1.0) var min_pitch_degrees: float = -70.0
+@export_range(0.0, 89.0, 1.0) var max_pitch_degrees: float = 35.0
+
+@onready var _camera_pivot: Node3D = $CameraPivot
 
 var _gravity: float = 9.8
 var _nearby_interactables: Array[BTVInteractable] = []
@@ -19,7 +24,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var input_vector := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var move_direction := Vector3(input_vector.x, 0.0, input_vector.y).normalized()
+	var move_direction := _get_camera_relative_move_direction(input_vector)
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
 	else:
@@ -32,6 +37,56 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	if Input.is_action_just_pressed("interact"):
 		_try_interact()
+
+
+func _get_camera_relative_move_direction(input_vector: Vector2) -> Vector3:
+	var camera_basis := _camera_pivot.global_transform.basis
+	var camera_forward := -camera_basis.z
+	camera_forward.y = 0.0
+	camera_forward = camera_forward.normalized()
+	var camera_right := camera_basis.x
+	camera_right.y = 0.0
+	camera_right = camera_right.normalized()
+
+	var direction := camera_right * input_vector.x + camera_forward * -input_vector.y
+	if direction.length_squared() > 1.0:
+		direction = direction.normalized()
+	return direction
+
+
+func _apply_look_delta(mouse_delta: Vector2) -> void:
+	_camera_pivot.rotation.y -= deg_to_rad(mouse_delta.x * look_sensitivity_degrees_per_pixel)
+	var pitch_delta := deg_to_rad(mouse_delta.y * look_sensitivity_degrees_per_pixel)
+	_camera_pivot.rotation.x = clampf(
+		_camera_pivot.rotation.x + pitch_delta,
+		deg_to_rad(min_pitch_degrees),
+		deg_to_rad(max_pitch_degrees)
+	)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if key_event.pressed and not key_event.echo and key_event.keycode == KEY_ESCAPE:
+			if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+				get_viewport().set_input_as_handled()
+				return
+
+	if DisplayServer.is_touchscreen_available():
+		return
+
+	if event is InputEventMouseButton:
+		var button_event := event as InputEventMouseButton
+		if button_event.pressed and button_event.button_index == MOUSE_BUTTON_LEFT:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	elif event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		_apply_look_delta((event as InputEventMouseMotion).relative)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
 func _on_sensor_area_entered(area: Area3D) -> void:
