@@ -24,9 +24,10 @@ func begin_movement(finger_id: int, origin: Vector2) -> bool:
 	return true
 
 
+## Returns the current authoritative vector unchanged for non-owning fingers.
 func update_movement(finger_id: int, position: Vector2) -> Vector2:
 	if finger_id != _movement_finger_id:
-		return Vector2.ZERO
+		return _movement_vector
 	if joystick_radius <= 0.0:
 		_movement_vector = Vector2.ZERO
 		return _movement_vector
