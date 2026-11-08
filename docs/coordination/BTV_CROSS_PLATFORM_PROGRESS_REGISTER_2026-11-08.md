@@ -115,3 +115,8 @@ See `docs/coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md`. The priority is t
 ## 10. Lore Bridge v1.1 remediation specification
 
 A follow-on engineering specification has been added at `docs/implementation/BTV_LORE_BRIDGE_V1_1_REMEDIATION_SPEC.md`. It defines the non-destructive corpus layout, provenance/status schema, privacy-first ingestion, safe configuration registration, evidence-tier gap reporting, client compatibility tests and staged acceptance gates. It is a proposed specification only; the external ZIP source code remains unchanged and unexecuted.
+
+
+## 11. Ridgeview revelation and evidence matrix
+
+Created `docs/story/BTV_RIDGEVIEW_REVELATION_AND_EVIDENCE_MATRIX_v0.1.md` from the merged Vertical Slice Specification v1.0 and the existing opening-to-Ridgeview narrative flow. It separates Scout historical labels from Asher's field status, distinguishes the trader's contradicted closure claim from the still-open missed-delivery claim, preserves the visitor-relative connection as Unverified until supported, and keeps the repairman's fate unresolved. It includes source traceability, response/flag mapping and 16 acceptance scenarios. This is a proposed analytical aid, not new canon, final dialogue or implemented gameplay.
