@@ -73,8 +73,7 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 
 ## Visual-reference provenance and character inventory
 
-- The Library contains multiple Asher Vance images, including a character turnaround and older gameplay/UI mockups. Their approval status is not established by filenames. The turnaround's printed age conflicts with current age-18 presentation; the infiltration mockup contains legacy command/UI mechanics. Ember's rare original canid lineage is LOCKED by Foundation #11; exact appearance remains OPEN. See [Visual Reference Provenance Audit](../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md) and [Character & Visual Reference Inventory Audit](../audits/BTV_CHARACTER_AND_VISUAL_REFERENCE_INVENTORY_2026-11-05.md) before using these assets.
-
+- The Library contains multiple Asher Vance images, including a character turnaround and older gameplay/UI mockups. Their approval status is not established by filenames. The turnaround's printed age conflicts with current age-18 presentation; the infiltration mockup contains legacy command/UI mechanics. Ember's rare original canid lineage is LOCKED by Foundation #11; exact appearance remains OPEN. See [Visual Reference Provenance Audit](../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md) and [Character & Visual Reference Inventory Audit](../audits/BTV_CHARACTER_AND_VISUAL_REFERENCE_INVENTORY_AUDIT_2026-11-05.md) before using these assets.
 
 ## Project coordination and verification audits
 
@@ -87,8 +86,16 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 - [NLI 003 — Handoff State and Source Registry Contract](../implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md) — proposed contract; not implemented.
 - [Core Interaction 003 — Edge-Case Acceptance Matrix](../qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md) — proposed QA cases; not yet executed.
 
-
 ## Session continuity and coordination
 
 - [Session Continuity Protocol](../coordination/SESSION_CONTINUITY_PROTOCOL.md) — reusable rules for detailed, timestamped long-chat checkpoints and new-chat handoffs.
 - [BTV continuity setup checkpoint — 5 November 2026, 12:37–12:38 UTC](../coordination/session-logs/SESSION_2026-11-05_1237Z_BTV_CONTINUITY_SYSTEM_SETUP.md) — records this setup window, previous verified engineering baseline, open tasks and exact resume point.
+
+## Cross-platform governance and latest project records
+
+- [Multi-agent development system](../agents/BTV_MULTI_AGENT_DEVELOPMENT_SYSTEM_v1.0.md) — creator-led Claude / MiniMax Code / ChatGPT collaboration model; documented, not yet connected.
+- [Shared decision log](../agents/BTV_SHARED_DECISION_LOG.md) and [agent activity log](../agents/BTV_AGENT_ACTIVITY_LOG.md) — approval and evidence history.
+- [Cross-platform progress register](../coordination/BTV_CROSS_PLATFORM_PROGRESS_REGISTER_2026-11-08.md) — engineering, agent, Lore Bridge and media status.
+- [Next execution plan](../coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md) — prioritized and gated work.
+- [MiniMax Lore Bridge static review](../audits/BTV_LORE_BRIDGE_STATIC_REVIEW_2026-11-08.md) — archive review and safety requirements; code not executed.
+- [Trailer production status](../media/BTV_TRAILER_PRODUCTION_STATUS_2026-11-08.md) — Screel draft render, Descript status and publication gate.
