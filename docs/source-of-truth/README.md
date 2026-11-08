@@ -98,6 +98,7 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 - [Shared decision log](../agents/BTV_SHARED_DECISION_LOG.md) and [agent activity log](../agents/BTV_AGENT_ACTIVITY_LOG.md) — approval and evidence history.
 - [Cross-platform progress register](../coordination/BTV_CROSS_PLATFORM_PROGRESS_REGISTER_2026-11-08.md) — engineering, story, agent, Lore Bridge and media status.
 - [Next execution plan](../coordination/BTV_NEXT_EXECUTION_PLAN_2026-11-08.md) — prioritized and gated work.
+- [Current cross-agent handoff XH-001](../coordination/BTV_CROSS_AGENT_HANDOFF_2026-11-08.md) — common MiniMax/Claude/ChatGPT task brief and response protocol.
 - [MiniMax Lore Bridge static review](../audits/BTV_LORE_BRIDGE_STATIC_REVIEW_2026-11-08.md) — archive review and safety requirements; code not executed.
 - [Trailer production status](../media/BTV_TRAILER_PRODUCTION_STATUS_2026-11-08.md) — Screel draft render, Descript status and publication gate.
 
