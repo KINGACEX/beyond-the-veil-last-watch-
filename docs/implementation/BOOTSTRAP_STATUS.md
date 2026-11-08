@@ -28,6 +28,7 @@
 - Independent movement/look finger-state adapter is integrated into the touch HUD on `btv/mobile-touch-input-adapter-001`.
 - Analog joystick and right-side camera-look surface are enabled on touchscreen devices; legacy directional pad remains available through `use_analog_touch_controls = false`.
 - Synthetic headless integration tests pass; physical Android QA, safe-area checks and real-device performance remain pending.
+- **Android build blocker:** no `export_presets.cfg` or Android export CI job is present in the inspected branch. A package identifier must be selected before a debug APK pipeline can be configured; none has been invented.
 
 ### NLI
 - Deterministic phrase parser and typed intent validation.
