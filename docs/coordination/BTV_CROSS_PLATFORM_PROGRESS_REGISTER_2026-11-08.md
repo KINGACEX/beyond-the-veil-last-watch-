@@ -132,3 +132,17 @@ A bounded engineering change is under review on `btv/mission-validator-strict-ty
 ### Strict-type PR verification update
 
 **CONFIRMED — GitHub Actions run 42497741908 passed** on the PR #2 merge ref using Godot 4.7.2. The log explicitly reports `MISSION_DATA_VALIDATOR_TESTS: PASS`; NLI smoke, NLI contract and core interaction acceptance suites also report PASS, and the main scene completed its 10-frame headless launch. The PR contains four changed files, five commits ahead of the engineering base, and remains draft/unmerged. This is headless CI evidence only, not editor visual review, manual play testing or Android-device verification.
+
+
+
+## 13. Core interaction acceptance review — 8 November 2026
+
+Inspected the current controller, touch overlay, main scene, automated test file, interaction matrix and cross-platform input brief on `btv/test-first-contracts-001`.
+
+**CONFIRMED:** GitHub Actions run [42497741908](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42497741908) passed the core interaction acceptance suite on code commit `81570c095f90b0b9c1d4e3ab38ebb40c7c3a9efd`. The matrix was updated to record 15 directly automated cases, 2 partial cases and 11 not-yet-automated cases. This is per-case test accounting, not a claim that all 28 cases pass.
+
+**Source-inspection findings:** the main scene instantiates the touch overlay; touch buttons feed shared InputMap actions and release on button-up, focus loss and teardown. The player controller currently has no camera-look input or camera-relative movement. Explicit pause/UI input-context policy, touch multitouch coverage, scene-transition/re-entry tests, unavailable-target result handling, multiple-shape deduplication and player/self-sensor exclusion remain open.
+
+**Next bounded engineering task:** add testable camera-relative movement and mouse-look on an isolated branch, only after checking the latest engineering head and CI state. Keep existing keyboard movement and interaction intact. Do not bundle the mobile virtual joystick/right-side touch-look region into that same change; it requires separate multi-touch and device acceptance work.
+
+**Changed documentation:** `docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md` and `docs/implementation/BOOTSTRAP_STATUS.md` were refreshed on this documentation branch. No gameplay code, scene files, canon or mission content changed during this review.
