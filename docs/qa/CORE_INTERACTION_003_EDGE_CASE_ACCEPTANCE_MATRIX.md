@@ -115,3 +115,28 @@ The test-first review identified two defects in the selector: temporarily disabl
 **Automated test:** `_test_case_only_ids_have_deterministic_tie_break`.
 
 **Historical verification note:** test-first regression was added after the earlier baseline. Current verification is recorded in Section 10.
+
+
+
+## 10. Current CI verification — 8 November 2026
+
+**CONFIRMED:** GitHub Actions run [42497741908](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42497741908) completed successfully on Godot 4.7.2. The run used code commit `81570c095f90b0b9c1d4e3ab38ebb40c7c3a9efd` on `btv/mission-validator-strict-types-001`. Its core interaction step passed with `CORE_INTERACTION_ACCEPTANCE_TESTS: PASS`. The strict-type documentation-only follow-up commit does not change the interaction test or controller code.
+
+**Direct automated coverage in the test file at that commit:**
+
+- **AUTOMATED (15 matrix cases):** INT-001 through INT-007; INT-019; INT-021 through INT-023; INT-025 through INT-028.
+- **PARTIAL (2 matrix cases):** INT-013 (duplicate enter is idempotent; rapid enter/exit is not covered); INT-024 (freed-target and touch-overlay teardown paths are covered separately; teardown during an active interaction is not covered).
+- **NOT AUTOMATED (11 matrix cases):** INT-008, INT-009, INT-010, INT-011, INT-012, INT-014, INT-015, INT-016, INT-017, INT-018 and INT-020.
+
+The automated suite contains direct tests for disabled-target re-enablement, whitespace-normalized IDs, normalized duplicate IDs, and case-only deterministic tie-breaking. These four cases are now verified by the successful run; the earlier pending notes in Sections 8 and 9 are historical.
+
+**Source-inspection gaps (not claims of runtime failure):**
+
+- No explicit unavailable-target result contract/test exists yet.
+- No scene-transition/re-entry lifecycle test exists.
+- No explicit pause/UI input-context policy or tests exist.
+- No multitouch test exists.
+- Multiple collision shapes per logical interactable and player/self-sensor exclusion are not tested.
+- Camera look and camera-relative movement are outside this interaction matrix and remain unimplemented in the inspected controller.
+
+**Verification boundary:** This run proves the listed headless automated checks only. It does not prove manual editor behaviour, camera feel, visual layout, Android export/install, physical multitouch, safe-area layout or device performance.
