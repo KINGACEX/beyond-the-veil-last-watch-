@@ -150,3 +150,8 @@ A plan, generated draft, static code match or successful headless launch must no
 A separate engineering branch `btv/mission-validator-strict-types-001` now contains test-first strict-type checks for registry namespaces, IDs and required reference fields. Draft PR #2 targets `btv/test-first-contracts-001`: https://github.com/KINGACEX/beyond-the-veil-last-watch-/pull/2.
 
 GitHub Actions run `42497741908` was observed in progress while installing Godot 4.7.2. Await the full result before describing the change as tested. Do not merge the draft PR without creator review. If CI fails, inspect the failing step/logs, make the smallest correction on the same feature branch, and rerun.
+
+
+### Strict-type PR verification update
+
+**CONFIRMED:** Draft PR #2 workflow run `42497741908` completed successfully on Godot 4.7.2. The mission data validator suite reports `MISSION_DATA_VALIDATOR_TESTS: PASS`, and NLI smoke, NLI contract, core interaction acceptance and the 10-frame main-scene launch also passed. The change is still in a draft PR and has not been merged. Keep creator review as the merge gate.
