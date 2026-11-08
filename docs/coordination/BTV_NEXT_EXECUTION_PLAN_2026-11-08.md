@@ -180,6 +180,6 @@ GitHub Actions run `42497741908` was observed in progress while installing Godot
 
 ## M2 adapter update — 8 November 2026
 
-**CONFIRMED COMPLETED:** The independent movement/look finger-state adapter is implemented and passes Godot 4.7.2 headless CI on `btv/mobile-touch-input-adapter-001`, head `9151e92f87a4e7971d3f44138fae1ec4c78ae0a3`. See `docs/implementation/BTV_M2_TOUCH_INPUT_ADAPTER_2026-11-08.md`.
+**CONFIRMED COMPLETED:** The independent movement/look adapter is integrated into the touch HUD on `btv/mobile-touch-input-adapter-001`, head `3484672809ad95e4e36591e7ca7d49d5f61dfd5e`. The analog joystick, right-side look surface, separate Interact button, legacy fallback and cleanup paths pass Godot 4.7.2 headless CI run [42500466981](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42500466981). See the M2 implementation report.
 
-**Next bounded task:** Integrate the adapter into the touch HUD with a left virtual joystick, right-side camera-look surface and separate Interact button. Preserve the current directional buttons as a fallback. Test action strengths, independent finger ownership, cancellation, focus loss, teardown and overlapping touch regions. Do not remove the old controls or claim Android readiness until physical-device review passes.
+**Next bounded gate:** physical Android review. Verify touch ownership, joystick range/deadzone, camera sensitivity, Interact reachability, safe-area margins, landscape/portrait behaviour, focus loss and teardown on the actual device. Adjust only evidence-backed layout/input defects. Do not remove the legacy directional pad or claim Android readiness until this gate passes.
