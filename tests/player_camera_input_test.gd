@@ -12,6 +12,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_test_default_forward_direction()
 	_test_forward_follows_camera_yaw()
+	_test_player_turn_does_not_rotate_camera_heading()
 	_test_diagonal_direction_is_normalized()
 	_test_camera_pitch_does_not_add_vertical_movement()
 	_test_zero_input_stays_zero()
@@ -46,6 +47,17 @@ func _test_forward_follows_camera_yaw() -> void:
 	var after: Vector3 = player.call("_get_camera_relative_move_direction", Vector2(0, -1))
 	_check(before.is_equal_approx(Vector3(0, 0, -1)), "Initial forward direction is world negative Z")
 	_check(after.is_equal_approx(Vector3(-1, 0, 0)), "Forward movement follows the rotated camera heading")
+	player.queue_free()
+
+
+func _test_player_turn_does_not_rotate_camera_heading() -> void:
+	var player := _new_player()
+	player.call("_apply_look_delta", Vector2(100, 0))
+	var before: Vector3 = player.call("_get_camera_relative_move_direction", Vector2(0, -1))
+	player.rotation.y = 1.0
+	player.call("_sync_camera_yaw")
+	var after: Vector3 = player.call("_get_camera_relative_move_direction", Vector2(0, -1))
+	_check(after.is_equal_approx(before), "Player body turning does not rotate the independent camera heading")
 	player.queue_free()
 
 
