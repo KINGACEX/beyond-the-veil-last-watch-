@@ -112,3 +112,6 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 - [Opening-to-Ridgeview narrative flow](../story/BTV_VERTICAL_SLICE_OPENING_TO_RIDGEVIEW_NARRATIVE_FLOW_v0.1.md).
 
 These supporting records retain their original labels. Proposals do not become canon merely because they are indexed here.
+
+
+- [Lore Bridge v1.1 remediation specification](../implementation/BTV_LORE_BRIDGE_V1_1_REMEDIATION_SPEC.md) — proposed engineering requirements; not yet implemented.
