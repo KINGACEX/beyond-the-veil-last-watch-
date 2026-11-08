@@ -17,6 +17,8 @@ func _run() -> void:
 	await _test_look_surface_rotates_camera_without_cancelling_movement()
 	await _test_interact_button_area_is_excluded_from_camera_look()
 	await _test_focus_loss_releases_all_touch_input()
+	await _test_scene_teardown_releases_movement_actions()
+	await _test_legacy_directional_controls_remain_available()
 	if failures == 0:
 		print("TOUCH_CONTROLS_INTEGRATION_TESTS: PASS")
 		quit(0)
@@ -138,6 +140,38 @@ func _test_focus_loss_releases_all_touch_input() -> void:
 	overlay.call("_notification", NOTIFICATION_APPLICATION_FOCUS_OUT)
 	_check(is_zero_approx(Input.get_action_strength("move_right")), "Focus loss releases analog movement actions")
 	_cleanup(setup)
+
+
+func _test_scene_teardown_releases_movement_actions() -> void:
+	var setup := _new_setup()
+	await process_frame
+	var overlay: Control = setup.get("overlay")
+	var layer: Node = setup.get("layer")
+	var player: Node = setup.get("player")
+	var joystick: Control = overlay.get_node("JoystickBase")
+	var center := _screen_point(joystick, joystick.size * 0.5)
+	overlay.call("_input", _touch(6, true, center))
+	overlay.call("_input", _drag(6, center + Vector2(80, 0)))
+	_check(Input.get_action_strength("move_right") > 0.0, "Movement is active before touch scene teardown")
+	root.remove_child(layer)
+	layer.free()
+	_check(is_zero_approx(Input.get_action_strength("move_right")), "Touch scene teardown releases movement actions")
+	root.remove_child(player)
+	player.free()
+
+
+func _test_legacy_directional_controls_remain_available() -> void:
+	var player := PlayerScene.instantiate() as CharacterBody3D
+	root.add_child(player)
+	var layer := TouchScene.instantiate()
+	var overlay: Control = layer.get_node("Overlay")
+	overlay.set("use_analog_touch_controls", false)
+	root.add_child(layer)
+	await process_frame
+	_check(overlay.get_node("MovePad").visible, "Legacy directional pad remains available as a fallback")
+	_check(not overlay.get_node("JoystickBase").visible, "Virtual joystick can be disabled for fallback mode")
+	_check(not overlay.get_node("LookSurface").visible, "Touch-look surface can be disabled for fallback mode")
+	_cleanup({"player": player, "layer": layer})
 
 
 func _check(condition: bool, label: String) -> void:
