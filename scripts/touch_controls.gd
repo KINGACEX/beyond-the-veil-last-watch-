@@ -20,7 +20,12 @@ const TouchInputAdapter = preload("res://scripts/touch_input_adapter.gd")
 
 var _adapter = TouchInputAdapter.new()
 var _player: BTVPlayerController
-var _pressed_actions: Dictionary = {}
+## Actions this overlay currently drives, mapped to the strength it applied.
+## Godot keeps a single state per action, so an action is only released here
+## when it still carries the strength this overlay set. If another source (a
+## keyboard, a gamepad, another overlay) has taken the action over in the
+## meantime, it is left alone.
+var _owned_actions: Dictionary = {}
 
 
 func _ready() -> void:
@@ -30,7 +35,7 @@ func _ready() -> void:
 	_legacy_pad.visible = not use_analog_touch_controls
 	_joystick_base.visible = use_analog_touch_controls
 	_look_surface.visible = use_analog_touch_controls
-	_player = get_tree().get_first_node_in_group("btv_player") as BTVPlayerController
+	_resolve_player()
 	_bind_action(_forward, &"move_forward")
 	_bind_action(_back, &"move_back")
 	_bind_action(_left, &"move_left")
@@ -38,6 +43,16 @@ func _ready() -> void:
 	_bind_action(_interact, &"interact")
 	_adapter.joystick_radius = _joystick_radius()
 	_update_joystick_visual(Vector2.ZERO)
+
+
+## Returns the player that owns the camera, or null when none is available.
+## The lookup is re-run whenever the cached instance is gone, so a player that
+## spawns after the HUD, or is replaced on respawn, is picked up automatically.
+func _resolve_player() -> BTVPlayerController:
+	if _player != null and is_instance_valid(_player):
+		return _player
+	_player = get_tree().get_first_node_in_group("btv_player") as BTVPlayerController
+	return _player
 
 
 func _sync_overlay_rect() -> void:
@@ -54,6 +69,9 @@ func _sync_overlay_rect() -> void:
 
 func _input(event: InputEvent) -> void:
 	if not use_analog_touch_controls:
+		return
+	# A hidden overlay must not consume touches or drive the player.
+	if not visible:
 		return
 	if event is InputEventScreenTouch:
 		_handle_screen_touch(event as InputEventScreenTouch)
@@ -95,8 +113,9 @@ func _handle_screen_drag(event: InputEventScreenDrag) -> void:
 		handled = true
 	if _adapter.is_look_finger(event.index):
 		var look_delta: Vector2 = _adapter.update_look(event.index, event.position)
-		if _player != null and not look_delta.is_zero_approx():
-			_player.call("_apply_look_delta", look_delta)
+		var player: BTVPlayerController = _resolve_player()
+		if player != null and not look_delta.is_zero_approx():
+			player.apply_look_delta(look_delta)
 		handled = true
 	if handled:
 		get_viewport().set_input_as_handled()
@@ -131,7 +150,18 @@ func _set_action_strength(action_name: StringName, strength: float) -> void:
 	var safe_strength := clampf(strength, 0.0, 1.0)
 	if safe_strength > 0.001:
 		Input.action_press(action_name, safe_strength)
+		_owned_actions[action_name] = safe_strength
 	else:
+		_release_owned_action(action_name)
+
+
+## Releases an action only when this overlay still owns it.
+func _release_owned_action(action_name: StringName) -> void:
+	if not _owned_actions.has(action_name):
+		return
+	var owned_strength: float = _owned_actions[action_name]
+	_owned_actions.erase(action_name)
+	if absf(Input.get_action_strength(action_name) - owned_strength) <= 0.01:
 		Input.action_release(action_name)
 
 
@@ -141,21 +171,21 @@ func _bind_action(button: Button, action_name: StringName) -> void:
 
 
 func _press_action(action_name: StringName) -> void:
-	if _pressed_actions.has(action_name):
+	if _owned_actions.has(action_name):
 		return
-	_pressed_actions[action_name] = true
 	Input.action_press(action_name)
+	_owned_actions[action_name] = 1.0
 
 
 func _release_action(action_name: StringName) -> void:
-	_pressed_actions.erase(action_name)
-	Input.action_release(action_name)
+	_release_owned_action(action_name)
 
 
+## Releases only the actions this overlay owns, so a keyboard or gamepad that
+## is holding the same action is never cancelled by touch cleanup.
 func _release_all_actions() -> void:
-	for action_name in ACTIONS:
-		Input.action_release(action_name)
-	_pressed_actions.clear()
+	for action_name: StringName in _owned_actions.keys():
+		_release_owned_action(action_name)
 
 
 func _cancel_all_touch_input() -> void:
@@ -166,7 +196,9 @@ func _cancel_all_touch_input() -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+	# NOTIFICATION_APPLICATION_PAUSED is the Android backgrounding path and is
+	# not guaranteed to be delivered as a focus loss.
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
 		_cancel_all_touch_input()
 
 
