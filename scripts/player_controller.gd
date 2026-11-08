@@ -17,6 +17,7 @@ var _nearby_interactables: Array[BTVInteractable] = []
 
 
 func _ready() -> void:
+	add_to_group("btv_player")
 	_gravity = float(ProjectSettings.get_setting("physics/3d/default_gravity", 9.8))
 	_camera_yaw_radians = _camera_pivot.global_rotation.y
 	_sync_camera_yaw()
