@@ -54,7 +54,7 @@ The runner reported that `actions/checkout@v4` uses a Node.js 20 runtime that Gi
 
 ## Remaining gates
 
-- Independent review of all 10 changed files and XH-003 semantics.
+- Independent review of all 11 changed files and XH-003 semantics.
 - Reconcile the public GitHub branch with MiniMax's private workspace before any transfer; preserve divergent or uncommitted changes.
 - Physical Android QA for real multitouch, focus/pause behaviour, safe areas, touch ergonomics, performance, and export readiness.
 - Keep PR #6 in draft and unmerged until these gates are completed.
