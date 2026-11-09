@@ -74,6 +74,8 @@ The controls must remain usable at the supported viewport sizes and orientations
 
 Automated viewport geometry is covered at five representative sizes, but that is only a preliminary geometry check. Do not call layout complete based only on headless viewports. Safe areas, thumb reach, display cutouts, text scaling and actual orientation policy require the target device before platform acceptance.
 
+For Android, Godot 4.7 exposes `DisplayServer.get_display_safe_area()` and `DisplayServer.get_display_cutouts()`; use them when the Android export configuration and target device are established. The repository currently has no Android export preset, and edge-to-edge is not configured. Do not enable edge-to-edge or invent inset values before the export/device review.
+
 ## 4. Gate C — game-feel baseline
 
 Gate C must be measured in the neutral movement and physics laboratory. The lab is the first actual gameplay construction and is deliberately separate from Ridgeview. Do not require Gate C to pass before constructing the lab; instead, require the automated input correctness checks and preliminary viewport geometry check to pass first. Ridgeview world construction remains blocked until Gate C passes.
