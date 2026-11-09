@@ -16,6 +16,7 @@ func _run() -> void:
 	_test_movement_deadzone_is_applied()
 	_test_movement_finger_isolated_from_other_fingers()
 	_test_look_finger_returns_incremental_delta()
+	_test_unscaled_screen_delta_requires_look_ownership()
 	_test_same_finger_cannot_own_both_controls()
 	_test_release_only_clears_matching_finger()
 	_test_independent_movement_and_look_fingers()
@@ -83,6 +84,15 @@ func _test_look_finger_returns_incremental_delta() -> void:
 	var second: Vector2 = adapter.update_look(7, Vector2(30, 20))
 	_check(first.is_equal_approx(Vector2(5, -3)), "First look update returns movement since the previous touch position")
 	_check(second.is_equal_approx(Vector2(5, 3)), "Later look update returns an incremental delta")
+
+
+func _test_unscaled_screen_delta_requires_look_ownership() -> void:
+	var adapter = _new_adapter()
+	_check(adapter.begin_look(21, Vector2.ZERO), "Screen-delta test claims look ownership")
+	var delta: Vector2 = adapter.update_look_delta(21, Vector2(12, -7))
+	var wrong_finger: Vector2 = adapter.update_look_delta(22, Vector2(99, 99))
+	_check(delta.is_equal_approx(Vector2(12, -7)), "Unscaled screen-space look delta is preserved")
+	_check(wrong_finger.is_zero_approx(), "Non-owning finger cannot apply a screen-space look delta")
 
 
 func _test_same_finger_cannot_own_both_controls() -> void:
