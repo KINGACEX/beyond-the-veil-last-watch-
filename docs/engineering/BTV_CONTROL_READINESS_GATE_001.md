@@ -15,7 +15,7 @@ The XH-003 implementation provides:
 - Analog joystick movement and a separate look-finger owner.
 - Touch-only cleanup on focus loss, Android pause, and overlay teardown.
 - Player lookup/re-resolution for camera look.
-- Nineteen passing Godot 4.7.2 headless suites on commit `c9dbe133891febdc76d7e93cfdaf85b2d3702710`, run [#42666264480](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666264480). The pipeline includes five-viewport geometry checks, concurrent three-finger input, neutral lab structure/telemetry checks, acceleration/braking/diagonal-speed tests, wall blocking, doorway/corridor clearance, ramp floor-contact probes and a 10-frame lab launch.
+- Nineteen passing Godot 4.7.2 headless suites on commit `28a76d8dc15980963900758a378241a1c97f6338`, run [#42666506202](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666506202). The pipeline includes five-viewport geometry checks, concurrent three-finger input, neutral lab structure/telemetry checks, acceleration/braking/diagonal-speed tests, wall blocking, doorway/corridor clearance, gentle/steeper ramp floor-contact probes, high-step blocking/no-vertical-snap and a 10-frame lab launch.
 - A source audit found that touch-camera rotation was calculated from successive viewport positions. Godot documents `InputEventScreenDrag.screen_relative` as the unscaled screen-space delta and recommends it for touch aiming across stretch modes. The current branch now routes camera look through this property and adds ownership, integration, lifecycle and reconciliation regression coverage. The updated code passed the complete 17-suite pipeline.
 
 This is an automated baseline, not proof of perfect controls or Android readiness.
@@ -87,7 +87,7 @@ In the lab, record a stable and reproducible baseline for:
 - input-to-motion responsiveness;
 - touch joystick deadzone and response curve.
 
-The lab uses a neutral greybox course with a flat lane, two ramps, three steps, collision walls/corners, a doorway, corridor, camera-obstruction wall and live telemetry. Initial acceleration/deceleration candidates are implemented and tested. Wall blocking, doorway/corridor clearance and gentle-ramp floor contact also pass headless probes; this is not full physical-device or final movement-feel acceptance. Do not tune movement against an unfinished character rig or decorative level.
+The lab uses a neutral greybox course with a flat lane, two ramps, three steps, collision walls/corners, a doorway, corridor, camera-obstruction wall and live telemetry. Initial acceleration/deceleration candidates are implemented and tested. Wall blocking, doorway/corridor clearance, gentle/steeper ramp floor contact and high-step blocking without vertical snap pass headless probes; this is not full physical-device or final movement-feel acceptance. Do not tune movement against an unfinished character rig or decorative level.
 
 Movement tuning is not allowed to contradict Asher's grounded human identity. Do not add superhuman movement merely to make the controller feel responsive.
 
@@ -128,7 +128,7 @@ Never use "perfect" as a test result. The engineering goal is a controlled, meas
 - Physical Android multitouch and ergonomic QA has not been performed.
 - Safe-area handling has not been demonstrated on a real device with display cutouts/system bars.
 - Automated three-finger movement + look + Interact concurrency now has viewport-path coverage; physical-device concurrency and ergonomic testing remain outstanding.
-- The neutral lab scene passes structural/telemetry, acceleration/braking, wall-blocking, doorway/corridor-clearance and gentle-ramp floor-contact tests. Steep-ramp behaviour, step handling, camera obstruction/sensitivity, physical-device feel and broader collision edge cases still need measured acceptance.
+- The neutral lab scene passes structural/telemetry, acceleration/braking, wall-blocking, doorway/corridor-clearance and gentle-ramp floor-contact tests. More varied ramp angles, low-step traversal policy, camera obstruction/sensitivity, physical-device feel and broader collision edge cases still need measured acceptance.
 - The minimum Android device and supported orientation policy remain unknown.
 
 ## 8. Gate owner and change control
