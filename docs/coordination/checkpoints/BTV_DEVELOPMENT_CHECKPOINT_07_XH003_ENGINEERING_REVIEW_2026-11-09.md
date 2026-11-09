@@ -22,7 +22,8 @@ This is not a release-readiness score or an external peer review. Two points are
 | Movement composition | 5/5 | Separate keyboard/touch vectors; combined magnitude capped at 1.0; player uses the composed vector |
 | Interact edge semantics | 5/5 | Combined latch; staggered source join, simultaneous press, held state, and release/re-arm tests |
 | Lifecycle and coexistence | 5/5 | Touch release, focus loss, Android pause, teardown, keyboard preservation, and player re-resolution tests |
-| Test/CI/documentation quality | 3/5 | 14 suites and main-scene launch pass on Godot 4.7.2; no physical device test, no clean-tree audit, and no external peer review |
+| Automated tests and CI | 4/5 | All 14 suites and main-scene launch pass on Godot 4.7.2; physical Android QA and clean-tree audit remain |
+| Scope, documentation, and review governance | 4/5 | Isolated draft PR, least-privilege workflow, checkpoints, and accurate verification notes; external peer review remains |
 
 **Total: 28/30.**
 
