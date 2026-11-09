@@ -248,9 +248,9 @@ func _test_touch_teardown_releases_actions() -> void:
 	var layer = TouchScene.instantiate()
 	root.add_child(layer)
 	var overlay: Control = layer.get_node("Overlay")
-	overlay.call("_press_action", &"interact")
+	overlay.call("_press_action", &"touch_interact")
 	root.remove_child(layer)
-	_check(not Input.is_action_pressed("interact"), "Touch overlay teardown releases held actions")
+	_check(not Input.is_action_pressed("touch_interact"), "Touch overlay teardown releases touch_interact")
 	layer.free()
 
 
