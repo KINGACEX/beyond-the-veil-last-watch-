@@ -96,7 +96,7 @@ func _test_focus_loss_keeps_a_keyboard_held_action() -> void:
 	await process_frame
 
 	Input.action_press(&"interact")
-	Input.action_press(&"touch_interact")
+	overlay.call("_press_action", &"touch_interact")
 	await process_frame
 	_check(Input.is_action_pressed(&"interact"), "COEXISTENCE: keyboard interact is held before focus loss")
 	_check(Input.is_action_pressed(&"touch_interact"), "COEXISTENCE: touch_interact is held before focus loss")
