@@ -4,8 +4,8 @@
 **Status:** GODOT 4.7.2 HEADLESS CI PASSED — INDEPENDENT REVIEW AND DEVICE QA PENDING  
 **PR:** #6 (open, draft, unmerged)  
 **PR head branch:** `btv/xh-003-input-source-composition-spec-001`  
-**Verified PR head SHA:** `331421701a35a76e7582ea07f59ac625d5c95715`  
-**GitHub Actions run:** [#42650931569](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42650931569)
+**Verified PR head SHA:** `ba6b32b937d274acfcc8565284ed9dfa20e9bdcd`  
+**GitHub Actions run:** [#42651172481](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42651172481)
 
 ## CI restoration
 
@@ -15,7 +15,7 @@ Workflow update commit: `9448f905e880e932bcbdddae22ac70577daadfc5`.
 
 ## Verified execution
 
-GitHub Actions run #42650931569 completed with conclusion **success** for the current PR head SHA above. This run includes the final XH-003 implementation, the combined Interact latch, expanded regression tests, and the updated engineering specification.
+GitHub Actions run #42651172481 completed with conclusion **success** for the current PR head SHA above. This run includes the final XH-003 implementation, the combined Interact latch, expanded regression tests, and the corrected engineering specification that separates automated checks from remaining manual review gates.
 
 - Godot version: `4.7.2.stable.official.ed1daf0bf`
 - Ubuntu cloud runner installed the Godot 4.7.2 stable Linux executable.
@@ -48,7 +48,7 @@ Those assertions were corrected to use `touch_interact` and `touch_move_forward`
 
 The added Interact regression exposed a test timing issue in its first iterations. The sequence was refined to wait for an idle frame before asserting that the combined latch has reset. The final corrected Interact implementation passed run #42650811449. The latest docs-inclusive PR head then passed all 14 suites and the main-scene launch in run #42650931569.
 
-Superseded intermediate runs #42649919332 and #42650315972 were cancelled by newer commits. Runs #42650347187, #42650519798, and #42650669137 failed while the new Interact regression was being developed; those failures exposed and helped correct the edge/reset behaviour. They are retained as development evidence, not hidden. The final current head is the successful run #42650931569.
+Superseded intermediate runs #42649919332 and #42650315972 were cancelled by newer commits. Runs #42650347187, #42650519798, and #42650669137 failed while the new Interact regression was being developed; those failures exposed and helped correct the edge/reset behaviour. They are retained as development evidence, not hidden. The final current head is the successful run #42651172481.
 
 ## Non-blocking warning
 
