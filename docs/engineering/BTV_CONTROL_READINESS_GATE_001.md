@@ -1,6 +1,6 @@
 # BTV Control Readiness Gate 001
 
-**Status:** PROPOSED ACCEPTANCE GATE — NOT YET PASSED  
+**Status:** PARTIALLY VERIFIED — AUTOMATED BASELINE PASSES; PHYSICAL AND GAME-FEEL GATES REMAIN OPEN  
 **Engine:** Godot 4.7.2  
 **Target:** Android-first, keyboard/mouse retained for development and later PC  
 **Parent implementation:** XH-003 input-source composition, PR #6  
@@ -15,9 +15,10 @@ The XH-003 implementation provides:
 - Analog joystick movement and a separate look-finger owner.
 - Touch-only cleanup on focus loss, Android pause, and overlay teardown.
 - Player lookup/re-resolution for camera look.
-- Fifteen passing Godot 4.7.2 headless suites on control-hardening commit `0403e35feadd057e2ca02feefeac1a0575b7c847`, run [#42654969493](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42654969493). The added `touch_controls_multitouch_viewport_test.gd` drives movement, look and Interact through the real viewport input path with three concurrent fingers, tests independent releases, and verifies focus-loss cancellation.
+- Sixteen passing Godot 4.7.2 headless suites on commit `61ef981af04f339bbf98ecf2d411ea481fa81f49`, run [#42655805462](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42655805462). The 16th suite checks control geometry at five representative viewport sizes. The later documentation-only plan commit `de75047` also passed all 16 suites in [run #42656570696](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42656570696).
+- A source audit found that touch-camera rotation was calculated from successive viewport positions. Godot documents `InputEventScreenDrag.screen_relative` as the unscaled screen-space delta and recommends it for touch aiming across stretch modes. The current branch now routes camera look through this property and adds an ownership regression test. Validation for this source change is pending.
 
-This is a strong automated baseline, not proof of perfect controls or Android readiness.
+This is an automated baseline, not proof of perfect controls or Android readiness.
 
 ## 2. Gate A — automated input correctness
 
@@ -71,11 +72,13 @@ The controls must remain usable at the supported viewport sizes and orientations
 - Controls must not obscure mission-critical evidence, subtitles or the central play space.
 - Provide a low-clutter fallback layout and a way to adjust camera sensitivity.
 
-Do not call layout complete based only on the current 1280x720 headless viewport. The actual minimum device must be identified before platform acceptance.
+Automated viewport geometry is covered at five representative sizes, but that is only a preliminary geometry check. Do not call layout complete based only on headless viewports. Safe areas, thumb reach, display cutouts, text scaling and actual orientation policy require the target device before platform acceptance.
 
 ## 4. Gate C — game-feel baseline
 
-Before level layout begins, record a stable and reproducible baseline for:
+Gate C must be measured in the neutral movement and physics laboratory. The lab is the first actual gameplay construction and is deliberately separate from Ridgeview. Do not require Gate C to pass before constructing the lab; instead, require the automated input correctness checks and preliminary viewport geometry check to pass first. Ridgeview world construction remains blocked until Gate C passes.
+
+In the lab, record a stable and reproducible baseline for:
 - acceleration and deceleration;
 - maximum walk/run speed and any sprint policy;
 - turning response and stop distance;
@@ -103,9 +106,13 @@ Record:
 
 A desktop editor, headless runner, or simulated InputEvent test cannot substitute for this gate.
 
-## 6. Release rule
+## 6. Release and construction rule
 
-The controls are accepted for prototype-level implementation only when Gates A, B and C pass. The Android control claim remains blocked until Gate D passes on the named target device.
+- **Neutral laboratory may begin:** after automated Gate A checks and preliminary viewport-geometry checks pass on the exact candidate commit. The lab exists to measure and tune Gate C; it is not Ridgeview world construction.
+- **Ridgeview blockout may begin:** only after Gate C passes against recorded laboratory measurements, with no critical control blocker. Any physical-device limitation remains explicit.
+- **Android-ready claim:** remains blocked until Gate D passes on the named target device.
+
+The word "perfect" is not a valid acceptance criterion. Use reproducible thresholds, observed behaviour and recorded evidence.
 
 Use evidence labels:
 - **PASS:** exact test completed with recorded evidence.
