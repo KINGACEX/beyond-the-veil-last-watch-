@@ -25,6 +25,8 @@ func _run() -> void:
 	await _test_doorway_clearance(player)
 	await _test_corridor_clearance(player)
 	await _test_ramp_keeps_ground_contact(player)
+	await _test_steeper_ramp_keeps_ground_contact(player)
+	await _test_high_step_blocks_without_vertical_snap(player)
 
 	_clear_actions()
 	root.remove_child(lab)
@@ -109,6 +111,48 @@ func _test_ramp_keeps_ground_contact(player: BTVPlayerController) -> void:
 	_check(
 		player.is_on_floor(),
 		"COLLISION: player remains grounded on the gentle ramp",
+	)
+	_clear_actions()
+
+
+func _test_steeper_ramp_keeps_ground_contact(player: BTVPlayerController) -> void:
+	await _reset_player(player, Vector3(-15, 0, 5.5))
+	Input.action_press(&"move_forward")
+	for _tick in range(60):
+		await physics_frame
+	print("STEEPER RAMP DIAGNOSTIC: position=%s velocity=%s grounded=%s" % [player.global_position, player.velocity, player.is_on_floor()])
+	_check(
+		player.global_position.z < 3.0,
+		"COLLISION: player advances onto the steeper ramp",
+	)
+	_check(
+		player.global_position.y > 0.7,
+		"COLLISION: player gains height on the steeper ramp",
+	)
+	_check(
+		player.is_on_floor(),
+		"COLLISION: player remains grounded on the steeper ramp",
+	)
+	_clear_actions()
+
+
+func _test_high_step_blocks_without_vertical_snap(player: BTVPlayerController) -> void:
+	await _reset_player(player, Vector3(-15, 0, 13.5))
+	Input.action_press(&"move_forward")
+	for _tick in range(120):
+		await physics_frame
+	print("STEP DIAGNOSTIC: position=%s velocity=%s wall=%s" % [player.global_position, player.velocity, player.is_on_wall()])
+	_check(
+		player.global_position.z > 12.1,
+		"COLLISION: the high step blocks forward traversal",
+	)
+	_check(
+		player.is_on_wall(),
+		"COLLISION: high-step contact is reported as a wall collision",
+	)
+	_check(
+		player.global_position.y < 0.2,
+		"COLLISION: high-step contact does not cause an unapproved vertical snap",
 	)
 	_clear_actions()
 
