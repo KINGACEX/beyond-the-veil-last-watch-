@@ -7,6 +7,7 @@ on:
       - btv/test-first-contracts-001
       - btv/camera-relative-mouselook-001
       - btv/mobile-touch-input-adapter-001
+      - btv/xh-003-input-source-composition-spec-001
   workflow_dispatch:
 
 permissions:
@@ -58,6 +59,27 @@ jobs:
 
       - name: Run touch controls integration tests
         run: godot --headless --path . --script res://tests/touch_controls_integration_test.gd
+
+      - name: Run touch controls coexistence tests
+        run: godot --headless --path . --script res://tests/touch_controls_coexistence_test.gd
+
+      - name: Run touch controls composition tests
+        run: godot --headless --path . --script res://tests/touch_controls_composition_test.gd
+
+      - name: Run touch controls input-path tests
+        run: godot --headless --path . --script res://tests/touch_controls_input_path_test.gd
+
+      - name: Run touch controls lifecycle tests
+        run: godot --headless --path . --script res://tests/touch_controls_lifecycle_test.gd
+
+      - name: Run touch controls reconciliation tests
+        run: godot --headless --path . --script res://tests/touch_controls_reconciliation_test.gd
+
+      - name: Run touch controls resize tests
+        run: godot --headless --path . --script res://tests/touch_controls_resize_test.gd
+
+      - name: Run touch input source composition tests
+        run: godot --headless --path . --script res://tests/touch_input_source_composition_test.gd
 
       - name: Launch main scene for 10 frames
         run: godot --headless --path . --quit-after 10
