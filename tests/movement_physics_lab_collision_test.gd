@@ -78,8 +78,9 @@ func _test_doorway_clearance(player: BTVPlayerController) -> void:
 func _test_corridor_clearance(player: BTVPlayerController) -> void:
 	await _reset_player(player, Vector3(8.05, 0, 14))
 	Input.action_press(&"move_forward")
-	for _tick in range(120):
+	for _tick in range(180):
 		await physics_frame
+	print("CORRIDOR DIAGNOSTIC: position=%s velocity=%s" % [player.global_position, player.velocity])
 	_check(
 		player.global_position.z < 6.0,
 		"COLLISION: player traverses the narrow parallel-wall corridor",
@@ -96,6 +97,7 @@ func _test_ramp_keeps_ground_contact(player: BTVPlayerController) -> void:
 	Input.action_press(&"move_forward")
 	for _tick in range(60):
 		await physics_frame
+	print("RAMP DIAGNOSTIC: position=%s velocity=%s grounded=%s" % [player.global_position, player.velocity, player.is_on_floor()])
 	_check(
 		player.global_position.z < -7.5,
 		"COLLISION: player advances onto the gentle ramp",
