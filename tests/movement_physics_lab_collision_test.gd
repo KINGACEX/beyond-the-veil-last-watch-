@@ -27,6 +27,7 @@ func _run() -> void:
 	await _test_ramp_keeps_ground_contact(player)
 	await _test_steeper_ramp_keeps_ground_contact(player)
 	await _test_high_step_blocks_without_vertical_snap(player)
+	await _test_camera_arm_retracts_and_restores(player)
 
 	_clear_actions()
 	root.remove_child(lab)
@@ -153,6 +154,33 @@ func _test_high_step_blocks_without_vertical_snap(player: BTVPlayerController) -
 	_check(
 		player.global_position.y < 0.2,
 		"COLLISION: high-step contact does not cause an unapproved vertical snap",
+	)
+	_clear_actions()
+
+
+func _test_camera_arm_retracts_and_restores(player: BTVPlayerController) -> void:
+	await _reset_player(player, Vector3(0, 0, 0))
+	var spring_arm := player.get_node("CameraPivot/SpringArm3D") as SpringArm3D
+	for _tick in range(3):
+		await physics_frame
+	var open_length := spring_arm.get_hit_length()
+	_check(
+		open_length > spring_arm.spring_length - 0.1,
+		"CAMERA: spring arm uses its full length in open space",
+	)
+
+	await _reset_player(player, Vector3(20, 0, 0))
+	for _tick in range(3):
+		await physics_frame
+	var obstructed_length := spring_arm.get_hit_length()
+	print("CAMERA DIAGNOSTIC: open=%.2f obstructed=%.2f" % [open_length, obstructed_length])
+	_check(
+		obstructed_length < spring_arm.spring_length - 0.5,
+		"CAMERA: spring arm retracts before the camera enters the obstruction wall",
+	)
+	_check(
+		obstructed_length > 0.5,
+		"CAMERA: retracted spring arm retains a nonzero camera clearance",
 	)
 	_clear_actions()
 
