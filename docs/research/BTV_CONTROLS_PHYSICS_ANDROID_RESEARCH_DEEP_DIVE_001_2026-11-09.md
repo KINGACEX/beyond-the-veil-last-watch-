@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-09  
 **Research depth:** Level 3 — foundational input and movement system  
-**Status:** INITIAL TECHNICAL DEEP DIVE — implementation findings are provisional until the current source changes pass CI  
+**Status:** INITIAL TECHNICAL DEEP DIVE — touch-delta correction and neutral lab construction passed CI; physical and game-feel validation remain open  
 **Engine baseline:** Godot 4.7.2  
 **Platform priority:** Android first; PC later  
 **Scope:** input scaling, touch-camera response, CharacterBody3D movement, test-lab sequencing and renderer/device constraints
@@ -11,7 +11,7 @@
 
 1. The existing controller is a functional greybox baseline, not a tuned movement system. Horizontal velocity is assigned directly from the input direction multiplied by `move_speed`. This produces immediate target-speed changes; no authored acceleration or braking curve currently exists.
 2. The camera-touch path previously calculated drag from successive viewport positions. Godot 4.7 documents `InputEventScreenDrag.screen_relative` as an unscaled screen-space delta and explicitly recommends it for touch aiming across stretch modes. The current branch has been changed to pass this delta through a finger-ownership check. The new code is awaiting CI.
-3. The 16-suite baseline had passed before this source change. That pass does not validate the new patch; a fresh full run is required.
+3. The 17-suite pipeline, including the touch-camera correction, neutral lab acceptance test and 10-frame lab launch, passed on commit `0aec6a9343a29772782d34d87c0060e13893f1b3` in [run #42665594447](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42665594447).
 4. The existing five-size layout suite is a useful geometry regression check, but does not measure Android safe areas, thumb reach, system bars, cutouts or physical touch behaviour.
 5. Godot's `CharacterBody3D` is the appropriate starting class for a grounded player controller. `move_and_slide()` belongs in the physics update and uses the body's velocity; floor classification, floor snap, maximum floor angle and slide collision reporting must be measured in the neutral lab rather than guessed.
 6. Godot 4.7 documents Mobile as the renderer intended for mobile GPUs, while Compatibility supports older/low-end hardware. The final choice cannot be made responsibly until the target phone's GPU/API support is known and a representative benchmark exists.
@@ -34,12 +34,12 @@
 
 The old look handler computed delta by subtracting consecutive `InputEventScreenDrag.position` values. In Godot, `position` is expressed in viewport coordinates, and the documentation warns that `relative` is scaled by the content scale factor. The `screen_relative` property is unscaled and recommended for touch aiming regardless of stretch mode.
 
-**Change made on this branch:** `touch_controls.gd` now uses `event.screen_relative`; `touch_input_adapter.gd` adds an owner-checked delta path; regression tests were updated to provide explicit screen deltas. This change is **NOT VERIFIED** until the new commit's full CI run succeeds.
+**Change made and verified on this branch:** `touch_controls.gd` now uses `event.screen_relative`; `touch_input_adapter.gd` adds an owner-checked delta path; integration, lifecycle, reconciliation, viewport and adapter tests supply explicit screen deltas. The full 17-suite CI run passed.
 
 ### Known gaps
 
 - No acceleration/deceleration tuning or measured stop distance.
-- No neutral lab scene or repeatable physics course yet.
+- The neutral lab scene and repeatable greybox course now exist; game-feel measurements and acceptance are not yet complete.
 - No physical Android device QA or safe-area validation.
 - No confirmed minimum phone specification or supported orientation policy.
 - No renderer selection backed by target-device benchmarks.
@@ -59,9 +59,9 @@ Godot 4.7's `InputEventScreenDrag` reference says:
 
 ### 3.2 Movement vectors and deadzones
 
-Godot's 4.7 controller-input guide recommends `Input.get_vector()` for two-axis movement because it limits vector length to 1 and uses a circular deadzone. The project also has a custom analog joystick adapter with a 0.12 radial deadzone and rescaling.
+Godot's 4.7 controller-input guide recommends `Input.get_vector()` for two-axis movement because it limits vector length to 1 and uses a circular deadzone. The project also has a custom analog joystick adapter with a 0.12 radial deadzone and rescaling. A direct audit of `project.godot` confirms the four movement actions have `deadzone = 0.0`, matching the source comments and avoiding an unintended second deadzone.
 
-**Decision:** retain the current custom radial joystick shaping provisionally, but test the complete path from joystick displacement through InputMap strengths to the final player vector. Verify that the InputMap action deadzones do not unintentionally apply a second threshold or distort low-strength movement. Record exact values in the lab; do not tune by intuition alone.
+**Decision:** retain the current custom radial joystick shaping provisionally. The InputMap movement deadzone is confirmed as 0.0, so the authored 0.12 adapter deadzone is not followed by a second movement-action deadzone. Still test the complete path from joystick displacement through InputMap strengths to the final player vector and record exact values in the lab.
 
 ### 3.3 CharacterBody3D physics
 
@@ -172,12 +172,13 @@ All sources below were checked on 2026-11-09. Primary sources take precedence ov
 
 ## 9. Current decision status
 
-- **CONFIRMED:** 16-suite baseline CI passed before the current touch-look source correction.
+- **CONFIRMED:** 17-suite Godot 4.7.2 CI passed on commit `0aec6a9343a29772782d34d87c0060e13893f1b3`.
 - **CONFIRMED:** current controller directly assigns horizontal target velocity; acceleration/braking tuning is absent.
 - **CONFIRMED:** Godot 4.7 recommends unscaled screen-relative deltas for touch aiming across stretch modes.
-- **IMPLEMENTED, NOT VERIFIED:** touch look now uses `screen_relative` on this branch.
-- **PROPOSED:** neutral lab movement experiments and measurement course.
+- **COMPLETED:** touch look now uses `screen_relative`; viewport and lifecycle-related regression tests pass.
+- **COMPLETED:** neutral movement/physics lab scene, test course and telemetry are constructed and pass the lab acceptance suite.
+- **IN PROGRESS:** Gate C measurement and movement-feel tuning in the lab.
 - **UNKNOWN:** final acceleration, braking, turning, slope, step and camera sensitivity values.
 - **UNKNOWN:** minimum Android device, GPU/API support and renderer choice.
 - **BLOCKED:** physical Android safe-area, ergonomics and performance validation.
-- **NOT STARTED:** neutral lab scene construction and Ridgeview blockout.
+- **NOT STARTED:** Ridgeview blockout.
