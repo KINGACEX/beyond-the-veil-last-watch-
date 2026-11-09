@@ -82,5 +82,8 @@ jobs:
       - name: Run touch input source composition tests
         run: godot --headless --path . --script res://tests/touch_input_source_composition_test.gd
 
+      - name: Run concurrent multitouch viewport tests
+        run: godot --headless --path . --script res://tests/touch_controls_multitouch_viewport_test.gd
+
       - name: Launch main scene for 10 frames
         run: godot --headless --path . --quit-after 10
