@@ -61,15 +61,15 @@ func _test_joystick_responds_to_viewport_input() -> void:
 	await process_frame
 
 	_check(
-		Input.get_action_strength(&"move_right") > 0.95,
-		"INPUT PATH: a viewport-delivered joystick drag drives move_right",
+		Input.get_action_strength(&"touch_move_right") > 0.95,
+		"INPUT PATH: a viewport-delivered joystick drag drives touch_move_right",
 	)
 
 	root.push_input(_touch(1, false, centre + Vector2(100, 0)))
 	await process_frame
 	_check(
-		is_zero_approx(Input.get_action_strength(&"move_right")),
-		"INPUT PATH: releasing the finger through the viewport clears the action",
+		is_zero_approx(Input.get_action_strength(&"touch_move_right")),
+		"INPUT PATH: releasing the finger through the viewport clears touch_move_right",
 	)
 
 	root.remove_child(layer)
@@ -91,15 +91,15 @@ func _test_interact_button_fires_through_the_viewport() -> void:
 	await process_frame
 
 	_check(
-		Input.is_action_pressed(&"interact"),
-		"INPUT PATH: the Interact button fires the interact action through the viewport",
+		Input.is_action_pressed(&"touch_interact"),
+		"INPUT PATH: the Interact button fires touch_interact through the viewport",
 	)
 
 	root.push_input(_touch(2, false, point))
 	await process_frame
 	_check(
-		not Input.is_action_pressed(&"interact"),
-		"INPUT PATH: releasing the Interact button clears the interact action",
+		not Input.is_action_pressed(&"touch_interact"),
+		"INPUT PATH: releasing the Interact button clears touch_interact",
 	)
 
 	root.remove_child(layer)
@@ -125,8 +125,8 @@ func _test_hidden_overlay_does_not_drive_the_player() -> void:
 	await process_frame
 
 	_check(
-		is_zero_approx(Input.get_action_strength(&"move_right")),
-		"INPUT PATH: a hidden overlay does not drive the movement actions",
+		is_zero_approx(Input.get_action_strength(&"touch_move_right")),
+		"INPUT PATH: a hidden overlay does not drive the touch movement actions",
 	)
 
 	root.remove_child(layer)
