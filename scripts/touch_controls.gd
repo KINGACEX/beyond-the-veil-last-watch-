@@ -19,11 +19,9 @@ const TouchInputAdapter = preload("res://scripts/touch_input_adapter.gd")
 
 var _adapter = TouchInputAdapter.new()
 var _player: BTVPlayerController
-## Actions this overlay currently drives, mapped to the strength it applied.
-## Godot keeps a single state per action, so an action is only released here
-## when it still carries the strength this overlay set. If another source (a
-## keyboard, a gamepad, another overlay) has taken the action over in the
-## meantime, it is left alone.
+## Touch actions this overlay currently drives, mapped to the strength it
+## applied. Cleanup releases only owned touch actions and never writes to the
+## keyboard-facing movement or Interact actions.
 var _owned_actions: Dictionary = {}
 
 
