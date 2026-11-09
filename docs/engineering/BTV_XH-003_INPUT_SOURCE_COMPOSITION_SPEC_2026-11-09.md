@@ -97,7 +97,7 @@ The automated verification completed on the current implementation:
 2. All 14 test suites, individually, with successful job exit statuses.
 3. Main-scene launch: `godot --headless --path . --quit-after 10`.
 
-**Recorded result:** GitHub Actions run [#42651172481](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42651172481) on commit `ba6b32b937d274acfcc8565284ed9dfa20e9bdcd` used Godot `4.7.2.stable.official.ed1daf0bf`; project import, all 14 test suites, and the 10-frame headless main-scene launch passed. This latest run includes the combined Interact latch, its regression coverage, and the updated specification. The workflow includes the XH-003 branch and all 14 suites.
+**Recorded result:** GitHub Actions run [#42653466596](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42653466596) on commit `2ab0b87fcf4791905d2c338fdc459547fd6bc6ec` used Godot `4.7.2.stable.official.ed1daf0bf`; project import, all 14 test suites, and the 10-frame headless main-scene launch passed. This latest run includes the combined Interact latch, its regression coverage, and the updated specification. The workflow includes the XH-003 branch and all 14 suites.
 
 **Still outstanding outside the automated run:**
 4. Review `git status --short` after tests and account for generated artifacts.
@@ -116,4 +116,4 @@ Headless tests do not establish physical Android multitouch, safe-area correctne
 
 ## Checkpoint outcome
 
-The isolated branch contains the source implementation and regression tests. The XH-003 headless acceptance gate passed on Godot 4.7.2, including the corrected combined Interact edge behaviour. The latest successful run is #42651172481 on commit `ba6b32b937d274acfcc8565284ed9dfa20e9bdcd`. Physical Android QA and reconciliation with the private MiniMax workspace remain outstanding. PR #6 remains draft and unmerged.
+The isolated branch contains the source implementation and regression tests. The XH-003 headless acceptance gate passed on Godot 4.7.2, including the corrected combined Interact edge behaviour. The latest successful run is #42653466596 on commit `2ab0b87fcf4791905d2c338fdc459547fd6bc6ec`. Physical Android QA and reconciliation with the private MiniMax workspace remain outstanding. PR #6 remains draft and unmerged.
