@@ -8,6 +8,7 @@ on:
       - btv/camera-relative-mouselook-001
       - btv/mobile-touch-input-adapter-001
       - btv/xh-003-input-source-composition-spec-001
+      - btv/controls-hardening-prototype-layout-plan-001
   workflow_dispatch:
 
 permissions:
