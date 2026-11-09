@@ -33,12 +33,12 @@ func _touch(index: int, pressed: bool, position: Vector2) -> InputEventScreenTou
 	return event
 
 
-func _drag(index: int, position: Vector2) -> InputEventScreenDrag:
+func _drag(index: int, position: Vector2, screen_delta: Vector2 = Vector2.ZERO) -> InputEventScreenDrag:
 	var event := InputEventScreenDrag.new()
 	event.index = index
 	event.position = position
 	event.relative = position
-	event.screen_relative = Vector2.ZERO
+	event.screen_relative = screen_delta
 	return event
 
 
@@ -90,7 +90,7 @@ func _test_three_finger_controls_coexist_through_viewport() -> void:
 	# Finger 2 owns camera look without stealing finger 1.
 	root.push_input(_touch(2, true, look_start))
 	await process_frame
-	root.push_input(_drag(2, look_start + Vector2(18, 0)))
+	root.push_input(_drag(2, look_start + Vector2(18, 0), Vector2(18, 0)))
 	await process_frame
 	_check(pivot.global_rotation.y < initial_yaw, "MULTITOUCH: finger 2 rotates the camera")
 	_check(Input.get_action_strength(&"touch_move_right") > 0.9, "MULTITOUCH: camera look does not cancel movement")
@@ -103,7 +103,7 @@ func _test_three_finger_controls_coexist_through_viewport() -> void:
 
 	# Continue look while Interact and movement are both held.
 	var yaw_before_second_drag := pivot.global_rotation.y
-	root.push_input(_drag(2, look_start + Vector2(30, 0)))
+	root.push_input(_drag(2, look_start + Vector2(30, 0), Vector2(12, 0)))
 	await process_frame
 	_check(pivot.global_rotation.y < yaw_before_second_drag, "MULTITOUCH: look continues while Interact is held")
 	_check(Input.is_action_pressed(&"touch_interact"), "MULTITOUCH: look movement does not release Interact")
