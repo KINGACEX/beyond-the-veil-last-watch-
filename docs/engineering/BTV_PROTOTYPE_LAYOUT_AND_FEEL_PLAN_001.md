@@ -198,8 +198,8 @@ Exact positions, hit areas, safe-area offsets, portrait/landscape policy and ico
 ## 10. Current milestone status
 
 - **COMPLETED — initial lab construction:** `scenes/movement_physics_lab.tscn`, `scripts/movement_physics_lab.gd` and `tests/movement_physics_lab_acceptance_test.gd` are implemented. The lab contains neutral greybox test geometry and live telemetry.
-- **PASS — CI:** 17 Godot 4.7.2 suites and a 10-frame launch of the lab passed on commit `0aec6a9343a29772782d34d87c0060e13893f1b3`, run [#42665594447](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42665594447).
-- **IN PROGRESS — Gate C:** movement acceleration/deceleration, stop distance, turning, slopes, steps, collision stability and camera feel still require controlled measurement and tuning.
+- **PASS — CI:** 19 Godot 4.7.2 suites and a 10-frame launch of the lab passed on commit `c9dbe133891febdc76d7e93cfdaf85b2d3702710`, run [#42666264480](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666264480).
+- **IN PROGRESS — Gate C:** provisional acceleration/braking candidates are implemented and tested (16 m/s² and 22 m/s²). Wall blocking, doorway/corridor clearance and gentle-ramp floor contact pass headless probes. Final stop distance, turn response, steep slopes, step handling, camera obstruction/sensitivity and physical feel remain open.
 - **BLOCKED — Ridgeview:** no Ridgeview blockout construction until Gate C passes.
 - **BLOCKED — Android-ready claim:** physical-device Gate D remains untested; target phone and export validation are not yet established.
 - **NOT STARTED — visual production:** no cinematic lighting, production materials, character art or environmental atmosphere has been introduced. The lab remains intentionally greybox.
