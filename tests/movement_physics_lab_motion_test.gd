@@ -67,11 +67,53 @@ func _run() -> void:
 	)
 
 	_clear_movement_actions()
+	await _reset_player(player, Vector3.ZERO)
+	Input.action_press(&"move_right")
+	for _tick in range(2):
+		await physics_frame
+	var early_yaw := absf(player.rotation.y)
+	_check(
+		early_yaw > 0.0 and early_yaw < PI * 0.5,
+		"MOTION: character rotation begins progressively rather than snapping instantly",
+	)
+	for _tick in range(30):
+		await physics_frame
+	var final_yaw := absf(player.rotation.y)
+	_check(
+		absf(final_yaw - PI * 0.5) < 0.05,
+		"MOTION: character rotation converges on the movement direction",
+	)
+	_clear_movement_actions()
+
+	await _reset_player(player, Vector3.ZERO)
+	Input.action_press(&"move_forward")
+	for _tick in range(30):
+		await physics_frame
+	var release_position := player.global_position
+	Input.action_release(&"move_forward")
+	for _tick in range(30):
+		await physics_frame
+	var stop_distance := absf(player.global_position.z - release_position.z)
+	_check(
+		stop_distance >= 0.25 and stop_distance <= 0.42,
+		"MOTION: braking stop distance remains inside the initial 0.25–0.42 m test envelope",
+	)
+
+	_clear_movement_actions()
 	root.remove_child(lab)
 	lab.free()
 	await process_frame
 	print("\nMOVEMENT_PHYSICS_LAB_MOTION_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
 	quit(1 if failures > 0 else 0)
+
+
+func _reset_player(player: BTVPlayerController, spawn: Vector3) -> void:
+	_clear_movement_actions()
+	player.velocity = Vector3.ZERO
+	player.global_position = spawn
+	player.rotation = Vector3.ZERO
+	for _tick in range(3):
+		await physics_frame
 
 
 func _horizontal_speed(player: CharacterBody3D) -> float:
