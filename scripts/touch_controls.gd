@@ -109,7 +109,7 @@ func _handle_screen_drag(event: InputEventScreenDrag) -> void:
 		_update_joystick_visual(movement)
 		handled = true
 	if _adapter.is_look_finger(event.index):
-		var look_delta: Vector2 = _adapter.update_look(event.index, event.position)
+		var look_delta: Vector2 = _adapter.update_look_delta(event.index, event.screen_relative)
 		var player: BTVPlayerController = _resolve_player()
 		if player != null and not look_delta.is_zero_approx():
 			player.apply_look_delta(look_delta)
