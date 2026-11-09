@@ -280,3 +280,12 @@ The initial milestone is accepted only when:
 - known device-specific limitations are reported honestly.
 
 The prototype is not called production-ready, Android-ready or visually final at this milestone.
+
+
+## 13. Latest automated movement regression evidence
+
+The motion suite now includes progressive turning and convergence, moving direction reversal, and diagonal braking in addition to acceleration, straight-line braking, stop distance and diagonal speed cap.
+
+**PASS:** [Godot 4.7.2 CI run #42712465318](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42712465318), tested commit `f27f85b165c9a25b6c9fbcf480f1aab684fece2a`. All 19 contract/regression suites, collision probes and the neutral-lab scene launch passed.
+
+Gate C remains open: the new automated checks improve coverage but do not replace human playtesting or broader visual camera evaluation. Gate D remains blocked until an exact Android target device and export path are validated.
