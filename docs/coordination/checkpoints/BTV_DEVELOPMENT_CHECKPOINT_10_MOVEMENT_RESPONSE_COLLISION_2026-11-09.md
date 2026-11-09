@@ -39,7 +39,8 @@ Verified:
 - The front wall blocks the player and reports wall contact.
 - The 1.4 m doorway can be traversed without lateral displacement.
 - The narrow parallel-wall corridor can be traversed without lateral displacement.
-- The gentle ramp maintains floor contact while the player gains height.
+- The gentle and steeper ramps maintain floor contact while the player gains height.
+- The high step blocks traversal without an unapproved vertical snap.
 
 Measured headless diagnostics:
 - Corridor traversal ended at approximately `(8.05, 0.0, 2.47)` with forward velocity `(0, 0, -4)`.
@@ -49,10 +50,10 @@ The corridor and ramp test initially failed. The test duration was too short for
 
 ## 4. CI evidence
 
-**PASS:** 19-suite Godot 4.7.2 validation, including the new motion and collision suites, plus a 10-frame main-scene launch.
+**PASS:** 19-suite Godot 4.7.2 validation, including the motion suite, extended collision probes, and a 10-frame main-scene launch.
 
-- Tested commit: `c9dbe133891febdc76d7e93cfdaf85b2d3702710`
-- Run: [#42666264480](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666264480)
+- Tested commit: `28a76d8dc15980963900758a378241a1c97f6338`
+- Run: [#42666506202](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666506202)
 
 The pass proves the automated headless tests and lab scene launch. It does not prove physical Android performance, touch ergonomics, safe-area behaviour or final human-perceived movement quality.
 
