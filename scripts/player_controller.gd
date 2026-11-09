@@ -14,6 +14,7 @@ class_name BTVPlayerController
 var _gravity: float = 9.8
 var _camera_yaw_radians: float = 0.0
 var _nearby_interactables: Array[BTVInteractable] = []
+var _interact_input_latched: bool = false
 
 
 func _ready() -> void:
@@ -28,7 +29,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_sync_camera_yaw()
-	var input_vector := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var input_vector := _get_composed_movement_input()
 	var move_direction := _get_camera_relative_move_direction(input_vector)
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
@@ -41,8 +42,33 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, target_yaw, min(turn_speed * delta, 1.0))
 	move_and_slide()
 	_sync_camera_yaw()
-	if Input.is_action_just_pressed("interact"):
+	if _is_interact_just_pressed():
 		_try_interact()
+
+
+## Combines independent keyboard and touchscreen vectors exactly once.
+## Each source is shaped by its own InputMap actions; the final sum is capped
+## to preserve the existing maximum movement speed.
+func _get_composed_movement_input() -> Vector2:
+	var keyboard := Input.get_vector(
+		"move_left", "move_right",
+		"move_forward", "move_back"
+	)
+	var touchscreen := Input.get_vector(
+		"touch_move_left", "touch_move_right",
+		"touch_move_forward", "touch_move_back"
+	)
+	return (keyboard + touchscreen).limit_length(1.0)
+
+
+## Treat keyboard and touch as one logical Interact control. A second source
+## joining an already-held press must not create another interaction edge.
+func _is_interact_just_pressed() -> bool:
+	var either_source_just_pressed := Input.is_action_just_pressed("interact") or Input.is_action_just_pressed("touch_interact")
+	var either_source_pressed := Input.is_action_pressed("interact") or Input.is_action_pressed("touch_interact")
+	var new_combined_press := (either_source_just_pressed or either_source_pressed) and not _interact_input_latched
+	_interact_input_latched = either_source_pressed or either_source_just_pressed
+	return new_combined_press
 
 
 func _get_camera_relative_move_direction(input_vector: Vector2) -> Vector3:

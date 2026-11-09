@@ -1,9 +1,8 @@
 extends Control
 
-## Touch controls share gameplay actions with keyboard input.
+## Touch controls write to a dedicated action namespace. The player controller
+## composes this source with keyboard input, avoiding shared-action conflicts.
 ## The analog surface uses independent movement/look finger ownership.
-
-const ACTIONS: Array[StringName] = [&"move_forward", &"move_back", &"move_left", &"move_right", &"interact"]
 const TouchInputAdapter = preload("res://scripts/touch_input_adapter.gd")
 
 @export var use_analog_touch_controls: bool = true
@@ -20,11 +19,9 @@ const TouchInputAdapter = preload("res://scripts/touch_input_adapter.gd")
 
 var _adapter = TouchInputAdapter.new()
 var _player: BTVPlayerController
-## Actions this overlay currently drives, mapped to the strength it applied.
-## Godot keeps a single state per action, so an action is only released here
-## when it still carries the strength this overlay set. If another source (a
-## keyboard, a gamepad, another overlay) has taken the action over in the
-## meantime, it is left alone.
+## Touch actions this overlay currently drives, mapped to the strength it
+## applied. Cleanup releases only owned touch actions and never writes to the
+## keyboard-facing movement or Interact actions.
 var _owned_actions: Dictionary = {}
 
 
@@ -36,11 +33,11 @@ func _ready() -> void:
 	_joystick_base.visible = use_analog_touch_controls
 	_look_surface.visible = use_analog_touch_controls
 	_resolve_player()
-	_bind_action(_forward, &"move_forward")
-	_bind_action(_back, &"move_back")
-	_bind_action(_left, &"move_left")
-	_bind_action(_right, &"move_right")
-	_bind_action(_interact, &"interact")
+	_bind_action(_forward, &"touch_move_forward")
+	_bind_action(_back, &"touch_move_back")
+	_bind_action(_left, &"touch_move_left")
+	_bind_action(_right, &"touch_move_right")
+	_bind_action(_interact, &"touch_interact")
 	_adapter.joystick_radius = _joystick_radius()
 	_update_joystick_visual(Vector2.ZERO)
 
@@ -140,10 +137,10 @@ func _update_joystick_visual(movement: Vector2) -> void:
 
 
 func _apply_movement_vector(movement: Vector2) -> void:
-	_set_action_strength(&"move_right", maxf(movement.x, 0.0))
-	_set_action_strength(&"move_left", maxf(-movement.x, 0.0))
-	_set_action_strength(&"move_back", maxf(movement.y, 0.0))
-	_set_action_strength(&"move_forward", maxf(-movement.y, 0.0))
+	_set_action_strength(&"touch_move_right", maxf(movement.x, 0.0))
+	_set_action_strength(&"touch_move_left", maxf(-movement.x, 0.0))
+	_set_action_strength(&"touch_move_back", maxf(movement.y, 0.0))
+	_set_action_strength(&"touch_move_forward", maxf(-movement.y, 0.0))
 
 
 func _set_action_strength(action_name: StringName, strength: float) -> void:
@@ -181,8 +178,8 @@ func _release_action(action_name: StringName) -> void:
 	_release_owned_action(action_name)
 
 
-## Releases only the actions this overlay owns, so a keyboard or gamepad that
-## is holding the same action is never cancelled by touch cleanup.
+## Releases only actions in the dedicated touch namespace. Keyboard actions
+## are never written or released by this overlay.
 func _release_all_actions() -> void:
 	for action_name: StringName in _owned_actions.keys():
 		_release_owned_action(action_name)
