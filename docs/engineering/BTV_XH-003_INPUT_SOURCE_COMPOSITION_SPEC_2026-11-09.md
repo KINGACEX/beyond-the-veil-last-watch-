@@ -91,16 +91,18 @@ Also retain and run all existing suites. Add explicit assertions for both releas
 
 ## Verification protocol
 
-The following verification was completed on the current implementation commit:
+The automated verification completed on the current implementation:
 
 1. Parse/import check: `godot --headless --editor --path . --quit`.
-2. Every existing and new test suite, individually, with exit codes.
+2. All 14 test suites, individually, with successful job exit statuses.
 3. Main-scene launch: `godot --headless --path . --quit-after 10`.
-4. A clean `git status --short` after tests, with generated artifacts accounted for.
-5. Diff review against the XH-002 base; no unrelated canon, art, narrative, export, workflow, or dependency changes.
-6. Independent review of implementation and test quality.
 
-**Recorded result:** GitHub Actions run [#42650811449](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42650811449) on commit `3431f9df84e8eafd6104daadff9a050e1aca8109` used Godot `4.7.2.stable.official.ed1daf0bf`; project import, all 14 test suites, and the 10-frame headless main-scene launch passed. The workflow now includes the XH-003 branch and all 14 suites.
+**Recorded result:** GitHub Actions run [#42650931569](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42650931569) on commit `331421701a35a76e7582ea07f59ac625d5c95715` used Godot `4.7.2.stable.official.ed1daf0bf`; project import, all 14 test suites, and the 10-frame headless main-scene launch passed. This latest run includes the combined Interact latch, its regression coverage, and the updated specification. The workflow includes the XH-003 branch and all 14 suites.
+
+**Still outstanding outside the automated run:**
+4. Review `git status --short` after tests and account for generated artifacts.
+5. Complete the final diff review against the XH-002 base; confirm there are no unrelated canon, art, narrative, export, or dependency changes.
+6. Complete the independent implementation and test-quality review, including the requested 30-point score.
 
 Headless tests do not establish physical Android multitouch, safe-area correctness, thumb reach, latency, orientation behavior, performance, or export readiness. Those remain separate device QA gates.
 
