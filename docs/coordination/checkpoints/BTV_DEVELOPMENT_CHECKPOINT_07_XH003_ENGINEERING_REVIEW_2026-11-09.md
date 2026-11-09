@@ -12,7 +12,7 @@
 
 This is not a release-readiness score or an external peer review. Two points are withheld because:
 1. Physical Android QA has not been performed.
-2. A final clean-working-tree/generated-artifact audit and external peer review remain outstanding.
+2. A final local clean-working-tree audit and external peer review remain outstanding. A read-only scan of the current GitHub commit tree found no tracked `.godot/`, `.import/`, or `.uid` generated artifacts; this does not reveal local untracked files.
 
 ## Review matrix
 
@@ -36,7 +36,7 @@ This is not a release-readiness score or an external peer review. Two points are
 - The Android pause notification and focus-loss path clear touch state.
 - The lifecycle tests verify the touch HUD can resolve a player created later and follow a replacement player for camera look.
 - The CI workflow installs Godot 4.7.2, imports the project, runs 14 suites, and launches the main scene for 10 frames.
-- Latest verified head SHA is `ba6b32b937d274acfcc8565284ed9dfa20e9bdcd`; latest run #42651172481 completed successfully.
+- Latest successful code validation is run #42653466596 on implementation commit `2ab0b87fcf4791905d2c338fdc459547fd6bc6ec`. Subsequent documentation-only commits updated verification references and added `docs/engineering/BTV_GODOT_CI_RUNBOOK.md`; the current PR head is `96cb5f87aa1a102f12779820b5157fb9fa44fbfb`. No source, test, or workflow files changed after the tested implementation. No separate run has been recorded for the documentation-only head.
 
 ## Remaining gates
 
