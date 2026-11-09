@@ -88,3 +88,14 @@ Ridgeview remains held until Gate C is formally accepted. The visual-production 
 ## 7. Change-control record
 
 No merge, release, signing setup, package-ID decision, paid service, public announcement, or destructive action was performed. The branch remains isolated. PR #6 remains draft and unmerged.
+
+
+## 8. Regression extension — direction reversal and diagonal braking
+
+A source review identified two untested transitions in the candidate movement profile. The motion suite now additionally checks:
+- Direction reversal while moving: existing momentum decreases progressively rather than snapping immediately; sustained reverse input reaches the same configured speed cap.
+- Diagonal release: both horizontal velocity components return to zero, and total stop distance remains within a bounded test envelope.
+
+**PASS:** Godot 4.7.2 CI run [#42712465318](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42712465318), tested commit `f27f85b165c9a25b6c9fbcf480f1aab684fece2a`. All workflow steps succeeded, including project import, 19 contract/regression suites, the expanded motion suite, collision probes and 10-frame neutral-lab launch.
+
+This extends automated response coverage only. It does not establish final human-perceived feel, physical Android ergonomics or device performance. Gate C remains open for review and broader testing; Gate D remains blocked pending device/export validation.
