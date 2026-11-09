@@ -72,6 +72,14 @@ func update_look(finger_id: int, position: Vector2) -> Vector2:
 	return delta
 
 
+## Accepts the engine's unscaled screen-space drag delta for camera aiming.
+## This avoids content-scale-dependent sensitivity across viewport stretch modes.
+func update_look_delta(finger_id: int, screen_delta: Vector2) -> Vector2:
+	if finger_id != _look_finger_id:
+		return Vector2.ZERO
+	return screen_delta
+
+
 func end_look(finger_id: int) -> bool:
 	if finger_id != _look_finger_id:
 		return false
