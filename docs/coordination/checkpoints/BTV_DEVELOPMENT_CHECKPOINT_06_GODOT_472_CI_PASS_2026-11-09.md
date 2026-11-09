@@ -4,8 +4,8 @@
 **Status:** GODOT 4.7.2 HEADLESS CI PASSED — INDEPENDENT REVIEW AND DEVICE QA PENDING  
 **PR:** #6 (open, draft, unmerged)  
 **PR head branch:** `btv/xh-003-input-source-composition-spec-001`  
-**Verified PR head SHA:** `226bcf6ac8610d800fe6f8e921112f60d49a7958`  
-**GitHub Actions run:** [#42649951014](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42649951014)
+**Verified PR head SHA:** `331421701a35a76e7582ea07f59ac625d5c95715`  
+**GitHub Actions run:** [#42650931569](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42650931569)
 
 ## CI restoration
 
@@ -15,7 +15,7 @@ Workflow update commit: `9448f905e880e932bcbdddae22ac70577daadfc5`.
 
 ## Verified execution
 
-GitHub Actions run #42649951014 completed with conclusion **success** for the current PR head SHA above.
+GitHub Actions run #42650931569 completed with conclusion **success** for the current PR head SHA above. This run includes the final XH-003 implementation, the combined Interact latch, expanded regression tests, and the updated engineering specification.
 
 - Godot version: `4.7.2.stable.official.ed1daf0bf`
 - Ubuntu cloud runner installed the Godot 4.7.2 stable Linux executable.
@@ -44,9 +44,11 @@ The 14 suites were:
 
 Reviewing the successful first CI logs and test source exposed stale assertions in `tests/core_interaction_acceptance_test.gd`: its touch acceptance cases manually wrote to keyboard-facing `interact` and `move_forward` actions, even though XH-003 migrated touch controls to a dedicated `touch_*` namespace.
 
-Those assertions were corrected to use `touch_interact` and `touch_move_forward`, including teardown cleanup. The updated commit `226bcf6ac8610d800fe6f8e921112f60d49a7958` triggered a fresh CI run. Run #42649951014 then passed all 14 suites and the main-scene launch on that corrected commit.
+Those assertions were corrected to use `touch_interact` and `touch_move_forward`, including teardown cleanup. A second review then found that simply OR-ing two `is_action_just_pressed` checks could allow a second source joining an already-held Interact control to create another edge. The player now treats keyboard and touch as one logical Interact control with a combined-input latch. The latch is cleared after both sources are released; a new regression test covers staggered source presses, simultaneous presses, and re-arming after release.
 
-An earlier superseded run (#42649919332) was cancelled when the subsequent commit arrived; it is not counted as a failure of the final verified head.
+The added Interact regression exposed a test timing issue in its first iterations. The sequence was refined to wait for an idle frame before asserting that the combined latch has reset. The final corrected Interact implementation passed run #42650811449. The latest docs-inclusive PR head then passed all 14 suites and the main-scene launch in run #42650931569.
+
+Superseded intermediate runs #42649919332 and #42650315972 were cancelled by newer commits. Runs #42650347187, #42650519798, and #42650669137 failed while the new Interact regression was being developed; those failures exposed and helped correct the edge/reset behaviour. They are retained as development evidence, not hidden. The final current head is the successful run #42650931569.
 
 ## Non-blocking warning
 
