@@ -15,7 +15,7 @@ Workflow update commit: `9448f905e880e932bcbdddae22ac70577daadfc5`.
 
 ## Verified execution
 
-GitHub Actions run #42651172481 completed with conclusion **success** for the current PR head SHA above. This run includes the final XH-003 implementation, the combined Interact latch, expanded regression tests, and the corrected engineering specification that separates automated checks from remaining manual review gates.
+GitHub Actions run #42653466596 completed with conclusion **success** for implementation commit `2ab0b87fcf4791905d2c338fdc459547fd6bc6ec`. This run includes the final XH-003 implementation, the combined Interact latch, expanded regression tests, and the corrected engineering specification that separates automated checks from remaining manual review gates.
 
 - Godot version: `4.7.2.stable.official.ed1daf0bf`
 - Ubuntu cloud runner installed the Godot 4.7.2 stable Linux executable.
@@ -46,9 +46,9 @@ Reviewing the successful first CI logs and test source exposed stale assertions 
 
 Those assertions were corrected to use `touch_interact` and `touch_move_forward`, including teardown cleanup. A second review then found that simply OR-ing two `is_action_just_pressed` checks could allow a second source joining an already-held Interact control to create another edge. The player now treats keyboard and touch as one logical Interact control with a combined-input latch. The latch is cleared after both sources are released; a new regression test covers staggered source presses, simultaneous presses, and re-arming after release.
 
-The added Interact regression exposed a test timing issue in its first iterations. The sequence was refined to wait for an idle frame before asserting that the combined latch has reset. The final corrected Interact implementation passed run #42650811449. The latest docs-inclusive PR head then passed all 14 suites and the main-scene launch in run #42650931569.
+The added Interact regression exposed a test timing issue in its first iterations. The sequence was refined to wait for an idle frame before asserting that the combined latch has reset. The final corrected Interact implementation passed run #42650811449. The docs-inclusive implementation and test updates subsequently passed all 14 suites and the main-scene launch in run #42653466596.
 
-Superseded intermediate runs #42649919332 and #42650315972 were cancelled by newer commits. Runs #42650347187, #42650519798, and #42650669137 failed while the new Interact regression was being developed; those failures exposed and helped correct the edge/reset behaviour. They are retained as development evidence, not hidden. The final current head is the successful run #42651172481.
+Superseded intermediate runs #42649919332 and #42650315972 were cancelled by newer commits. Runs #42650347187, #42650519798, and #42650669137 failed while the new Interact regression was being developed; those failures exposed and helped correct the edge/reset behaviour. They are retained as development evidence, not hidden. The final implementation verification is the successful run #42653466596. After that run, a documentation-only commit `ca00ea822f2823839da026a0a7fd6ee1b2c3de5b` updated stale run references in the engineering specification. It changed no source, tests, or workflow files; the code tested in #42653466596 is unchanged. The current PR head is therefore the documentation-only follow-up commit, not a separately re-tested code change.
 
 ## Non-blocking warning
 
