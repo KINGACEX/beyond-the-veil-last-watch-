@@ -69,6 +69,7 @@ func _reconcile_high1_freed_instance() -> void:
 	drag_event.index = 1
 	drag_event.position = start + Vector2(40, 0)
 	drag_event.relative = Vector2(40, 0)
+	drag_event.screen_relative = Vector2(40, 0)
 	overlay.call("_input", drag_event)
 	await process_frame
 
