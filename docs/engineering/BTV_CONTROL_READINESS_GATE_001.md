@@ -15,8 +15,8 @@ The XH-003 implementation provides:
 - Analog joystick movement and a separate look-finger owner.
 - Touch-only cleanup on focus loss, Android pause, and overlay teardown.
 - Player lookup/re-resolution for camera look.
-- Sixteen passing Godot 4.7.2 headless suites on commit `61ef981af04f339bbf98ecf2d411ea481fa81f49`, run [#42655805462](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42655805462). The 16th suite checks control geometry at five representative viewport sizes. The later documentation-only plan commit `de75047` also passed all 16 suites in [run #42656570696](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42656570696).
-- A source audit found that touch-camera rotation was calculated from successive viewport positions. Godot documents `InputEventScreenDrag.screen_relative` as the unscaled screen-space delta and recommends it for touch aiming across stretch modes. The current branch now routes camera look through this property and adds an ownership regression test. Validation for this source change is pending.
+- Seventeen passing Godot 4.7.2 headless suites on commit `0aec6a9343a29772782d34d87c0060e13893f1b3`, run [#42665594447](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42665594447). The pipeline includes five-viewport geometry checks, concurrent three-finger input, the neutral lab acceptance test and a 10-frame launch of the lab as the current main scene.
+- A source audit found that touch-camera rotation was calculated from successive viewport positions. Godot documents `InputEventScreenDrag.screen_relative` as the unscaled screen-space delta and recommends it for touch aiming across stretch modes. The current branch now routes camera look through this property and adds ownership, integration, lifecycle and reconciliation regression coverage. The updated code passed the complete 17-suite pipeline.
 
 This is an automated baseline, not proof of perfect controls or Android readiness.
 
@@ -87,7 +87,7 @@ In the lab, record a stable and reproducible baseline for:
 - input-to-motion responsiveness;
 - touch joystick deadzone and response curve.
 
-The first pass should use a neutral greybox mannequin and flat test ground. Do not tune movement against an unfinished character rig or decorative level.
+The first lab implementation now uses a neutral greybox course with a flat lane, two ramps, three steps, collision walls/corners, a doorway, corridor, camera-obstruction wall and live telemetry. This proves scene construction and parsing, not movement-feel acceptance. Do not tune movement against an unfinished character rig or decorative level.
 
 Movement tuning is not allowed to contradict Asher's grounded human identity. Do not add superhuman movement merely to make the controller feel responsive.
 
@@ -128,7 +128,7 @@ Never use "perfect" as a test result. The engineering goal is a controlled, meas
 - Physical Android multitouch and ergonomic QA has not been performed.
 - Safe-area handling has not been demonstrated on a real device with display cutouts/system bars.
 - Automated three-finger movement + look + Interact concurrency now has viewport-path coverage; physical-device concurrency and ergonomic testing remain outstanding.
-- Camera sensitivity, acceleration/deceleration, collision response and slopes need a neutral movement-feel test.
+- The neutral lab scene exists and passes its structural/telemetry acceptance test; camera sensitivity, acceleration/deceleration, collision response and slopes still need measured game-feel acceptance.
 - The minimum Android device and supported orientation policy remain unknown.
 
 ## 8. Gate owner and change control
