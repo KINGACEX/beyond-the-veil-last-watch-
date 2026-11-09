@@ -6,6 +6,9 @@ extends SceneTree
 ## second deadzone applied on top of it.
 
 const TouchScene = preload("res://scenes/touch_controls.tscn")
+const PlayerScene = preload("res://scenes/player.tscn")
+
+var player: BTVPlayerController
 
 const JOYSTICK_RADIUS := 70.0
 const ADAPTER_DEADZONE := 0.12
@@ -20,11 +23,16 @@ func _initialize() -> void:
 func _run() -> void:
 	root.size = Vector2i(1280, 720)
 	await process_frame
+	player = PlayerScene.instantiate() as BTVPlayerController
+	root.add_child(player)
+	await process_frame
 	await _test_player_input_matches_action_strength()
 	await _test_deadzone_releases_the_action()
 	await _test_full_deflection_is_one()
 	await _test_diagonal_is_not_faster_than_full_speed()
 	print("\nTOUCH_CONTROLS_COMPOSITION_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
+	root.remove_child(player)
+	player.free()
 	quit(1 if failures > 0 else 0)
 
 
@@ -58,7 +66,7 @@ func _drag_joystick(overlay: Control, finger: int, raw_magnitude: float, directi
 
 
 func _player_vector() -> Vector2:
-	return Input.get_vector(&"move_left", &"move_right", &"move_forward", &"move_back")
+	return player._get_composed_movement_input()
 
 
 func _expected_strength(raw_magnitude: float) -> float:
@@ -81,7 +89,7 @@ func _test_player_input_matches_action_strength() -> void:
 		await process_frame
 
 		var expected := _expected_strength(raw_magnitude)
-		var strength := Input.get_action_strength(&"move_right")
+		var strength := Input.get_action_strength(&"touch_move_right")
 		var vector := _player_vector()
 
 		_check(
@@ -115,7 +123,7 @@ func _test_deadzone_releases_the_action() -> void:
 	await process_frame
 
 	_check(
-		is_zero_approx(Input.get_action_strength(&"move_right")),
+		is_zero_approx(Input.get_action_strength(&"touch_move_right")),
 		"DEADZONE: movement inside the deadzone leaves the action at zero strength",
 	)
 	_check(
@@ -141,7 +149,7 @@ func _test_full_deflection_is_one() -> void:
 	await process_frame
 
 	_check(
-		is_equal_approx(Input.get_action_strength(&"move_right"), 1.0),
+		is_equal_approx(Input.get_action_strength(&"touch_move_right"), 1.0),
 		"FULL DEFLECTION: full joystick deflection reaches strength 1.0",
 	)
 	_check(
