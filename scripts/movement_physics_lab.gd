@@ -82,7 +82,7 @@ func _build_course() -> void:
 	_add_box(course, "Corridor_Right", Vector3(9.1, 1.0, 10), Vector3(0.35, 2, 9), _obstacle_material)
 
 	# Camera obstruction test wall behind the default player start.
-	_add_box(course, "Camera_Occlusion_Wall", Vector3(0, 1.6, 7), Vector3(9, 3.2, 0.35), _obstacle_material)
+	_add_box(course, "Camera_Occlusion_Wall", Vector3(20, 1.6, 3.5), Vector3(9, 3.2, 0.35), _obstacle_material)
 
 
 func _add_box(
