@@ -62,7 +62,7 @@ func _build_course() -> void:
 	_add_marker(course, "LaneFinish", Vector3(7, 0.02, 12), Vector3(0.12, 0.025, 18))
 
 	# Two measured ramp angles; the player approaches from negative Z.
-	_add_box(course, "Ramp_Gentle", Vector3(-15, 0.72, -7), Vector3(8, 0.4, 5), _ramp_material, Vector3(10, 0, 0))
+	_add_box(course, "Ramp_Gentle", Vector3(-15, 0.24, -7), Vector3(8, 0.4, 5), _ramp_material, Vector3(10, 0, 0))
 	_add_box(course, "Ramp_Steeper", Vector3(-15, 1.05, 3), Vector3(8, 0.4, 5), _ramp_material, Vector3(20, 0, 0))
 
 	# Three low steps with distinct top heights; no automatic step-up code is added.
