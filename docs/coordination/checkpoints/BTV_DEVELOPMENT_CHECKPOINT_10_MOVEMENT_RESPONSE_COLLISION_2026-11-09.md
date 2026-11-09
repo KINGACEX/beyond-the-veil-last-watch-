@@ -41,6 +41,7 @@ Verified:
 - The narrow parallel-wall corridor can be traversed without lateral displacement.
 - The gentle and steeper ramps maintain floor contact while the player gains height.
 - The high step blocks traversal without an unapproved vertical snap.
+- SpringArm3D camera arm retracts from 5.00 m in open space to 3.44 m at the dedicated obstruction station, then retains a nonzero clearance.
 
 Measured headless diagnostics:
 - Corridor traversal ended at approximately `(8.05, 0.0, 2.47)` with forward velocity `(0, 0, -4)`.
@@ -52,8 +53,8 @@ The corridor and ramp test initially failed. The test duration was too short for
 
 **PASS:** 19-suite Godot 4.7.2 validation, including the motion suite, extended collision probes, and a 10-frame main-scene launch.
 
-- Tested commit: `28a76d8dc15980963900758a378241a1c97f6338`
-- Run: [#42666506202](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666506202)
+- Tested commit: `c49e0af37bc82f3864575b28f82e1358066ae441`
+- Run: [#42666739053](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666739053)
 
 The pass proves the automated headless tests and lab scene launch. It does not prove physical Android performance, touch ergonomics, safe-area behaviour or final human-perceived movement quality.
 
