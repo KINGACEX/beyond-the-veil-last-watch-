@@ -35,11 +35,12 @@ func _touch(index: int, pressed: bool, position: Vector2) -> InputEventScreenTou
 	return event
 
 
-func _drag(index: int, position: Vector2) -> InputEventScreenDrag:
+func _drag(index: int, position: Vector2, screen_delta: Vector2 = Vector2.ZERO) -> InputEventScreenDrag:
 	var event := InputEventScreenDrag.new()
 	event.index = index
 	event.position = position
 	event.relative = position
+	event.screen_relative = screen_delta
 	return event
 
 
@@ -47,7 +48,7 @@ func _look_drag(overlay: Control, finger: int) -> void:
 	var look_surface: Control = overlay.get_node("LookSurface")
 	var start := _screen_point(look_surface, Vector2(look_surface.size.x * 0.65, look_surface.size.y * 0.4))
 	overlay.call("_input", _touch(finger, true, start))
-	overlay.call("_input", _drag(finger, start + Vector2(40, 0)))
+	overlay.call("_input", _drag(finger, start + Vector2(40, 0), Vector2(40, 0)))
 	overlay.call("_input", _touch(finger, false, start + Vector2(40, 0)))
 
 
