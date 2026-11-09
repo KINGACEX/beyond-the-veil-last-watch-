@@ -6,6 +6,10 @@
 **Visual direction:** Cinematic semi-realism, staged through a measurable greybox-to-presentable pipeline  
 **Authority:** BTV Master Canon, specialist Bibles and the locked Vertical Slice Specification
 
+## 0. Mandatory research and planning gate
+
+This plan is governed by the standing [BTV Research, Planning and Execution Governance Standard](../coordination/BTV_RESEARCH_PLANNING_AND_EXECUTION_GOVERNANCE_v1.0.md). Before any block or system below is implemented, complete the applicable research sweep, deep dives, alternatives analysis, resource plan, risk register, work breakdown, approval check and verification plan. The current layout sequence is a proposed direction, not permission to skip that work. In particular, renderer selection, target hardware, art pipeline, physics values and ability mechanics require evidence-led investigation before commitment.
+
 ## 1. Purpose
 
 Define the first playable prototype layout and its implementation order without silently expanding BTV canon. This plan prepares the next phase; it does not claim that production visuals, physics, combat, powers or Android performance already exist.
