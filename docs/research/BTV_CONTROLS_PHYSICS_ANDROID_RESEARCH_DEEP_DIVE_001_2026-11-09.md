@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-09  
 **Research depth:** Level 3 — foundational input and movement system  
-**Status:** INITIAL TECHNICAL DEEP DIVE — touch-delta correction, neutral lab and initial movement-response tests passed CI; physical and full game-feel validation remain open  
+**Status:** INITIAL TECHNICAL DEEP DIVE — touch-delta correction, neutral lab, movement-response and initial collision probes passed CI; physical and full game-feel validation remain open  
 **Engine baseline:** Godot 4.7.2  
 **Platform priority:** Android first; PC later  
 **Scope:** input scaling, touch-camera response, CharacterBody3D movement, test-lab sequencing and renderer/device constraints
@@ -11,7 +11,7 @@
 
 1. The existing controller is a functional greybox baseline, not a tuned movement system. Horizontal velocity is assigned directly from the input direction multiplied by `move_speed`. This produces immediate target-speed changes; no authored acceleration or braking curve currently exists.
 2. The camera-touch path previously calculated drag from successive viewport positions. Godot 4.7 documents `InputEventScreenDrag.screen_relative` as an unscaled screen-space delta and explicitly recommends it for touch aiming across stretch modes. The current branch has been changed to pass this delta through a finger-ownership check. The new code is awaiting CI.
-3. The 18-suite pipeline, including the touch-camera correction, neutral lab acceptance and motion-response tests, and 10-frame lab launch, passed on commit `6d2e5a20f47a8927416c8c42d8d1d0e94958b3b4` in [run #42665909377](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42665909377).
+3. The 19-suite pipeline, including the touch-camera correction, neutral lab acceptance, motion-response tests, wall/doorway/corridor/ramp probes and 10-frame lab launch, passed on commit `c9dbe133891febdc76d7e93cfdaf85b2d3702710` in [run #42666264480](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666264480).
 4. The existing five-size layout suite is a useful geometry regression check, but does not measure Android safe areas, thumb reach, system bars, cutouts or physical touch behaviour.
 5. Godot's `CharacterBody3D` is the appropriate starting class for a grounded player controller. `move_and_slide()` belongs in the physics update and uses the body's velocity; floor classification, floor snap, maximum floor angle and slide collision reporting must be measured in the neutral lab rather than guessed.
 6. Godot 4.7 documents Mobile as the renderer intended for mobile GPUs, while Compatibility supports older/low-end hardware. The final choice cannot be made responsibly until the target phone's GPU/API support is known and a representative benchmark exists.
@@ -43,7 +43,7 @@ The old look handler computed delta by subtracting consecutive `InputEventScreen
 - No physical Android device QA or safe-area validation.
 - No confirmed minimum phone specification or supported orientation policy.
 - No renderer selection backed by target-device benchmarks.
-- No validated slope, stair/step, wall-corner or collision stability results.
+- Wall blocking, doorway/corridor clearance and gentle-ramp floor contact now have passing headless probes. Steeper slopes, steps, corners under repeated contact and physical-device collision feel remain unvalidated.
 - No measured input-to-motion latency, frame-time, memory, thermal or battery data.
 
 ## 3. Primary-source findings
@@ -179,13 +179,14 @@ All sources below were checked on 2026-11-09. Primary sources take precedence ov
 
 ## 9. Current decision status
 
-- **CONFIRMED:** 18-suite Godot 4.7.2 CI passed on commit `6d2e5a20f47a8927416c8c42d8d1d0e94958b3b4`.
+- **CONFIRMED:** 19-suite Godot 4.7.2 CI passed on commit `c9dbe133891febdc76d7e93cfdaf85b2d3702710`.
 - **CONFIRMED:** current controller directly assigns horizontal target velocity; acceleration/braking tuning is absent.
 - **CONFIRMED:** Godot 4.7 recommends unscaled screen-relative deltas for touch aiming across stretch modes.
 - **COMPLETED:** touch look now uses `screen_relative`; viewport and lifecycle-related regression tests pass.
 - **COMPLETED:** neutral movement/physics lab scene, test course and telemetry are constructed and pass the lab acceptance suite.
 - **IMPLEMENTED / TESTED:** provisional 16 m/s² acceleration and 22 m/s² braking response passes the automated motion-envelope test.
-- **IN PROGRESS:** Gate C measurement and movement-feel tuning in the lab.
+- **TESTED:** wall blocking, 1.4 m doorway passage, narrow corridor passage and gentle-ramp floor contact pass headless probes.
+- **IN PROGRESS:** Gate C measurement and movement-feel tuning in the lab, including steep ramps, steps, camera obstruction and broader collision cases.
 - **UNKNOWN:** final acceleration, braking, turning, slope, step and camera sensitivity values.
 - **UNKNOWN:** minimum Android device, GPU/API support and renderer choice.
 - **BLOCKED:** physical Android safe-area, ergonomics and performance validation.
