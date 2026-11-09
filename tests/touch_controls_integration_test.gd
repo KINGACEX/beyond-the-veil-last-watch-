@@ -84,7 +84,7 @@ func _test_virtual_joystick_drives_touch_movement_actions() -> void:
 	overlay.call("_input", _touch(1, true, center))
 	overlay.call("_input", _drag(1, center + Vector2(100, 0)))
 	_check(Input.get_action_strength("touch_move_right") > 0.95, "Right joystick drag feeds the touch_move_right action")
-	_check(is_zero_approx(Input.get_action_strength("touch_move_left")), "Right joystick drag does not activate move_left")
+	_check(is_zero_approx(Input.get_action_strength("touch_move_left")), "Right joystick drag does not activate touch_move_left")
 	overlay.call("_input", _touch(1, false, center + Vector2(100, 0)))
 	_check(is_zero_approx(Input.get_action_strength("touch_move_right")), "Joystick release clears the movement action")
 	_cleanup(setup)
