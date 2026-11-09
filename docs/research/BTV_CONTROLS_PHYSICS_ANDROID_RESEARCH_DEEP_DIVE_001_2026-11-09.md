@@ -11,7 +11,7 @@
 
 1. The existing controller is a functional greybox baseline, not a tuned movement system. Horizontal velocity is assigned directly from the input direction multiplied by `move_speed`. This produces immediate target-speed changes; no authored acceleration or braking curve currently exists.
 2. The camera-touch path previously calculated drag from successive viewport positions. Godot 4.7 documents `InputEventScreenDrag.screen_relative` as an unscaled screen-space delta and explicitly recommends it for touch aiming across stretch modes. The current branch has been changed to pass this delta through a finger-ownership check. The new code is awaiting CI.
-3. The 19-suite pipeline, including the touch-camera correction, neutral lab acceptance, motion-response tests, wall/doorway/corridor/ramp/step probes and 10-frame lab launch, passed on commit `28a76d8dc15980963900758a378241a1c97f6338` in [run #42666506202](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666506202).
+3. The 19-suite pipeline, including the touch-camera correction, neutral lab acceptance, motion-response tests, wall/doorway/corridor/ramp/step/camera-obstruction probes and 10-frame lab launch, passed on commit `c49e0af37bc82f3864575b28f82e1358066ae441` in [run #42666739053](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42666739053).
 4. The existing five-size layout suite is a useful geometry regression check, but does not measure Android safe areas, thumb reach, system bars, cutouts or physical touch behaviour.
 5. Godot's `CharacterBody3D` is the appropriate starting class for a grounded player controller. `move_and_slide()` belongs in the physics update and uses the body's velocity; floor classification, floor snap, maximum floor angle and slide collision reporting must be measured in the neutral lab rather than guessed.
 6. Godot 4.7 documents Mobile as the renderer intended for mobile GPUs, while Compatibility supports older/low-end hardware. The final choice cannot be made responsibly until the target phone's GPU/API support is known and a representative benchmark exists.
@@ -81,7 +81,13 @@ Android's official display-cutout guidance explains that cutouts can extend into
 
 **Decision:** headless viewport geometry is not safe-area certification. Once the target phone is identified, test actual system bars, cutouts/rounded corners where present, gesture navigation, orientation and thumb reach. Keep critical controls clear of unsafe display regions.
 
-### 3.6 Renderer options
+### 3.6 Third-person camera collision
+
+Godot 4.7's SpringArm3D casts a ray or shape along its local Z axis and moves its direct children toward the collision point. The API exposes `get_hit_length()` to measure the current arm length. The official third-person camera tutorial explains that the camera's near-plane shape can be used for the collision sweep when the Camera3D is a direct child.
+
+**Decision:** retain the existing SpringArm3D camera structure and verify obstruction at a dedicated lab station. The test records 5.00 m in open space and 3.44 m with the camera wall intersecting the arm. This is a headless geometry probe, not a substitute for visual camera composition or device playtesting.
+
+### 3.7 Renderer options
 
 Godot 4.7 lists three renderer families:
 - **Mobile:** intended for mobile platforms and optimized for mobile GPUs.
@@ -152,6 +158,8 @@ All sources below were checked on 2026-11-09. Primary sources take precedence ov
 | https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html | Official Godot 4.7 guide | `Input.get_vector()` supports circular deadzone and unit-length limiting | High |
 | https://docs.godotengine.org/en/4.7/classes/class_characterbody3d.html | Official Godot 4.7 API | CharacterBody3D movement, floor properties and collision behaviour | High |
 | https://docs.godotengine.org/en/4.7/classes/class_vector3.html | Official Godot 4.7 API | Fixed-distance `Vector3.move_toward` for movement response | High |
+| https://docs.godotengine.org/en/4.7/classes/class_springarm3d.html | Official Godot 4.7 API | Spring-arm collision length and `get_hit_length()` | High |
+| https://docs.godotengine.org/en/4.7/tutorials/3d/spring_arm.html | Official Godot 4.7 tutorial | Third-person camera obstruction and near-plane collision sweep | High |
 | https://docs.godotengine.org/en/4.7/about/list_of_features.html | Official Godot 4.7 feature matrix | Renderer positioning and platform targets | High |
 | https://docs.godotengine.org/en/4.7/about/system_requirements.html | Official Godot 4.7 requirements | Mobile GPU/API compatibility distinctions | High |
 | https://developer.android.com/develop/ui/views/layout/display-cutout | Official Android developer guidance | Display cutouts and edge-to-edge safe layout considerations | High |
@@ -185,7 +193,7 @@ All sources below were checked on 2026-11-09. Primary sources take precedence ov
 - **COMPLETED:** touch look now uses `screen_relative`; viewport and lifecycle-related regression tests pass.
 - **COMPLETED:** neutral movement/physics lab scene, test course and telemetry are constructed and pass the lab acceptance suite.
 - **IMPLEMENTED / TESTED:** provisional 16 m/s² acceleration and 22 m/s² braking response passes the automated motion-envelope test.
-- **TESTED:** wall blocking, 1.4 m doorway passage, narrow corridor passage, gentle/steeper ramp floor contact and high-step blocking without vertical snap pass headless probes.
+- **TESTED:** wall blocking, 1.4 m doorway passage, narrow corridor passage, gentle/steeper ramp floor contact, high-step blocking without vertical snap and SpringArm3D retraction pass headless probes.
 - **IN PROGRESS:** Gate C measurement and movement-feel tuning in the lab, including steep ramps, steps, camera obstruction and broader collision cases.
 - **UNKNOWN:** final acceleration, braking, turning, slope, step and camera sensitivity values.
 - **UNKNOWN:** minimum Android device, GPU/API support and renderer choice.
