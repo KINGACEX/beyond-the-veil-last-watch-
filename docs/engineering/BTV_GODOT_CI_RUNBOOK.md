@@ -10,7 +10,7 @@ It runs on a GitHub-hosted Ubuntu runner and installs **Godot 4.7.2 stable**. Th
 
 1. Godot engine-version verification.
 2. Headless editor import and project/script parsing.
-3. All 17 contract/regression suites:
+3. All 18 contract/regression suites:
    - NLI smoke
    - NLI handoff and source-registry contract
    - Mission data validator
@@ -28,9 +28,10 @@ It runs on a GitHub-hosted Ubuntu runner and installs **Godot 4.7.2 stable**. Th
    - Concurrent three-finger movement/look/Interact through the real viewport input path
    - Touch-control geometry at five representative viewport sizes (headless layout check only; not device safe-area certification)
    - Neutral movement physics lab scene structure and telemetry acceptance
+   - Neutral movement acceleration, braking and diagonal speed-cap response
 4. Headless launch of the neutral movement physics lab (the current main scene) for 10 frames.
 
-The XH-003 implementation passed in [run #42653466596](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42653466596). The control-hardening branch passed 16 suites in [run #42655805462](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42655805462). After the touch-camera scaling correction and neutral lab construction, the 17-suite pipeline and 10-frame lab launch passed in [run #42665594447](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42665594447) on commit `0aec6a9343a29772782d34d87c0060e13893f1b3`.
+The XH-003 implementation passed in [run #42653466596](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42653466596). The control-hardening branch passed 16 suites in [run #42655805462](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42655805462). After the touch-camera scaling correction and neutral lab construction, the 17-suite pipeline passed in [run #42665594447](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42665594447). The expanded 18-suite pipeline, including acceleration/braking response tests and a 10-frame lab launch, passed in [run #42665909377](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42665909377) on commit `6d2e5a20f47a8927416c8c42d8d1d0e94958b3b4`.
 
 ## How to run it
 
@@ -46,7 +47,7 @@ A push to one of the branches listed under `on.push.branches` in the workflow sh
 4. Select **Run workflow**.
 5. Choose the branch containing the code to test.
 6. Start the workflow and open the resulting run.
-7. Inspect the job and confirm the import, all 17 test suites, and 10-frame scene launch each report success.
+7. Inspect the job and confirm the import, all 18 test suites, and 10-frame scene launch each report success.
 
 The workflow also declares `workflow_dispatch` for manual runs. If a commit appears but no run is listed, do not assume validation happened; start it manually using the steps above.
 
