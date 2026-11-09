@@ -1,8 +1,8 @@
 extends SceneTree
-## XH-002 — Touch and keyboard coexistence.
+## XH-003 — Touch and keyboard coexistence.
 ##
-## Touch cleanup must never cancel an action that another input source is
-## holding.
+## Touch controls write only to touch_* actions. Cleanup releases that
+## namespace while leaving keyboard-facing actions unchanged.
 
 const TouchScene = preload("res://scenes/touch_controls.tscn")
 
@@ -66,14 +66,18 @@ func _test_touch_release_keeps_a_keyboard_held_action() -> void:
 
 	_drag_joystick(overlay, 1)
 	await process_frame
-	_check(Input.get_action_strength(&"move_right") > 0.0, "COEXISTENCE: the joystick drives move_right")
+	_check(Input.get_action_strength(&"touch_move_right") > 0.0, "COEXISTENCE: the joystick drives touch_move_right")
 
 	# Releasing the joystick must not cancel the separately held action.
 	overlay.call("_input", _touch(1, false, Vector2.ZERO))
 	await process_frame
 	_check(
 		Input.is_action_pressed(&"move_forward"),
-		"COEXISTENCE: releasing the joystick does not cancel the held move_forward",
+		"COEXISTENCE: releasing the joystick leaves keyboard move_forward held",
+	)
+	_check(
+		is_zero_approx(Input.get_action_strength(&"touch_move_right")),
+		"COEXISTENCE: releasing the joystick clears touch_move_right",
 	)
 
 	Input.action_release(&"move_forward")
@@ -92,14 +96,20 @@ func _test_focus_loss_keeps_a_keyboard_held_action() -> void:
 	await process_frame
 
 	Input.action_press(&"interact")
+	Input.action_press(&"touch_interact")
 	await process_frame
-	_check(Input.is_action_pressed(&"interact"), "COEXISTENCE: interact is held before focus loss")
+	_check(Input.is_action_pressed(&"interact"), "COEXISTENCE: keyboard interact is held before focus loss")
+	_check(Input.is_action_pressed(&"touch_interact"), "COEXISTENCE: touch_interact is held before focus loss")
 
 	overlay.call("_notification", NOTIFICATION_APPLICATION_FOCUS_OUT)
 	await process_frame
 	_check(
 		Input.is_action_pressed(&"interact"),
-		"COEXISTENCE: focus loss does not cancel the held interact action",
+		"COEXISTENCE: focus loss leaves keyboard interact untouched",
+	)
+	_check(
+		not Input.is_action_pressed(&"touch_interact"),
+		"COEXISTENCE: focus loss clears touch_interact",
 	)
 
 	Input.action_release(&"interact")
@@ -128,11 +138,11 @@ func _test_teardown_keeps_a_keyboard_held_action() -> void:
 
 	_check(
 		Input.is_action_pressed(&"move_back"),
-		"COEXISTENCE: touch scene teardown does not cancel the held move_back action",
+		"COEXISTENCE: touch scene teardown leaves keyboard move_back held",
 	)
 	_check(
-		is_zero_approx(Input.get_action_strength(&"move_right")),
-		"COEXISTENCE: touch scene teardown still releases the action the touch owned",
+		is_zero_approx(Input.get_action_strength(&"touch_move_right")),
+		"COEXISTENCE: touch scene teardown releases touch_move_right",
 	)
 
 	Input.action_release(&"move_back")
