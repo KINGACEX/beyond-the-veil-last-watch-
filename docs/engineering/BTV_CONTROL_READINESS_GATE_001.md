@@ -143,3 +143,17 @@ Any control change must:
 5. Be reviewed for Android ergonomics and BTV scope.
 6. Remain unmerged until the creator's approval and required gates.
 
+
+
+## 9. Latest movement-response regression evidence
+
+The motion suite has been extended beyond straight-line acceleration/braking and diagonal speed-cap checks. It now also verifies:
+- progressive body turning and convergence to the requested heading;
+- direction reversal while moving, with existing momentum reduced progressively;
+- sustained reverse input reaching the configured speed cap;
+- diagonal braking returning both horizontal velocity components to zero;
+- a bounded diagonal stop-distance envelope.
+
+**PASS:** [Godot 4.7.2 CI run #42712465318](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42712465318), tested commit `f27f85b165c9a25b6c9fbcf480f1aab684fece2a`. All workflow steps passed, including the complete 19-suite regression set, the expanded movement tests, collision probes and neutral-lab launch.
+
+**Gate C remains IN PROGRESS.** Automated checks do not establish preferred movement feel, visual camera quality, touch ergonomics or player comfort. Additional repeatable corner/slope-transition checks and human review remain required. **Gate D remains BLOCKED** until a named Android target device and export build are available.
