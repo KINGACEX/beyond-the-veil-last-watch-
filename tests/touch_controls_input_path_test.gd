@@ -1,5 +1,5 @@
 extends SceneTree
-## XH-002 — Real input path.
+## XH-003 — Real viewport input path for the dedicated touch actions.
 ##
 ## The existing integration suite calls the overlay's `_input` handler
 ## directly. These tests push events through the viewport instead, so the
