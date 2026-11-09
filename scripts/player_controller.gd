@@ -4,6 +4,10 @@ class_name BTVPlayerController
 ## Minimal third-person greybox controller with deterministic proximity interaction.
 
 @export_range(0.5, 12.0, 0.1) var move_speed: float = 4.0
+## Initial lab hypotheses: reach full speed in about 0.25 s and brake in about 0.18 s.
+## These are tunable candidates, not final movement-feel approvals.
+@export_range(1.0, 40.0, 0.5) var ground_acceleration: float = 16.0
+@export_range(1.0, 60.0, 0.5) var ground_deceleration: float = 22.0
 @export_range(0.0, 30.0, 0.1) var turn_speed: float = 12.0
 @export_range(0.01, 1.0, 0.01) var look_sensitivity_degrees_per_pixel: float = 0.12
 @export_range(-89.0, 0.0, 1.0) var min_pitch_degrees: float = -70.0
@@ -35,8 +39,15 @@ func _physics_process(delta: float) -> void:
 		velocity.y -= _gravity * delta
 	else:
 		velocity.y = 0.0
-	velocity.x = move_direction.x * move_speed
-	velocity.z = move_direction.z * move_speed
+	var target_horizontal_velocity := move_direction * move_speed
+	var current_horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
+	var movement_rate := ground_acceleration if move_direction.length_squared() > 0.001 else ground_deceleration
+	current_horizontal_velocity = current_horizontal_velocity.move_toward(
+		target_horizontal_velocity,
+		movement_rate * delta,
+	)
+	velocity.x = current_horizontal_velocity.x
+	velocity.z = current_horizontal_velocity.z
 	if move_direction.length_squared() > 0.001:
 		var target_yaw := atan2(-move_direction.x, -move_direction.z)
 		rotation.y = lerp_angle(rotation.y, target_yaw, min(turn_speed * delta, 1.0))
