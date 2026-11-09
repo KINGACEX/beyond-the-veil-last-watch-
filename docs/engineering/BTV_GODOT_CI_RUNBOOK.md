@@ -25,9 +25,10 @@ It runs on a GitHub-hosted Ubuntu runner and installs **Godot 4.7.2 stable**. Th
    - Touch controls reconciliation
    - Touch controls resize
    - Touch input source composition
+   - Concurrent three-finger movement/look/Interact through the real viewport input path
 4. Headless launch of the main scene for 10 frames.
 
-The successful XH-003 verification is [run #42653466596](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42653466596), which passed every job step on implementation commit `2ab0b87fcf4791905d2c338fdc459547fd6bc6ec`.
+The XH-003 implementation passed in [run #42653466596](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42653466596). The control-hardening branch then passed the expanded 15-suite pipeline in [run #42654969493](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42654969493) on commit `0403e35feadd057e2ca02feefeac1a0575b7c847`.
 
 ## How to run it
 
