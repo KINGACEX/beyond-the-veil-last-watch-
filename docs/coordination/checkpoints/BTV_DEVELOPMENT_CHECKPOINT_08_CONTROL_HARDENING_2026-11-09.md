@@ -73,7 +73,11 @@ The plan preserves the locked vertical slice, character identities, church/Commu
 - Keep this control-hardening branch isolated until the new test and follow-up documentation have been reviewed.
 - The playable prototype layout begins only after the control readiness gates are evidenced as passed. The layout plan is preparatory documentation, not a claim that the level has been built.
 
-## 6. Next actions
+## 6. Research and execution governance
+
+The standing project-wide standard is now recorded in [`BTV_RESEARCH_PLANNING_AND_EXECUTION_GOVERNANCE_v1.0.md`](../BTV_RESEARCH_PLANNING_AND_EXECUTION_GOVERNANCE_v1.0.md). Every substantial plan must now complete the relevant research discovery map, primary-source checks, deep dives for foundational/high-risk decisions, alternatives analysis, resource and risk planning, acceptance criteria, checkpoints and approval gates before implementation. This applies to the controls work and the future prototype layout, visuals, graphics, physics, game feel, powers, abilities, audio and performance work. The prototype layout plan explicitly links to this standard.
+
+## 7. Next actions
 
 1. Confirm the latest branch CI run after documentation follow-ups.
 2. Review the new viewport multitouch test and any failure logs.
