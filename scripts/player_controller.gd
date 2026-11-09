@@ -14,6 +14,7 @@ class_name BTVPlayerController
 var _gravity: float = 9.8
 var _camera_yaw_radians: float = 0.0
 var _nearby_interactables: Array[BTVInteractable] = []
+var _interact_input_latched: bool = false
 
 
 func _ready() -> void:
@@ -60,9 +61,18 @@ func _get_composed_movement_input() -> Vector2:
 	return (keyboard + touchscreen).limit_length(1.0)
 
 
-## OR semantics make simultaneous keyboard/touch presses one interaction edge.
+## Treat keyboard and touch as one logical Interact control. A second source
+## joining an already-held press must not create another interaction edge.
 func _is_interact_just_pressed() -> bool:
-	return Input.is_action_just_pressed("interact") or Input.is_action_just_pressed("touch_interact")
+	var keyboard_just_pressed := Input.is_action_just_pressed("interact")
+	var touch_just_pressed := Input.is_action_just_pressed("touch_interact")
+	var either_source_pressed := Input.is_action_pressed("interact") or Input.is_action_pressed("touch_interact")
+	var new_combined_press := (keyboard_just_pressed or touch_just_pressed) and not _interact_input_latched
+	if either_source_pressed:
+		_interact_input_latched = _interact_input_latched or new_combined_press
+	else:
+		_interact_input_latched = false
+	return new_combined_press
 
 
 func _get_camera_relative_move_direction(input_vector: Vector2) -> Vector3:
