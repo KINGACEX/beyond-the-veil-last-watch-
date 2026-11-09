@@ -77,9 +77,11 @@ Godot documents `CharacterBody3D` as a script-controlled character body. `move_a
 
 ### 3.5 Android display geometry
 
-Android's official display-cutout guidance explains that cutouts can extend into the display surface and that system bars/navigation areas matter when content is edge-to-edge.
+Android's official display-cutout guidance explains that cutouts can extend into the display surface and that system bars/navigation areas matter when content is edge-to-edge. Godot 4.7 exposes `DisplayServer.get_display_safe_area()` for the unobscured interactive region and `DisplayServer.get_display_cutouts()` for cutout rectangles on Android. The Android export option `screen/edge_to_edge` makes system bars translucent and allows content behind them; Godot explicitly requires safe-area/cutout handling when that option is enabled.
 
-**Decision:** headless viewport geometry is not safe-area certification. Once the target phone is identified, test actual system bars, cutouts/rounded corners where present, gesture navigation, orientation and thumb reach. Keep critical controls clear of unsafe display regions.
+**Repository audit:** there is currently no `export_presets.cfg`, so no Android export preset or edge-to-edge choice is configured in the repository.
+
+**Decision:** do not enable edge-to-edge or hard-code device insets yet. Headless viewport geometry is not safe-area certification, and headless DisplayServer calls return dummy values. Once the target phone and export preset are established, use the runtime safe-area/cutout APIs to position critical controls, then test actual system bars, cutouts/rounded corners where present, gesture navigation, orientation and thumb reach. Keep critical controls clear of unsafe display regions.
 
 ### 3.6 Third-person camera collision
 
@@ -163,6 +165,8 @@ All sources below were checked on 2026-11-09. Primary sources take precedence ov
 | https://docs.godotengine.org/en/4.7/about/list_of_features.html | Official Godot 4.7 feature matrix | Renderer positioning and platform targets | High |
 | https://docs.godotengine.org/en/4.7/about/system_requirements.html | Official Godot 4.7 requirements | Mobile GPU/API compatibility distinctions | High |
 | https://developer.android.com/develop/ui/views/layout/display-cutout | Official Android developer guidance | Display cutouts and edge-to-edge safe layout considerations | High |
+| https://docs.godotengine.org/en/4.7/classes/class_displayserver.html | Official Godot 4.7 API | Runtime safe-area and display-cutout queries; headless values are dummy | High |
+| https://docs.godotengine.org/en/4.7/classes/class_editorexportplatformandroid.html | Official Godot 4.7 API | Android export edge-to-edge setting and safe-area requirement | High |
 
 ### Research map status
 
@@ -171,7 +175,7 @@ All sources below were checked on 2026-11-09. Primary sources take precedence ov
 - **Official Android display-cutout guidance:** searched.
 - **Independent academic research and third-party game postmortems:** not yet searched; not necessary to establish the API correction, but still needed for later game-feel/art-production deep dives.
 - **Godot issue tracker, Android device-specific reports and community discussions:** not yet searched; schedule after the target phone and renderer candidate are known.
-- **Physical device, Android export and profiling:** blocked; target phone model and exportable build are not yet verified.
+- **Physical device, Android export and profiling:** blocked; target phone model and exportable build are not yet verified. No Android export preset exists in the repository, and edge-to-edge remains unconfigured.
 - **Renderer benchmark and asset pipeline:** not yet executed; defer until device identification and representative lab/benchmark scene.
 
 ## 8. Risks and follow-up
