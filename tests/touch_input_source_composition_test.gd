@@ -106,17 +106,23 @@ func _test_interact_sources() -> void:
 	_reset_actions()
 	Input.action_press(&"interact")
 	_check(player._is_interact_just_pressed(), "INTERACT: keyboard press is accepted")
+	_check(not player._is_interact_just_pressed(), "INTERACT: a held keyboard press does not repeat")
+	Input.action_press(&"touch_interact")
+	_check(not player._is_interact_just_pressed(), "INTERACT: touch joining a held keyboard press does not create a second edge")
 	Input.action_release(&"interact")
+	_check(not player._is_interact_just_pressed(), "INTERACT: touch keeps the combined control latched after keyboard release")
+	Input.action_release(&"touch_interact")
 	await process_frame
 
 	Input.action_press(&"touch_interact")
-	_check(player._is_interact_just_pressed(), "INTERACT: touch press is accepted")
+	_check(player._is_interact_just_pressed(), "INTERACT: touch press is accepted after the combined control is released")
 	Input.action_release(&"touch_interact")
 	await process_frame
 
 	Input.action_press(&"interact")
 	Input.action_press(&"touch_interact")
-	_check(player._is_interact_just_pressed(), "INTERACT: simultaneous source presses produce one boolean interaction edge")
+	_check(player._is_interact_just_pressed(), "INTERACT: simultaneous source presses produce one interaction edge")
+	_check(not player._is_interact_just_pressed(), "INTERACT: simultaneous held sources do not repeat")
 	_reset_actions()
 	await process_frame
 
