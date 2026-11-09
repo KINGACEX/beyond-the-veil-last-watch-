@@ -1,6 +1,6 @@
 # BTV XH-003 — Independent Input-Source Composition
 
-**Status:** IMPLEMENTED ON ISOLATED BRANCH — NOT GODOT-VERIFIED, NOT MERGED  
+**Status:** IMPLEMENTED — GODOT 4.7.2 HEADLESS VERIFIED — ANDROID QA PENDING, NOT MERGED  
 **Date:** 2026-11-09  
 **Branch:** `btv/xh-003-input-source-composition-spec-001`  
 **Base:** `btv/agent-minimax-xh-002` at `34c5af7089efa83a151fbaa79e44a070d1bf21c5`  
@@ -10,7 +10,7 @@
 
 This branch starts from the exact public GitHub XH-002 head SHA above. It is an isolated GitHub proposal branch; it does not establish that this branch is the creator's canonical working copy and does not inspect, reset, or modify MiniMax's private `/workspace/btv`. Before implementation is transferred to another workspace, compare that workspace's HEAD, status, remotes, and uncommitted changes. Preserve any divergent or uncommitted work.
 
-No source code is changed by this specification. No workflow, credential, export, signing, package identifier, merge, or release action is authorized here.
+This specification preceded implementation. The approved implementation is on the isolated XH-003 branch. The existing Godot validation workflow was updated only to include this branch and its expanded test inventory. No credential, permission, export, signing, package identifier, merge, or release action was performed.
 
 ## Confirmed defect in the base
 
@@ -19,7 +19,7 @@ No source code is changed by this specification. No workflow, credential, export
 - `scripts/player_controller.gd` obtains movement from one `Input.get_vector("move_left", "move_right", "move_forward", "move_back")` call.
 - Godot exposes one action state per action name. Two independent input sources writing the same action do not provide a reliable additive composition contract. XH-002's ownership-strength heuristic helps prevent some cleanup from releasing another source's action, but it does not merge simultaneous input sources.
 
-## Implemented change (pending Godot verification)
+## Implemented change (headless verified; device QA pending)
 
 ### 1. Give touchscreen controls their own actions
 
@@ -63,7 +63,7 @@ func _get_composed_movement_input() -> Vector2:
 
 The physics loop should consume this composed vector once. Keep camera-relative movement and diagonal speed limiting unchanged.
 
-Interact should trigger when either keyboard `interact` or touch `touch_interact` has a new press. Avoid repeated interactions while either control remains held; preserve the existing one-shot interaction semantics.
+Interact treats keyboard `interact` and touch `touch_interact` as one logical control. A combined-input latch ensures a second source joining an already-held press does not create another interaction edge. The latch resets only after both sources are released.
 
 ## Required regression tests
 
@@ -83,13 +83,15 @@ Add a dedicated headless composition/coexistence suite. Tests must use the real 
 | Keyboard Interact | One interaction press |
 | Touch Interact | One interaction press |
 | Both Interact sources | No duplicate interaction in one physics/input edge |
+| Second source joins while first remains held | No second interaction edge |
+| Both sources released, then pressed again | A fresh interaction edge is accepted |
 | Player respawn/replacement | Touch controls resolve the new player for look; movement composition remains functional |
 
 Also retain and run all existing suites. Add explicit assertions for both release orders; testing only one release order is insufficient.
 
 ## Verification protocol
 
-Implementation is not complete until the following are recorded with exact command output and Godot version:
+The following verification was completed on the current implementation commit:
 
 1. Parse/import check: `godot --headless --editor --path . --quit`.
 2. Every existing and new test suite, individually, with exit codes.
@@ -98,6 +100,8 @@ Implementation is not complete until the following are recorded with exact comma
 5. Diff review against the XH-002 base; no unrelated canon, art, narrative, export, workflow, or dependency changes.
 6. Independent review of implementation and test quality.
 
+**Recorded result:** GitHub Actions run [#42650811449](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42650811449) on commit `3431f9df84e8eafd6104daadff9a050e1aca8109` used Godot `4.7.2.stable.official.ed1daf0bf`; project import, all 14 test suites, and the 10-frame headless main-scene launch passed. The workflow now includes the XH-003 branch and all 14 suites.
+
 Headless tests do not establish physical Android multitouch, safe-area correctness, thumb reach, latency, orientation behavior, performance, or export readiness. Those remain separate device QA gates.
 
 ## Acceptance and governance
@@ -105,9 +109,9 @@ Headless tests do not establish physical Android multitouch, safe-area correctne
 - Target: all current suites plus the new regression suite pass on Godot 4.7.2.
 - Review every changed line and test; do not award the prior 27/30 rubric score without evidence.
 - Keep any resulting PR in draft.
-- Do not merge, publish a build, configure signing, choose the Android application ID, broaden token permissions, or alter CI workflows without separate creator approval.
+- Do not merge, publish a build, configure signing, choose the Android application ID, or broaden token permissions without separate creator approval. The CI workflow update is limited to the approved XH-003 branch trigger and test-suite additions.
 - If the private MiniMax workspace differs from this GitHub base, stop before transfer and reconcile rather than resetting or overwriting either copy.
 
 ## Checkpoint outcome
 
-The isolated branch now contains the source implementation and updated regression tests. The defect is not considered verified as fixed until Godot 4.7.2 import, all test suites, and the main-scene launch pass with recorded output. The private MiniMax workspace remains untouched and unreconciled. See draft PR #6 for the implementation diff and verification gate.
+The isolated branch contains the source implementation and regression tests. The XH-003 headless acceptance gate passed on Godot 4.7.2, including the corrected combined Interact edge behaviour. Physical Android QA and reconciliation with the private MiniMax workspace remain outstanding. PR #6 remains draft and unmerged.
