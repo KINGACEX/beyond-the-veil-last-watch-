@@ -1,6 +1,6 @@
 # BTV XH-003 — Independent Input-Source Composition
 
-**Status:** ENGINEERING SPECIFICATION — NOT IMPLEMENTED, NOT TESTED, NOT MERGED  
+**Status:** IMPLEMENTED ON ISOLATED BRANCH — NOT GODOT-VERIFIED, NOT MERGED  
 **Date:** 2026-11-09  
 **Branch:** `btv/xh-003-input-source-composition-spec-001`  
 **Base:** `btv/agent-minimax-xh-002` at `34c5af7089efa83a151fbaa79e44a070d1bf21c5`  
@@ -19,7 +19,7 @@ No source code is changed by this specification. No workflow, credential, export
 - `scripts/player_controller.gd` obtains movement from one `Input.get_vector("move_left", "move_right", "move_forward", "move_back")` call.
 - Godot exposes one action state per action name. Two independent input sources writing the same action do not provide a reliable additive composition contract. XH-002's ownership-strength heuristic helps prevent some cleanup from releasing another source's action, but it does not merge simultaneous input sources.
 
-## Proposed implementation
+## Implemented change (pending Godot verification)
 
 ### 1. Give touchscreen controls their own actions
 
@@ -110,4 +110,4 @@ Headless tests do not establish physical Android multitouch, safe-area correctne
 
 ## Checkpoint outcome
 
-This checkpoint establishes a bounded, source-grounded implementation contract and an isolated GitHub branch. It does not claim the defect is fixed. Next work is source reconciliation, implementation, Godot 4.7.2 execution, and independent review.
+The isolated branch now contains the source implementation and updated regression tests. The defect is not considered verified as fixed until Godot 4.7.2 import, all test suites, and the main-scene launch pass with recorded output. The private MiniMax workspace remains untouched and unreconciled. See draft PR #6 for the implementation diff and verification gate.
