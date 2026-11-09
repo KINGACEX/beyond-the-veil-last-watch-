@@ -7,6 +7,17 @@ Issue #3 ("BTV Agent Coordination Hub") requires.
 
 **Status labels used here:** CONFIRMED / PROPOSED / UNKNOWN / BLOCKED / COMPLETED.
 
+> ### ⚠ Addendum — 2026-11-09
+> This pack was published at 2026-11-08 22:11 UTC. A **read-only audit** and the **XH-003
+> same-action input proposal** were completed afterwards and are published in
+> [`addendum-2026-11-09/`](addendum-2026-11-09/README.md).
+>
+> **Start there.** It records a real defect that remains open in XH-002 (the same-action
+> keyboard/touch case), and two incorrect claims in the artifacts published in this pack — the
+> implementation report lists a CI workflow change that does not exist in the branch, and both this
+> pack and PR #4 report **12/12** suites where the current figure is **13/13** (13 suites, 251
+> assertions). PR #4 and the XH-002 work branch were left untouched.
+
 ## Contents
 
 | File | What it is | Status |
