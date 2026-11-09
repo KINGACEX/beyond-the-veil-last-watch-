@@ -88,5 +88,8 @@ jobs:
       - name: Run touch controls layout acceptance tests
         run: godot --headless --path . --script res://tests/touch_controls_layout_acceptance_test.gd
 
-      - name: Launch main scene for 10 frames
+      - name: Run neutral movement physics lab acceptance tests
+        run: godot --headless --path . --script res://tests/movement_physics_lab_acceptance_test.gd
+
+      - name: Launch neutral movement physics lab for 10 frames
         run: godot --headless --path . --quit-after 10
