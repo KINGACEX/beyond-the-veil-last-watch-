@@ -195,6 +195,15 @@ The HUD must be minimal and contextual:
 
 Exact positions, hit areas, safe-area offsets, portrait/landscape policy and iconography remain **PROPOSED** until physical-device ergonomic testing. Do not simply scale a desktop HUD down to phone size.
 
+## 10. Current milestone status
+
+- **COMPLETED — initial lab construction:** `scenes/movement_physics_lab.tscn`, `scripts/movement_physics_lab.gd` and `tests/movement_physics_lab_acceptance_test.gd` are implemented. The lab contains neutral greybox test geometry and live telemetry.
+- **PASS — CI:** 17 Godot 4.7.2 suites and a 10-frame launch of the lab passed on commit `0aec6a9343a29772782d34d87c0060e13893f1b3`, run [#42665594447](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42665594447).
+- **IN PROGRESS — Gate C:** movement acceleration/deceleration, stop distance, turning, slopes, steps, collision stability and camera feel still require controlled measurement and tuning.
+- **BLOCKED — Ridgeview:** no Ridgeview blockout construction until Gate C passes.
+- **BLOCKED — Android-ready claim:** physical-device Gate D remains untested; target phone and export validation are not yet established.
+- **NOT STARTED — visual production:** no cinematic lighting, production materials, character art or environmental atmosphere has been introduced. The lab remains intentionally greybox.
+
 ## 10. Controlling implementation sequence and gates
 
 The following order governs the prototype. It separates the first actual gameplay construction from later visual and system-production phases.
