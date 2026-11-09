@@ -18,6 +18,7 @@ func _run() -> void:
 	await process_frame
 	await _test_touch_release_keeps_a_keyboard_held_action()
 	await _test_focus_loss_keeps_a_keyboard_held_action()
+	await _test_application_pause_keeps_a_keyboard_held_action()
 	await _test_teardown_keeps_a_keyboard_held_action()
 	print("\nTOUCH_CONTROLS_COEXISTENCE_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
 	quit(1 if failures > 0 else 0)
@@ -113,6 +114,31 @@ func _test_focus_loss_keeps_a_keyboard_held_action() -> void:
 	)
 
 	Input.action_release(&"interact")
+	root.remove_child(layer)
+	layer.free()
+	await process_frame
+
+
+func _test_application_pause_keeps_a_keyboard_held_action() -> void:
+	var layer := TouchScene.instantiate()
+	root.add_child(layer)
+	await process_frame
+	var overlay: Control = layer.get_node("Overlay")
+	overlay.visible = true
+	await process_frame
+
+	Input.action_press(&"move_left")
+	overlay.call("_press_action", &"touch_move_left")
+	await process_frame
+	_check(Input.is_action_pressed(&"move_left"), "COEXISTENCE: keyboard movement is held before Android pause")
+	_check(Input.is_action_pressed(&"touch_move_left"), "COEXISTENCE: touch movement is held before Android pause")
+
+	overlay.call("_notification", NOTIFICATION_APPLICATION_PAUSED)
+	await process_frame
+	_check(Input.is_action_pressed(&"move_left"), "COEXISTENCE: Android pause leaves keyboard movement untouched")
+	_check(not Input.is_action_pressed(&"touch_move_left"), "COEXISTENCE: Android pause clears touch movement")
+
+	Input.action_release(&"move_left")
 	root.remove_child(layer)
 	layer.free()
 	await process_frame
