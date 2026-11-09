@@ -35,6 +35,7 @@ func _process(_delta: float) -> void:
 		+ "Speed: %.2f m/s   Velocity: (%.2f, %.2f, %.2f)\n" % [horizontal_speed, velocity.x, velocity.y, velocity.z]
 		+ "Input: (%.2f, %.2f)   State: %s\n" % [input_vector.x, input_vector.y, floor_text]
 		+ "Camera pitch: %.1f deg\n" % pitch_degrees
+		+ "Accel: %.1f m/s²   Brake: %.1f m/s²\n" % [_player.ground_acceleration, _player.ground_deceleration]
 		+ "Course: flat lane | ramps | steps | walls | corners | doorway\n"
 		+ "Use movement + look together. Test start, stop, turn and collision response."
 	)
