@@ -8,7 +8,7 @@
 
 ## 0. Mandatory research and planning gate
 
-This plan is governed by the standing [BTV Research, Planning and Execution Governance Standard](../coordination/BTV_RESEARCH_PLANNING_AND_EXECUTION_GOVERNANCE_v1.0.md). Before any block or system below is implemented, complete the applicable research sweep, deep dives, alternatives analysis, resource plan, risk register, work breakdown, approval check and verification plan. The current layout sequence is a proposed direction, not permission to skip that work. In particular, renderer selection, target hardware, art pipeline, physics values and ability mechanics require evidence-led investigation before commitment.
+This plan is governed by the standing [BTV Research, Planning and Execution Governance Standard](../coordination/BTV_RESEARCH_PLANNING_AND_EXECUTION_GOVERNANCE_v1.0.md). The initial [Controls, Physics and Android Research Deep Dive](../research/BTV_CONTROLS_PHYSICS_ANDROID_RESEARCH_DEEP_DIVE_001_2026-11-09.md) records the first source audit, official Godot/Android findings, touch-camera correction and neutral-lab research decisions. Before any further block or system below is implemented, complete the applicable research sweep, deep dives, alternatives analysis, resource plan, risk register, work breakdown, approval check and verification plan. The current layout sequence is a proposed direction, not permission to skip that work. In particular, renderer selection, target hardware, art pipeline, physics values and ability mechanics require evidence-led investigation before commitment.
 
 ## 1. Purpose
 
@@ -200,19 +200,21 @@ Exact positions, hit areas, safe-area offsets, portrait/landscape policy and ico
 The following order governs the prototype. It separates the first actual gameplay construction from later visual and system-production phases.
 
 ### Gate 0 — Demonstrate reliable controls before world construction
-1. Complete the automated control correctness and layout/game-feel prerequisites in Control Readiness Gates A–C.
-2. Record physical Android Gate D as BLOCKED until a target device is available; do not call the controls Android-ready without it.
-3. Review the exact candidate commit, all relevant CI logs, input ownership, lifecycle behaviour, layout geometry and known limitations.
-4. Do not start Ridgeview world construction while a critical control defect remains unresolved.
+1. Pass the automated input-correctness checks (Gate A) and preliminary viewport-geometry checks (the automated portion of Gate B) on the exact candidate commit.
+2. Review CI logs, input ownership, lifecycle behaviour, geometry assertions and known limitations.
+3. Record physical Android validation (Gate D) as BLOCKED until the target device is available; do not call the controls Android-ready without it.
+4. Permit only the neutral test laboratory after these prerequisites. Ridgeview world construction remains blocked until the lab proves Gate C.
 
 ### Milestone 1 — First actual gameplay construction: neutral movement and physics laboratory
-1. Build Block 0 as the first actual gameplay construction.
+1. Build Block 0 as the first actual gameplay construction after Gate A and preliminary viewport geometry pass.
 2. Use neutral geometry and a neutral mannequin; this is a test laboratory, not a story level.
 3. Establish reproducible movement, collision, camera and interaction baselines.
-4. Add regression tests and record tuning values. Validate slopes, steps, corners, stopping, camera obstruction and touch response.
-5. The lab must be useful for measuring defects, not merely a decorative showcase.
+4. Add regression tests and record tuning values. Validate acceleration/deceleration, slopes, steps, corners, stopping, camera obstruction and touch response.
+5. The lab is where Gate C is measured and accepted; do not require Gate C to pass before the lab exists.
+6. The lab must be useful for measuring defects, not merely a decorative showcase.
 
 ### Milestone 2 — Ridgeview greybox blockout
+**Entry condition:** Gate C has passed with recorded lab measurements and no critical control blocker.
 1. Build Block 1, then the minimum connected portions of Blocks 2 and 3 needed for the investigation route.
 2. Validate scale, navigation, sightlines, resident approach, evidence placement, retreat routes and player comprehension.
 3. Keep geometry and assets functional and low-cost. No production art is implied by a successful blockout.
