@@ -117,6 +117,7 @@ func _test_interact_sources() -> void:
 	Input.action_press(&"touch_interact")
 	_check(player._is_interact_just_pressed(), "INTERACT: touch press is accepted after the combined control is released")
 	Input.action_release(&"touch_interact")
+	_check(not player._is_interact_just_pressed(), "INTERACT: releasing both sources resets the combined latch")
 	await process_frame
 
 	Input.action_press(&"interact")
