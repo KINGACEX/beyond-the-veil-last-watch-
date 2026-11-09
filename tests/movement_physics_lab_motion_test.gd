@@ -99,6 +99,53 @@ func _run() -> void:
 		"MOTION: braking stop distance remains inside the initial 0.25–0.42 m test envelope",
 	)
 
+	# Direction reversal must remain progressive and bounded rather than snapping.
+	await _reset_player(player, Vector3.ZERO)
+	Input.action_press(&"move_forward")
+	for _tick in range(30):
+		await physics_frame
+	var forward_speed := _horizontal_speed(player)
+	Input.action_release(&"move_forward")
+	Input.action_press(&"move_back")
+	for _tick in range(2):
+		await physics_frame
+	var reversal_speed := _horizontal_speed(player)
+	_check(
+		reversal_speed < forward_speed and reversal_speed > 0.0,
+		"MOTION: reversing direction reduces existing momentum progressively",
+	)
+	for _tick in range(30):
+		await physics_frame
+	var reverse_speed := _horizontal_speed(player)
+	_check(
+		is_equal_approx(reverse_speed, speed_limit),
+		"MOTION: sustained reverse input reaches the same speed cap",
+	)
+
+	# A diagonal release should brake both horizontal axes without residual drift.
+	await _reset_player(player, Vector3.ZERO)
+	Input.action_press(&"move_forward")
+	Input.action_press(&"move_right")
+	for _tick in range(30):
+		await physics_frame
+	var diagonal_release_position := player.global_position
+	Input.action_release(&"move_forward")
+	Input.action_release(&"move_right")
+	for _tick in range(30):
+		await physics_frame
+	var diagonal_stop_distance := Vector2(
+		player.global_position.x - diagonal_release_position.x,
+		player.global_position.z - diagonal_release_position.z,
+	).length()
+	_check(
+		_is_zero_speed(_horizontal_speed(player)),
+		"MOTION: diagonal braking returns both horizontal velocity components to zero",
+	)
+	_check(
+		diagonal_stop_distance > 0.0 and diagonal_stop_distance < 0.5,
+		"MOTION: diagonal braking remains within a bounded stop-distance envelope",
+	)
+
 	_clear_movement_actions()
 	root.remove_child(lab)
 	lab.free()
