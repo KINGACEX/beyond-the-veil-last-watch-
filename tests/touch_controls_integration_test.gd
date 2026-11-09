@@ -55,10 +55,11 @@ func _touch(index: int, pressed: bool, position: Vector2) -> InputEventScreenTou
 	return event
 
 
-func _drag(index: int, position: Vector2) -> InputEventScreenDrag:
+func _drag(index: int, position: Vector2, screen_delta: Vector2 = Vector2.ZERO) -> InputEventScreenDrag:
 	var event := InputEventScreenDrag.new()
 	event.index = index
 	event.position = position
+	event.screen_relative = screen_delta
 	return event
 
 
@@ -104,7 +105,7 @@ func _test_look_surface_rotates_camera_without_cancelling_movement() -> void:
 	overlay.call("_input", _touch(2, true, move_center))
 	overlay.call("_input", _touch(3, true, look_start))
 	overlay.call("_input", _drag(2, move_center + Vector2(50, 0)))
-	overlay.call("_input", _drag(3, look_start + Vector2(12, 0)))
+	overlay.call("_input", _drag(3, look_start + Vector2(12, 0), Vector2(12, 0)))
 	_check(Input.get_action_strength("touch_move_right") > 0.0, "Movement finger remains active during camera look")
 	_check(pivot.global_rotation.y < initial_yaw, "Independent look finger rotates the camera")
 	overlay.call("_input", _touch(3, false, look_start + Vector2(12, 0)))
