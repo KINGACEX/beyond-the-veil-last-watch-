@@ -15,7 +15,7 @@ The XH-003 implementation provides:
 - Analog joystick movement and a separate look-finger owner.
 - Touch-only cleanup on focus loss, Android pause, and overlay teardown.
 - Player lookup/re-resolution for camera look.
-- Fourteen passing Godot 4.7.2 headless suites on implementation commit `2ab0b87fcf4791905d2c338fdc459547fd6bc6ec`, run [#42653466596](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42653466596).
+- Fifteen passing Godot 4.7.2 headless suites on control-hardening commit `0403e35feadd057e2ca02feefeac1a0575b7c847`, run [#42654969493](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42654969493). The added `touch_controls_multitouch_viewport_test.gd` drives movement, look and Interact through the real viewport input path with three concurrent fingers, tests independent releases, and verifies focus-loss cancellation.
 
 This is a strong automated baseline, not proof of perfect controls or Android readiness.
 
@@ -120,7 +120,7 @@ Never use "perfect" as a test result. The engineering goal is a controlled, meas
 
 - Physical Android multitouch and ergonomic QA has not been performed.
 - Safe-area handling has not been demonstrated on a real device with display cutouts/system bars.
-- Full viewport-delivered movement + look + Interact concurrency needs explicit coverage.
+- Automated three-finger movement + look + Interact concurrency now has viewport-path coverage; physical-device concurrency and ergonomic testing remain outstanding.
 - Camera sensitivity, acceleration/deceleration, collision response and slopes need a neutral movement-feel test.
 - The minimum Android device and supported orientation policy remain unknown.
 
