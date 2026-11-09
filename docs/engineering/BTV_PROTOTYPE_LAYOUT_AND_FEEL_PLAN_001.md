@@ -1,6 +1,6 @@
 # BTV Prototype Layout and Feel Plan 001
 
-**Status:** DESIGN PLAN — IMPLEMENTATION HELD UNTIL CONTROL READINESS GATES PASS  
+**Status:** DESIGN PLAN — CURRENT PLAYABLE SCENE IS BASIC GREYBOX; VISUAL PRODUCTION NOT STARTED; GAMEPLAY CONSTRUCTION HELD UNTIL CONTROL RELIABILITY IS DEMONSTRATED  
 **Engine baseline:** Godot 4.7.2  
 **Platform order:** Android first; PC scalability later  
 **Visual direction:** Cinematic semi-realism, staged through a measurable greybox-to-presentable pipeline  
@@ -12,7 +12,7 @@ This plan is governed by the standing [BTV Research, Planning and Execution Gove
 
 ## 1. Purpose
 
-Define the first playable prototype layout and its implementation order without silently expanding BTV canon. This plan prepares the next phase; it does not claim that production visuals, physics, combat, powers or Android performance already exist.
+Define the first playable prototype layout and its implementation order without silently expanding BTV canon. The existing playable scene is still a basic greybox. The visual-production phase has not started. This plan is a forward sequence, not a claim that cinematic visuals, refined physics, animation, abilities, HUD or Android performance already exist.
 
 The first playable experience must prove the approved Ridgeview vertical slice: ordinary life before danger, a credible investigation, uncertain evidence, consequential choices, and faith expressed through character and story rather than a gameplay resource.
 
@@ -195,18 +195,69 @@ The HUD must be minimal and contextual:
 
 Exact positions, hit areas, safe-area offsets, portrait/landscape policy and iconography remain **PROPOSED** until physical-device ergonomic testing. Do not simply scale a desktop HUD down to phone size.
 
-## 10. Implementation order and gates
+## 10. Controlling implementation sequence and gates
 
-1. Pass the Control Readiness Gates A–C; record physical Android Gate D as blocked until a device is available.
-2. Build Block 0 movement/camera lab and add physics/camera regression tests.
-3. Run Godot 4.7.2 CI after every meaningful code change.
-4. Implement Block 1 and validate navigation, observation and interaction.
-5. Implement Blocks 2 and 3 as a small investigation route.
-6. Integrate Ember's limited slice abilities and commands with clear tests and canon review.
-7. Implement Logos Rhema and the contextual service/Communion sequence.
-8. Add vehicle travel, Scout Report, evidence synthesis and final report.
-9. Add presentable art only after the greybox loop is stable.
-10. Profile on the named Android device before raising visual complexity.
+The following order governs the prototype. It separates the first actual gameplay construction from later visual and system-production phases.
+
+### Gate 0 — Demonstrate reliable controls before world construction
+1. Complete the automated control correctness and layout/game-feel prerequisites in Control Readiness Gates A–C.
+2. Record physical Android Gate D as BLOCKED until a target device is available; do not call the controls Android-ready without it.
+3. Review the exact candidate commit, all relevant CI logs, input ownership, lifecycle behaviour, layout geometry and known limitations.
+4. Do not start Ridgeview world construction while a critical control defect remains unresolved.
+
+### Milestone 1 — First actual gameplay construction: neutral movement and physics laboratory
+1. Build Block 0 as the first actual gameplay construction.
+2. Use neutral geometry and a neutral mannequin; this is a test laboratory, not a story level.
+3. Establish reproducible movement, collision, camera and interaction baselines.
+4. Add regression tests and record tuning values. Validate slopes, steps, corners, stopping, camera obstruction and touch response.
+5. The lab must be useful for measuring defects, not merely a decorative showcase.
+
+### Milestone 2 — Ridgeview greybox blockout
+1. Build Block 1, then the minimum connected portions of Blocks 2 and 3 needed for the investigation route.
+2. Validate scale, navigation, sightlines, resident approach, evidence placement, retreat routes and player comprehension.
+3. Keep geometry and assets functional and low-cost. No production art is implied by a successful blockout.
+4. Preserve the non-graphic investigation and all approved story/canon boundaries.
+
+### Milestone 3 — Cinematic lighting, materials and environmental atmosphere
+1. Complete the renderer, target-device, GPU, memory and frame-time research before selecting the production direction.
+2. Create a representative benchmark area before applying expensive effects to the full blockout.
+3. Develop original lighting, material families, environmental atmosphere and regional art direction.
+4. Measure each quality tier on the intended Android hardware; do not make unsupported FPS, thermal or battery claims.
+
+### Milestone 4 — Responsive movement, collisions and camera feel
+1. Refine acceleration/deceleration, turning, slopes, steps, collision stability, camera follow and sensitivity against the lab and Ridgeview blockout.
+2. Verify touch latency and accessibility on the target device when available.
+3. Keep Asher's movement grounded and consistent with his established human identity.
+
+### Milestone 5 — Character animation and environmental interaction
+1. Integrate approved character rigs and animation states only after the movement model is stable.
+2. Add interaction feedback, foot contact, doors, objects and environmental responses.
+3. Check readability, animation transitions, performance and input interruption.
+
+### Milestone 6 — Ember's established abilities and commands
+1. Implement only the five canon-approved abilities and seven commands.
+2. Research and test companion state logic, player comprehension, animation cues, uncertainty, accessibility and edge cases.
+3. Ember must assist without automatically solving clues or attacking without player direction.
+4. Do not add cooldowns, spiritual resource meters, new abilities or commands without explicit canon approval.
+
+### Milestone 7 — Asher's Watcher investigation toolkit
+1. Implement grounded observation, evidence assessment, visible-behaviour threat reads and source cross-checking.
+2. Preserve uncertainty; tools must not provide supernatural vision, mind-reading or guaranteed answers.
+3. Validate evidence provenance, interaction states and investigation flow.
+
+### Milestone 8 — Contextual HUD and ability interfaces
+1. Design interfaces around the proven mobile controls and actual player tasks.
+2. Keep traversal HUD minimal; surface Ember commands and investigation tools only when contextually useful.
+3. Validate safe areas, thumb reach, text scaling, contrast, hand occlusion and readability on the target device.
+4. Do not convert prayer, Scripture, the Holy Spirit or faith into UI meters, consumables, spells, cooldowns or rewards.
+
+### Milestone 9 — Playable Ridgeview investigation
+1. Connect the approach, settlement, outlying camp and evidence route into the intended playable slice.
+2. Integrate the approved five response options and the evidence/report flow.
+3. Add Logos Rhema Temple as its separately scoped scene and connect the travel/report transition only when the relevant preceding systems pass.
+4. Conduct full regression, canon review, performance testing and target-device playtesting.
+
+Godot 4.7.2 CI must run after every meaningful code change. Each milestone requires its own acceptance criteria, research record, checkpoint and review before the next dependent phase begins.
 
 ## 11. Definition of a playable prototype milestone
 
