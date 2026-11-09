@@ -38,6 +38,7 @@ func _drag(index: int, position: Vector2) -> InputEventScreenDrag:
 	event.index = index
 	event.position = position
 	event.relative = position
+	event.screen_relative = Vector2.ZERO
 	return event
 
 
