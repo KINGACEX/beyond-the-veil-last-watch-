@@ -329,3 +329,20 @@ Research and implementation record: [BTV Development Checkpoint 12 — Traversal
 **RESEARCH DECISION FOR WALL MECHANICS:** only explicitly tagged surfaces are climbable. Candidate ledges require lower wall-face detection, upper clearance detection, a downward top-surface query and capsule-sized destination clearance before mantle starts. Use cheap ray queries to discover candidates and shape/overlap checks only to validate candidate destinations. Build explicit traversal states before implementing wall climb and mantle so only one movement mode owns velocity at a time.
 
 **NEXT:** add the traversal test course; add touch-look/action-button regression tests; introduce explicit traversal states; then prototype tagged wall climb and collision-checked mantle. All remain neutral-lab only until tests and human feel review pass. Ridgeview and physical Android readiness remain gated.
+
+
+## 16. Lighting, optics and in-game effects research — 2026-11-10
+
+**COMPLETED:** researched Godot 4.7 renderer capabilities and the underlying optical principles for reflection, diffuse scattering, refraction, total internal reflection, dispersion, absorption/transmission, atmospheric scattering and indirect bounced light.
+
+Research record: [BTV Lighting, Optics and In-Game Visual Effects Research 001](BTV_LIGHTING_OPTICS_AND_IN_GAME_EFFECTS_RESEARCH_001.md).
+
+**Key engineering decisions:**
+- Do not lock Mobile versus Compatibility until a real Android export is profiled on the target device. Mobile requires modern RenderingDevice/Vulkan-class hardware; Compatibility has wider older-device support.
+- For the Android baseline, prioritize baked LightmapGI for static world bounce and selective ReflectionProbes; avoid depending on Forward+-only VoxelGI, SDFGI, SSIL, SSR or volumetric fog.
+- Use PBR roughness/metallic response for material appearance. Emission alone does not guarantee surrounding geometry is illuminated.
+- Use screen-space refraction sparingly: it is transparent/screen-space and has sorting, off-screen and overlapping-transparent limitations.
+- Keep optical puzzle correctness in deterministic ray math, not in the shader or visible beam. Implement reflection, Snell-law refraction and total internal reflection as a separate testable solver.
+- Add prism dispersion and water/glass visuals only after ray-solver correctness; use restrained approximations and renderer-safe fallbacks.
+
+**NEXT:** create a Lighting Validation Lab with matte/glossy samples, mirror, glass, prism, water, emissive surface, blockers and fog. Add deterministic tests for reflection, refraction and total internal reflection before any Ridgeview lighting pass. The final art direction and target renderer remain unconfirmed.
