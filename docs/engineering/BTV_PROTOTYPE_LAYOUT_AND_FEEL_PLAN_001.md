@@ -305,3 +305,14 @@ The motion suite now includes progressive turning and convergence, moving direct
 **PASS:** [Godot 4.7.2 CI run #42712465318](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42712465318), tested commit `f27f85b165c9a25b6c9fbcf480f1aab684fece2a`. All 19 contract/regression suites, collision probes and the neutral-lab scene launch passed.
 
 Gate C remains open: the new automated checks improve coverage but do not replace human playtesting or broader visual camera evaluation. Gate D remains blocked until an exact Android target device and export path are validated.
+
+
+## 14. First traversal implementation checkpoint — 2026-11-10
+
+**COMPLETED:** first gameplay traversal code now exists. The player controller supports a configurable grounded jump and one bounded mid-air jump by default. Keyboard Space and a dedicated Android touch Jump button feed the same press-latched input path.
+
+**PASS:** Godot 4.7.2 workflow [#42777872484](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42777872484), tested code commit `2367ea3551ae154a2d72fbc942b7834f65d1bf76`. Existing input, touch, interaction, movement and collision suites passed; the new traversal jump test passed its grounded take-off, second-jump and third-jump rejection assertions. The neutral lab also launched successfully.
+
+Checkpoint record: [BTV Development Checkpoint 11 — First Traversal Code](../coordination/checkpoints/BTV_DEVELOPMENT_CHECKPOINT_11_FIRST_TRAVERSAL_CODE_2026-11-10.md).
+
+**NEXT:** build measured traversal test geometry; implement and validate traversal-only dash, tagged wall climb, ledge detection and mantle, then vault and wall-jump experiments. These remain lab-only until transition, collision, camera, touch and human-feel gates pass. Double jump remains a physics prototype pending separate canon approval for permanent Asher integration. Physical Android QA remains blocked.
