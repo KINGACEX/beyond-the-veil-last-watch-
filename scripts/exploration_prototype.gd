@@ -153,7 +153,7 @@ func _build_world() -> void:
 	_add_label("BTV — EXPLORATION PROTOTYPE", Vector3(-5.5, 4.0, 9.0), 36)
 	_add_label("POND", Vector3(-2.0, 1.5, -27.0), 24)
 	_add_label("RIDGE", Vector3(-14.0, 3.0, -12.0), 24)
-	_status.text = "WASD move • Mouse look • Space jump • Shift dash • E interact\nMobile: left joystick to move, right side to look, action buttons on the right."
+	_status.text = "WASD move • Mouse look • Space jump • Shift dash • E interact\nMobile: left joystick to move, right side to look, action buttons on the right.\nJournal: %d/%d field notes recorded (local save)." % [_journal.get_observed_count(), _observation_total]
 
 
 func _material(material_name: String, color: Color, roughness: float) -> StandardMaterial3D:
@@ -230,9 +230,13 @@ func _add_observation(node_name: String, point_position: Vector3, title: String,
 	area.collision_layer = 2
 	area.collision_mask = 0
 	area.monitoring = true
-	area.interaction_id = "field-note-" + node_name.to_lower()
+	area.observation_id = "field-note-" + node_name.to_lower()
+	area.observation_title = title
+	area.interaction_id = area.observation_id
 	area.interaction_prompt = "Read field note: " + title
 	area.observation_text = title + " — " + description
+	area.observation_recorded.connect(_on_observation_recorded)
+	_observation_total += 1
 	var collision := CollisionShape3D.new()
 	var shape := SphereShape3D.new()
 	shape.radius = 1.2
