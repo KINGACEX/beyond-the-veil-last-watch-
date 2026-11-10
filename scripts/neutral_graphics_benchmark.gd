@@ -157,10 +157,14 @@ func build_run_metadata() -> Dictionary:
 func export_last_run_metadata() -> String:
 	if _last_run_metadata.is_empty():
 		return ""
-	var directory := "user://benchmark_runs"
-	var make_result := DirAccess.make_dir_recursive(directory)
-	if make_result != OK and make_result != ERR_ALREADY_EXISTS:
+	var user_directory := DirAccess.open("user://")
+	if user_directory == null:
 		return ""
+	if not user_directory.dir_exists("benchmark_runs"):
+		var make_result := user_directory.make_dir("benchmark_runs")
+		if make_result != OK:
+			return ""
+	var directory := "user://benchmark_runs"
 	var safe_stamp := _run_started_at.replace(":", "-").replace("T", "_")
 	var file_name := "btv_benchmark_%s_%d.json" % [safe_stamp, Time.get_ticks_msec()]
 	var path := directory.path_join(file_name)
