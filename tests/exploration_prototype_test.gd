@@ -9,6 +9,9 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	var journal_path := "user://btv_exploration_journal.cfg"
+	if FileAccess.file_exists(journal_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(journal_path))
 	var world := ExplorationScene.instantiate()
 	root.add_child(world)
 	await process_frame
@@ -33,6 +36,10 @@ func _run() -> void:
 	player.call("_try_interact")
 	_check(world.get_node("HUD/InteractionToast").text.contains("CLEARING"), "EXPLORATION: interaction result reaches the HUD")
 	_check(world.get_node("HUD/InteractionToast").text.contains("safe navigation test space"), "EXPLORATION: field note content is presented")
+	var journal := world.get("_journal") as BTVExplorationJournal
+	_check(journal.get_observed_count() == 1, "EXPLORATION: new field note is recorded")
+	_check(FileAccess.file_exists(journal_path), "EXPLORATION: field note journal persists locally")
+	_check(world.get_node("HUD/Status").text.contains("Journal: 0/0"), "EXPLORATION: initial journal HUD is present")
 	root.remove_child(world)
 	world.free()
 	print("\nEXPLORATION_PROTOTYPE_TESTS: PASS")
