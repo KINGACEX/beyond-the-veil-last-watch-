@@ -22,6 +22,7 @@ var _camera_yaw_radians: float = 0.0
 var _nearby_interactables: Array[BTVInteractable] = []
 var _interact_input_latched: bool = false
 var _air_jumps_remaining: int = 1
+var _jump_input_latched: bool = false
 
 
 func _ready() -> void:
@@ -85,7 +86,10 @@ func _get_composed_movement_input() -> Vector2:
 ## Treat keyboard and touch as one logical Interact control. A second source
 ## joining an already-held press must not create another interaction edge.
 func _is_jump_just_pressed() -> bool:
-	return Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("touch_jump")
+	var either_source_pressed := Input.is_action_pressed("jump") or Input.is_action_pressed("touch_jump")
+	var new_combined_press := either_source_pressed and not _jump_input_latched
+	_jump_input_latched = either_source_pressed
+	return new_combined_press
 
 
 func _is_interact_just_pressed() -> bool:
