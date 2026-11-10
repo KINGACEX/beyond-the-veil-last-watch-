@@ -212,11 +212,12 @@ func _add_tree(tree_name: String, tree_position: Vector3, trunk_material: Standa
 	tree.name = tree_name
 	tree.position = tree_position
 	tree.scale = Vector3.ONE * scale_factor
+	tree.collision_layer = 1
+	tree.collision_mask = 1
 	var trunk_collision := CollisionShape3D.new()
 	trunk_collision.name = "CollisionShape3D"
-	var trunk_shape := CylinderShape3D.new()
-	trunk_shape.radius = 0.34
-	trunk_shape.height = 3.4
+	var trunk_shape := BoxShape3D.new()
+	trunk_shape.size = Vector3(0.68, 3.4, 0.68)
 	trunk_collision.shape = trunk_shape
 	trunk_collision.position.y = 1.7
 	tree.add_child(trunk_collision)
