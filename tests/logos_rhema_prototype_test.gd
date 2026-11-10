@@ -25,6 +25,8 @@ func _run() -> void:
 	_check(world.get_node_or_null("CommunionContextZone") is Area3D, "LOGOS_RHEMA: CommunionContextZone exists")
 	_check(world.get_node_or_null("Pastor_Elias_Warrick_Greybox") is StaticBody3D, "LOGOS_RHEMA: named leader placeholder exists")
 	_check(world.get_node_or_null("Congregant_00_Greybox") is StaticBody3D, "LOGOS_RHEMA: civilian placeholder exists")
+	_check(world.get_node_or_null("Congregant_01_Interaction") is BTVChapelPersonInteractable, "LOGOS_RHEMA: congregant has an interaction area")
+	_check(world.get_node_or_null("Pastor_Elias_Warrick_Interaction") is BTVChapelPersonInteractable, "LOGOS_RHEMA: named leader has an interaction area")
 	_check(world.get_node_or_null("ServiceSequenceBoard") is BTVServicePhaseInteractable, "LOGOS_RHEMA: prototype service sequence interaction exists")
 	_check(world.get_node_or_null("UnnamedVisitor") is BTVVisitorInteractable, "LOGOS_RHEMA: unnamed visitor interaction exists")
 
@@ -36,6 +38,7 @@ func _run() -> void:
 	)
 
 	await _test_physical_chapel_collisions(player)
+	await _test_npc_interaction(player, world)
 
 	var director := world.get_node("ServiceDirector") as BTVServiceDirector
 	_check(director.get_phase_count() == 13, "LOGOS_RHEMA: all thirteen approved service phases are represented")
@@ -157,3 +160,25 @@ func _clear_movement_actions() -> void:
 		Input.action_release(action_name)
 	for action_name in [&"touch_move_forward", &"touch_move_back", &"touch_move_left", &"touch_move_right"]:
 		Input.action_release(action_name)
+
+
+func _test_npc_interaction(player: BTVPlayerController, world: Node3D) -> void:
+	var congregant := world.get_node("Congregant_01_Interaction") as BTVChapelPersonInteractable
+	player.velocity = Vector3.ZERO
+	player.rotation = Vector3.ZERO
+	player.set("_camera_yaw_radians", 0.0)
+	player.call("_sync_camera_yaw")
+	player.global_position = Vector3(-5.0, 0.0, 10.0)
+	for _tick in range(5):
+		await physics_frame
+	var nearby: Array = player.get("_nearby_interactables")
+	_check(nearby.has(congregant), "LOGOS_RHEMA: real interaction sensor detects an approachable congregant")
+	var first_response: String = player.call("_try_interact")
+	_check(first_response.contains("Welcome"), "LOGOS_RHEMA: speaking to an NPC returns a greeting")
+	_check(world.get_node("HUD/Toast").text.contains("Welcome"), "LOGOS_RHEMA: NPC greeting reaches the on-screen interaction feedback")
+	var second_response: String = player.call("_try_interact")
+	_check(second_response.contains("fellowship"), "LOGOS_RHEMA: repeat interaction returns a contextual follow-up")
+	_check(not first_response.is_empty() and not second_response.is_empty(), "LOGOS_RHEMA: NPC interaction remains repeatable without a reward loop")
+	player.global_position = Vector3(0.0, 0.0, 12.0)
+	for _tick in range(4):
+		await physics_frame

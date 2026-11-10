@@ -195,6 +195,26 @@ func _add_placeholder_person(person_id: String, point: Vector3, label_text: Stri
 	body.add_child(label)
 	add_child(body)
 
+	# Each greybox person is independently approachable and can be greeted.
+	# Dialogue is intentionally generic and carries no progression or reward.
+	var talk_area := BTVChapelPersonInteractable.new()
+	talk_area.name = person_id + "_Interaction"
+	talk_area.position = point + Vector3(0.0, 0.9, 0.0)
+	talk_area.interaction_id = "chapel-person-" + person_id.to_lower()
+	talk_area.interaction_prompt = "Speak with " + label_text
+	talk_area.character_name = label_text
+	talk_area.greeting = "Welcome. Please feel free to join the service."
+	talk_area.follow_up = "I hope you find a place to settle in and fellowship."
+	talk_area.collision_layer = 2
+	talk_area.collision_mask = 0
+	talk_area.monitoring = true
+	var talk_collision := CollisionShape3D.new()
+	var talk_shape := SphereShape3D.new()
+	talk_shape.radius = 1.5
+	talk_collision.shape = talk_shape
+	talk_area.add_child(talk_collision)
+	add_child(talk_area)
+
 
 func _add_static_box(box_name: String, point: Vector3, size: Vector3, material: StandardMaterial3D) -> void:
 	var body := StaticBody3D.new()

@@ -102,13 +102,14 @@ jobs:
           profile: pixel_2
           disable-animations: true
           force-avd-creation: true
-          disable-linux-hw-accel: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -memory 2048 -cores 2
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none -memory 4096 -cores 4
           script: |
             adb install build/android/BTV-debug.apk
             adb shell monkey -p org.kingace.beyondtheveil 1
             sleep 15
             adb shell pidof org.kingace.beyondtheveil
+            adb shell screencap -p /sdcard/btv-emulator-screenshot.png
+            adb pull /sdcard/btv-emulator-screenshot.png "$RUNNER_TEMP/btv-emulator-screenshot.png"
             adb logcat -d -t 4000 > "$RUNNER_TEMP/btv-emulator-logcat.txt"
             if ! grep -qE "FATAL EXCEPTION|Fatal signal" "$RUNNER_TEMP/btv-emulator-logcat.txt"; then
               echo "No fatal Android runtime crash markers detected."
@@ -117,3 +118,14 @@ jobs:
               grep -E "FATAL EXCEPTION|Fatal signal" "$RUNNER_TEMP/btv-emulator-logcat.txt"
               exit 1
             fi
+
+      - name: Upload emulator smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: BTV-Android-Emulator-Smoke
+          path: |
+            ${{ runner.temp }}/btv-emulator-logcat.txt
+            ${{ runner.temp }}/btv-emulator-screenshot.png
+          if-no-files-found: ignore
+          retention-days: 3
