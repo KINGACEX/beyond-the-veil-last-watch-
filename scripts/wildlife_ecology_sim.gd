@@ -163,3 +163,56 @@ static func choose_disturbance_response(
 	if safe_distance <= safe_retreat:
 		return "retreat_to_cover" if cover_available else "increase_distance"
 	return "pause_and_assess"
+
+
+## Schedules bounded wildlife updates across distance tiers.
+## The caller supplies per-tier update budgets and advances frame_index each frame.
+## Rotating start positions prevent the same agents being starved when a tier is over budget.
+static func schedule_updates(
+	distances: Array,
+	near_radius: float,
+	mid_radius: float,
+	far_radius: float,
+	update_budgets: Dictionary,
+	frame_index: int
+) -> Dictionary:
+	if near_radius <= 0.0 or mid_radius <= near_radius or far_radius <= mid_radius:
+		return {}
+
+	var tier_for_agent: Array[String] = []
+	var agents_by_tier := {
+		"near": [],
+		"mid": [],
+		"far": [],
+		"offscreen": [],
+	}
+	for agent_index in range(distances.size()):
+		var distance_value: Variant = distances[agent_index]
+		if not (distance_value is int or distance_value is float):
+			return {}
+		var tier := simulation_tier(float(distance_value), near_radius, mid_radius, far_radius)
+		tier_for_agent.append(tier)
+		var tier_agents: Array = agents_by_tier[tier]
+		tier_agents.append(agent_index)
+		agents_by_tier[tier] = tier_agents
+
+	var selected_indices: Array[int] = []
+	var tier_counts := {}
+	for tier in ["near", "mid", "far", "offscreen"]:
+		var requested: Variant = update_budgets.get(tier, 0)
+		if not (requested is int or requested is float) or float(requested) < 0.0:
+			return {}
+		var candidates: Array = agents_by_tier[tier]
+		var slots := mini(int(floor(float(requested))), candidates.size())
+		tier_counts[tier] = slots
+		if slots <= 0 or candidates.is_empty():
+			continue
+		var start_index := posmod(frame_index, candidates.size())
+		for offset in range(slots):
+			selected_indices.append(int(candidates[(start_index + offset) % candidates.size()]))
+
+	return {
+		"tier_for_agent": tier_for_agent,
+		"selected_indices": selected_indices,
+		"tier_counts": tier_counts,
+	}
