@@ -1,0 +1,67 @@
+# STAGED WORKFLOW - move to .github/workflows/chapel-validation.yml to activate.
+# (The automation token cannot write to .github/workflows; a human login can.)
+name: BTV Chapel Validation
+
+on:
+  push:
+    branches:
+      - btv/chapel-visual-integration-001
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: btv-chapel-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chapel:
+    name: GLB integrity, Godot import and chapel load test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify GLB is present and byte-identical to the creator's original
+        run: |
+          GLB=assets/environment/chapel/logos_rhema_chapel_interior_study_001/logos_rhema_chapel_interior_study_001.glb
+          if [ ! -f "$GLB" ]; then
+            echo "::error::GLB not found at $GLB - upload it to this branch first."
+            exit 1
+          fi
+          echo "size: $(stat -c %s "$GLB") (expected 5748472)"
+          echo "sha256: $(sha256sum "$GLB" | cut -d' ' -f1)"
+          echo "blob:   $(git hash-object "$GLB")"
+          test "$(stat -c %s "$GLB")" = "5748472"
+          echo "fd1014f2ed1c6d65d74cc632af113ebc811dff6f699c47684cf0fa03493b67be  $GLB" | sha256sum -c -
+
+      - name: Install Godot 4.7.2
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.2
+          use-dotnet: false
+          include-templates: false
+
+      - name: Verify engine version
+        run: godot --version
+
+      - name: Import project (generates GLB import data)
+        run: godot --headless --editor --path . --quit 2>&1 | tee import.log
+
+      - name: Run chapel load test
+        run: godot --headless --path . --script res://tests/chapel_study_001_load_test.gd 2>&1 | tee chapel_test.log
+
+      - name: Launch main scene for 10 frames (regression)
+        run: godot --headless --path . --quit-after 10
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chapel-validation-logs
+          path: |
+            import.log
+            chapel_test.log
+          if-no-files-found: ignore
