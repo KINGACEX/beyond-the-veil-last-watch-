@@ -41,6 +41,24 @@ func _run() -> void:
 		and is_equal_approx(float(bounded["rain"]), 0.0),
 		"WEATHER_BLEND: intensity channels are clamped to 0..1")
 
+
+
+	var start_transition := WeatherBlend.interpolate_profiles(clear, storm, 0.0)
+	var midpoint_transition := WeatherBlend.interpolate_profiles(clear, storm, 0.5)
+	var end_transition := WeatherBlend.interpolate_profiles(clear, storm, 1.0)
+	_check(start_transition == clear,
+		"WEATHER_BLEND: transition starts at source profile")
+	_check(is_equal_approx(float(midpoint_transition["rain"]), 0.5),
+		"WEATHER_BLEND: transition midpoint interpolates continuously")
+	_check(end_transition == storm,
+		"WEATHER_BLEND: transition ends at target profile")
+	_check(WeatherBlend.interpolate_profiles(clear, storm, -1.0) == clear,
+		"WEATHER_BLEND: transition progress clamps below zero")
+	_check(WeatherBlend.interpolate_profiles(clear, storm, 2.0) == storm,
+		"WEATHER_BLEND: transition progress clamps above one")
+	_check(WeatherBlend.interpolate_profiles(clear, {"rain": 0.2}, 0.5) == {},
+		"WEATHER_BLEND: incompatible transition profiles are rejected")
+
 	print("\nWEATHER_PROFILE_BLEND_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
 	quit(1 if failures > 0 else 0)
 
