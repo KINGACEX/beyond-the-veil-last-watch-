@@ -235,16 +235,39 @@ func _build_route_markers() -> void:
 	var route := Node3D.new()
 	route.name = "BenchmarkRoute"
 	add_child(route)
-	for index in range(5):
+	var route_points: Array[Vector3] = [
+		Vector3(-21.0, 0.16, -9.0),
+		Vector3(-6.0, 0.16, -9.0),
+		Vector3(8.0, 0.16, -8.0),
+		Vector3(8.0, 0.16, 7.0),
+		Vector3(-5.0, 0.16, 7.0),
+		Vector3(12.0, 0.16, 7.0),
+	]
+	var route_material := _material(Color(0.9, 0.72, 0.22), 0.78)
+	for index in range(route_points.size()):
 		var marker := MeshInstance3D.new()
 		marker.name = "RouteWaypoint_%d" % index
 		var mesh := SphereMesh.new()
 		mesh.radius = 0.18
 		mesh.height = 0.36
 		marker.mesh = mesh
-		marker.position = Vector3(-21.0 + float(index) * 10.5, 0.18, 0.0)
-		marker.material_override = _material(Color(0.9, 0.78, 0.25), 0.8)
+		marker.position = route_points[index]
+		marker.material_override = route_material
 		route.add_child(marker)
+		if index == route_points.size() - 1:
+			continue
+		var start: Vector3 = route_points[index]
+		var finish: Vector3 = route_points[index + 1]
+		var segment_vector := finish - start
+		var segment := MeshInstance3D.new()
+		segment.name = "RouteSegment_%d" % index
+		var segment_mesh := BoxMesh.new()
+		segment_mesh.size = Vector3(0.1, 0.05, segment_vector.length())
+		segment.mesh = segment_mesh
+		segment.position = (start + finish) * 0.5
+		segment.rotation.y = atan2(segment_vector.x, segment_vector.z)
+		segment.material_override = route_material
+		route.add_child(segment)
 
 
 func _update_telemetry() -> void:
