@@ -67,6 +67,42 @@ func _run() -> void:
 	_check(is_equal_approx(wander_a.length(), 1.0),
 		"WILDLIFE: wander direction is normalized")
 
+
+
+	_check(Wildlife.simulation_tier(2.0, 5.0, 15.0, 40.0) == "near",
+		"WILDLIFE: near agents use full simulation tier")
+	_check(Wildlife.simulation_tier(10.0, 5.0, 15.0, 40.0) == "mid",
+		"WILDLIFE: mid-distance agents use reduced simulation tier")
+	_check(Wildlife.simulation_tier(25.0, 5.0, 15.0, 40.0) == "far",
+		"WILDLIFE: distant agents use far population tier")
+	_check(Wildlife.simulation_tier(60.0, 5.0, 15.0, 40.0) == "offscreen",
+		"WILDLIFE: offscreen populations use coarse tier")
+	_check(Wildlife.simulation_tier(2.0, 5.0, 4.0, 40.0) == "far",
+		"WILDLIFE: invalid tier radii fail safe")
+
+	var agent_position := Vector3.ZERO
+	var neighbours: Array = [Vector3(0.5, 0.0, 0.0), Vector3(0.0, 0.0, 0.5)]
+	var separation: Vector3 = Wildlife.separation_vector(12, agent_position, neighbours, 2.0, 0.8)
+	_check(separation.length() > 0.0 and separation.length() <= 0.8,
+		"WILDLIFE: group spacing produces a bounded separation hint")
+	_check(separation.x < 0.0 and separation.z < 0.0,
+		"WILDLIFE: separation points away from nearby neighbours")
+	_check(Wildlife.separation_vector(12, agent_position, [Vector3(3.0, 0.0, 0.0)], 2.0, 0.8) == Vector3.ZERO,
+		"WILDLIFE: adequate spacing produces no correction")
+	var coincident_a: Vector3 = Wildlife.separation_vector(12, agent_position, [Vector3.ZERO], 2.0, 0.8)
+	var coincident_b: Vector3 = Wildlife.separation_vector(12, agent_position, [Vector3.ZERO], 2.0, 0.8)
+	_check(coincident_a.length() > 0.0 and coincident_a.distance_to(coincident_b) < 0.000001,
+		"WILDLIFE: coincident agents receive deterministic separation")
+
+	_check(Wildlife.choose_disturbance_response(20.0, 10.0, 3.0, true) == "calm",
+		"WILDLIFE: distant observer causes no disturbance response")
+	_check(Wildlife.choose_disturbance_response(7.0, 10.0, 3.0, true) == "pause_and_assess",
+		"WILDLIFE: alert-range observer causes pause and assessment")
+	_check(Wildlife.choose_disturbance_response(2.0, 10.0, 3.0, true) == "retreat_to_cover",
+		"WILDLIFE: close observer causes retreat toward cover")
+	_check(Wildlife.choose_disturbance_response(2.0, 10.0, 3.0, false) == "increase_distance",
+		"WILDLIFE: close observer without cover causes increased distance")
+
 	print("\nWILDLIFE_ECOLOGY_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
 	quit(1 if failures > 0 else 0)
 
