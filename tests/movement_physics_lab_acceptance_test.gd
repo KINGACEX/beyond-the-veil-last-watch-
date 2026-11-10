@@ -41,11 +41,21 @@ func _run() -> void:
 			"Corridor_Left",
 			"Corridor_Right",
 			"Camera_Occlusion_Wall",
+			"ClimbWall_Short",
+			"ClimbWall_Tall",
+			"ClimbWall_Untagged",
 		]:
 			_check(course.get_node_or_null(required) is StaticBody3D, "LAB: %s collision course element exists" % required)
 		var ground := course.get_node("Ground") as StaticBody3D
 		_check(ground.get_node_or_null("CollisionShape3D") is CollisionShape3D, "LAB: ground has a collision shape")
 		_check(ground.get_node_or_null("MeshInstance3D") is MeshInstance3D, "LAB: ground has a visible greybox mesh")
+		var short_wall := course.get_node("ClimbWall_Short") as StaticBody3D
+		var tall_wall := course.get_node("ClimbWall_Tall") as StaticBody3D
+		var untagged_wall := course.get_node("ClimbWall_Untagged") as StaticBody3D
+		_check(short_wall.is_in_group("btv_climbable"), "LAB: short traversal test wall is explicitly tagged")
+		_check(tall_wall.is_in_group("btv_climbable"), "LAB: tall traversal test wall is explicitly tagged")
+		_check(bool(short_wall.get_meta("btv_climb_surface", false)), "LAB: climb surface metadata is explicit")
+		_check(not untagged_wall.is_in_group("btv_climbable"), "LAB: untagged wall remains non-climbable test geometry")
 		var ramp := course.get_node("Ramp_Gentle") as StaticBody3D
 		_check(ramp.rotation_degrees.x > 0.0, "LAB: ramp angle is explicitly configured for measurement")
 		_check(course.get_node_or_null("LaneStart") is MeshInstance3D, "LAB: start measurement marker exists")
