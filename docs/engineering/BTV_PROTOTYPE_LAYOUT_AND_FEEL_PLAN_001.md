@@ -398,3 +398,20 @@ Checkpoint: [BTV Development Checkpoint 15 — Traversal Fixtures and Wind Math]
 Checkpoint: [BTV Development Checkpoint 16 — Wildlife Ecology Research and Simulation](../coordination/checkpoints/BTV_DEVELOPMENT_CHECKPOINT_16_WILDLIFE_ECOLOGY_RESEARCH_AND_SIM_2026-11-10.md).
 
 **NEXT:** verify CI; add a species-profile schema and evidence-backed sample profiles; build a separate wildlife validation scene with placeholder meshes; then test group spacing, disturbance avoidance and population/LOD budgets. Keep the work observational and nonviolent. Do not modify Ember canon or place unverified species in production regions.
+
+
+## 20. Expanded wildlife scope: global and palaeo-ecosystems — 2026-11-10
+
+**APPROVED SCOPE:** wildlife research now includes international ecosystems and extinct animals, in addition to Ghanaian ecosystems. The wildlife research document's section 12 defines a global biome library and a separate Palaeo-Wildlife track.
+
+Key constraints:
+- Do not mix species from different continents, geological periods or incompatible habitats without a defensible worldbuilding explanation.
+- Keep modern, historical, regionally extirpated, Extinct in the Wild and fossil-only records distinct.
+- Reconstruct extinct animals from fossil and palaeoenvironmental evidence; record uncertainty for colour, soft tissue, calls and behaviour.
+- A fossil occurrence does not by itself establish that two species coexisted.
+- The scope is approved for research and architecture, not a commitment to ship every biome/species in the first prototype.
+- No time-travel mechanic or new canon premise is implied.
+
+References include IUCN Red List categories, National Park Service Beringia megafauna, Queensland Museum Australian megafauna, Natural History Museum fossil evidence and peer-reviewed research on megafauna ecosystem function.
+
+**NEXT:** add species-profile schema fields for range, geological time slice, conservation/extinction status, fossil locality, evidence type and reconstruction confidence. Then produce a curated candidate catalogue grouped by biome and time slice before building any extinct-animal scene.
