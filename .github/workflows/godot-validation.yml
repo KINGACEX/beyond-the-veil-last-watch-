@@ -120,6 +120,8 @@ jobs:
         run: godot --headless --path . --script res://tests/wildlife_validation_lab_test.gd
       - name: Run neutral graphics benchmark structural tests
         run: godot --headless --path . --script res://tests/neutral_graphics_benchmark_test.gd
+      - name: Run benchmark frame-time metrics tests
+        run: godot --headless --path . --script res://tests/benchmark_metrics_test.gd
 
       - name: Run wildlife species profile schema tests
         run: godot --headless --path . --script res://tests/wildlife_species_profile_test.gd
