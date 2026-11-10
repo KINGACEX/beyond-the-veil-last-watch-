@@ -65,6 +65,7 @@ func _run() -> void:
 	_check(journal.get_observed_count() == 4, "EXPLORATION: repeating a note does not inflate the unique count")
 	_check(world.get_node("HUD/InteractionToast").text.contains("already recorded"), "EXPLORATION: repeated notes are identified as already recorded")
 
+	await _test_real_sensor_overlap(player, world)
 	await _test_playable_movement_and_jump(player)
 
 	_clear_player_actions()
@@ -74,6 +75,35 @@ func _run() -> void:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(journal_path))
 	print("\\nEXPLORATION_PROTOTYPE_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
 	quit(1 if failures > 0 else 0)
+
+
+func _test_real_sensor_overlap(player: BTVPlayerController, world: Node3D) -> void:
+	var probe := BTVExplorationObservation.new()
+	probe.name = "SensorOverlapAcceptanceProbe"
+	probe.position = player.global_position + Vector3(0.0, 0.0, -1.2)
+	probe.collision_layer = 2
+	probe.collision_mask = 0
+	probe.monitoring = true
+	probe.observation_id = "sensor-overlap-acceptance-probe"
+	probe.interaction_id = probe.observation_id
+	probe.observation_title = "SENSOR TEST"
+	probe.observation_text = "Real sensor overlap reached the interactable."
+	var shape_node := CollisionShape3D.new()
+	var sphere := SphereShape3D.new()
+	sphere.radius = 1.2
+	shape_node.shape = sphere
+	probe.add_child(shape_node)
+	world.add_child(probe)
+	for _tick in range(4):
+		await physics_frame
+	var nearby: Array = player.get("_nearby_interactables")
+	_check(nearby.has(probe), "EXPLORATION: physics sensor detects a real overlapping observation Area3D")
+	var result: String = player.call("_try_interact")
+	_check(result == probe.observation_text, "EXPLORATION: nearest interactable is selected through the real sensor path")
+	probe.queue_free()
+	for _tick in range(2):
+		await physics_frame
+	_check(not (player.get("_nearby_interactables") as Array).has(probe), "EXPLORATION: sensor removes an interactable after it leaves the scene")
 
 
 func _test_playable_movement_and_jump(player: BTVPlayerController) -> void:
