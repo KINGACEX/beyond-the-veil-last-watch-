@@ -33,6 +33,16 @@ func _process(delta: float) -> void:
 		(_specimens["reptile"] as Node3D).position.y = 0.08 + sin(_elapsed * 1.2) * 0.018
 
 
+func _update_telemetry() -> void:
+	_telemetry.text = (
+		"WILDLIFE VISUAL PROTOTYPE LAB — GENERIC PLACEHOLDERS\\n"
+		+ "Three broad body-form studies: mammal | bird | reptile\\n"
+		+ "Surface studies: rough fur-like, feather-like and scale-like materials\\n"
+		+ "Simple idle motion only; no rigged locomotion, textures or species identity\\n"
+		+ "These are generic placeholders, not production wildlife assets."
+	)
+
+
 func _build_floor() -> void:
 	var floor := MeshInstance3D.new()
 	floor.name = "NeutralFloor"
