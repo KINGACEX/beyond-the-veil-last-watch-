@@ -115,5 +115,11 @@ jobs:
       - name: Run wildlife ecology simulation tests
         run: godot --headless --path . --script res://tests/wildlife_ecology_sim_test.gd
 
+      - name: Run wildlife species profile schema tests
+        run: godot --headless --path . --script res://tests/wildlife_species_profile_test.gd
+
+      - name: Run deterministic weather profile blend tests
+        run: godot --headless --path . --script res://tests/weather_profile_blend_test.gd
+
       - name: Launch neutral movement physics lab for 10 frames
         run: godot --headless --path . --quit-after 10
