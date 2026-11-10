@@ -139,7 +139,23 @@ Tune in this order, one variable group at a time:
 7. Animation blending and foot contact.
 8. Environmental feedback: footsteps, surface response, dust and subtle camera/audio cues.
 
-Use deterministic test routes and record values. Avoid adding inertia that makes touch controls feel delayed. Do not introduce parkour, wall-running, double-jump, supernatural dash or other unapproved traversal abilities.
+Use deterministic test routes and record values. Avoid adding inertia that makes touch controls feel delayed. **USER-APPROVED DIRECTION:** expand the movement workstream to evaluate a traversal ability set: jump, double jump, short traversal dash, climbable-surface wall climb, wall scaling/mantling, ledge grab, vault and wall jump. These are approved for design research and neutral-lab prototyping, not yet accepted as final character abilities. Dash is traversal-only in this scope, not a combat mechanic. Wall climb applies only to explicitly authored climbable surfaces; wall scaling means pulling over an edge and is distinct from climbing vertically. Double jump and any movement that exceeds Asher's established grounded-human capability require a separate canon/fiction explanation and approval before story integration. Do not implement combat or weapon systems as part of this workstream.
+
+### 5.1 Traversal ability evaluation and acceptance
+
+Prototype each mechanic independently before combining them. Initial evaluation order:
+1. Jump tuning: take-off consistency, variable-height input, air steering, landing and coyote-time decision.
+2. Double-jump experiment: second impulse, reset rules, animation readability and a clear distinction from the first jump. Keep it isolated behind a test toggle until its in-world justification is approved.
+3. Traversal dash: brief directional displacement with predictable start/end, collision-safe stopping, input buffering policy and recovery. No damage, attack, stun or enemy-targeting behaviour.
+4. Wall climb: only tagged climbable materials/surfaces, clear entry/exit conditions, stamina-free initial test, camera clearance and safe drop/exit behaviour.
+5. Wall scaling/mantle: detect an eligible top edge, validate landing clearance, then move the character over the obstacle without clipping or teleport-like snapping.
+6. Ledge grab: explicit eligible ledges, stable hanging pose, clear climb-up/drop choices and reliable input cancellation.
+7. Vault: low-obstacle traversal with clearance checks and no forced movement into hazards.
+8. Wall jump: controlled push-off from a valid wall contact, with deterministic direction and no repeated infinite bouncing.
+
+For every mechanic, record the state diagram, input mapping, tuning parameters, collision rules, animation requirements, camera behaviour, accessibility options, Android touch layout, failure cases and regression tests. Test single mechanics first, then pairwise combinations (for example jump-to-mantle, dash-to-landing and wall-climb-to-wall-scale). Verify no input conflict with camera look, interaction or companion commands. Include edge cases for ceilings, overhangs, corners, narrow ledges, moving platforms if later approved, slopes, low ceilings, interrupted input, pause/resume and touch cancellation.
+
+**Acceptance gates:** (a) deterministic automated physics/collision tests pass; (b) no clipping, unintended launch, stuck state or unrecoverable traversal state; (c) touch controls remain discoverable and do not overload the right-thumb camera region; (d) the camera maintains readable framing; (e) measured movement remains consistent across supported frame rates; (f) human feel review passes; (g) any canon-sensitive ability receives separate approval before story integration. Until these gates pass, abilities remain experimental and Ridgeview integration is held.
 
 ## 6. Camera and presentation
 
