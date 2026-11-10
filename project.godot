@@ -6,7 +6,7 @@ config_version=5
 [application]
 
 config/name="Beyond the Veil: The Last Watch"
-run/main_scene="res://scenes/movement_physics_lab.tscn"
+run/main_scene="res://scenes/exploration_prototype.tscn"
 
 [display]
 
