@@ -7,9 +7,15 @@ extends Node3D
 
 var _toast_seconds := 0.0
 var _materials: Dictionary = {}
+var _journal: BTVExplorationJournal
+var _observation_total := 0
+var _last_observation_title := ""
+var _last_observation_is_new := false
+var _last_journal_save_succeeded := true
 
 
 func _ready() -> void:
+	_journal = BTVExplorationJournal.new()
 	_build_environment()
 	_build_world()
 	_player.interaction_completed.connect(_on_interaction_completed)
@@ -26,9 +32,30 @@ func _process(delta: float) -> void:
 
 
 func _on_interaction_completed(message: String) -> void:
-	_toast.text = message
-	_toast_seconds = 5.0
+	if not _last_observation_title.is_empty():
+		var discovery_state := "already recorded" if not _last_observation_is_new else "new field note"
+		var save_state := "saved locally" if _last_journal_save_succeeded else "save failed — retry later"
+		_toast.text = "%s — %s (%s)\\n%s\\nJournal: %d/%d observations" % [
+			_last_observation_title,
+			discovery_state,
+			save_state,
+			message,
+			_journal.get_observed_count(),
+			_observation_total,
+		]
+		_last_observation_title = ""
+	else:
+		_toast.text = message
+	_toast_seconds = 6.0
 	_toast.modulate.a = 1.0
+
+
+func _on_observation_recorded(observation_id: String, title: String) -> void:
+	_last_observation_title = title
+	_last_observation_is_new = _journal.record_observation(observation_id)
+	_last_journal_save_succeeded = true
+	if _last_observation_is_new:
+		_last_journal_save_succeeded = _journal.save_to_disk()
 
 
 func _build_environment() -> void:
