@@ -275,3 +275,36 @@ The first machine-checkable data contract is implemented in `scripts/wildlife_sp
 Automated contract tests are in `tests/wildlife_species_profile_test.gd`. **Godot 4.7.2 CI run #42782571229 passed**, including editor parsing and the new species-profile test. This is a schema gate only: it does not certify an actual species record, establish co-occurrence, approve a species roster or place animals in a production region.
 
 Next: build a curated, cited candidate catalogue in separate biome/time-slice groupings. Each actual record must be checked against taxonomic authority, range, locality, geological age, evidence type and conservation assessment date before it can pass this schema and enter a validation scene.
+
+
+## 14. Group spacing, observer disturbance and simulation tiers
+
+The ecology module now includes three additional deterministic primitives:
+
+- `simulation_tier(distance, near_radius, mid_radius, far_radius)`: selects near, mid, far or offscreen simulation bands; invalid radius ordering fails safe to the far tier.
+- `separation_vector(agent_id, agent_position, neighbour_positions, minimum_distance, maximum_strength)`: returns a bounded steering hint for nearby group members, including a stable tie-break for coincident positions. The caller remains responsible for navigation, collision avoidance and speed caps.
+- `choose_disturbance_response(distance, alert_radius, retreat_radius, cover_available)`: selects calm, pause_and_assess, retreat_to_cover or increase_distance. This is nonviolent wildlife avoidance; animals do not target or attack the observer.
+
+The ecology tests now cover all three primitives, including deterministic coincident-position handling and separation bounds. **Godot 4.7.2 CI run #42783248175 passed** after adjusting the test's floating-point comparison tolerance. This confirms the code contract, not in-world animation, naturalistic behaviour or Android performance.
+
+### Candidate catalogue research gate
+
+A separate candidate catalogue is being assembled from official conservation-area and museum records. The first reference set is deliberately small:
+
+- Kakum moist evergreen forest: Forestry Commission records elephants, bongo, red riverhog and primate groups; the catalogue must retain common-name/group-level labels until species-level taxonomy and current local occurrence are verified.
+- Mole Guinea savanna and riparian forest: Forestry Commission lists elephants, buffalo, roan, kob, hartebeest, waterbuck and primates. Seasonal and local distribution still require verification.
+- Bui woodland savanna and Black Volta riverine habitats: Forestry Commission records hippos, elephants, waterbuck, bushbuck and primates.
+- Songor coastal wetland: the Ramsar Information Sheet lists Spotted Redshank, Greenshank, Ringed Plover, Curlew Sandpiper, Sanderling and Black-winged Stilt; it also records seasonal migrant timing. Use this as a seasonal wetland reference, not a generic rainforest/savanna roster.
+- Pleistocene Beringia: National Park Service material documents woolly mammoth, woolly rhinoceros and steppe bison among late-Pleistocene fauna, alongside other extinct and still-living taxa. Distinct localities and date ranges must be preserved.
+- Pleistocene Queensland: Queensland Museum documents Diprotodon optatum, Procoptodon goliah and Varanus priscus among Darling Downs fossils. Tropical north Queensland fossil assemblages are a separate locality/record track.
+
+These are research candidates, not approved production species or a claim that all listed animals coexisted at one place and time. Actual species resources still require scientific names, locality/range, geological interval where applicable, evidence type, dated source, conservation assessment and uncertainty notes. Broad biome labels are not sufficient evidence of co-occurrence.
+
+### Source register
+
+- Ghana Forestry Commission — Kakum National Park: https://fc.gov.gh/kakum-national-park-assin/
+- Ghana Forestry Commission — Mole National Park: https://fc.gov.gh/mole-national-park/
+- Ghana Forestry Commission — Bui National Park: https://fc.gov.gh/bui-national-park/
+- Ramsar Sites Information Service — Songor Ramsar Site, Ghana: https://rsis.ramsar.org/RISapp/files/RISrep/GH566RIS_2405_en.pdf
+- U.S. National Park Service — Pleistocene Megafauna in Beringia: https://www.nps.gov/articles/aps-17-1-4.htm
+- Queensland Museum — Megafauna and fossil localities: https://www.museum.qld.gov.au/collections-and-research/explore/megafauna
