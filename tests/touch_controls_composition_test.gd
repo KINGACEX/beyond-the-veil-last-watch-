@@ -57,8 +57,11 @@ func _drag_joystick(overlay: Control, finger: int, raw_magnitude: float, directi
 	overlay.call("_input", _drag(finger, target))
 
 
+## The player controller composes the keyboard and touch channels once.
 func _player_vector() -> Vector2:
-	return Input.get_vector(&"move_left", &"move_right", &"move_forward", &"move_back")
+	var keyboard := Input.get_vector(&"move_left", &"move_right", &"move_forward", &"move_back")
+	var touch := Input.get_vector(&"touch_move_left", &"touch_move_right", &"touch_move_forward", &"touch_move_back")
+	return (keyboard + touch).limit_length(1.0)
 
 
 func _expected_strength(raw_magnitude: float) -> float:
@@ -81,7 +84,7 @@ func _test_player_input_matches_action_strength() -> void:
 		await process_frame
 
 		var expected := _expected_strength(raw_magnitude)
-		var strength := Input.get_action_strength(&"move_right")
+		var strength := Input.get_action_strength(&"touch_move_right")
 		var vector := _player_vector()
 
 		_check(
@@ -115,7 +118,7 @@ func _test_deadzone_releases_the_action() -> void:
 	await process_frame
 
 	_check(
-		is_zero_approx(Input.get_action_strength(&"move_right")),
+		is_zero_approx(Input.get_action_strength(&"touch_move_right")),
 		"DEADZONE: movement inside the deadzone leaves the action at zero strength",
 	)
 	_check(
@@ -141,7 +144,7 @@ func _test_full_deflection_is_one() -> void:
 	await process_frame
 
 	_check(
-		is_equal_approx(Input.get_action_strength(&"move_right"), 1.0),
+		is_equal_approx(Input.get_action_strength(&"touch_move_right"), 1.0),
 		"FULL DEFLECTION: full joystick deflection reaches strength 1.0",
 	)
 	_check(

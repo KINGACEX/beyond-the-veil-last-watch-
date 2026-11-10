@@ -26,7 +26,7 @@ func _run() -> void:
 	_test_duplicate_enter_signal_is_idempotent()
 	_test_moving_targets_recalculates_selection()
 	_test_non_interactable_area_is_ignored()
-	_test_touch_press_release_uses_shared_action()
+	_test_touch_press_release_uses_touch_action()
 	_test_touch_focus_loss_releases_actions()
 	_test_touch_teardown_releases_actions()
 	if failures == 0:
@@ -221,14 +221,15 @@ func _test_non_interactable_area_is_ignored() -> void:
 	area.queue_free()
 
 
-func _test_touch_press_release_uses_shared_action() -> void:
+func _test_touch_press_release_uses_touch_action() -> void:
 	var layer = TouchScene.instantiate()
 	root.add_child(layer)
 	var overlay: Control = layer.get_node("Overlay")
-	overlay.call("_press_action", &"interact")
-	_check(Input.is_action_pressed("interact"), "Touch press feeds the shared interact action")
-	overlay.call("_release_action", &"interact")
-	_check(not Input.is_action_pressed("interact"), "Touch release clears the shared interact action")
+	overlay.call("_press_action", &"touch_interact")
+	_check(Input.is_action_pressed("touch_interact"), "Touch press feeds the touch-owned interact action")
+	_check(not Input.is_action_pressed("interact"), "Touch press never touches the shared keyboard interact action")
+	overlay.call("_release_action", &"touch_interact")
+	_check(not Input.is_action_pressed("touch_interact"), "Touch release clears the touch-owned interact action")
 	root.remove_child(layer)
 	layer.free()
 
@@ -237,9 +238,9 @@ func _test_touch_focus_loss_releases_actions() -> void:
 	var layer = TouchScene.instantiate()
 	root.add_child(layer)
 	var overlay: Control = layer.get_node("Overlay")
-	overlay.call("_press_action", &"move_forward")
+	overlay.call("_press_action", &"touch_move_forward")
 	overlay.call("_notification", NOTIFICATION_APPLICATION_FOCUS_OUT)
-	_check(not Input.is_action_pressed("move_forward"), "Application focus loss releases held touch actions")
+	_check(not Input.is_action_pressed("touch_move_forward"), "Application focus loss releases held touch actions")
 	root.remove_child(layer)
 	layer.free()
 
@@ -248,9 +249,9 @@ func _test_touch_teardown_releases_actions() -> void:
 	var layer = TouchScene.instantiate()
 	root.add_child(layer)
 	var overlay: Control = layer.get_node("Overlay")
-	overlay.call("_press_action", &"interact")
+	overlay.call("_press_action", &"touch_interact")
 	root.remove_child(layer)
-	_check(not Input.is_action_pressed("interact"), "Touch overlay teardown releases held actions")
+	_check(not Input.is_action_pressed("touch_interact"), "Touch overlay teardown releases held actions")
 	layer.free()
 
 

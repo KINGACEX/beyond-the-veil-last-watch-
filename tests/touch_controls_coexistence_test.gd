@@ -60,13 +60,12 @@ func _test_touch_release_keeps_a_keyboard_held_action() -> void:
 	await process_frame
 
 	# A key is held down on move_forward while the joystick is used.
-	Input.action_press(&"move_forward")
-	await process_frame
+	await _key(KEY_W, true)
 	_check(Input.is_action_pressed(&"move_forward"), "COEXISTENCE: move_forward is held before the touch")
 
 	_drag_joystick(overlay, 1)
 	await process_frame
-	_check(Input.get_action_strength(&"move_right") > 0.0, "COEXISTENCE: the joystick drives move_right")
+	_check(Input.get_action_strength(&"touch_move_right") > 0.0, "COEXISTENCE: the joystick drives move_right")
 
 	# Releasing the joystick must not cancel the separately held action.
 	overlay.call("_input", _touch(1, false, Vector2.ZERO))
@@ -76,7 +75,7 @@ func _test_touch_release_keeps_a_keyboard_held_action() -> void:
 		"COEXISTENCE: releasing the joystick does not cancel the held move_forward",
 	)
 
-	Input.action_release(&"move_forward")
+	await _key(KEY_W, false)
 	root.remove_child(layer)
 	layer.free()
 	await process_frame
@@ -91,18 +90,26 @@ func _test_focus_loss_keeps_a_keyboard_held_action() -> void:
 	overlay.visible = true
 	await process_frame
 
-	Input.action_press(&"interact")
-	await process_frame
+	await _key(KEY_E, true)
 	_check(Input.is_action_pressed(&"interact"), "COEXISTENCE: interact is held before focus loss")
+
+	# The touch button holds its own action, which focus loss must clear.
+	overlay.call("_press_action", &"touch_interact")
+	await process_frame
+	_check(Input.is_action_pressed(&"touch_interact"), "COEXISTENCE: the touch button holds touch_interact before focus loss")
 
 	overlay.call("_notification", NOTIFICATION_APPLICATION_FOCUS_OUT)
 	await process_frame
+	_check(
+		not Input.is_action_pressed(&"touch_interact"),
+		"COEXISTENCE: focus loss clears the action the touch owned",
+	)
 	_check(
 		Input.is_action_pressed(&"interact"),
 		"COEXISTENCE: focus loss does not cancel the held interact action",
 	)
 
-	Input.action_release(&"interact")
+	await _key(KEY_E, false)
 	root.remove_child(layer)
 	layer.free()
 	await process_frame
@@ -117,8 +124,7 @@ func _test_teardown_keeps_a_keyboard_held_action() -> void:
 	overlay.visible = true
 	await process_frame
 
-	Input.action_press(&"move_back")
-	await process_frame
+	await _key(KEY_S, true)
 	_drag_joystick(overlay, 2)
 	await process_frame
 
@@ -131,11 +137,22 @@ func _test_teardown_keeps_a_keyboard_held_action() -> void:
 		"COEXISTENCE: touch scene teardown does not cancel the held move_back action",
 	)
 	_check(
-		is_zero_approx(Input.get_action_strength(&"move_right")),
+		is_zero_approx(Input.get_action_strength(&"touch_move_right")),
 		"COEXISTENCE: touch scene teardown still releases the action the touch owned",
 	)
 
-	Input.action_release(&"move_back")
+	await _key(KEY_S, false)
+
+
+## A real key event through Godot's key pipeline, not a synthetic action press.
+## XH-002 showed that a synthetic press does not reproduce the engine state a
+## physical key produces.
+func _key(physical_keycode: Key, pressed: bool) -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode = physical_keycode
+	event.keycode = physical_keycode
+	event.pressed = pressed
+	Input.parse_input_event(event)
 	await process_frame
 
 
