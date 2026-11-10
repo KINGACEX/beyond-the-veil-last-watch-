@@ -35,7 +35,7 @@ func _on_interaction_completed(message: String) -> void:
 	if not _last_observation_title.is_empty():
 		var discovery_state := "already recorded" if not _last_observation_is_new else "new field note"
 		var save_state := "saved locally" if _last_journal_save_succeeded else "save failed — retry later"
-		_toast.text = "%s — %s (%s)\\n%s\\nJournal: %d/%d observations" % [
+		_toast.text = "%s — %s (%s)\n%s\nJournal: %d/%d observations" % [
 			_last_observation_title,
 			discovery_state,
 			save_state,
