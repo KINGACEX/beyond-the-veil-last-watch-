@@ -444,3 +444,22 @@ References include IUCN Red List categories, National Park Service Beringia mega
 ## 23. Wildlife candidate catalogue — 2026-11-10
 
 Added [BTV Wildlife Candidate Catalogue Research 001](BTV_WILDLIFE_CANDIDATE_CATALOGUE_RESEARCH_001.md), with official-source-backed reference candidates for Kakum, Mole, Bui and Songor, plus separate Pleistocene Beringia and Queensland fossil tracks. The catalogue preserves evidence locality, temporal separation and uncertainty; it does not authorize production species placement or change Ridgeview canon.
+
+
+## 24. Repository reconciliation and environment systems — 2026-11-10
+
+**COMPLETED — REPOSITORY AUDIT:** inspected current branch, repository metadata, recent commits, branch divergence, open PRs, project tree, core scripts, labs, CI and the existing visual/graphics benchmark specifications. The audit found stale active-branch pointers in the README and bootstrap status; README status was corrected and the bootstrap status was explicitly marked as a historical baseline. Parallel MiniMax XH-003 PRs #6 and #7 remain draft and must not be merged independently.
+
+Audit: [BTV Repository State and Workstream Reconciliation Audit](../audits/BTV_REPOSITORY_STATE_AND_WORKSTREAM_RECONCILIATION_AUDIT_2026-11-10.md).
+
+**COMPLETED — WILDLIFE UPDATE SCHEDULER:** added `schedule_updates` to the deterministic ecology module. It assigns near/mid/far/offscreen tiers, applies per-tier update budgets and rotates selection starts to prevent starvation in over-budget groups. It returns indices only; no animal spawning, navigation, animation or production placement is implied.
+
+**COMPLETED — LOCAL WEATHER ZONE BLENDING:** added `blend_weather_zones` to combine a base weather profile with caller-weighted local profiles. Spatial overlap, Area3D lifecycle and visual weather effects remain outside the helper.
+
+**COMPLETED — ENVIRONMENT QUALITY BUDGET:** added a data-driven helper that clamps requested resource values to supplied measured caps and rejects missing or invalid measurements. No arbitrary Android caps or shadow settings were selected.
+
+Research/engineering record: [BTV Environment Render Budgets and Shadow Benchmark 001](BTV_ENVIRONMENT_RENDER_BUDGET_AND_SHADOW_BENCHMARK_001.md).
+
+**PASS:** [Godot 4.7.2 CI run #42785697157](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42785697157), code commit `4bbde76f7177ad405c643e4c7ae0c5121b1e2e07`. All 37 workflow steps passed, including the new wildlife update scheduler, local weather zones and environment quality-budget suites. The subsequent README documentation commit also passed all 37 steps in [run #42785857997](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42785857997).
+
+**NEXT:** build the wildlife and weather presentation labs, extend the optics lab with controlled material/shadow cases, then implement the neutral graphics benchmark scene under its existing acceptance contract. Physical Android export, renderer comparison and sustained device profiling remain blocked until test hardware is available.
