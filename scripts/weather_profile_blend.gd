@@ -45,3 +45,12 @@ static func blend_profiles(profiles: Array, weights: Array) -> Dictionary:
 			blended_value += clampf(float(profile[key]), 0.0, 1.0) * weight
 		result[key] = clampf(blended_value / total_weight, 0.0, 1.0)
 	return result
+
+
+## Smooth, deterministic transition between two weather profiles.
+## Progress is normalized 0..1; callers provide time progression and easing.
+static func interpolate_profiles(from_profile: Dictionary, to_profile: Dictionary, progress: float) -> Dictionary:
+	if from_profile.is_empty() or from_profile.size() != to_profile.size():
+		return {}
+	var t := clampf(progress, 0.0, 1.0)
+	return blend_profiles([from_profile, to_profile], [1.0 - t, t])
