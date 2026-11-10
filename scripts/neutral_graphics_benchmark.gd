@@ -116,6 +116,9 @@ func _set_benchmark_viewpoint() -> void:
 
 
 func build_run_metadata() -> Dictionary:
+	var viewpoints: Array[Dictionary] = []
+	for point in _route_points:
+		viewpoints.append({"x": point.x, "y": point.y, "z": point.z})
 	return {
 		"schema_version": 1,
 		"project": str(ProjectSettings.get_setting("application/config/name", "BTV")),
@@ -147,9 +150,7 @@ func build_run_metadata() -> Dictionary:
 			"summary": BenchmarkMetrics.summarize_frame_times(_frame_time_samples_ms),
 			"limitations": "CPU frame interval observation only; not isolated GPU time, memory, thermal or power telemetry",
 		},
-		"viewpoints": _route_points.map(func(point: Vector3) -> Dictionary:
-			return {"x": point.x, "y": point.y, "z": point.z}
-		),
+		"viewpoints": viewpoints,
 	}
 
 
