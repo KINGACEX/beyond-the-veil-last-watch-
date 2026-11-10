@@ -368,3 +368,20 @@ Research records:
 - Keep weather effects from obscuring route readability, interaction targets or deterministic optical puzzle logic.
 
 **NEXT:** resume the unfinished traversal work with a measured traversal course and explicit traversal-state architecture. Build the wind-field math module only after the traversal course/state work has a verified checkpoint. All weather remains research/proposed, not production-integrated or canon-approved.
+
+
+## 18. Traversal fixtures and wind-field math — 2026-11-10
+
+**COMPLETED:** the neutral movement lab now includes explicitly tagged short/tall traversal test surfaces and an untagged negative-test wall. The acceptance suite verifies group and metadata tagging.
+
+**PASS:** [Godot 4.7.2 CI run #42781407203](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42781407203), tested commit 738cd4d57837e48b68706367a7ae8763c076ac2d. The full suite passed, including the updated movement-lab acceptance assertions.
+
+These remain greybox measurement fixtures only; no wall traversal behavior or production integration was added.
+
+**COMPLETED — IMPLEMENTATION, VALIDATION PENDING:** added scripts/wind_field.gd with deterministic wind-vector blending, bounded gust calculation and capped quadratic drag for explicitly opted-in game props. Added tests/wind_field_test.gd and a Godot CI step.
+
+Latest validation: [Godot 4.7.2 CI run #42781545131](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42781545131), commit 4e524beb8e60e572635b2c6cd191db76687feac8. The run was still in progress when this plan entry was written; no pass/fail claim is made yet.
+
+Checkpoint: [BTV Development Checkpoint 15 — Traversal Fixtures and Wind Math](../coordination/checkpoints/BTV_DEVELOPMENT_CHECKPOINT_15_TRAVERSAL_FIXTURES_AND_WIND_MATH_2026-11-10.md).
+
+**NEXT:** verify wind-field CI; then add deterministic weather-profile blending and tests. Build a separate weather validation scene after state validation. Keep wind force out of the player controller by default, and keep weather effects from compromising movement, visibility, interaction or puzzle readability.
