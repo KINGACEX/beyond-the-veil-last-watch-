@@ -14,6 +14,7 @@ const TouchInputAdapter = preload("res://scripts/touch_input_adapter.gd")
 @onready var _right: Button = $MovePad/Right
 @onready var _interact: Button = $Interact
 @onready var _jump: Button = $Jump
+@onready var _dash: Button = $Dash
 @onready var _joystick_base: Control = $JoystickBase
 @onready var _joystick_knob: Control = $JoystickBase/Knob
 @onready var _look_surface: Control = $LookSurface
@@ -40,6 +41,7 @@ func _ready() -> void:
 	_bind_action(_right, &"touch_move_right")
 	_bind_action(_interact, &"touch_interact")
 	_bind_action(_jump, &"touch_jump")
+	_bind_action(_dash, &"touch_dash")
 	_adapter.joystick_radius = _joystick_radius()
 	_update_joystick_visual(Vector2.ZERO)
 
@@ -87,7 +89,7 @@ func _handle_screen_touch(event: InputEventScreenTouch) -> void:
 				_apply_movement_vector(movement)
 				_update_joystick_visual(movement)
 				get_viewport().set_input_as_handled()
-		elif _control_contains_screen_point(_look_surface, event.position) and not _control_contains_screen_point(_interact, event.position):
+		elif _control_contains_screen_point(_look_surface, event.position) and not _is_action_button_at_point(event.position):
 			if _adapter.begin_look(event.index, event.position):
 				get_viewport().set_input_as_handled()
 	else:
@@ -118,6 +120,14 @@ func _handle_screen_drag(event: InputEventScreenDrag) -> void:
 		handled = true
 	if handled:
 		get_viewport().set_input_as_handled()
+
+
+func _is_action_button_at_point(screen_point: Vector2) -> bool:
+	return (
+		_control_contains_screen_point(_interact, screen_point)
+		or _control_contains_screen_point(_jump, screen_point)
+		or _control_contains_screen_point(_dash, screen_point)
+	)
 
 
 func _control_contains_screen_point(control: Control, screen_point: Vector2) -> bool:
