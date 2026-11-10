@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/exploration_prototype.gd" id="1_world"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/touch_controls.tscn" id="3_touch"]
+
+[node name="BTVExplorationPrototype" type="Node3D"]
+script = ExtResource("1_world")
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector3(0, 0, 12)
+
+[node name="TouchControls" parent="." instance=ExtResource("3_touch")]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="StatusBackground" type="ColorRect" parent="HUD"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 620.0
+offset_bottom = 108.0
+color = Color(0.025, 0.035, 0.03, 0.78)
+
+[node name="Status" type="Label" parent="HUD"]
+offset_left = 28.0
+offset_top = 24.0
+offset_right = 608.0
+offset_bottom = 100.0
+theme_override_colors/font_color = Color(0.94, 0.96, 0.92, 1)
+theme_override_font_sizes/font_size = 16
+text = "BTV EXPLORATION PROTOTYPE"
+
+[node name="InteractionBackground" type="ColorRect" parent="HUD"]
+anchor_left = 0.15
+anchor_top = 0.78
+anchor_right = 0.85
+anchor_bottom = 0.98
+color = Color(0.025, 0.035, 0.03, 0.82)
+
+[node name="InteractionToast" type="Label" parent="HUD"]
+anchor_left = 0.17
+anchor_top = 0.80
+anchor_right = 0.83
+anchor_bottom = 0.96
+theme_override_colors/font_color = Color(0.98, 0.95, 0.84, 1)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
