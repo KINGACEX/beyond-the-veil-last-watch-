@@ -316,3 +316,16 @@ Gate C remains open: the new automated checks improve coverage but do not replac
 Checkpoint record: [BTV Development Checkpoint 11 — First Traversal Code](../coordination/checkpoints/BTV_DEVELOPMENT_CHECKPOINT_11_FIRST_TRAVERSAL_CODE_2026-11-10.md).
 
 **NEXT:** build measured traversal test geometry; implement and validate traversal-only dash, tagged wall climb, ledge detection and mantle, then vault and wall-jump experiments. These remain lab-only until transition, collision, camera, touch and human-feel gates pass. Double jump remains a physics prototype pending separate canon approval for permanent Asher integration. Physical Android QA remains blocked.
+
+
+## 15. Traversal dash implementation and detection research — 2026-11-10
+
+**COMPLETED:** a traversal-only dash prototype now exists with configurable speed/duration/cooldown, camera-relative direction, collision cancellation and clean end-of-burst velocity handling. Keyboard Shift and a dedicated Android touch action are connected. Action-button hit areas for Jump, Dash and Interact are excluded from camera-look gesture acquisition.
+
+**PASS:** [Godot 4.7.2 CI run #42779166032](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42779166032), code commit `e67c991e3e9438211ef26013a1e4ae78561dc4f8`. Existing regression suites, jump tests, new dash displacement/duration/wall-collision tests and lab launch passed.
+
+Research and implementation record: [BTV Development Checkpoint 12 — Traversal Dash and Detection Research](../coordination/checkpoints/BTV_DEVELOPMENT_CHECKPOINT_12_TRAVERSAL_DASH_AND_RESEARCH_2026-11-10.md).
+
+**RESEARCH DECISION FOR WALL MECHANICS:** only explicitly tagged surfaces are climbable. Candidate ledges require lower wall-face detection, upper clearance detection, a downward top-surface query and capsule-sized destination clearance before mantle starts. Use cheap ray queries to discover candidates and shape/overlap checks only to validate candidate destinations. Build explicit traversal states before implementing wall climb and mantle so only one movement mode owns velocity at a time.
+
+**NEXT:** add the traversal test course; add touch-look/action-button regression tests; introduce explicit traversal states; then prototype tagged wall climb and collision-checked mantle. All remain neutral-lab only until tests and human feel review pass. Ridgeview and physical Android readiness remain gated.
