@@ -1,7 +1,7 @@
 # BTV NEUTRAL GRAPHICS BENCHMARK SCENE — ACCEPTANCE CONTRACT v1.0
 
 **Date:** 6 November 2026  
-**Status:** PROPOSED — CONTRACT BEFORE IMPLEMENTATION  
+**Status:** IN PROGRESS — STRUCTURAL GREYBOX IMPLEMENTATION; FULL ACCEPTANCE PENDING  
 **Engine:** Godot 4.7.2 baseline  
 **Purpose:** Define a reproducible, canon-neutral test scene for graphics, import and performance evaluation.
 
@@ -134,3 +134,20 @@ Store:
 ## 10. Decision rule
 
 The benchmark exists to inform decisions, not to justify a predetermined renderer. Choose the simplest supported pipeline that meets BTV's approved cinematic semi-realism direction on the declared minimum Android device with stable sustained performance. If evidence is missing, mark the result BLOCKED rather than guessing.
+
+
+## 11. Implementation status update — 10 November 2026
+
+A structural greybox implementation now exists at `scenes/neutral_graphics_benchmark.tscn`. It contains the five requested test areas, a connected six-waypoint route, neutral material and character proxies, foliage/NPC placeholder populations, and functional shadow/fog/foliage/NPC visibility toggles.
+
+The structural suite passed in [Godot 4.7.2 CI run #42794875510](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42794875510).
+
+**This does not satisfy full acceptance.** The following requirements remain open:
+- fixed camera route playback, repeatable timing and dwell points;
+- viewport/render-scale and additional graphics variants;
+- frame-time distribution and reproducible benchmark metadata capture;
+- visual screenshots/defect log at fixed camera positions;
+- physical Android export/install and at least 15 minutes of sustained profiling;
+- measured renderer, memory, thermal and input-to-display evidence.
+
+Use [BTV Neutral Graphics Benchmark — Implementation Status 001](../engineering/BTV_NEUTRAL_GRAPHICS_BENCHMARK_IMPLEMENTATION_STATUS_001.md) for the current implementation detail. Do not report Android or performance acceptance until the corresponding evidence is recorded.
