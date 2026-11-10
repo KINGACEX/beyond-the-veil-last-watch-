@@ -68,6 +68,7 @@ func _run() -> void:
 	await _test_real_sensor_overlap(player, world)
 	await _test_camera_relative_scene_movement(player)
 	await _test_playable_movement_and_jump(player)
+	await _test_rock_shelf_collision(player)
 
 	_clear_player_actions()
 	root.remove_child(world)
@@ -155,6 +156,41 @@ func _test_playable_movement_and_jump(player: BTVPlayerController) -> void:
 	for _tick in range(90):
 		await physics_frame
 	_check(player.is_on_floor(), "EXPLORATION: player lands back on the exploration ground")
+
+
+
+func _test_rock_shelf_collision(player: BTVPlayerController) -> void:
+	_clear_player_actions()
+	player.velocity = Vector3.ZERO
+	player.rotation = Vector3.ZERO
+	player.global_position = Vector3(-13.0, 0.0, -4.0)
+	for _tick in range(4):
+		await physics_frame
+	Input.action_press(&"move_forward")
+	for _tick in range(150):
+		await physics_frame
+	Input.action_release(&"move_forward")
+	_check(
+		player.global_position.z > -8.0,
+		"EXPLORATION: solid rock shelf prevents the player from passing through its front face",
+	)
+	_check(
+		player.global_position.z < -7.0,
+		"EXPLORATION: player can approach the rock shelf closely before collision stops movement",
+	)
+	_check(
+		player.is_on_wall(),
+		"EXPLORATION: rock shelf collision is reported by CharacterBody3D",
+	)
+	_check(
+		absf(player.global_position.x + 13.0) < 0.2,
+		"EXPLORATION: frontal rock-shelf collision preserves lateral alignment",
+	)
+	_clear_player_actions()
+	player.velocity = Vector3.ZERO
+	player.global_position = Vector3(0.0, 0.0, 12.0)
+	for _tick in range(4):
+		await physics_frame
 
 
 func _clear_player_actions() -> void:
