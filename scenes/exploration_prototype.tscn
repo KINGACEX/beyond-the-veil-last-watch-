@@ -37,6 +37,30 @@ anchor_right = 0.85
 anchor_bottom = 0.98
 color = Color(0.025, 0.035, 0.03, 0.82)
 
+[node name="InteractionPromptBackground" type="ColorRect" parent="HUD"]
+visible = false
+anchor_left = 0.20
+anchor_top = 0.70
+anchor_right = 0.80
+anchor_bottom = 0.77
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+color = Color(0.025, 0.035, 0.03, 0.88)
+
+[node name="InteractionPrompt" type="Label" parent="HUD"]
+visible = false
+anchor_left = 0.21
+anchor_top = 0.705
+anchor_right = 0.79
+anchor_bottom = 0.765
+theme_override_colors/font_color = Color(0.98, 0.95, 0.84, 1)
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
 [node name="InteractionToast" type="Label" parent="HUD"]
 anchor_left = 0.17
 anchor_top = 0.80

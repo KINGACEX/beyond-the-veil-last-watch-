@@ -29,6 +29,8 @@ func _run() -> void:
 	_check(world.get_node_or_null("TouchControls") is CanvasLayer, "EXPLORATION: touch controls are integrated")
 	_check(world.get_node_or_null("HUD/Status") is Label, "EXPLORATION: control guidance HUD exists")
 	_check(world.get_node_or_null("HUD/InteractionToast") is Label, "EXPLORATION: interaction feedback HUD exists")
+	_check(world.get_node_or_null("HUD/InteractionPrompt") is Label, "EXPLORATION: contextual interaction prompt exists")
+	_check(not (world.get_node("HUD/InteractionPrompt") as Label).visible, "EXPLORATION: contextual prompt starts hidden without a nearby target")
 	_check(world.get_node_or_null("ExplorationWorldEnvironment") is WorldEnvironment, "EXPLORATION: world environment exists")
 	_check(world.get_node_or_null("Ground") is StaticBody3D, "EXPLORATION: collision ground exists")
 	_check(world.get_node_or_null("Pond_Surface_VisualOnly") is MeshInstance3D, "EXPLORATION: pond visual landmark exists")
@@ -52,7 +54,13 @@ func _run() -> void:
 		seen_ids[field_note.observation_id] = true
 		_check(field_note.get_node_or_null("Marker") is MeshInstance3D, "EXPLORATION: %s has a visible marker" % observation_name)
 		player.call("_on_sensor_area_entered", field_note)
+		await process_frame
+		var prompt_label := world.get_node("HUD/InteractionPrompt") as Label
+		_check(prompt_label.visible, "EXPLORATION: %s shows a contextual prompt when nearby" % observation_name)
+		_check(prompt_label.text.contains(field_note.interaction_prompt), "EXPLORATION: %s prompt identifies the available interaction" % observation_name)
 		player.call("_try_interact")
+		await process_frame
+		_check(not prompt_label.visible, "EXPLORATION: prompt yields to interaction feedback after use")
 		_check(world.get_node("HUD/InteractionToast").text.contains(field_note.observation_title), "EXPLORATION: %s reaches the HUD" % observation_name)
 		_check(world.get_node("HUD/InteractionToast").text.contains(field_note.observation_text), "EXPLORATION: %s presents its field-note text" % observation_name)
 		_check(journal.get_observed_count() == seen_ids.size(), "EXPLORATION: %s is recorded exactly once" % observation_name)

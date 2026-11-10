@@ -4,6 +4,8 @@ extends Node3D
 @onready var _player: BTVPlayerController = $Player
 @onready var _status: Label = $HUD/Status
 @onready var _toast: Label = $HUD/InteractionToast
+@onready var _interaction_prompt_background: ColorRect = $HUD/InteractionPromptBackground
+@onready var _interaction_prompt: Label = $HUD/InteractionPrompt
 
 var _toast_seconds := 0.0
 var _materials: Dictionary = {}
@@ -29,6 +31,17 @@ func _process(delta: float) -> void:
 		_toast.modulate.a = clampf(_toast_seconds / 0.5, 0.0, 1.0) if _toast_seconds < 0.5 else 1.0
 	elif not _toast.text.is_empty():
 		_toast.text = ""
+
+	# Keep the prompt contextual: it appears only when a valid target is nearby
+	# and stays out of the way while discovery feedback is being shown.
+	var prompt := _player.get_interaction_prompt()
+	var prompt_visible := not prompt.is_empty() and _toast_seconds <= 0.0
+	_interaction_prompt_background.visible = prompt_visible
+	_interaction_prompt.visible = prompt_visible
+	if prompt_visible:
+		var prompt_text := "E / INTERACT  •  " + prompt
+		if _interaction_prompt.text != prompt_text:
+			_interaction_prompt.text = prompt_text
 
 
 func _on_interaction_completed(message: String) -> void:
