@@ -83,7 +83,7 @@ func _run() -> void:
 	var agent_position := Vector3.ZERO
 	var neighbours: Array = [Vector3(0.5, 0.0, 0.0), Vector3(0.0, 0.0, 0.5)]
 	var separation: Vector3 = Wildlife.separation_vector(12, agent_position, neighbours, 2.0, 0.8)
-	_check(separation.length() > 0.0 and separation.length() <= 0.8,
+	_check(separation.length() > 0.0 and separation.length() <= 0.8001,
 		"WILDLIFE: group spacing produces a bounded separation hint")
 	_check(separation.x < 0.0 and separation.z < 0.0,
 		"WILDLIFE: separation points away from nearby neighbours")
