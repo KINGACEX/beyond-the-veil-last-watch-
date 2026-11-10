@@ -232,3 +232,12 @@ Acceptance gates:
 - NWS Beaufort scale and visible wind effects: https://www.weather.gov/tbw/beaufort
 
 **Research conclusion:** use a coherent, deterministic wind-field and weather-state architecture with lightweight visual effects. The engine's built-in wind is not a universal rigid-body solution, and Forward+-only volumetric effects must remain optional. This is a technical recommendation, not approval to change canon or the production world's climate.
+
+
+## 8. Deterministic weather-profile blending implementation
+
+Added `scripts/weather_profile_blend.gd` as a pure deterministic helper for blending normalized weather-intensity channels. The current contract requires each profile to expose the same numeric keys and clamps each channel to 0..1. Non-negative weights are normalized; empty inputs, mismatched schemas and zero total weight return an empty result rather than silently inventing defaults.
+
+The initial unit test is `tests/weather_profile_blend_test.gd`; it covers weighted interpolation, deterministic repeatability, negative/zero weights, schema mismatch and channel bounds. **Godot 4.7.2 CI run #42782571229 passed** the new weather blend suite and all preceding project tests.
+
+This helper does not yet implement time-based transitions, local weather zones, precipitation particles, sky/fog presentation or climate simulation. The player remains excluded from wind forces by default. No regional climate or gameplay penalty is approved by this implementation.
