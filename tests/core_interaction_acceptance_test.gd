@@ -13,6 +13,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_test_no_target_is_safe()
 	_test_single_target_is_invoked_once()
+	_test_interaction_result_signal_is_emitted()
 	_test_nearest_target_wins()
 	_test_exit_clears_target()
 	_test_freed_target_is_safe()
@@ -63,6 +64,20 @@ func _test_single_target_is_invoked_once() -> void:
 	_check(target.get("last_actor") == player, "Interaction receives the player as actor")
 	player.queue_free()
 	target.queue_free()
+
+func _test_interaction_result_signal_is_emitted() -> void:
+	player = _new_player()
+	var target := _new_target("signal-target", Vector3(0, 0, -1))
+	var received: Array[String] = []
+	player.interaction_completed.connect(func(message: String) -> void:
+		received.append(message)
+	)
+	player.call("_on_sensor_area_entered", target)
+	player.call("_try_interact")
+	_check(received.size() == 1 and received[0] == "recorded", "Successful interaction emits one result signal for UI feedback")
+	player.queue_free()
+	target.queue_free()
+
 
 func _test_nearest_target_wins() -> void:
 	player = _new_player()
