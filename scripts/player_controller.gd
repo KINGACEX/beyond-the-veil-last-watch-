@@ -1,6 +1,8 @@
 extends CharacterBody3D
 class_name BTVPlayerController
 
+signal interaction_completed(message: String)
+
 ## Minimal third-person greybox controller with deterministic proximity interaction.
 
 @export_range(0.5, 12.0, 0.1) var move_speed: float = 4.0
@@ -258,4 +260,7 @@ func _try_interact() -> String:
 	var nearest := _select_nearest_interactable()
 	if nearest == null:
 		return ""
-	return nearest.interact(self)
+	var result := nearest.interact(self)
+	if not result.is_empty():
+		interaction_completed.emit(result)
+	return result
