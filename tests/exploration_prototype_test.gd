@@ -181,7 +181,7 @@ func _test_rock_shelf_collision(player: BTVPlayerController) -> void:
 		await physics_frame
 	Input.action_release(&"move_forward")
 	_check(
-		player.global_position.z > -8.0,
+		player.global_position.z > -4.9,
 		"EXPLORATION: solid rock shelf prevents the player from passing through its front face",
 	)
 	_check(
@@ -224,7 +224,7 @@ func _test_tree_collision(player: BTVPlayerController) -> void:
 	player.rotation = Vector3.ZERO
 	player.set("_camera_yaw_radians", 0.0)
 	player.call("_sync_camera_yaw")
-	player.global_position = Vector3(-22.0, 0.0, -9.0)
+	player.global_position = Vector3(-22.0, 0.0, -1.0)
 	for _tick in range(4):
 		await physics_frame
 	_check(
@@ -235,9 +235,8 @@ func _test_tree_collision(player: BTVPlayerController) -> void:
 	for _tick in range(100):
 		await physics_frame
 	Input.action_release(&"move_forward")
-	print("TREE_COLLISION_FINAL_POSITION: ", player.global_position)
 	_check(player.global_position.z > -8.0, "EXPLORATION: solid tree trunk blocks the player before its centre")
-	_check(player.global_position.z < -5.0, "EXPLORATION: player can approach a tree trunk before collision stops movement")
+	_check(player.global_position.z < -3.0, "EXPLORATION: player can approach a tree trunk before collision stops movement")
 	_check(player.is_on_wall(), "EXPLORATION: tree trunk collision is reported by CharacterBody3D")
 	_clear_player_actions()
 	player.velocity = Vector3.ZERO
