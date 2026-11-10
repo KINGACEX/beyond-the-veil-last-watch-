@@ -106,5 +106,8 @@ jobs:
       - name: Run deterministic optics solver tests
         run: godot --headless --path . --script res://tests/optics_solver_test.gd
 
+      - name: Run optics validation lab scene tests
+        run: godot --headless --path . --script res://tests/optics_validation_lab_test.gd
+
       - name: Launch neutral movement physics lab for 10 frames
         run: godot --headless --path . --quit-after 10
