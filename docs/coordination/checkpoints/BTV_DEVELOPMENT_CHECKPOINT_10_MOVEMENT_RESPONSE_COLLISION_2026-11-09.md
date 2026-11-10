@@ -99,3 +99,11 @@ A source review identified two untested transitions in the candidate movement pr
 **PASS:** Godot 4.7.2 CI run [#42712465318](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42712465318), tested commit `f27f85b165c9a25b6c9fbcf480f1aab684fece2a`. All workflow steps succeeded, including project import, 19 contract/regression suites, the expanded motion suite, collision probes and 10-frame neutral-lab launch.
 
 This extends automated response coverage only. It does not establish final human-perceived feel, physical Android ergonomics or device performance. Gate C remains open for review and broader testing; Gate D remains blocked pending device/export validation.
+
+
+## Follow-up evidence — 2026-11-10
+
+- Added a diagonal corner-wall sliding regression to `tests/movement_physics_lab_collision_test.gd`.
+- The probe approaches the neutral L-shaped wall corner diagonally and checks that the player does not penetrate the front wall, slides along the wall within the adjoining corner bounds, and reports wall contact.
+- Godot 4.7.2 CI run [#42776065025](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42776065025) passed, including the expanded motion suite, collision suite, and 10-frame neutral-lab launch.
+- This remains automated headless evidence. It does not certify visual camera quality, subjective control feel, or Android device performance. Gate C remains open for human feel review and remaining edge-case assessment; Gate D remains blocked pending Android export/device QA.
