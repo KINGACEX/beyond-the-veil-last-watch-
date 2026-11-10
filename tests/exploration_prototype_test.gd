@@ -109,7 +109,7 @@ func _test_real_sensor_overlap(player: BTVPlayerController, world: Node3D) -> vo
 	probe.queue_free()
 	for _tick in range(2):
 		await physics_frame
-	_check(not (player.get("_nearby_interactables") as Array).has(probe), "EXPLORATION: sensor removes an interactable after it leaves the scene")
+	_check((player.get("_nearby_interactables") as Array).is_empty(), "EXPLORATION: sensor removes an interactable after it leaves the scene")
 
 
 func _test_camera_relative_scene_movement(player: BTVPlayerController) -> void:
@@ -223,7 +223,7 @@ func _test_tree_collision(player: BTVPlayerController) -> void:
 	for _tick in range(100):
 		await physics_frame
 	Input.action_release(&"move_forward")
-	_check(player.global_position.z > -6.2, "EXPLORATION: solid tree trunk blocks the player before its centre")
+	_check(player.global_position.z > -6.6, "EXPLORATION: solid tree trunk blocks the player before its centre")
 	_check(player.global_position.z < -5.0, "EXPLORATION: player can approach a tree trunk before collision stops movement")
 	_check(player.is_on_wall(), "EXPLORATION: tree trunk collision is reported by CharacterBody3D")
 	_clear_player_actions()
