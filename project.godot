@@ -45,6 +45,10 @@ interact={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"physical_keycode":69)]
 }
+jump={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":32)]
+}
 
 ; Touch actions intentionally have no physical events. The touch HUD writes
 ; only to this namespace; the player composes it with keyboard actions.
@@ -65,6 +69,10 @@ touch_move_right={
 "events": []
 }
 touch_interact={
+"deadzone": 0.0,
+"events": []
+}
+touch_jump={
 "deadzone": 0.0,
 "events": []
 }
