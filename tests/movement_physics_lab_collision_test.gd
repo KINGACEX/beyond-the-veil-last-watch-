@@ -22,6 +22,7 @@ func _run() -> void:
 		await physics_frame
 
 	await _test_front_wall_blocks_player(player)
+	await _test_corner_wall_sliding(player)
 	await _test_doorway_clearance(player)
 	await _test_corridor_clearance(player)
 	await _test_ramp_keeps_ground_contact(player)
@@ -58,6 +59,27 @@ func _test_front_wall_blocks_player(player: BTVPlayerController) -> void:
 	_check(
 		player.is_on_wall(),
 		"COLLISION: CharacterBody3D reports wall contact at the barrier",
+	)
+	_clear_actions()
+
+
+func _test_corner_wall_sliding(player: BTVPlayerController) -> void:
+	await _reset_player(player, Vector3(12, 0, -8))
+	Input.action_press(&"move_forward")
+	Input.action_press(&"move_right")
+	for _tick in range(120):
+		await physics_frame
+	_check(
+		player.global_position.z > -10.5,
+		"COLLISION: diagonal approach does not penetrate the front corner wall",
+	)
+	_check(
+		player.global_position.x > 12.5 and player.global_position.x < 15.0,
+		"COLLISION: diagonal contact slides along the wall and respects the adjoining corner",
+	)
+	_check(
+		player.is_on_wall(),
+		"COLLISION: corner traversal reports stable wall contact",
 	)
 	_clear_actions()
 
