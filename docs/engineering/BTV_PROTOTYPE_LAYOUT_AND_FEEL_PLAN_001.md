@@ -463,3 +463,20 @@ Research/engineering record: [BTV Environment Render Budgets and Shadow Benchmar
 **PASS:** [Godot 4.7.2 CI run #42785697157](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42785697157), code commit `4bbde76f7177ad405c643e4c7ae0c5121b1e2e07`. All 37 workflow steps passed, including the new wildlife update scheduler, local weather zones and environment quality-budget suites. The subsequent README documentation commit also passed all 37 steps in [run #42785857997](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42785857997).
 
 **NEXT:** build the wildlife and weather presentation labs, extend the optics lab with controlled material/shadow cases, then implement the neutral graphics benchmark scene under its existing acceptance contract. Physical Android export, renderer comparison and sustained device profiling remain blocked until test hardware is available.
+
+
+## 25. Wildlife, weather and neutral graphics validation labs — 2026-11-10
+
+**COMPLETED — WILDLIFE LAB:** standalone scene with ten neutral workload proxies, four simulation tiers, bounded scheduler cadence and scheduled/deferred telemetry. No animal models, navigation or production population integration.
+
+**COMPLETED — WEATHER LAB:** standalone forest/coastal local-zone composition scene with a real overlap region and keyboard-selected sample positions. It validates normalized profile blending only; production visual effects are not connected.
+
+**COMPLETED — OPTICS MATERIAL/SHADOW STATIONS:** shadow receiver, casting/non-casting reference objects and matte/metallic/glass-like samples added to the existing reflection/refraction/TIR lab.
+
+**COMPLETED — NEUTRAL GRAPHICS BENCHMARK STRUCTURE:** five greybox zones (materials, lighting, vegetation, character, settlement), 12 foliage proxy groups, three NPC placeholders, six route waypoints/five connecting segments, telemetry and functional shadow/fog/foliage/NPC toggles.
+
+Implementation status: [BTV Neutral Graphics Benchmark — Implementation Status 001](BTV_NEUTRAL_GRAPHICS_BENCHMARK_IMPLEMENTATION_STATUS_001.md).
+
+**PASS:** [Godot 4.7.2 CI run #42794875510](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42794875510), tested code commit `b5cd3bc537eebbc34df4be1db23e706c383dacb3`. All workflow steps passed, including the four new scene/lab acceptance suites and the existing regression suite.
+
+**REMAINING:** automated camera-route timing, frame-time/memory telemetry, more shadow/LOD variants, visual captures and physical Android profiling. The structural benchmark is not a full graphics/performance acceptance pass. Renderer selection remains blocked pending device evidence.
