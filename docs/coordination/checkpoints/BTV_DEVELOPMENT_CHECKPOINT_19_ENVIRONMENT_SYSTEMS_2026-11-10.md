@@ -2,7 +2,7 @@
 
 **Branch:** `btv/controls-hardening-prototype-layout-plan-001`  
 **Starting HEAD:** `8bce9a4ce497f6ca36a3aa0344e16b49d72b0d68`  
-**Status:** FOUR ENGINEERING MILESTONES IMPLEMENTED; FINAL CI VERIFICATION REQUIRED  
+**Status:** FOUR ENGINEERING MILESTONES IMPLEMENTED; GODOT 4.7.2 CI PASSED  
 **Scope:** repository reconciliation, wildlife LOD scheduling, local weather-zone blending, environment resource budgets.
 
 ## Milestone 1 — Repository inspection and status reconciliation
@@ -53,8 +53,8 @@ Audit: [BTV Repository State and Workstream Reconciliation Audit](../../audits/B
 ## Verification
 
 - Starting baseline run #42783455949 passed 35 workflow steps.
-- New suites are added to CI in this checkpoint.
-- Final CI result for this checkpoint must be recorded after the branch-head run completes; do not treat the earlier baseline run as validation of these new changes.
+- **PASS:** [Godot 4.7.2 CI run #42785697157](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42785697157), tested code commit `4bbde76f7177ad405c643e4c7ae0c5121b1e2e07`. All 37 workflow steps passed, including the three new test suites: wildlife update scheduler, local weather-zone blending and environment quality-budget validation.
+- The subsequent documentation-only README commit was also validated by [run #42785857997](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42785857997), which passed all 37 workflow steps on the current branch HEAD.
 
 ## Remaining blockers and next work
 
