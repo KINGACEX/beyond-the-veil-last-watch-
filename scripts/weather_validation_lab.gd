@@ -5,11 +5,11 @@ const WeatherBlend = preload("res://scripts/weather_profile_blend.gd")
 
 const BASE_PROFILE := {"rain": 0.05, "wind": 0.18, "fog": 0.08, "cloud": 0.2}
 const ZONE_PROFILES := [
-	{"id": "forest", "profile": {"rain": 0.65, "wind": 0.3, "fog": 0.72, "cloud": 0.78}, "center": Vector3(-9.0, 0.0, 0.0), "radius": 7.0},
-	{"id": "coastal", "profile": {"rain": 0.28, "wind": 0.9, "fog": 0.35, "cloud": 0.55}, "center": Vector3(9.0, 0.0, 0.0), "radius": 7.0},
+	{"id": "forest", "profile": {"rain": 0.65, "wind": 0.3, "fog": 0.72, "cloud": 0.78}, "center": Vector3(-5.0, 0.0, 0.0), "radius": 7.0},
+	{"id": "coastal", "profile": {"rain": 0.28, "wind": 0.9, "fog": 0.35, "cloud": 0.55}, "center": Vector3(5.0, 0.0, 0.0), "radius": 7.0},
 ]
 var _sample_index := 0
-var _sample_points := [Vector3(-9.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(9.0, 0.0, 0.0)]
+var _sample_points := [Vector3(-5.0, 0.0, 0.0), Vector3(0.0, 0.0, 0.0), Vector3(5.0, 0.0, 0.0)]
 var _sample_marker: MeshInstance3D
 
 @onready var _telemetry: Label = $HUD/Telemetry
