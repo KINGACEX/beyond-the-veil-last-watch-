@@ -56,7 +56,7 @@ func _on_observation_recorded(observation_id: String, title: String) -> void:
 	_last_journal_save_succeeded = true
 	if _last_observation_is_new:
 		_last_journal_save_succeeded = _journal.save_to_disk()
-	_status.text = "WASD move • Mouse look • Space jump • Shift dash • E interact\\nMobile: left joystick to move, right side to look, action buttons on the right.\\nJournal: %d/%d field notes recorded (local save)." % [_journal.get_observed_count(), _observation_total]
+	_status.text = "WASD move • Mouse look • Space jump • Shift dash • E interact\nMobile: left joystick to move, right side to look, action buttons on the right.\nJournal: %d/%d field notes recorded (local save)." % [_journal.get_observed_count(), _observation_total]
 
 
 func _build_environment() -> void:
