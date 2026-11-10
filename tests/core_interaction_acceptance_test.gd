@@ -74,7 +74,7 @@ func _test_interaction_result_signal_is_emitted() -> void:
 	)
 	player.call("_on_sensor_area_entered", target)
 	player.call("_try_interact")
-	_check(received.size() == 1 and received[0] == "recorded", "Successful interaction emits one result signal for UI feedback")
+	_check(received.size() == 1 and received[0] == "fixture:signal-target", "Successful interaction emits one result signal for UI feedback")
 	player.queue_free()
 	target.queue_free()
 
