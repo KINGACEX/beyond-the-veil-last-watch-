@@ -1,4 +1,6 @@
 extends Node3D
+
+const VisualLOD = preload("res://scripts/wildlife_visual_lod.gd")
 ## Isolated wildlife visual study. All forms are generic placeholders, not species assets.
 ## No species placement, navigation, hunting, capture or combat is implemented.
 
@@ -7,6 +9,9 @@ extends Node3D
 var _elapsed := 0.0
 var _specimens: Dictionary = {}
 var _moving_parts: Dictionary = {}
+var _visual_lod_tiers: Dictionary = {}
+var _lod_refresh_elapsed := 0.0
+const LOD_REFRESH_SECONDS := 0.25
 
 
 func _ready() -> void:
@@ -19,6 +24,12 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_elapsed += maxf(delta, 0.0)
+	_lod_refresh_elapsed += maxf(delta, 0.0)
+	if _lod_refresh_elapsed >= LOD_REFRESH_SECONDS:
+		_lod_refresh_elapsed = 0.0
+		var active_camera := get_viewport().get_camera_3d()
+		if active_camera != null:
+			update_visual_lod_for_camera(active_camera.global_position)
 	if _specimens.has("mammal"):
 		(_specimens["mammal"] as Node3D).position.y = 0.08 + sin(_elapsed * 2.0) * 0.045
 	if _specimens.has("bird"):
@@ -164,12 +175,40 @@ func _make_label(value: String, label_position: Vector3) -> Label3D:
 	return label
 
 
+func update_visual_lod_for_camera(camera_position: Vector3) -> Dictionary:
+	for specimen_name: String in _specimens.keys():
+		var specimen := _specimens[specimen_name] as Node3D
+		var distance := camera_position.distance_to(specimen.global_position)
+		var tier: String = VisualLOD.classify_distance(distance)
+		if tier.is_empty():
+			continue
+		_visual_lod_tiers[specimen_name] = tier
+		_apply_visual_lod(specimen, tier)
+	return _visual_lod_tiers.duplicate()
+
+
+func _apply_visual_lod(specimen: Node3D, tier: String) -> void:
+	specimen.visible = tier != VisualLOD.OFF
+	for child in specimen.get_children():
+		if not (child is MeshInstance3D):
+			continue
+		var part_name := child.name
+		var simplified := (
+			part_name.begins_with("Leg_")
+			or part_name.begins_with("Tail_")
+			or part_name.begins_with("Wing_")
+			or part_name.begins_with("Beak_")
+		)
+		child.visible = not (tier == VisualLOD.FAR and simplified)
+
+
 func get_visual_prototype_state() -> Dictionary:
 	return {
 		"prototype_count": _specimens.size(),
 		"prototype_names": _specimens.keys(),
 		"moving_part_count": (_moving_parts.get("bird_wings", []) as Array).size(),
 		"elapsed_seconds": _elapsed,
+		"visual_lod_tiers": _visual_lod_tiers.duplicate(),
 		"production_assets": false,
 		"species_assignments": false,
 	}
