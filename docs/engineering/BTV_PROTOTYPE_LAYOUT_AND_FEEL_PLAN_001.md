@@ -415,3 +415,14 @@ Key constraints:
 References include IUCN Red List categories, National Park Service Beringia megafauna, Queensland Museum Australian megafauna, Natural History Museum fossil evidence and peer-reviewed research on megafauna ecosystem function.
 
 **NEXT:** add species-profile schema fields for range, geological time slice, conservation/extinction status, fossil locality, evidence type and reconstruction confidence. Then produce a curated candidate catalogue grouped by biome and time slice before building any extinct-animal scene.
+
+
+## 21. Evidence-aware wildlife schema and deterministic weather blending — 2026-11-10
+
+**COMPLETED — WILDLIFE PROFILE CONTRACT:** added `scripts/wildlife_species_profile.gd` and `tests/wildlife_species_profile_test.gd`. The schema distinguishes modern, historical and deep-time records; conservation status; geographic range; taxonomic source; biome; evidence type; citations; uncertainty notes; reconstruction confidence; and fossil-locality/geological-interval requirements for deep-time records. This validates data completeness, not scientific truth or canon approval.
+
+**COMPLETED — WEATHER PROFILE BLENDING:** added `scripts/weather_profile_blend.gd` and `tests/weather_profile_blend_test.gd`. The pure helper blends normalized channels using non-negative weights and rejects inconsistent profile schemas.
+
+**PASS:** [Godot 4.7.2 CI run #42782571229](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42782571229), tested commit `c2325ea6eeadd924dd7d5df924a9232332966022`. All 33 validation steps passed, including project import, the existing regression suite, wind and ecology tests, the new wildlife profile schema test, weather profile blend test, and neutral movement lab launch.
+
+**NEXT:** create a cited candidate catalogue with a deliberately small representative set for the Ghana reference biomes, then separate global modern ecosystems and palaeo time slices. In parallel, build a standalone weather validation lab and add tests for time-transition continuity. Do not integrate unverified species or weather effects into production regions.
