@@ -101,6 +101,9 @@ jobs:
           arch: x86_64
           profile: pixel_2
           disable-animations: true
+          force-avd-creation: true
+          disable-linux-hw-accel: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -memory 2048 -cores 2
           script: |
             adb install build/android/BTV-debug.apk
             adb shell monkey -p org.kingace.beyondtheveil 1

@@ -35,6 +35,8 @@ func _run() -> void:
 		"LOGOS_RHEMA: rear chapel wall blocks the player",
 	)
 
+	await _test_physical_chapel_collisions(player)
+
 	var director := world.get_node("ServiceDirector") as BTVServiceDirector
 	_check(director.get_phase_count() == 13, "LOGOS_RHEMA: all thirteen approved service phases are represented")
 	_check(director.get_phase_id() == "arrival_fellowship", "LOGOS_RHEMA: service begins with arrival and fellowship")
@@ -79,3 +81,79 @@ func _check(condition: bool, label: String) -> void:
 	else:
 		failures += 1
 		printerr("FAIL: ", label)
+
+
+func _test_physical_chapel_collisions(player: BTVPlayerController) -> void:
+	_check((player.collision_layer & 1) != 0, "LOGOS_RHEMA: player is registered on the world collision layer")
+	_check((player.collision_mask & 1) != 0, "LOGOS_RHEMA: player queries the world collision layer")
+
+	_clear_movement_actions()
+	player.velocity = Vector3.ZERO
+	player.rotation = Vector3.ZERO
+	player.set("_camera_yaw_radians", 0.0)
+	player.call("_sync_camera_yaw")
+	player.global_position = Vector3(-12.0, 0.0, 0.0)
+	for _tick in range(4):
+		await physics_frame
+	Input.action_press(&"move_left")
+	for _tick in range(100):
+		await physics_frame
+	Input.action_release(&"move_left")
+	_check(player.global_position.x > -13.6 and player.global_position.x < -12.5,
+		"LOGOS_RHEMA: west wall physically blocks player movement")
+	_check(player.is_on_wall(), "LOGOS_RHEMA: west-wall contact is reported by CharacterBody3D")
+
+	_clear_movement_actions()
+	player.velocity = Vector3.ZERO
+	player.rotation = Vector3.ZERO
+	player.global_position = Vector3(12.0, 0.0, 0.0)
+	for _tick in range(4):
+		await physics_frame
+	Input.action_press(&"move_right")
+	for _tick in range(100):
+		await physics_frame
+	Input.action_release(&"move_right")
+	_check(player.global_position.x < 13.6 and player.global_position.x > 12.5,
+		"LOGOS_RHEMA: east wall physically blocks player movement")
+	_check(player.is_on_wall(), "LOGOS_RHEMA: east-wall contact is reported by CharacterBody3D")
+
+	_clear_movement_actions()
+	player.velocity = Vector3.ZERO
+	player.rotation = Vector3.ZERO
+	player.global_position = Vector3(-9.0, 0.0, 10.0)
+	for _tick in range(4):
+		await physics_frame
+	Input.action_press(&"move_forward")
+	for _tick in range(100):
+		await physics_frame
+	Input.action_release(&"move_forward")
+	_check(player.global_position.z > 7.5 and player.global_position.z < 9.2,
+		"LOGOS_RHEMA: pew row physically blocks forward movement")
+	_check(player.is_on_wall(), "LOGOS_RHEMA: pew contact is reported by CharacterBody3D")
+
+	_clear_movement_actions()
+	player.velocity = Vector3.ZERO
+	player.rotation = Vector3.ZERO
+	player.global_position = Vector3(0.0, 0.0, -8.0)
+	for _tick in range(4):
+		await physics_frame
+	Input.action_press(&"move_forward")
+	for _tick in range(100):
+		await physics_frame
+	Input.action_release(&"move_forward")
+	_check(player.global_position.z > -10.5 and player.global_position.z < -8.5,
+		"LOGOS_RHEMA: stage physically blocks player movement")
+	_check(player.is_on_wall(), "LOGOS_RHEMA: stage contact is reported by CharacterBody3D")
+
+	_clear_movement_actions()
+	player.velocity = Vector3.ZERO
+	player.global_position = Vector3(0.0, 0.0, 12.0)
+	for _tick in range(4):
+		await physics_frame
+
+
+func _clear_movement_actions() -> void:
+	for action_name in [&"move_forward", &"move_back", &"move_left", &"move_right"]:
+		Input.action_release(action_name)
+	for action_name in [&"touch_move_forward", &"touch_move_back", &"touch_move_left", &"touch_move_right"]:
+		Input.action_release(action_name)
