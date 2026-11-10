@@ -53,6 +53,24 @@ the token was supplied as plaintext in a chat message (so the transcript is the 
 scope is read-only. Do not assume read-only protection. No credential value appears in any document in
 this addendum.
 
+## XH-003 — implemented on a successor branch (2026-11-10)
+
+The same-action defect in finding 1 above is **fixed** on `btv/agent-minimax-xh-003` (draft PR #7,
+base `btv/agent-minimax-xh-002`), by giving each input source its own action namespace and composing
+keyboard + touch once in the player controller.
+
+- Branch: `btv/agent-minimax-xh-003` @ `61c35aefbd6e5b4562fdb3f684c16a0367a89aac`
+- Draft PR: https://github.com/KINGACEX/beyond-the-veil-last-watch-/pull/7
+- Implementation note: `docs/implementation/BTV_XH-003_SAME_ACTION_COMPOSITION_2026-11-09.md` (on that branch)
+- Tests on that branch: **14/14 suites, 276 assertions, 0 failures** (headless Godot 4.7.2) — the 13
+  suites on the XH-002 branch plus the new `tests/xh003_same_action_composition_test.gd` (22 assertions).
+- The counts on **this** page remain correct for the **XH-002** branch: 13 suites, 251 assertions.
+
+PR #4's description was reconciled in the same pass: the "12/12 suites" figure is now "13/13 (251
+assertions)", the statement that the workflow file "is not included in this branch" is corrected (the file
+**is** on the branch; only the modification is missing), and the cheapest CI remedy — dispatching the
+existing workflow — is recorded.
+
 ## What was deliberately not done
 
 No implementation of XH-003 · no commit to `btv/agent-minimax-xh-002` · no change to PR #4 · no merge ·
