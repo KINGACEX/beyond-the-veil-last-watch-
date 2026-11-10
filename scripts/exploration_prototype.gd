@@ -210,18 +210,24 @@ func _add_visual_box(box_name: String, box_position: Vector3, box_size: Vector3,
 
 
 func _add_tree(tree_name: String, tree_position: Vector3, trunk_material: StandardMaterial3D, canopy_material: StandardMaterial3D, scale_factor: float) -> void:
-	var tree := StaticBody3D.new()
-	tree.name = tree_name
-	tree.position = tree_position
-	tree.collision_layer = 1
-	tree.collision_mask = 1
+	# Keep the physics body unscaled and centered like the proven static-box
+	# collision fixtures. Extend it slightly below ground to avoid a foot-level gap.
+	var trunk_body := StaticBody3D.new()
+	trunk_body.name = tree_name + "_Collision"
+	trunk_body.position = tree_position + Vector3(0.0, 1.4, 0.0)
+	trunk_body.collision_layer = 1
+	trunk_body.collision_mask = 1
 	var trunk_collision := CollisionShape3D.new()
 	trunk_collision.name = "CollisionShape3D"
 	var trunk_shape := BoxShape3D.new()
-	trunk_shape.size = Vector3(0.68, 3.4, 0.68) * scale_factor
+	trunk_shape.size = Vector3(0.9, 3.8, 0.9)
 	trunk_collision.shape = trunk_shape
-	trunk_collision.position.y = 1.7 * scale_factor
-	tree.add_child(trunk_collision)
+	trunk_body.add_child(trunk_collision)
+	add_child(trunk_body)
+
+	var tree := Node3D.new()
+	tree.name = tree_name
+	tree.position = tree_position
 	var trunk := MeshInstance3D.new()
 	var trunk_mesh := CylinderMesh.new()
 	trunk_mesh.top_radius = 0.22
