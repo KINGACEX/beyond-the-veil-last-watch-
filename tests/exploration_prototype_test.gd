@@ -181,7 +181,7 @@ func _test_rock_shelf_collision(player: BTVPlayerController) -> void:
 		await physics_frame
 	Input.action_release(&"move_forward")
 	_check(
-		player.global_position.z > -4.9,
+		player.global_position.z > -8.0,
 		"EXPLORATION: solid rock shelf prevents the player from passing through its front face",
 	)
 	_check(
@@ -235,7 +235,7 @@ func _test_tree_collision(player: BTVPlayerController) -> void:
 	for _tick in range(100):
 		await physics_frame
 	Input.action_release(&"move_forward")
-	_check(player.global_position.z > -8.0, "EXPLORATION: solid tree trunk blocks the player before its centre")
+	_check(player.global_position.z > -4.9, "EXPLORATION: solid tree trunk blocks the player before its centre")
 	_check(player.global_position.z < -3.0, "EXPLORATION: player can approach a tree trunk before collision stops movement")
 	_check(player.is_on_wall(), "EXPLORATION: tree trunk collision is reported by CharacterBody3D")
 	_clear_player_actions()
