@@ -66,6 +66,7 @@ func _run() -> void:
 	_check(world.get_node("HUD/InteractionToast").text.contains("already recorded"), "EXPLORATION: repeated notes are identified as already recorded")
 
 	await _test_real_sensor_overlap(player, world)
+	await _test_camera_relative_scene_movement(player)
 	await _test_playable_movement_and_jump(player)
 
 	_clear_player_actions()
@@ -104,6 +105,28 @@ func _test_real_sensor_overlap(player: BTVPlayerController, world: Node3D) -> vo
 	for _tick in range(2):
 		await physics_frame
 	_check(not (player.get("_nearby_interactables") as Array).has(probe), "EXPLORATION: sensor removes an interactable after it leaves the scene")
+
+
+func _test_camera_relative_scene_movement(player: BTVPlayerController) -> void:
+	var start_position := player.global_position
+	player.apply_look_delta(Vector2(-750.0, 0.0))
+	for _tick in range(3):
+		await physics_frame
+	Input.action_press(&"move_forward")
+	for _tick in range(45):
+		await physics_frame
+	Input.action_release(&"move_forward")
+	for _tick in range(35):
+		await physics_frame
+	var displacement := player.global_position - start_position
+	_check(displacement.x < -1.0, "EXPLORATION: physical forward movement follows a camera rotated 90 degrees")
+	_check(absf(displacement.z) < 0.5, "EXPLORATION: camera-relative forward movement does not drift along world Z")
+	_check(player.is_on_floor(), "EXPLORATION: camera-relative route remains grounded")
+	player.apply_look_delta(Vector2(750.0, 0.0))
+	player.global_position = start_position
+	player.velocity = Vector3.ZERO
+	for _tick in range(3):
+		await physics_frame
 
 
 func _test_playable_movement_and_jump(player: BTVPlayerController) -> void:
