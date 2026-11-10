@@ -1,5 +1,7 @@
 # BTV Prototype — Implementation Status
 
+> **Historical baseline notice (10 November 2026):** This document records the earlier bootstrap state and is not the current branch-status authority. The active engineering branch, expanded test coverage, latest CI evidence, open PR reconciliation and remaining device blockers are recorded in [the current repository state audit](../audits/BTV_REPOSITORY_STATE_AND_WORKSTREAM_RECONCILIATION_AUDIT_2026-11-10.md) and the repository README. Do not use the historical branch/run pointers below as current status.
+
 **Active isolated branch:** `btv/test-first-contracts-001`  
 **Prototype origin:** `btv/bootstrap-prototype-001`  
 **Status:** HEADLESS CI PASSED; visual/runtime and Android device validation remain pending.  
