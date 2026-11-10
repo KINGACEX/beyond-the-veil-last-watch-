@@ -140,6 +140,7 @@ func _build_world() -> void:
 		rock.position = Vector3(-19.0 + float(index) * 4.7, 0.35, -18.0 + float(index % 3) * 5.0)
 		rock.scale = Vector3(1.2, 0.7, 0.9)
 		var rock_collision := CollisionShape3D.new()
+		rock_collision.name = "CollisionShape3D"
 		var rock_shape := SphereShape3D.new()
 		rock_shape.radius = 1.0
 		rock_collision.shape = rock_shape
