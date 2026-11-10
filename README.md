@@ -4,7 +4,7 @@ BTV is a Christian action-adventure survival RPG set in a modern world of spirit
 
 ## Current repository state
 
-The active isolated engineering/research branch is `btv/test-first-contracts-001`. It contains the Godot greybox foundation originally developed on `btv/bootstrap-prototype-001`, additional interaction and NLI contract tests, recovered source-of-truth design documents, audits and research.
+The active isolated engineering/research branch is `btv/controls-hardening-prototype-layout-plan-001`. It contains the Godot greybox foundation, hardened keyboard/touch input, neutral movement and traversal tests, optics, wind, wildlife and weather primitives, recovered source-of-truth documents, audits and research. See [the 10 November repository state audit](docs/audits/BTV_REPOSITORY_STATE_AND_WORKSTREAM_RECONCILIATION_AUDIT_2026-11-10.md).
 
 The branch is not merged into `main`. Do not treat this branch as a finished game or a playable vertical slice.
 
@@ -57,7 +57,7 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Open and run
 
-1. Check out `btv/test-first-contracts-001` for the current isolated branch.
+1. Check out `btv/controls-hardening-prototype-layout-plan-001` for the current isolated branch.
 2. Open the project folder in Godot 4.7.2 (matching the CI version).
 3. Allow the project to import and inspect the Output/debugger panels.
 4. Run the project (F5 / Run Project).
@@ -66,9 +66,9 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Verification
 
-**CONFIRMED — latest code/test validation run 42189615410** passed on commit `c91094d99b5462d8b69f249ba579e8316dc09137`. It includes the canonical NLI request-ID boundary tests, query/action lifecycle semantics, cancellation tests, neutral mission-registry validation tests, core interaction acceptance tests and a 10-frame main-scene launch.
+**CONFIRMED — latest audited validation run 42783455949** passed on commit `8bce9a4ce497f6ca36a3aa0344e16b49d72b0d68`. It ran Godot 4.7.2 import/parsing, NLI and mission contracts, camera and touch input suites, movement/collision/traversal tests, optics, wind, wildlife, weather and a 10-frame neutral movement lab launch (35 workflow steps).
 
-[View latest code/test validation run 42189615410](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42189615410).
+[View latest audited validation run 42783455949](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42783455949).
 
 **CONFIRMED — code/test validation run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
 
@@ -86,7 +86,7 @@ These are headless CI/documentation checks only. They do not verify rendered app
 
 ## Branch and release boundaries
 
-- Active work remains on `btv/test-first-contracts-001`.
+- Active work remains on `btv/controls-hardening-prototype-layout-plan-001`.
 - No merge to `main` has been performed.
 - No release has been published.
 - Do not merge, force-push, delete branches, publish or deploy without explicit approval.
