@@ -13,6 +13,7 @@ const TouchInputAdapter = preload("res://scripts/touch_input_adapter.gd")
 @onready var _left: Button = $MovePad/Left
 @onready var _right: Button = $MovePad/Right
 @onready var _interact: Button = $Interact
+@onready var _jump: Button = $Jump
 @onready var _joystick_base: Control = $JoystickBase
 @onready var _joystick_knob: Control = $JoystickBase/Knob
 @onready var _look_surface: Control = $LookSurface
@@ -38,6 +39,7 @@ func _ready() -> void:
 	_bind_action(_left, &"touch_move_left")
 	_bind_action(_right, &"touch_move_right")
 	_bind_action(_interact, &"touch_interact")
+	_bind_action(_jump, &"touch_jump")
 	_adapter.joystick_radius = _joystick_radius()
 	_update_joystick_visual(Vector2.ZERO)
 
