@@ -46,6 +46,44 @@ interact={
 "events": [Object(InputEventKey,"physical_keycode":69)]
 }
 
+; Touch owns a separate action namespace. Godot keeps one state per action, so
+; two sources bound to the same action overwrite each other: a touch release
+; could cancel a keyboard hold, and the keyboard's strength could mask the
+; joystick's analog strength. Separate actions give each source its own
+; ownership, and the player controller sums them once
+; (BTVPlayerController._compose_movement_intent).
+;
+; The touch actions carry no input events on purpose - they are driven by
+; Input.action_press/action_release from scripts/touch_controls.gd - and the
+; same zero-deadzone rule as the keyboard actions, so the adapter's analog
+; curve is the only one applied.
+;
+; A future gamepad source would get its own namespace and its own term in the
+; composition. It is deliberately not declared here: no gamepad is bound, no
+; device exists to validate it, and an unvalidated axis path would be
+; speculative.
+
+touch_move_forward={
+"deadzone": 0.0,
+"events": []
+}
+touch_move_back={
+"deadzone": 0.0,
+"events": []
+}
+touch_move_left={
+"deadzone": 0.0,
+"events": []
+}
+touch_move_right={
+"deadzone": 0.0,
+"events": []
+}
+touch_interact={
+"deadzone": 0.2,
+"events": []
+}
+
 [physics]
 
 3d/default_gravity=9.8

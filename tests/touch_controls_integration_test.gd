@@ -71,7 +71,7 @@ func _cleanup(setup: Dictionary) -> void:
 	if is_instance_valid(player):
 		root.remove_child(player)
 		player.free()
-	for action_name in [&"move_left", &"move_right", &"move_forward", &"move_back", &"interact"]:
+	for action_name in [&"touch_move_left", &"touch_move_right", &"touch_move_forward", &"touch_move_back", &"touch_interact"]:
 		Input.action_release(action_name)
 
 
@@ -83,10 +83,10 @@ func _test_virtual_joystick_drives_shared_movement_actions() -> void:
 	var center := _screen_point(joystick, joystick.size * 0.5)
 	overlay.call("_input", _touch(1, true, center))
 	overlay.call("_input", _drag(1, center + Vector2(100, 0)))
-	_check(Input.get_action_strength("move_right") > 0.95, "Right joystick drag feeds the shared move_right action")
-	_check(is_zero_approx(Input.get_action_strength("move_left")), "Right joystick drag does not activate move_left")
+	_check(Input.get_action_strength("touch_move_right") > 0.95, "Right joystick drag feeds the shared move_right action")
+	_check(is_zero_approx(Input.get_action_strength("touch_move_left")), "Right joystick drag does not activate move_left")
 	overlay.call("_input", _touch(1, false, center + Vector2(100, 0)))
-	_check(is_zero_approx(Input.get_action_strength("move_right")), "Joystick release clears the movement action")
+	_check(is_zero_approx(Input.get_action_strength("touch_move_right")), "Joystick release clears the movement action")
 	_cleanup(setup)
 
 
@@ -105,12 +105,12 @@ func _test_look_surface_rotates_camera_without_cancelling_movement() -> void:
 	overlay.call("_input", _touch(3, true, look_start))
 	overlay.call("_input", _drag(2, move_center + Vector2(50, 0)))
 	overlay.call("_input", _drag(3, look_start + Vector2(12, 0)))
-	_check(Input.get_action_strength("move_right") > 0.0, "Movement finger remains active during camera look")
+	_check(Input.get_action_strength("touch_move_right") > 0.0, "Movement finger remains active during camera look")
 	_check(pivot.global_rotation.y < initial_yaw, "Independent look finger rotates the camera")
 	overlay.call("_input", _touch(3, false, look_start + Vector2(12, 0)))
-	_check(Input.get_action_strength("move_right") > 0.0, "Releasing the look finger does not cancel movement")
+	_check(Input.get_action_strength("touch_move_right") > 0.0, "Releasing the look finger does not cancel movement")
 	overlay.call("_input", _touch(2, false, move_center + Vector2(50, 0)))
-	_check(is_zero_approx(Input.get_action_strength("move_right")), "Movement ends only when its own finger releases")
+	_check(is_zero_approx(Input.get_action_strength("touch_move_right")), "Movement ends only when its own finger releases")
 	_cleanup(setup)
 
 
@@ -140,9 +140,9 @@ func _test_focus_loss_releases_all_touch_input() -> void:
 	var center := _screen_point(joystick, joystick.size * 0.5)
 	overlay.call("_input", _touch(5, true, center))
 	overlay.call("_input", _drag(5, center + Vector2(80, 0)))
-	_check(Input.get_action_strength("move_right") > 0.0, "Movement is active before focus loss")
+	_check(Input.get_action_strength("touch_move_right") > 0.0, "Movement is active before focus loss")
 	overlay.call("_notification", NOTIFICATION_APPLICATION_FOCUS_OUT)
-	_check(is_zero_approx(Input.get_action_strength("move_right")), "Focus loss releases analog movement actions")
+	_check(is_zero_approx(Input.get_action_strength("touch_move_right")), "Focus loss releases analog movement actions")
 	_cleanup(setup)
 
 
@@ -156,10 +156,10 @@ func _test_scene_teardown_releases_movement_actions() -> void:
 	var center := _screen_point(joystick, joystick.size * 0.5)
 	overlay.call("_input", _touch(6, true, center))
 	overlay.call("_input", _drag(6, center + Vector2(80, 0)))
-	_check(Input.get_action_strength("move_right") > 0.0, "Movement is active before touch scene teardown")
+	_check(Input.get_action_strength("touch_move_right") > 0.0, "Movement is active before touch scene teardown")
 	root.remove_child(layer)
 	layer.free()
-	_check(is_zero_approx(Input.get_action_strength("move_right")), "Touch scene teardown releases movement actions")
+	_check(is_zero_approx(Input.get_action_strength("touch_move_right")), "Touch scene teardown releases movement actions")
 	root.remove_child(player)
 	player.free()
 

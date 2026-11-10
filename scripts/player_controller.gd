@@ -28,7 +28,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_sync_camera_yaw()
-	var input_vector := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var input_vector := _compose_movement_intent()
 	var move_direction := _get_camera_relative_move_direction(input_vector)
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
@@ -41,8 +41,23 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, target_yaw, min(turn_speed * delta, 1.0))
 	move_and_slide()
 	_sync_camera_yaw()
-	if Input.is_action_just_pressed("interact"):
+	if Input.is_action_just_pressed("interact") or Input.is_action_just_pressed("touch_interact"):
 		_try_interact()
+
+
+## Sums the independent input sources into one movement intent.
+##
+## Keyboard and touch own separate actions, so neither can overwrite the
+## other's contribution before they are combined here. The result is clamped
+## to unit length so that two sources together are not faster than one.
+##
+## A future gamepad source would add its own action namespace and its own
+## term here. It is deliberately absent: no gamepad is bound to the project
+## and no device exists to validate it.
+func _compose_movement_intent() -> Vector2:
+	var keyboard := Input.get_vector(&"move_left", &"move_right", &"move_forward", &"move_back")
+	var touch := Input.get_vector(&"touch_move_left", &"touch_move_right", &"touch_move_forward", &"touch_move_back")
+	return (keyboard + touch).limit_length(1.0)
 
 
 func _get_camera_relative_move_direction(input_vector: Vector2) -> Vector3:
