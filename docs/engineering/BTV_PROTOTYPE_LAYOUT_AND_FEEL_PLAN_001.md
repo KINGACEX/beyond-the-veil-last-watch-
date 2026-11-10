@@ -385,3 +385,16 @@ Latest validation: [Godot 4.7.2 CI run #42781545131](https://github.com/KINGACEX
 Checkpoint: [BTV Development Checkpoint 15 — Traversal Fixtures and Wind Math](../coordination/checkpoints/BTV_DEVELOPMENT_CHECKPOINT_15_TRAVERSAL_FIXTURES_AND_WIND_MATH_2026-11-10.md).
 
 **NEXT:** verify wind-field CI; then add deterministic weather-profile blending and tests. Build a separate weather validation scene after state validation. Keep wind force out of the player controller by default, and keep weather effects from compromising movement, visibility, interaction or puzzle readability.
+
+
+## 19. Wildlife biodiversity and ecosystem simulation — 2026-11-10
+
+**COMPLETED — RESEARCH:** created [BTV Wildlife, Biodiversity and Ecosystem Simulation Research 001](BTV_WILDLIFE_BIODIVERSITY_AND_ECOSYSTEM_SIMULATION_RESEARCH_001.md), using Ghanaian forest, savanna, riverine and coastal-wetland ecology as references. The research defines habitat templates, species/agent data, nonviolent animal routines, seasonal/weather coupling, population budgets and near/mid/far simulation tiers.
+
+**COMPLETED — INITIAL CODE:** added scripts/wildlife_ecology_sim.gd and tests/wildlife_ecology_sim_test.gd. The module implements weighted habitat suitability, shelter/drink/forage/rest/roam behaviour selection, bounded needs updates and deterministic wander direction. The CI workflow now runs the wildlife test suite.
+
+**VALIDATION PENDING:** intermediate GitHub Actions runs were cancelled by the branch workflow's concurrency policy as later commits arrived. Verify the final branch-head run before calling the wildlife tests passed.
+
+Checkpoint: [BTV Development Checkpoint 16 — Wildlife Ecology Research and Simulation](../coordination/checkpoints/BTV_DEVELOPMENT_CHECKPOINT_16_WILDLIFE_ECOLOGY_RESEARCH_AND_SIM_2026-11-10.md).
+
+**NEXT:** verify CI; add a species-profile schema and evidence-backed sample profiles; build a separate wildlife validation scene with placeholder meshes; then test group spacing, disturbance avoidance and population/LOD budgets. Keep the work observational and nonviolent. Do not modify Ember canon or place unverified species in production regions.
