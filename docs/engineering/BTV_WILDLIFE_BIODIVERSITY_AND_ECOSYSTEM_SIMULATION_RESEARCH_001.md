@@ -183,3 +183,79 @@ The prototype deliberately does not include attacks, hunting, capture, injury, o
 - Godot 4.7 — NavigationAgents: https://docs.godotengine.org/en/4.7/tutorials/navigation/navigation_using_navigationagents.html
 - Godot 4.7 — AnimationTree: https://docs.godotengine.org/en/4.7/tutorials/animation/animation_tree.html
 - Godot 4.7 — Node/scene concepts: https://docs.godotengine.org/en/4.7/getting_started/introduction/key_concepts_overview.html
+
+
+## 12. Expanded scope: international ecosystems and extinct wildlife
+
+The research scope is now global, not Ghana-only. Ghanaian biomes remain a foundational regional reference, while BTV may draw additional biome templates from other continents and ocean basins. Each biome must retain its own climate, vegetation structure, hydrology, seasonal cycle and geographically plausible species community.
+
+### International ecosystem library (research candidates)
+
+| Region | Ecosystem references | Ecological systems to study |
+|---|---|---|
+| North America | Boreal forest/taiga, temperate forest, prairie, desert, Arctic tundra | Snow seasonality, migration, grassland herds, predator-prey spatial effects, permafrost |
+| South America | Amazon rainforest, Pantanal wetlands, Andes, Cerrado, Patagonian steppe | Flood pulses, canopy layers, river corridors, montane gradients, seasonal grasslands |
+| Europe | Temperate deciduous forest, Mediterranean scrub, alpine, boreal | Seasonal leaf cover, fire-adapted scrub, mountain altitudinal zones |
+| Asia | Tropical rainforest, monsoon forest, steppe, Himalayan alpine, mangrove | Monsoon timing, large river systems, elevation, dry-season water bottlenecks |
+| Australia/Oceania | Eucalyptus woodland, tropical savanna, arid interior, temperate rainforest, reef/coast | Fire ecology, marsupial niches, drought, island endemism, coral habitats |
+| Polar regions | Arctic tundra, Antarctic coastal/marine ecosystems | Sea ice, seasonal light, marine food webs, extreme cold |
+| Global marine | Coral reef, kelp forest, seagrass meadow, open ocean, deep sea, hydrothermal vent | Salinity, depth/light zones, currents, reef complexity, nutrient cycling |
+
+This is a research library, not a commitment to build every biome in the first playable prototype. Prioritize a small number of representative ecosystems with high visual and ecological distinction, then expand as production capacity allows.
+
+### Extinct and prehistoric ecosystems
+
+Include extinct organisms as a dedicated **Palaeo-Wildlife** research and simulation track. Do not mix extinct species into modern ecosystems as if they coexist today. Build time-sliced ecological sets with evidence-backed climate, vegetation, geography and fauna.
+
+Initial time-slice candidates:
+- Late Cretaceous: selected dinosaur, pterosaur, marine reptile and early bird ecosystems, with locality and geological age kept explicit.
+- Eocene: warm greenhouse forests, unusual mammal communities and early whale transitions.
+- Pleistocene: mammoth-steppe/tundra mosaics, woolly mammoth, woolly rhinoceros, cave lion, short-faced bear and regional megafauna; species sets must be geographically separated.
+- Pleistocene Australia: giant marsupials and reptiles such as Diprotodon and Megalania, in Australian environmental contexts.
+- Holocene historical ecosystems: species recently lost from the wild or regionally extirpated, tracked separately from deep-time fossils.
+
+Examples such as Beringian Pleistocene megafauna and Australian Pleistocene megafauna are supported by National Park Service and Queensland Museum summaries. The Natural History Museum notes that fossils include body fossils and trace fossils, and that the fossil record is incomplete and can bias reconstructions. Therefore, each extinct species profile must include evidence confidence and uncertainty fields; appearance, colour, soft tissue and behaviour must not be presented as certain when the fossil record cannot support them.
+
+### Extinction status taxonomy
+
+Keep separate data categories:
+- **Extant:** living wild populations.
+- **Extinct in the Wild (EW):** survives only in captivity/cultivation or outside its historical range as defined by IUCN.
+- **Extinct (EX):** no reasonable doubt the last individual has died.
+- **Fossil-only / deep-time extinct:** prehistoric taxon known through palaeontological evidence; also EX in ordinary taxonomic status, but tagged separately for era and fossil evidence.
+- **Regionally extirpated:** absent from a defined region, not globally extinct.
+- **Reintroduced / conservation-recovered:** current status and regional population must be sourced and dated.
+
+Do not confuse extinct, extinct in the wild, locally extirpated and endangered. Link contemporary conservation status to dated IUCN assessment records and avoid hard-coding a status without its assessment date.
+
+### Palaeo-ecology evidence schema
+
+Each extinct species record should include:
+- accepted scientific name and taxonomy source;
+- geological interval and narrower age where known;
+- fossil locality and palaeogeographic region;
+- formation/site and evidence type (body fossil, trace fossil, pollen/plant association, isotope/geochemical evidence);
+- inferred habitat and climate with confidence level;
+- locomotion, diet and social behaviour as hypotheses with evidence notes;
+- reconstruction uncertainty for soft tissue, colour, vocalisation and behaviour;
+- source citations and date checked.
+
+A fossil occurrence at a site is not enough by itself to reconstruct a complete ecosystem. Co-occurrence requires compatible stratigraphic age, geography and depositional context.
+
+### Gameplay and simulation separation
+
+Use distinct data layers:
+1. **Modern wildlife** — present-day species, habitats and current conservation status.
+2. **Historical wildlife** — recently lost or regionally extirpated species, with a dated historical context.
+3. **Palaeo-wildlife** — extinct species and reconstructed ancient environments, with a time-slice ID and uncertainty metadata.
+
+Palaeo-wildlife can be explored in a dedicated ancient region, research/educational experience, fossil reconstruction space or explicitly time-separated sequence. No canon narrative or time-travel mechanism is implied by this research.
+
+### Additional references
+
+- IUCN Red List categories and species status: https://iucn.org/resources/conservation-tool/iucn-red-list-threatened-species
+- IUCN supporting information on assessment dates and year last seen: https://nrl.iucnredlist.org/assessment/supporting-information
+- U.S. National Park Service — Pleistocene Megafauna in Beringia: https://www.nps.gov/articles/aps-17-1-4.htm
+- Queensland Museum — Megafauna: https://www.museum.qld.gov.au/learn-and-discover/queenslands-ancient-past/megafauna
+- Natural History Museum — What is a fossil?: https://www.nhm.ac.uk/discover/what-is-a-fossil.html
+- PNAS — Megafauna and ecosystem function from the Pleistocene to the Anthropocene: https://doi.org/10.1073/pnas.1502540113
