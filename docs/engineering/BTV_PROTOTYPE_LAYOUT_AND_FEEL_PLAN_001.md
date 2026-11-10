@@ -426,3 +426,16 @@ References include IUCN Red List categories, National Park Service Beringia mega
 **PASS:** [Godot 4.7.2 CI run #42782571229](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42782571229), tested commit `c2325ea6eeadd924dd7d5df924a9232332966022`. All 33 validation steps passed, including project import, the existing regression suite, wind and ecology tests, the new wildlife profile schema test, weather profile blend test, and neutral movement lab launch.
 
 **NEXT:** create a cited candidate catalogue with a deliberately small representative set for the Ghana reference biomes, then separate global modern ecosystems and palaeo time slices. In parallel, build a standalone weather validation lab and add tests for time-transition continuity. Do not integrate unverified species or weather effects into production regions.
+
+
+## 22. Wildlife group behaviour and continuous weather profiles — 2026-11-10
+
+**COMPLETED — WILDLIFE SIMULATION PRIMITIVES:** added distance-based near/mid/far/offscreen tiers, bounded group-separation steering hints, deterministic handling for coincident agents and nonviolent observer-disturbance responses. The module returns steering/state hints only; no animal navigation, animation or production-region placement is implied.
+
+**COMPLETED — WEATHER TRANSITION PRIMITIVE:** added deterministic interpolation between normalized weather profiles. The helper is stateless; callers provide progress/easing. No visual weather scene is connected yet.
+
+**PASS:** [Godot 4.7.2 CI run #42783248175](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42783248175), commit `9af715573304c520707c4ca92e12e8141d502d23`. All workflow steps passed, including the expanded wildlife tests, weather interpolation tests, existing optics/wind suites and neutral movement lab launch.
+
+**RESEARCH CANDIDATES:** official Ghana Forestry Commission records now anchor Kakum, Mole and Bui reference habitats; the Songor Ramsar Information Sheet anchors seasonal coastal-waterbird references. NPS Beringia and Queensland Museum fossil records anchor separate Pleistocene research tracks. These are not final species placements. Each record must pass taxonomy, locality/range, age, evidence and conservation-status review before entering a lab.
+
+**NEXT:** create a standalone wildlife validation scene using placeholder geometry and debug labels; add group movement/navigation tests only after the data catalogue is verified. Build a weather lab to visualize transitions without locking a renderer. Keep all ecological and atmospheric systems isolated from production regions pending evidence and Android profiling.
