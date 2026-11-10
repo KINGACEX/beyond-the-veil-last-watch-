@@ -11,6 +11,9 @@ class_name BTVPlayerController
 @export_range(0.0, 30.0, 0.1) var turn_speed: float = 12.0
 @export_range(1.0, 12.0, 0.1) var jump_velocity: float = 5.5
 @export_range(1, 3, 1) var max_jumps: int = 2
+@export_range(4.0, 20.0, 0.5) var traversal_dash_speed: float = 10.0
+@export_range(0.05, 0.5, 0.01) var traversal_dash_duration: float = 0.18
+@export_range(0.1, 2.0, 0.05) var traversal_dash_cooldown: float = 0.75
 @export_range(0.01, 1.0, 0.01) var look_sensitivity_degrees_per_pixel: float = 0.12
 @export_range(-89.0, 0.0, 1.0) var min_pitch_degrees: float = -70.0
 @export_range(0.0, 89.0, 1.0) var max_pitch_degrees: float = 35.0
@@ -23,6 +26,10 @@ var _nearby_interactables: Array[BTVInteractable] = []
 var _interact_input_latched: bool = false
 var _air_jumps_remaining: int = 1
 var _jump_input_latched: bool = false
+var _dash_input_latched: bool = false
+var _dash_time_remaining: float = 0.0
+var _dash_cooldown_remaining: float = 0.0
+var _dash_direction: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
@@ -39,6 +46,11 @@ func _physics_process(delta: float) -> void:
 	_sync_camera_yaw()
 	var input_vector := _get_composed_movement_input()
 	var move_direction := _get_camera_relative_move_direction(input_vector)
+	_dash_cooldown_remaining = maxf(_dash_cooldown_remaining - delta, 0.0)
+	if _is_dash_just_pressed() and _dash_cooldown_remaining <= 0.0 and _dash_time_remaining <= 0.0:
+		_dash_direction = move_direction if move_direction.length_squared() > 0.001 else _get_camera_relative_move_direction(Vector2(0.0, -1.0))
+		_dash_time_remaining = traversal_dash_duration
+		_dash_cooldown_remaining = traversal_dash_cooldown
 	if not is_on_floor():
 		velocity.y -= _gravity * delta
 	else:
@@ -48,19 +60,30 @@ func _physics_process(delta: float) -> void:
 		velocity.y = jump_velocity
 		if not is_on_floor():
 			_air_jumps_remaining -= 1
-	var target_horizontal_velocity := move_direction * move_speed
-	var current_horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
-	var movement_rate := ground_acceleration if move_direction.length_squared() > 0.001 else ground_deceleration
-	current_horizontal_velocity = current_horizontal_velocity.move_toward(
-		target_horizontal_velocity,
-		movement_rate * delta,
-	)
-	velocity.x = current_horizontal_velocity.x
-	velocity.z = current_horizontal_velocity.z
+	if _dash_time_remaining > 0.0:
+		velocity.x = _dash_direction.x * traversal_dash_speed
+		velocity.z = _dash_direction.z * traversal_dash_speed
+	else:
+		var target_horizontal_velocity := move_direction * move_speed
+		var current_horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
+		var movement_rate := ground_acceleration if move_direction.length_squared() > 0.001 else ground_deceleration
+		current_horizontal_velocity = current_horizontal_velocity.move_toward(
+			target_horizontal_velocity,
+			movement_rate * delta,
+		)
+		velocity.x = current_horizontal_velocity.x
+		velocity.z = current_horizontal_velocity.z
 	if move_direction.length_squared() > 0.001:
 		var target_yaw := atan2(-move_direction.x, -move_direction.z)
 		rotation.y = lerp_angle(rotation.y, target_yaw, min(turn_speed * delta, 1.0))
 	move_and_slide()
+	if _dash_time_remaining > 0.0:
+		if is_on_wall():
+			_dash_time_remaining = 0.0
+			velocity.x = 0.0
+			velocity.z = 0.0
+		else:
+			_dash_time_remaining = maxf(_dash_time_remaining - delta, 0.0)
 	if is_on_floor():
 		_air_jumps_remaining = maxi(max_jumps - 1, 0)
 	_sync_camera_yaw()
@@ -89,6 +112,13 @@ func _is_jump_just_pressed() -> bool:
 	var either_source_pressed := Input.is_action_pressed("jump") or Input.is_action_pressed("touch_jump")
 	var new_combined_press := either_source_pressed and not _jump_input_latched
 	_jump_input_latched = either_source_pressed
+	return new_combined_press
+
+
+func _is_dash_just_pressed() -> bool:
+	var either_source_pressed := Input.is_action_pressed("dash") or Input.is_action_pressed("touch_dash")
+	var new_combined_press := either_source_pressed and not _dash_input_latched
+	_dash_input_latched = either_source_pressed
 	return new_combined_press
 
 
