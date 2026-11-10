@@ -346,3 +346,25 @@ Research record: [BTV Lighting, Optics and In-Game Visual Effects Research 001](
 - Add prism dispersion and water/glass visuals only after ray-solver correctness; use restrained approximations and renderer-safe fallbacks.
 
 **NEXT:** create a Lighting Validation Lab with matte/glossy samples, mirror, glass, prism, water, emissive surface, blockers and fog. Add deterministic tests for reflection, refraction and total internal reflection before any Ridgeview lighting pass. The final art direction and target renderer remain unconfirmed.
+
+
+## 17. Optics validation and wind/weather research — 2026-11-10
+
+**COMPLETED:** a deterministic optics solver now implements vector reflection, Snell-law refraction, total internal reflection and critical-angle calculation. A separate 3D optics validation scene draws example ray paths. The solver and scene have automated test suites in the Godot workflow.
+
+**PASS:** [Godot 4.7.2 CI run #42781103405](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42781103405), tested commit 9197219382d046547c5495e7344bf2e5f9c59480. Existing regression suites, traversal jump/dash, both optics test suites and neutral movement lab launch passed.
+
+**COMPLETED:** wind, gusts, turbulence, drag, rain, clouds, fog, sky, particle systems, mobile renderer limits and a proposed data-driven weather architecture have been researched.
+
+Research records:
+- [BTV Wind, Weather and Atmospheric Systems Research 001](BTV_WIND_WEATHER_AND_ATMOSPHERIC_SYSTEMS_RESEARCH_001.md)
+- [BTV Development Checkpoint 14 — Optics Validation and Weather Research](../coordination/checkpoints/BTV_DEVELOPMENT_CHECKPOINT_14_OPTICS_AND_WEATHER_RESEARCH_2026-11-10.md)
+
+**Key engineering decisions:**
+- Godot Area3D wind is not a universal rigid-body force; its built-in wind currently affects SoftBody3D only. Use a deterministic BTV wind-field service for explicitly opted-in lightweight objects.
+- Keep the player excluded from wind forces by default. Wind and weather must not unexpectedly change core traversal controls.
+- Use shader-driven vegetation, bounded GPU particles and depth/height fog for the mobile baseline. Keep volumetric fog and expensive particle collision optional.
+- Separate weather state, time-of-day and presentation. Use seeded gusts and smooth local zone blending.
+- Keep weather effects from obscuring route readability, interaction targets or deterministic optical puzzle logic.
+
+**NEXT:** resume the unfinished traversal work with a measured traversal course and explicit traversal-state architecture. Build the wind-field math module only after the traversal course/state work has a verified checkpoint. All weather remains research/proposed, not production-integrated or canon-approved.
