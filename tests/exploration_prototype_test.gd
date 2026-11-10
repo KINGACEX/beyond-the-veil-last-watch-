@@ -42,6 +42,8 @@ func _run() -> void:
 	_check(world.get_node("HUD/Status").text.contains("Journal: 0/4"), "EXPLORATION: initial journal HUD is present")
 	root.remove_child(world)
 	world.free()
+	if FileAccess.file_exists(journal_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(journal_path))
 	print("\nEXPLORATION_PROTOTYPE_TESTS: PASS")
 	quit(0)
 
