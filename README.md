@@ -66,9 +66,7 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Verification
 
-**CONFIRMED — latest audited validation run 42785697157** passed on commit `4bbde76f7177ad405c643e4c7ae0c5121b1e2e07`. All 37 workflow steps passed, including Godot 4.7.2 import/parsing, NLI and mission contracts, camera and touch input suites, movement/collision/traversal tests, optics, wind, wildlife ecology and fair update scheduling, species schema, weather profile and local-zone blending, environment quality-budget validation, and a 10-frame neutral movement lab launch.
-
-[View latest audited validation run 42785697157](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42785697157).
+**CONFIRMED — environment lab and graphics benchmark code validation** passed in [Godot 4.7.2 CI run #42794875510](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42794875510), testing commit `b5cd3bc537eebbc34df4be1db23e706c383dacb3`. The run included the full regression suite plus wildlife LOD lab, local weather-zone lab, optics material/shadow stations and the five-zone neutral graphics benchmark. All workflow steps passed.
 
 **CONFIRMED — code/test validation run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
 
@@ -98,6 +96,7 @@ These are headless CI/documentation checks only. They do not verify rendered app
 - [BTV Technical Graphics Specification v1.0](docs/technical/BTV_TECHNICAL_GRAPHICS_SPECIFICATION_v1.0.md) — renderer decision gate, Android/PC quality tiers, provisional frame-time objectives, asset acceptance and device-validation plan.
 - [Android Graphics and Device Benchmark Research](docs/research/BTV_ANDROID_GRAPHICS_AND_DEVICE_BENCHMARK_RESEARCH_2026-11-06.md) — Godot 4.7 renderer trade-offs, Android sustained performance and device-tier methodology.
 - [Environment Render Budgets and Shadow Benchmark 001](docs/engineering/BTV_ENVIRONMENT_RENDER_BUDGET_AND_SHADOW_BENCHMARK_001.md) — version-matched shadow constraints, wildlife scheduling, local weather-zone blending and measured quality-budget policy.
+- [Neutral Graphics Benchmark — Implementation Status 001](docs/engineering/BTV_NEUTRAL_GRAPHICS_BENCHMARK_IMPLEMENTATION_STATUS_001.md) — five-zone structural greybox, functional toggles, current acceptance gaps and Android profiling gates.
 - [Repository State and Workstream Reconciliation Audit](docs/audits/BTV_REPOSITORY_STATE_AND_WORKSTREAM_RECONCILIATION_AUDIT_2026-11-10.md) — branch, PR, CI and documentation-drift findings.
 - [Neutral Graphics Benchmark Scene Acceptance Contract](docs/qa/BTV_NEUTRAL_GRAPHICS_BENCHMARK_SCENE_ACCEPTANCE_CONTRACT_v1.0.md) — canon-neutral scene composition, telemetry, test protocol and acceptance gates.
 
