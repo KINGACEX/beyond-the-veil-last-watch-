@@ -138,11 +138,12 @@ func _build_world() -> void:
 		var rock := StaticBody3D.new()
 		rock.name = "Boulder_%02d" % index
 		rock.position = Vector3(-19.0 + float(index) * 4.7, 0.35, -18.0 + float(index % 3) * 5.0)
-		rock.scale = Vector3(1.2, 0.7, 0.9)
+		rock.collision_layer = 1
+		rock.collision_mask = 1
 		var rock_collision := CollisionShape3D.new()
 		rock_collision.name = "CollisionShape3D"
-		var rock_shape := SphereShape3D.new()
-		rock_shape.radius = 1.0
+		var rock_shape := BoxShape3D.new()
+		rock_shape.size = Vector3(2.4, 1.05, 1.8)
 		rock_collision.shape = rock_shape
 		rock.add_child(rock_collision)
 		var rock_mesh_instance := MeshInstance3D.new()
@@ -150,6 +151,7 @@ func _build_world() -> void:
 		rock_mesh.radius = 1.0
 		rock_mesh.height = 1.5
 		rock_mesh_instance.mesh = rock_mesh
+		rock_mesh_instance.scale = Vector3(1.2, 0.7, 0.9)
 		rock_mesh_instance.material_override = stone_material
 		rock.add_child(rock_mesh_instance)
 		add_child(rock)
@@ -211,15 +213,14 @@ func _add_tree(tree_name: String, tree_position: Vector3, trunk_material: Standa
 	var tree := StaticBody3D.new()
 	tree.name = tree_name
 	tree.position = tree_position
-	tree.scale = Vector3.ONE * scale_factor
 	tree.collision_layer = 1
 	tree.collision_mask = 1
 	var trunk_collision := CollisionShape3D.new()
 	trunk_collision.name = "CollisionShape3D"
 	var trunk_shape := BoxShape3D.new()
-	trunk_shape.size = Vector3(0.68, 3.4, 0.68)
+	trunk_shape.size = Vector3(0.68, 3.4, 0.68) * scale_factor
 	trunk_collision.shape = trunk_shape
-	trunk_collision.position.y = 1.7
+	trunk_collision.position.y = 1.7 * scale_factor
 	tree.add_child(trunk_collision)
 	var trunk := MeshInstance3D.new()
 	var trunk_mesh := CylinderMesh.new()
@@ -227,7 +228,8 @@ func _add_tree(tree_name: String, tree_position: Vector3, trunk_material: Standa
 	trunk_mesh.bottom_radius = 0.34
 	trunk_mesh.height = 3.4
 	trunk.mesh = trunk_mesh
-	trunk.position.y = 1.7
+	trunk.scale = Vector3.ONE * scale_factor
+	trunk.position.y = 1.7 * scale_factor
 	trunk.material_override = trunk_material
 	tree.add_child(trunk)
 	var crown := MeshInstance3D.new()
@@ -235,7 +237,8 @@ func _add_tree(tree_name: String, tree_position: Vector3, trunk_material: Standa
 	crown_mesh.radius = 1.7
 	crown_mesh.height = 3.3
 	crown.mesh = crown_mesh
-	crown.position.y = 3.6
+	crown.scale = Vector3.ONE * scale_factor
+	crown.position.y = 3.6 * scale_factor
 	crown.material_override = canopy_material
 	tree.add_child(crown)
 	add_child(tree)
