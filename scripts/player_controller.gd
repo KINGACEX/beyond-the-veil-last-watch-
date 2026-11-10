@@ -9,6 +9,8 @@ class_name BTVPlayerController
 @export_range(1.0, 40.0, 0.5) var ground_acceleration: float = 16.0
 @export_range(1.0, 60.0, 0.5) var ground_deceleration: float = 22.0
 @export_range(0.0, 30.0, 0.1) var turn_speed: float = 12.0
+@export_range(1.0, 12.0, 0.1) var jump_velocity: float = 5.5
+@export_range(1, 3, 1) var max_jumps: int = 2
 @export_range(0.01, 1.0, 0.01) var look_sensitivity_degrees_per_pixel: float = 0.12
 @export_range(-89.0, 0.0, 1.0) var min_pitch_degrees: float = -70.0
 @export_range(0.0, 89.0, 1.0) var max_pitch_degrees: float = 35.0
@@ -19,6 +21,7 @@ var _gravity: float = 9.8
 var _camera_yaw_radians: float = 0.0
 var _nearby_interactables: Array[BTVInteractable] = []
 var _interact_input_latched: bool = false
+var _air_jumps_remaining: int = 1
 
 
 func _ready() -> void:
@@ -39,6 +42,11 @@ func _physics_process(delta: float) -> void:
 		velocity.y -= _gravity * delta
 	else:
 		velocity.y = 0.0
+		_air_jumps_remaining = maxi(max_jumps - 1, 0)
+	if _is_jump_just_pressed() and (is_on_floor() or _air_jumps_remaining > 0):
+		velocity.y = jump_velocity
+		if not is_on_floor():
+			_air_jumps_remaining -= 1
 	var target_horizontal_velocity := move_direction * move_speed
 	var current_horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
 	var movement_rate := ground_acceleration if move_direction.length_squared() > 0.001 else ground_deceleration
@@ -52,6 +60,8 @@ func _physics_process(delta: float) -> void:
 		var target_yaw := atan2(-move_direction.x, -move_direction.z)
 		rotation.y = lerp_angle(rotation.y, target_yaw, min(turn_speed * delta, 1.0))
 	move_and_slide()
+	if is_on_floor():
+		_air_jumps_remaining = maxi(max_jumps - 1, 0)
 	_sync_camera_yaw()
 	if _is_interact_just_pressed():
 		_try_interact()
@@ -74,6 +84,10 @@ func _get_composed_movement_input() -> Vector2:
 
 ## Treat keyboard and touch as one logical Interact control. A second source
 ## joining an already-held press must not create another interaction edge.
+func _is_jump_just_pressed() -> bool:
+	return Input.is_action_just_pressed("jump") or Input.is_action_just_pressed("touch_jump")
+
+
 func _is_interact_just_pressed() -> bool:
 	var either_source_just_pressed := Input.is_action_just_pressed("interact") or Input.is_action_just_pressed("touch_interact")
 	var either_source_pressed := Input.is_action_pressed("interact") or Input.is_action_pressed("touch_interact")
