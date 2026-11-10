@@ -39,7 +39,7 @@ func _run() -> void:
 	var journal := world.get("_journal") as BTVExplorationJournal
 	_check(journal.get_observed_count() == 1, "EXPLORATION: new field note is recorded")
 	_check(FileAccess.file_exists(journal_path), "EXPLORATION: field note journal persists locally")
-	_check(world.get_node("HUD/Status").text.contains("Journal: 0/0"), "EXPLORATION: initial journal HUD is present")
+	_check(world.get_node("HUD/Status").text.contains("Journal: 0/4"), "EXPLORATION: initial journal HUD is present")
 	root.remove_child(world)
 	world.free()
 	print("\nEXPLORATION_PROTOTYPE_TESTS: PASS")
