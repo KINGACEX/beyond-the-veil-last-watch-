@@ -221,14 +221,20 @@ func _test_tree_collision(player: BTVPlayerController) -> void:
 	_clear_player_actions()
 	player.velocity = Vector3.ZERO
 	player.rotation = Vector3.ZERO
+	player.set("_camera_yaw_radians", 0.0)
+	player.call("_sync_camera_yaw")
 	player.global_position = Vector3(-22.0, 0.0, -9.0)
 	for _tick in range(4):
 		await physics_frame
+	_check(
+		player.test_move(player.global_transform, Vector3(0.0, 0.0, -5.0)),
+		"EXPLORATION: tree collider is present in the live physics space",
+	)
 	Input.action_press(&"move_forward")
 	for _tick in range(100):
 		await physics_frame
 	Input.action_release(&"move_forward")
-	print("TREE_COLLISION_FINAL_Z: ", player.global_position.z)
+	print("TREE_COLLISION_FINAL_POSITION: ", player.global_position)
 	_check(player.global_position.z > -8.0, "EXPLORATION: solid tree trunk blocks the player before its centre")
 	_check(player.global_position.z < -5.0, "EXPLORATION: player can approach a tree trunk before collision stops movement")
 	_check(player.is_on_wall(), "EXPLORATION: tree trunk collision is reported by CharacterBody3D")
