@@ -107,7 +107,10 @@ jobs:
             sleep 15
             adb shell pidof org.kingace.beyondtheveil
             adb logcat -d -t 4000 > "$RUNNER_TEMP/btv-emulator-logcat.txt"
-            if grep -E "FATAL EXCEPTION|Fatal signal" "$RUNNER_TEMP/btv-emulator-logcat.txt"; then
+            if ! grep -qE "FATAL EXCEPTION|Fatal signal" "$RUNNER_TEMP/btv-emulator-logcat.txt"; then
+              echo "No fatal Android runtime crash markers detected."
+            else
               echo "Android runtime reported a fatal crash."
+              grep -E "FATAL EXCEPTION|Fatal signal" "$RUNNER_TEMP/btv-emulator-logcat.txt"
               exit 1
             fi
