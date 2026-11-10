@@ -22,15 +22,32 @@ var _route_segment_elapsed := 0.0
 var _route_segment_start := Vector3.ZERO
 const ROUTE_SEGMENT_SECONDS := 2.0
 const ROUTE_CAMERA_OFFSET := Vector3(0.0, 11.0, 15.0)
+const RUN_IDLE := "idle"
+const RUN_WARMUP := "warmup"
+const RUN_TRANSIT := "transit"
+const RUN_DWELL := "dwell"
+const RUN_COMPLETE := "complete"
+const WARMUP_SECONDS := 5.0
+const VIEWPOINT_DWELL_SECONDS := 3.0
+const VIEWPOINT_TRANSIT_SECONDS := 1.0
+
+var _run_phase := RUN_IDLE
+var _run_phase_elapsed := 0.0
+var _run_viewpoint_index := 0
+var _run_started_at := ""
+var _last_run_metadata: Dictionary = {}
+var _run_export_path := ""
 
 
 func _process(delta: float) -> void:
 	if _route_active:
 		_advance_route(delta)
 	if delta > 0.0 and is_finite(delta):
-		_frame_time_samples_ms.append(delta * 1000.0)
-		if _frame_time_samples_ms.size() > MAX_FRAME_SAMPLES:
-			_frame_time_samples_ms.pop_front()
+		_advance_benchmark_run(delta)
+		if _run_phase == RUN_DWELL:
+			_frame_time_samples_ms.append(delta * 1000.0)
+			if _frame_time_samples_ms.size() > MAX_FRAME_SAMPLES:
+				_frame_time_samples_ms.pop_front()
 
 
 func get_frame_time_summary() -> Dictionary:
@@ -39,6 +56,121 @@ func get_frame_time_summary() -> Dictionary:
 
 func get_frame_time_sample_count() -> int:
 	return _frame_time_samples_ms.size()
+
+
+func begin_acceptance_run() -> bool:
+	if _route_points.is_empty() or not is_instance_valid(_camera):
+		return false
+	_frame_time_samples_ms.clear()
+	_run_viewpoint_index = 0
+	_run_phase_elapsed = 0.0
+	_run_phase = RUN_WARMUP
+	_run_started_at = Time.get_datetime_string_from_system(true)
+	_last_run_metadata.clear()
+	_run_export_path = ""
+	_route_active = false
+	_update_telemetry()
+	return true
+
+
+func get_acceptance_run_state() -> Dictionary:
+	return {
+		"phase": _run_phase,
+		"phase_elapsed": _run_phase_elapsed,
+		"viewpoint_index": _run_viewpoint_index,
+		"viewpoint_count": _route_points.size(),
+		"sample_count": _frame_time_samples_ms.size(),
+		"export_path": _run_export_path,
+	}
+
+
+func _advance_benchmark_run(delta: float) -> void:
+	if _run_phase == RUN_IDLE or _run_phase == RUN_COMPLETE or delta <= 0.0:
+		return
+	_run_phase_elapsed += delta
+	if _run_phase == RUN_WARMUP and _run_phase_elapsed >= WARMUP_SECONDS:
+		_run_phase = RUN_TRANSIT
+		_run_phase_elapsed = 0.0
+		_set_benchmark_viewpoint()
+	elif _run_phase == RUN_TRANSIT and _run_phase_elapsed >= VIEWPOINT_TRANSIT_SECONDS:
+		_run_phase = RUN_DWELL
+		_run_phase_elapsed = 0.0
+	elif _run_phase == RUN_DWELL and _run_phase_elapsed >= VIEWPOINT_DWELL_SECONDS:
+		_run_viewpoint_index += 1
+		_run_phase_elapsed = 0.0
+		if _run_viewpoint_index >= _route_points.size():
+			_run_phase = RUN_COMPLETE
+			_last_run_metadata = build_run_metadata()
+		else:
+			_run_phase = RUN_TRANSIT
+			_set_benchmark_viewpoint()
+	_update_telemetry()
+
+
+func _set_benchmark_viewpoint() -> void:
+	if _run_viewpoint_index >= _route_points.size():
+		return
+	var target: Vector3 = _route_points[_run_viewpoint_index]
+	_camera.position = target + ROUTE_CAMERA_OFFSET
+	_camera.look_at(target, Vector3.UP)
+
+
+func build_run_metadata() -> Dictionary:
+	return {
+		"schema_version": 1,
+		"project": str(ProjectSettings.get_setting("application/config/name", "BTV")),
+		"captured_at": _run_started_at,
+		"engine_version": Engine.get_version_info(),
+		"platform": OS.get_name(),
+		"viewport_size": {
+			"width": int(get_viewport().get_visible_rect().size.x),
+			"height": int(get_viewport().get_visible_rect().size.y),
+		},
+		"protocol": {
+			"warmup_seconds": WARMUP_SECONDS,
+			"transit_seconds_per_viewpoint": VIEWPOINT_TRANSIT_SECONDS,
+			"dwell_seconds_per_viewpoint": VIEWPOINT_DWELL_SECONDS,
+			"viewpoint_count": _route_points.size(),
+		},
+		"settings": {
+			"shadows": _shadows_enabled,
+			"fog": _fog_enabled,
+			"foliage": _foliage_enabled,
+			"npcs": _npcs_enabled,
+			"foliage_proxy_count": _foliage_nodes.size(),
+			"npc_proxy_count": _npc_nodes.size(),
+		},
+		"frame_time_measurement": {
+			"source": "Godot process delta during fixed viewpoint dwell windows",
+			"unit": "milliseconds",
+			"sample_count": _frame_time_samples_ms.size(),
+			"summary": BenchmarkMetrics.summarize_frame_times(_frame_time_samples_ms),
+			"limitations": "CPU frame interval observation only; not isolated GPU time, memory, thermal or power telemetry",
+		},
+		"viewpoints": _route_points.map(func(point: Vector3) -> Dictionary:
+			return {"x": point.x, "y": point.y, "z": point.z}
+		),
+	}
+
+
+func export_last_run_metadata() -> String:
+	if _last_run_metadata.is_empty():
+		return ""
+	var directory := "user://benchmark_runs"
+	var make_result := DirAccess.make_dir_recursive(directory)
+	if make_result != OK and make_result != ERR_ALREADY_EXISTS:
+		return ""
+	var safe_stamp := _run_started_at.replace(":", "-").replace("T", "_")
+	var file_name := "btv_benchmark_%s_%d.json" % [safe_stamp, Time.get_ticks_msec()]
+	var path := directory.path_join(file_name)
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		return ""
+	file.store_string(JSON.stringify(_last_run_metadata, "\\t"))
+	file.close()
+	_run_export_path = path
+	_update_telemetry()
+	return path
 
 
 func start_route_playback() -> void:
@@ -115,6 +247,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			start_route_playback()
 		KEY_6:
 			stop_route_playback()
+		KEY_7:
+			begin_acceptance_run()
+		KEY_8:
+			export_last_run_metadata()
 	_update_telemetry()
 
 
@@ -127,6 +263,7 @@ func get_benchmark_state() -> Dictionary:
 		"foliage_count": _foliage_nodes.size(),
 		"npc_count": _npc_nodes.size(),
 		"frame_time_sample_count": _frame_time_samples_ms.size(),
+		"acceptance_run_phase": _run_phase,
 	}
 
 
@@ -373,8 +510,10 @@ func _update_telemetry() -> void:
 			"ON" if _npcs_enabled else "OFF",
 		]
 		+ "Foliage proxies: %d   NPC placeholders: %d\n" % [_foliage_nodes.size(), _npc_nodes.size()]
-		+ "Frame-time samples: %d (delta-based; device profiling still required).\\n" % _frame_time_samples_ms.size()
-		+ "Greybox only. No GPU, memory, thermal, renderer or Android performance claims."
+		+ "Frame-time samples: %d   Acceptance run: %s / viewpoint %d of %d\\n" % [_frame_time_samples_ms.size(), _run_phase, _run_viewpoint_index, _route_points.size()]
+		+ "7 Start 5s warm-up + fixed-viewpoint capture   8 Export JSON metadata\\n"
+		+ "Last export: %s\\n" % (_run_export_path if not _run_export_path.is_empty() else "not exported")
+		+ "CPU frame intervals only; no GPU, memory, thermal or Android performance claims."
 	)
 
 
