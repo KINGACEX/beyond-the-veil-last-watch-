@@ -241,3 +241,10 @@ Added `scripts/weather_profile_blend.gd` as a pure deterministic helper for blen
 The initial unit test is `tests/weather_profile_blend_test.gd`; it covers weighted interpolation, deterministic repeatability, negative/zero weights, schema mismatch and channel bounds. **Godot 4.7.2 CI run #42782571229 passed** the new weather blend suite and all preceding project tests.
 
 This helper does not yet implement time-based transitions, local weather zones, precipitation particles, sky/fog presentation or climate simulation. The player remains excluded from wind forces by default. No regional climate or gameplay penalty is approved by this implementation.
+
+
+## 9. Continuous weather-profile transition helper
+
+Added `interpolate_profiles(from_profile, to_profile, progress)` to the deterministic weather helper. It clamps normalized progress to 0..1 and delegates to the schema-checked weighted blender. The caller owns the clock, transition duration and easing curve; the helper itself has no timers, hidden state or frame-rate dependency.
+
+Tests verify source, midpoint and target values, out-of-range progress clamping and rejection of incompatible schemas. **Godot 4.7.2 CI run #42783248175 passed** the wildlife and weather suites and the full workflow. This is a deterministic data-transition primitive only: no sky, cloud, rain, fog or particle scene is yet connected to it.
