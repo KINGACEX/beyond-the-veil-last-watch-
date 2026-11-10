@@ -66,3 +66,18 @@ Do not report FPS, memory, thermal performance or Android readiness from this gr
 ## 7. Boundaries
 
 The benchmark contains no Asher, Ember, Covenant, production region, mission, combat, enemy or weapon content. It is not a new canon location. No paid asset, external dependency, release, merge or production-region integration is included.
+
+
+## 8. Follow-up implementation — 10 November 2026
+
+**Code HEAD:** `920364cb18c41da089ad97cb3156b46a172f7236`  
+**Validation:** [Godot 4.7.2 CI run #42801417895](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42801417895) — PASS.
+
+Two repeatability/measurement improvements are now implemented:
+
+- `scripts/benchmark_metrics.gd` provides deterministic frame-time summaries: sample count, arithmetic mean, median, nearest-rank p95, maximum and count above a configurable stutter threshold. Invalid, negative, non-finite or empty samples are rejected.
+- `scripts/neutral_graphics_benchmark.gd` keeps a bounded rolling window of up to 3,600 frame-delta samples and exposes the summary API. This is CPU frame-delta sampling only; it is not GPU timing, memory telemetry, thermal data or a substitute for a platform profiler.
+- The benchmark now has a fixed six-viewpoint camera route. Key 5 starts the route; key 6 stops it. Each segment uses a fixed two-second interpolation. This supports repeatable camera viewpoints, but it is not yet a full benchmark capture protocol with dwell points, warm-up/cold-run controls or automated screenshot capture.
+- CI now runs `tests/benchmark_metrics_test.gd` and extends the graphics benchmark test to cover bounded sampling, summary availability, route start/stop and route completion.
+
+**Remaining acceptance gaps:** device-specific profiler integration; memory/CPU/GPU/thermal observations; render-scale and supported quality variants; fixed dwell points and repeatable run metadata export; visual captures and defect log; physical Android export/install and sustained profiling. Renderer choice remains deliberately undecided.
