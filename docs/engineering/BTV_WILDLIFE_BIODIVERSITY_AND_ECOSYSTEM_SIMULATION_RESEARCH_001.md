@@ -259,3 +259,19 @@ Palaeo-wildlife can be explored in a dedicated ancient region, research/educatio
 - Queensland Museum — Megafauna: https://www.museum.qld.gov.au/learn-and-discover/queenslands-ancient-past/megafauna
 - Natural History Museum — What is a fossil?: https://www.nhm.ac.uk/discover/what-is-a-fossil.html
 - PNAS — Megafauna and ecosystem function from the Pleistocene to the Anthropocene: https://doi.org/10.1073/pnas.1502540113
+
+
+## 13. Evidence-aware species profile contract
+
+The first machine-checkable data contract is implemented in `scripts/wildlife_species_profile.gd`. It validates:
+- Stable profile ID, common and scientific names, geographic range and taxonomic source.
+- Temporal class: modern, historical or deep_time.
+- Conservation status: extant, extinct_in_wild, extinct, regionally_extirpated or reintroduced.
+- Biome tags, evidence types, source references and explicit uncertainty notes.
+- Reconstruction-confidence values bounded to 0..1.
+- Deep-time-specific geological interval, fossil localities and body-fossil or trace-fossil evidence.
+- Explicit evidence context when fossil evidence is attached to a modern/historical record.
+
+Automated contract tests are in `tests/wildlife_species_profile_test.gd`. **Godot 4.7.2 CI run #42782571229 passed**, including editor parsing and the new species-profile test. This is a schema gate only: it does not certify an actual species record, establish co-occurrence, approve a species roster or place animals in a production region.
+
+Next: build a curated, cited candidate catalogue in separate biome/time-slice groupings. Each actual record must be checked against taxonomic authority, range, locality, geological age, evidence type and conservation assessment date before it can pass this schema and enter a validation scene.
