@@ -173,6 +173,10 @@ func _test_npc_interaction(player: BTVPlayerController, world: Node3D) -> void:
 		await physics_frame
 	var nearby: Array = player.get("_nearby_interactables")
 	_check(nearby.has(congregant), "LOGOS_RHEMA: real interaction sensor detects an approachable congregant")
+	_check(player.get_interaction_prompt() == "Speak with Congregant", "LOGOS_RHEMA: nearest NPC exposes a contextual interaction prompt")
+	await process_frame
+	_check(world.get_node("HUD/Prompt").visible, "LOGOS_RHEMA: interaction prompt is visible when an NPC is in range")
+	_check(world.get_node("HUD/Prompt").text.contains("Speak with Congregant"), "LOGOS_RHEMA: HUD displays the nearest NPC action")
 	var first_response: String = player.call("_try_interact")
 	_check(first_response.contains("Welcome"), "LOGOS_RHEMA: speaking to an NPC returns a greeting")
 	_check(world.get_node("HUD/Toast").text.contains("Welcome"), "LOGOS_RHEMA: NPC greeting reaches the on-screen interaction feedback")

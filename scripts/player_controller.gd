@@ -256,6 +256,11 @@ func _interaction_order(a: BTVInteractable, b: BTVInteractable) -> bool:
 	return id_a < id_b
 
 
+func get_interaction_prompt() -> String:
+	var nearest := _select_nearest_interactable()
+	return nearest.interaction_prompt if nearest != null else ""
+
+
 func _try_interact() -> String:
 	var nearest := _select_nearest_interactable()
 	if nearest == null:

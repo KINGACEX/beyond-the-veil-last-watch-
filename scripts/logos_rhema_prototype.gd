@@ -6,6 +6,8 @@ extends Node3D
 @onready var _status: Label = $HUD/Status
 @onready var _phase: Label = $HUD/Phase
 @onready var _toast: Label = $HUD/Toast
+@onready var _prompt: Label = $HUD/Prompt
+@onready var _prompt_background: ColorRect = $HUD/PromptBackground
 @onready var _service_director: BTVServiceDirector = $ServiceDirector
 
 var _materials: Dictionary = {}
@@ -21,8 +23,16 @@ func _ready() -> void:
 	_service_director.service_completed.connect(_on_service_completed)
 	_service_director.queue_covenant_alert()
 	_phase.text = "Sunday: " + _service_director.get_phase_label()
-	_status.text = "LOGOS RHEMA TEMPLE — GREYBOX\nExplore freely. The service sequence advances only when you use the prototype service board."
+	_status.text = "LOGOS RHEMA TEMPLE — GREYBOX\nWASD / left joystick: move • Mouse / right side: look • E / INTERACT: speak or use objects."
 	_toast.text = "A living community space. No timer, reward, score or forced objective."
+
+
+func _process(_delta: float) -> void:
+	var prompt_text := _player.get_interaction_prompt()
+	var has_prompt := not prompt_text.is_empty()
+	_prompt.visible = has_prompt
+	_prompt_background.visible = has_prompt
+	_prompt.text = "INTERACT  •  " + prompt_text if has_prompt else ""
 
 
 func _build_environment() -> void:
