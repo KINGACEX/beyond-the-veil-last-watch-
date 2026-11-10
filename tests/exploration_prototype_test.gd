@@ -8,6 +8,7 @@ const OBSERVATION_NAMES := [
 	"Ridge_FieldNote",
 	"Forest_FieldNote",
 ]
+var failures := 0
 
 
 func _initialize() -> void:
@@ -15,6 +16,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	_clear_player_actions()
 	var journal_path := "user://btv_exploration_journal.cfg"
 	if FileAccess.file_exists(journal_path):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(journal_path))
@@ -62,17 +64,55 @@ func _run() -> void:
 	_check(journal.get_observed_count() == 4, "EXPLORATION: repeating a note does not inflate the unique count")
 	_check(world.get_node("HUD/InteractionToast").text.contains("already recorded"), "EXPLORATION: repeated notes are identified as already recorded")
 
+	await _test_playable_movement_and_jump(player)
+
+	_clear_player_actions()
 	root.remove_child(world)
 	world.free()
 	if FileAccess.file_exists(journal_path):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(journal_path))
-	print("\\nEXPLORATION_PROTOTYPE_TESTS: PASS")
-	quit(0)
+	print("\\nEXPLORATION_PROTOTYPE_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
+	quit(1 if failures > 0 else 0)
+
+
+func _test_playable_movement_and_jump(player: BTVPlayerController) -> void:
+	for _tick in range(4):
+		await physics_frame
+	_check(player.is_on_floor(), "EXPLORATION: player settles onto the playable ground")
+	var start_position := player.global_position
+	Input.action_press(&"move_forward")
+	for _tick in range(45):
+		await physics_frame
+	Input.action_release(&"move_forward")
+	var travelled := start_position.distance_to(player.global_position)
+	_check(travelled > 1.0, "EXPLORATION: held movement produces physical displacement in the scene")
+	for _tick in range(35):
+		await physics_frame
+	_check(
+		is_zero_approx(player.velocity.x) and is_zero_approx(player.velocity.z),
+		"EXPLORATION: releasing movement brakes the player to rest",
+	)
+	_check(player.is_on_floor(), "EXPLORATION: player remains grounded after the route segment")
+
+	Input.action_press(&"jump")
+	await physics_frame
+	Input.action_release(&"jump")
+	_check(player.velocity.y > 0.0, "EXPLORATION: jump input produces upward velocity in the playable scene")
+	for _tick in range(90):
+		await physics_frame
+	_check(player.is_on_floor(), "EXPLORATION: player lands back on the exploration ground")
+
+
+func _clear_player_actions() -> void:
+	for action_name in [&"move_forward", &"move_back", &"move_left", &"move_right", &"jump", &"dash", &"interact"]:
+		Input.action_release(action_name)
+	for action_name in [&"touch_move_forward", &"touch_move_back", &"touch_move_left", &"touch_move_right", &"touch_jump", &"touch_dash", &"touch_interact"]:
+		Input.action_release(action_name)
 
 
 func _check(condition: bool, label: String) -> void:
 	if condition:
 		print("PASS: ", label)
 	else:
+		failures += 1
 		printerr("FAIL: ", label)
-		quit(1)
