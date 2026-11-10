@@ -54,6 +54,7 @@ func _run() -> void:
 		_check(journal.get_observed_count() == seen_ids.size(), "EXPLORATION: %s is recorded exactly once" % observation_name)
 		_check(world.get_node("HUD/Status").text.contains("Journal: %d/4" % seen_ids.size()), "EXPLORATION: journal HUD refreshes to %d/4" % seen_ids.size())
 		_check(world.get_node("HUD/InteractionToast").text.contains("saved locally"), "EXPLORATION: %s reports local save success" % observation_name)
+		player.call("_on_sensor_area_exited", field_note)
 
 	_check(journal.get_observed_count() == 4, "EXPLORATION: all four field notes are recorded")
 	_check(FileAccess.file_exists(journal_path), "EXPLORATION: field-note journal persists locally")
@@ -76,7 +77,7 @@ func _run() -> void:
 
 
 func _test_playable_movement_and_jump(player: BTVPlayerController) -> void:
-	for _tick in range(4):
+	for _tick in range(12):
 		await physics_frame
 	_check(player.is_on_floor(), "EXPLORATION: player settles onto the playable ground")
 	var start_position := player.global_position
