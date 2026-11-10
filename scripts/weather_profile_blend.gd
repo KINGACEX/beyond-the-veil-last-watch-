@@ -54,3 +54,26 @@ static func interpolate_profiles(from_profile: Dictionary, to_profile: Dictionar
 		return {}
 	var t := clampf(progress, 0.0, 1.0)
 	return blend_profiles([from_profile, to_profile], [1.0 - t, t])
+
+
+## Blends a base weather profile with caller-weighted local weather zones.
+## Zone weights are supplied by the caller (for example, distance/overlap
+## falloff); this helper does not perform spatial queries or own zone lifetimes.
+static func blend_weather_zones(base_profile: Dictionary, zones: Array) -> Dictionary:
+	if base_profile.is_empty():
+		return {}
+	var profiles: Array = [base_profile]
+	var weights: Array = [1.0]
+	for zone_value in zones:
+		if not zone_value is Dictionary:
+			return {}
+		var zone: Dictionary = zone_value
+		var profile: Variant = zone.get("profile", null)
+		var weight: Variant = zone.get("weight", null)
+		if not profile is Dictionary or not (weight is int or weight is float):
+			return {}
+		if float(weight) <= 0.0:
+			continue
+		profiles.append(profile)
+		weights.append(float(weight))
+	return blend_profiles(profiles, weights)
