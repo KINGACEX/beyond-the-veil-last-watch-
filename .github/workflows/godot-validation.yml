@@ -112,5 +112,8 @@ jobs:
       - name: Run deterministic wind field tests
         run: godot --headless --path . --script res://tests/wind_field_test.gd
 
+      - name: Run wildlife ecology simulation tests
+        run: godot --headless --path . --script res://tests/wildlife_ecology_sim_test.gd
+
       - name: Launch neutral movement physics lab for 10 frames
         run: godot --headless --path . --quit-after 10
