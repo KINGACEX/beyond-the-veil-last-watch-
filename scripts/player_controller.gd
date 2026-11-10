@@ -84,6 +84,9 @@ func _physics_process(delta: float) -> void:
 			velocity.z = 0.0
 		else:
 			_dash_time_remaining = maxf(_dash_time_remaining - delta, 0.0)
+			if _dash_time_remaining <= 0.0:
+				velocity.x = 0.0
+				velocity.z = 0.0
 	if is_on_floor():
 		_air_jumps_remaining = maxi(max_jumps - 1, 0)
 	_sync_camera_yaw()
