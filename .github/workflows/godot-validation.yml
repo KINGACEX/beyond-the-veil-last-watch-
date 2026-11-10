@@ -143,5 +143,7 @@ jobs:
         run: godot --headless --path . --quit-after 10
       - name: Run playable exploration prototype acceptance tests
         run: godot --headless --path . --script res://tests/exploration_prototype_test.gd
+      - name: Run exploration journal persistence tests
+        run: godot --headless --path . --script res://tests/exploration_journal_test.gd
       - name: Launch playable exploration prototype for 10 frames
         run: godot --headless --path . --quit-after 10
