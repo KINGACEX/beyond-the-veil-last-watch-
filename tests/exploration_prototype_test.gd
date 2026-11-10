@@ -33,7 +33,10 @@ func _run() -> void:
 	_check(world.get_node_or_null("Ground") is StaticBody3D, "EXPLORATION: collision ground exists")
 	_check(world.get_node_or_null("Pond_Surface_VisualOnly") is MeshInstance3D, "EXPLORATION: pond visual landmark exists")
 	_check(world.get_node_or_null("RockShelf") is StaticBody3D, "EXPLORATION: raised navigation landmark has collision")
-	_check(world.get_node_or_null("Tree_00") is Node3D, "EXPLORATION: vegetation proxy exists")
+	_check(world.get_node_or_null("Tree_00") is StaticBody3D, "EXPLORATION: vegetation proxy has a static collision body")
+	_check(world.get_node_or_null("Tree_00/CollisionShape3D") is CollisionShape3D, "EXPLORATION: tree trunk has collision geometry")
+	_check(world.get_node_or_null("Boulder_00") is StaticBody3D, "EXPLORATION: boulder has a static collision body")
+	_check(world.get_node_or_null("Boulder_00/CollisionShape3D") is CollisionShape3D, "EXPLORATION: boulder has collision geometry")
 
 	var player := world.get_node("Player") as BTVPlayerController
 	var journal := world.get("_journal") as BTVExplorationJournal
@@ -69,6 +72,7 @@ func _run() -> void:
 	await _test_camera_relative_scene_movement(player)
 	await _test_playable_movement_and_jump(player)
 	await _test_rock_shelf_collision(player)
+	await _test_tree_collision(player)
 
 	_clear_player_actions()
 	root.remove_child(world)
@@ -206,3 +210,24 @@ func _check(condition: bool, label: String) -> void:
 	else:
 		failures += 1
 		printerr("FAIL: ", label)
+
+
+func _test_tree_collision(player: BTVPlayerController) -> void:
+	_clear_player_actions()
+	player.velocity = Vector3.ZERO
+	player.rotation = Vector3.ZERO
+	player.global_position = Vector3(-22.0, 0.0, -9.0)
+	for _tick in range(4):
+		await physics_frame
+	Input.action_press(&"move_forward")
+	for _tick in range(100):
+		await physics_frame
+	Input.action_release(&"move_forward")
+	_check(player.global_position.z > -6.2, "EXPLORATION: solid tree trunk blocks the player before its centre")
+	_check(player.global_position.z < -5.0, "EXPLORATION: player can approach a tree trunk before collision stops movement")
+	_check(player.is_on_wall(), "EXPLORATION: tree trunk collision is reported by CharacterBody3D")
+	_clear_player_actions()
+	player.velocity = Vector3.ZERO
+	player.global_position = Vector3(0.0, 0.0, 12.0)
+	for _tick in range(4):
+		await physics_frame
