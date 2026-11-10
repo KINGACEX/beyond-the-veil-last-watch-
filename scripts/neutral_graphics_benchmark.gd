@@ -1,6 +1,9 @@
 extends Node3D
 ## Canon-neutral structural graphics benchmark. All content is greybox test geometry.
 
+const BenchmarkMetrics = preload("res://scripts/benchmark_metrics.gd")
+const MAX_FRAME_SAMPLES := 3600
+
 var _sun: DirectionalLight3D
 var _environment: Environment
 var _foliage_nodes: Array[Node3D] = []
@@ -10,6 +13,22 @@ var _shadows_enabled := true
 var _fog_enabled := false
 var _foliage_enabled := true
 var _npcs_enabled := true
+var _frame_time_samples_ms: Array[float] = []
+
+
+func _process(delta: float) -> void:
+	if delta > 0.0 and is_finite(delta):
+		_frame_time_samples_ms.append(delta * 1000.0)
+		if _frame_time_samples_ms.size() > MAX_FRAME_SAMPLES:
+			_frame_time_samples_ms.pop_front()
+
+
+func get_frame_time_summary() -> Dictionary:
+	return BenchmarkMetrics.summarize_frame_times(_frame_time_samples_ms)
+
+
+func get_frame_time_sample_count() -> int:
+	return _frame_time_samples_ms.size()
 
 
 func _ready() -> void:
@@ -52,6 +71,7 @@ func get_benchmark_state() -> Dictionary:
 		"npcs": _npcs_enabled,
 		"foliage_count": _foliage_nodes.size(),
 		"npc_count": _npc_nodes.size(),
+		"frame_time_sample_count": _frame_time_samples_ms.size(),
 	}
 
 
@@ -298,7 +318,8 @@ func _update_telemetry() -> void:
 			"ON" if _npcs_enabled else "OFF",
 		]
 		+ "Foliage proxies: %d   NPC placeholders: %d\n" % [_foliage_nodes.size(), _npc_nodes.size()]
-		+ "Greybox only. No FPS, memory, renderer or Android performance claims."
+		+ "Frame-time samples: %d (delta-based; device profiling still required).\\n" % _frame_time_samples_ms.size()
+		+ "Greybox only. No GPU, memory, thermal, renderer or Android performance claims."
 	)
 
 
