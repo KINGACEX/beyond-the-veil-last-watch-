@@ -135,15 +135,22 @@ func _build_world() -> void:
 
 	# Simple boulders and non-interactive distant ridge silhouettes.
 	for index in range(9):
-		var rock := MeshInstance3D.new()
+		var rock := StaticBody3D.new()
 		rock.name = "Boulder_%02d" % index
+		rock.position = Vector3(-19.0 + float(index) * 4.7, 0.35, -18.0 + float(index % 3) * 5.0)
+		rock.scale = Vector3(1.2, 0.7, 0.9)
+		var rock_collision := CollisionShape3D.new()
+		var rock_shape := SphereShape3D.new()
+		rock_shape.radius = 1.0
+		rock_collision.shape = rock_shape
+		rock.add_child(rock_collision)
+		var rock_mesh_instance := MeshInstance3D.new()
 		var rock_mesh := SphereMesh.new()
 		rock_mesh.radius = 1.0
 		rock_mesh.height = 1.5
-		rock.mesh = rock_mesh
-		rock.position = Vector3(-19.0 + float(index) * 4.7, 0.35, -18.0 + float(index % 3) * 5.0)
-		rock.scale = Vector3(1.2, 0.7, 0.9)
-		rock.material_override = stone_material
+		rock_mesh_instance.mesh = rock_mesh
+		rock_mesh_instance.material_override = stone_material
+		rock.add_child(rock_mesh_instance)
 		add_child(rock)
 
 	_add_observation("Clearing_FieldNote", Vector3(0.0, 0.0, 2.0), "CLEARING", "The clearing is a safe navigation test space. Use it to assess camera control, acceleration, braking and turning.")
@@ -200,10 +207,18 @@ func _add_visual_box(box_name: String, box_position: Vector3, box_size: Vector3,
 
 
 func _add_tree(tree_name: String, tree_position: Vector3, trunk_material: StandardMaterial3D, canopy_material: StandardMaterial3D, scale_factor: float) -> void:
-	var tree := Node3D.new()
+	var tree := StaticBody3D.new()
 	tree.name = tree_name
 	tree.position = tree_position
 	tree.scale = Vector3.ONE * scale_factor
+	var trunk_collision := CollisionShape3D.new()
+	trunk_collision.name = "CollisionShape3D"
+	var trunk_shape := CylinderShape3D.new()
+	trunk_shape.radius = 0.34
+	trunk_shape.height = 3.4
+	trunk_collision.shape = trunk_shape
+	trunk_collision.position.y = 1.7
+	tree.add_child(trunk_collision)
 	var trunk := MeshInstance3D.new()
 	var trunk_mesh := CylinderMesh.new()
 	trunk_mesh.top_radius = 0.22
