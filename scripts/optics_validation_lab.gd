@@ -30,8 +30,8 @@ func _draw_refraction_example() -> void:
 
 
 func _draw_tir_example() -> void:
-	var start := Vector3(4.0, -2.0, 0.0)
 	var hit := Vector3(3.0, 0.0, 0.0)
+	var start := hit - Vector3(sin(deg_to_rad(50.0)), cos(deg_to_rad(50.0)), 0.0) * 2.0
 	var direction := (hit - start).normalized()
 	var result: Dictionary = Solver.refract_direction(direction, Vector3.UP, 1.5, 1.0)
 	if bool(result.valid) and bool(result.total_internal_reflection):
