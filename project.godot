@@ -88,3 +88,7 @@ touch_dash={
 [physics]
 
 3d/default_gravity=9.8
+
+[rendering]
+
+textures/vram_compression/import_etc2_astc=true
