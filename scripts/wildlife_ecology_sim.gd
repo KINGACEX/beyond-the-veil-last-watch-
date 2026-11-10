@@ -95,3 +95,71 @@ static func deterministic_wander_direction(agent_id: int, step_index: int) -> Ve
 	var vertical := sin(phase * 0.37) * 0.12
 	var direction := Vector3(cos(phase), vertical, sin(phase))
 	return direction.normalized()
+
+
+## Distance-based simulation tiers for mobile population budgets.
+## Radii must be positive and strictly increasing; invalid settings fail safe to far.
+static func simulation_tier(distance: float, near_radius: float, mid_radius: float, far_radius: float) -> String:
+	if near_radius <= 0.0 or mid_radius <= near_radius or far_radius <= mid_radius:
+		return "far"
+	var safe_distance := maxf(distance, 0.0)
+	if safe_distance <= near_radius:
+		return "near"
+	if safe_distance <= mid_radius:
+		return "mid"
+	if safe_distance <= far_radius:
+		return "far"
+	return "offscreen"
+
+
+## Returns a bounded separation vector. It is a steering hint only; callers
+## must still use collision/navigation constraints and cap agent speed.
+static func separation_vector(
+	agent_id: int,
+	agent_position: Vector3,
+	neighbour_positions: Array,
+	minimum_distance: float,
+	maximum_strength: float
+) -> Vector3:
+	var safe_distance := maxf(minimum_distance, 0.001)
+	var safe_strength := maxf(maximum_strength, 0.0)
+	if safe_strength <= 0.0:
+		return Vector3.ZERO
+
+	var accumulated := Vector3.ZERO
+	for index in range(neighbour_positions.size()):
+		var neighbour: Variant = neighbour_positions[index]
+		if not neighbour is Vector3:
+			continue
+		var offset: Vector3 = agent_position - neighbour
+		var distance := offset.length()
+		if distance >= safe_distance:
+			continue
+		if distance <= 0.0001:
+			# Stable tie-break for coincident positions; avoids NaN/zero division.
+			var fallback := deterministic_wander_direction(agent_id, index + 1)
+			accumulated += Vector3(fallback.x, 0.0, fallback.z).normalized()
+		else:
+			accumulated += offset / distance * ((safe_distance - distance) / safe_distance)
+
+	if accumulated.length_squared() <= 0.000001:
+		return Vector3.ZERO
+	return accumulated.normalized() * minf(accumulated.length(), safe_strength)
+
+
+## Ambient disturbance responses are nonviolent and do not target or attack
+## the observer. Distances are world units; caller owns visibility/audio sensing.
+static func choose_disturbance_response(
+	distance: float,
+	alert_radius: float,
+	retreat_radius: float,
+	cover_available: bool
+) -> String:
+	var safe_distance := maxf(distance, 0.0)
+	var safe_alert := maxf(alert_radius, 0.0)
+	var safe_retreat := clampf(retreat_radius, 0.0, safe_alert)
+	if safe_distance > safe_alert:
+		return "calm"
+	if safe_distance <= safe_retreat:
+		return "retreat_to_cover" if cover_available else "increase_distance"
+	return "pause_and_assess"
