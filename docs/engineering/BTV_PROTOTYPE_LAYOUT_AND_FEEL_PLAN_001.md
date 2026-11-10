@@ -439,3 +439,8 @@ References include IUCN Red List categories, National Park Service Beringia mega
 **RESEARCH CANDIDATES:** official Ghana Forestry Commission records now anchor Kakum, Mole and Bui reference habitats; the Songor Ramsar Information Sheet anchors seasonal coastal-waterbird references. NPS Beringia and Queensland Museum fossil records anchor separate Pleistocene research tracks. These are not final species placements. Each record must pass taxonomy, locality/range, age, evidence and conservation-status review before entering a lab.
 
 **NEXT:** create a standalone wildlife validation scene using placeholder geometry and debug labels; add group movement/navigation tests only after the data catalogue is verified. Build a weather lab to visualize transitions without locking a renderer. Keep all ecological and atmospheric systems isolated from production regions pending evidence and Android profiling.
+
+
+## 23. Wildlife candidate catalogue — 2026-11-10
+
+Added [BTV Wildlife Candidate Catalogue Research 001](BTV_WILDLIFE_CANDIDATE_CATALOGUE_RESEARCH_001.md), with official-source-backed reference candidates for Kakum, Mole, Bui and Songor, plus separate Pleistocene Beringia and Queensland fossil tracks. The catalogue preserves evidence locality, temporal separation and uncertainty; it does not authorize production species placement or change Ridgeview canon.
