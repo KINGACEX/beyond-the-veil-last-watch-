@@ -33,8 +33,9 @@ func _run() -> void:
 	_check(world.get_node_or_null("Ground") is StaticBody3D, "EXPLORATION: collision ground exists")
 	_check(world.get_node_or_null("Pond_Surface_VisualOnly") is MeshInstance3D, "EXPLORATION: pond visual landmark exists")
 	_check(world.get_node_or_null("RockShelf") is StaticBody3D, "EXPLORATION: raised navigation landmark has collision")
-	_check(world.get_node_or_null("Tree_00") is StaticBody3D, "EXPLORATION: vegetation proxy has a static collision body")
-	_check(world.get_node_or_null("Tree_00/CollisionShape3D") is CollisionShape3D, "EXPLORATION: tree trunk has collision geometry")
+	_check(world.get_node_or_null("Tree_00") is Node3D, "EXPLORATION: vegetation visual proxy exists")
+	_check(world.get_node_or_null("Tree_00_Collision") is StaticBody3D, "EXPLORATION: vegetation proxy has an independent static collision body")
+	_check(world.get_node_or_null("Tree_00_Collision/CollisionShape3D") is CollisionShape3D, "EXPLORATION: tree trunk has collision geometry")
 	_check(world.get_node_or_null("Boulder_00") is StaticBody3D, "EXPLORATION: boulder has a static collision body")
 	_check(world.get_node_or_null("Boulder_00/CollisionShape3D") is CollisionShape3D, "EXPLORATION: boulder has collision geometry")
 
