@@ -203,6 +203,7 @@ func _add_static_box(box_name: String, point: Vector3, size: Vector3, material: 
 	body.collision_layer = 1
 	body.collision_mask = 1
 	var collision := CollisionShape3D.new()
+	collision.name = "CollisionShape3D"
 	var shape := BoxShape3D.new()
 	shape.size = size
 	collision.shape = shape
