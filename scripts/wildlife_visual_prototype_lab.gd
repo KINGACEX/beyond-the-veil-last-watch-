@@ -35,10 +35,10 @@ func _process(delta: float) -> void:
 
 func _update_telemetry() -> void:
 	_telemetry.text = (
-		"WILDLIFE VISUAL PROTOTYPE LAB — GENERIC PLACEHOLDERS\\n"
-		+ "Three broad body-form studies: mammal | bird | reptile\\n"
-		+ "Surface studies: rough fur-like, feather-like and scale-like materials\\n"
-		+ "Simple idle motion only; no rigged locomotion, textures or species identity\\n"
+		"WILDLIFE VISUAL PROTOTYPE LAB — GENERIC PLACEHOLDERS\n"
+		+ "Three broad body-form studies: mammal | bird | reptile\n"
+		+ "Surface studies: rough fur-like, feather-like and scale-like materials\n"
+		+ "Simple idle motion only; no rigged locomotion, textures or species identity\n"
 		+ "These are generic placeholders, not production wildlife assets."
 	)
 
