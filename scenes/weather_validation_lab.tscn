@@ -15,13 +15,6 @@ rotation_degrees = Vector3(-55, -25, 0)
 light_energy = 1.0
 shadow_enabled = false
 
-[node name="Ground" type="MeshInstance3D" parent="."]
-position = Vector3(0, -0.15, 0)
-mesh = SubResource("GroundMesh")
-
-[sub_resource type="BoxMesh" id="GroundMesh"]
-size = Vector3(40, 0.3, 16)
-
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="TelemetryBackground" type="ColorRect" parent="HUD"]
