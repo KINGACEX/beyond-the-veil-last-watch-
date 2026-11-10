@@ -70,6 +70,17 @@ func _update_profile() -> void:
 
 
 func _build_zones() -> void:
+	var ground := MeshInstance3D.new()
+	ground.name = "Ground"
+	var ground_mesh := BoxMesh.new()
+	ground_mesh.size = Vector3(40.0, 0.3, 16.0)
+	ground.mesh = ground_mesh
+	ground.position = Vector3(0.0, -0.15, 0.0)
+	var ground_material := StandardMaterial3D.new()
+	ground_material.albedo_color = Color(0.2, 0.22, 0.24)
+	ground_material.roughness = 1.0
+	ground.material_override = ground_material
+	add_child(ground)
 	for zone in ZONE_PROFILES:
 		var center: Vector3 = zone.center
 		var radius := float(zone.radius)
