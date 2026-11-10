@@ -5,6 +5,7 @@ const BenchmarkMetrics = preload("res://scripts/benchmark_metrics.gd")
 const MAX_FRAME_SAMPLES := 3600
 
 var _sun: DirectionalLight3D
+var _camera: Camera3D
 var _environment: Environment
 var _foliage_nodes: Array[Node3D] = []
 var _npc_nodes: Array[Node3D] = []
@@ -14,9 +15,18 @@ var _fog_enabled := false
 var _foliage_enabled := true
 var _npcs_enabled := true
 var _frame_time_samples_ms: Array[float] = []
+var _route_points: Array[Vector3] = []
+var _route_active := false
+var _route_segment_index := 0
+var _route_segment_elapsed := 0.0
+var _route_segment_start := Vector3.ZERO
+const ROUTE_SEGMENT_SECONDS := 2.0
+const ROUTE_CAMERA_OFFSET := Vector3(0.0, 11.0, 15.0)
 
 
 func _process(delta: float) -> void:
+	if _route_active:
+		_advance_route(delta)
 	if delta > 0.0 and is_finite(delta):
 		_frame_time_samples_ms.append(delta * 1000.0)
 		if _frame_time_samples_ms.size() > MAX_FRAME_SAMPLES:
@@ -29,6 +39,47 @@ func get_frame_time_summary() -> Dictionary:
 
 func get_frame_time_sample_count() -> int:
 	return _frame_time_samples_ms.size()
+
+
+func start_route_playback() -> void:
+	if _route_points.is_empty() or not is_instance_valid(_camera):
+		return
+	_route_segment_index = 0
+	_route_segment_elapsed = 0.0
+	_route_segment_start = _camera.position
+	_route_active = true
+
+
+func stop_route_playback() -> void:
+	_route_active = false
+
+
+func get_route_state() -> Dictionary:
+	return {
+		"active": _route_active,
+		"segment_index": _route_segment_index,
+		"segment_count": _route_points.size(),
+		"segment_elapsed": _route_segment_elapsed,
+	}
+
+
+func _advance_route(delta: float) -> void:
+	if not _route_active or delta <= 0.0 or not is_finite(delta):
+		return
+	if _route_segment_index >= _route_points.size():
+		_route_active = false
+		return
+	_route_segment_elapsed = minf(_route_segment_elapsed + delta, ROUTE_SEGMENT_SECONDS)
+	var progress := _route_segment_elapsed / ROUTE_SEGMENT_SECONDS
+	var target := _route_points[_route_segment_index]
+	_camera.position = _route_segment_start.lerp(target + ROUTE_CAMERA_OFFSET, progress)
+	_camera.look_at(target, Vector3.UP)
+	if progress >= 1.0:
+		_route_segment_index += 1
+		_route_segment_elapsed = 0.0
+		_route_segment_start = _camera.position
+		if _route_segment_index >= _route_points.size():
+			_route_active = false
 
 
 func _ready() -> void:
@@ -60,6 +111,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			_npcs_enabled = not _npcs_enabled
 			for node in _npc_nodes:
 				node.visible = _npcs_enabled
+		KEY_5:
+			start_route_playback()
+		KEY_6:
+			stop_route_playback()
 	_update_telemetry()
 
 
@@ -76,12 +131,12 @@ func get_benchmark_state() -> Dictionary:
 
 
 func _build_environment() -> void:
-	var camera := Camera3D.new()
-	camera.name = "BenchmarkCamera"
-	camera.position = Vector3(0.0, 27.0, 37.0)
-	camera.look_at(Vector3(0.0, 0.0, 0.0), Vector3.UP)
-	camera.current = true
-	add_child(camera)
+	_camera = Camera3D.new()
+	_camera.name = "BenchmarkCamera"
+	_camera.position = Vector3(0.0, 27.0, 37.0)
+	_camera.look_at(Vector3(0.0, 0.0, 0.0), Vector3.UP)
+	_camera.current = true
+	add_child(_camera)
 	var world := WorldEnvironment.new()
 	world.name = "BenchmarkWorldEnvironment"
 	_environment = Environment.new()
@@ -255,7 +310,7 @@ func _build_route_markers() -> void:
 	var route := Node3D.new()
 	route.name = "BenchmarkRoute"
 	add_child(route)
-	var route_points: Array[Vector3] = [
+	_route_points = [
 		Vector3(-21.0, 0.16, -9.0),
 		Vector3(-6.0, 0.16, -9.0),
 		Vector3(8.0, 0.16, -8.0),
@@ -264,20 +319,20 @@ func _build_route_markers() -> void:
 		Vector3(12.0, 0.16, 7.0),
 	]
 	var route_material := _material(Color(0.9, 0.72, 0.22), 0.78)
-	for index in range(route_points.size()):
+	for index in range(_route_points.size()):
 		var marker := MeshInstance3D.new()
 		marker.name = "RouteWaypoint_%d" % index
 		var mesh := SphereMesh.new()
 		mesh.radius = 0.18
 		mesh.height = 0.36
 		marker.mesh = mesh
-		marker.position = route_points[index]
+		marker.position = _route_points[index]
 		marker.material_override = route_material
 		route.add_child(marker)
-		if index == route_points.size() - 1:
+		if index == _route_points.size() - 1:
 			continue
-		var start: Vector3 = route_points[index]
-		var finish: Vector3 = route_points[index + 1]
+		var start: Vector3 = _route_points[index]
+		var finish: Vector3 = _route_points[index + 1]
 		var segment_vector := finish - start
 		var segment := MeshInstance3D.new()
 		segment.name = "RouteSegment_%d" % index
