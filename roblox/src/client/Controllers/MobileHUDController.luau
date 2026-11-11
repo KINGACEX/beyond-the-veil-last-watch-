@@ -88,7 +88,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	missionTitle.Name = "MissionTitle"
 	missionTitle.BackgroundTransparency = 1
 	missionTitle.Position = UDim2.fromOffset(12, 7)
-	missionTitle.Size = UDim2.new(1, -24, 0, 17)
+	missionTitle.Size = UDim2.new(1, -104, 0, 17)
 	missionTitle.Font = Enum.Font.GothamBold
 	missionTitle.Text = "OPENING SEQUENCE  •  1 / 6"
 	missionTitle.TextColor3 = Color3.fromRGB(198, 170, 112)
@@ -178,6 +178,22 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	reportBody.ZIndex = 31
 	reportBody.Parent = reportPanel
 
+	local reportReopen = Instance.new("TextButton")
+	reportReopen.Name = "ReopenScoutReport"
+	reportReopen.Position = UDim2.new(1, -86, 0, 8)
+	reportReopen.Size = UDim2.fromOffset(74, 26)
+	reportReopen.BackgroundColor3 = Color3.fromRGB(43, 57, 66)
+	reportReopen.Text = "REPORT"
+	reportReopen.TextColor3 = Color3.fromRGB(245, 242, 230)
+	reportReopen.Font = Enum.Font.GothamBold
+	reportReopen.TextSize = 11
+	reportReopen.Visible = false
+	reportReopen.Parent = missionCard
+	makeCorner(reportReopen, 7)
+	reportReopen.Activated:Connect(function()
+		reportPanel.Visible = true
+	end)
+
 	local function updateMission(snapshot: any)
 		if typeof(snapshot) ~= "table" then
 			return
@@ -194,6 +210,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		end
 		if snapshot.phase == "report_accessed" then
 			reportPanel.Visible = true
+			reportReopen.Visible = true
 		end
 	end
 	updateMission(initialMissionState)
