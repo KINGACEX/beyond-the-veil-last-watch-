@@ -38,7 +38,7 @@ No client remote can directly set a mission phase or award rewards.
 2. Run a two-player Studio server.
 3. Confirm both players start at phase 1 independently.
 4. Confirm entering the sanctuary changes only the interacting player's phase.
-5. Confirm the Scout Report prompt is gated until the Covenant-alert phase.
+5. Confirm Scout Report activation is rejected until the Covenant-alert phase.
 6. Confirm the report-access state updates only the interacting player's HUD.
 7. Attempt repeated and out-of-range prompt activation.
 8. Confirm no currency or spiritual-stat changes occur.
