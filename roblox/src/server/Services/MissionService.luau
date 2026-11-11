@@ -26,21 +26,24 @@ local OBJECTIVES: { [string]: string } = {
 	communion_context = "Enter the sanctuary",
 	covenant_alert = "Review the Scout Report",
 	report_accessed = "Scout Report opened — authored evidence pending",
+	ridgeview_arrival = "Arrive at Ridgeview",
 }
 
 local STATUS_TEXT: { [string]: string } = {
 	communion_context = "First Sunday • Communion context",
 	covenant_alert = "Covenant alert received",
 	report_accessed = "Report interface ready; authored evidence pending.",
+	ridgeview_arrival = "Ridgeview landscape study reached; investigation content pending.",
 }
 
 local SEQUENCE_INDEX: { [string]: number } = {
 	communion_context = 1,
 	covenant_alert = 2,
 	report_accessed = 3,
+	ridgeview_arrival = 4,
 }
 
-function MissionService.AddPlayer(player: PlayerIdentityIdentity)
+function MissionService.AddPlayer(player: PlayerIdentity)
 	states[player.UserId] = {
 		phase = "communion_context",
 		sequenceIndex = 1,
