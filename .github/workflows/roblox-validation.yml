@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Luau lint, format and Rojo build
+    name: Luau tests, lint, format and Rojo build
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -47,11 +47,14 @@ jobs:
           stylua --version
           lune --version
 
+      - name: Run headless foundation regression tests
+        run: lune run tests/foundation.spec.luau
+
       - name: Check Luau formatting
-        run: stylua --check src
+        run: stylua --check src tests
 
       - name: Lint Luau source
-        run: selene src
+        run: selene src tests
 
       - name: Build Roblox place
         run: |
