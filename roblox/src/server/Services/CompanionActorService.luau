@@ -180,13 +180,12 @@ RunService.Heartbeat:Connect(function(deltaTime: number)
 		local player = Players:GetPlayerByUserId(userId)
 		local character = actor.character
 		local root = character:FindFirstChild("HumanoidRootPart")
-		if player == nil or character.Parent == nil or root == nil or not root:IsA("BasePart") then
-			if player ~= nil then
-				destroyActor(player)
-			else
-				actor.model:Destroy()
-				actors[userId] = nil
-			end
+		if player == nil or character.Parent == nil then
+			actor.model:Destroy()
+			actors[userId] = nil
+			continue
+		end
+		if root == nil or not root:IsA("BasePart") then
 			continue
 		end
 
