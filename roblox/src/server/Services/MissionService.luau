@@ -11,6 +11,10 @@ export type MissionSnapshot = {
 	status: string,
 }
 
+type PlayerIdentity = {
+	UserId: number,
+}
+
 type MissionState = {
 	phase: string,
 	sequenceIndex: number,
@@ -36,7 +40,7 @@ local SEQUENCE_INDEX: {[string]: number} = {
 	report_accessed = 3,
 }
 
-function MissionService.AddPlayer(player: Player)
+function MissionService.AddPlayer(player: PlayerIdentity)
 	states[player.UserId] = {
 		phase = "communion_context",
 		sequenceIndex = 1,
