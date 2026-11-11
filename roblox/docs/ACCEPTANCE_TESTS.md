@@ -82,7 +82,8 @@
 - [ ] Scout Report prompt is accepted only during the Covenant-alert phase and within server-checked range.
 - [ ] Out-of-order, repeated, remote, and malformed interaction attempts cannot advance mission state.
 - [ ] Mission objective HUD updates only from server-confirmed state.
-- [ ] Scout Report explicitly shows authored evidence is pending; no fabricated clues, NPC dialogue, rewards or mission outcomes are presented.
+- [ ] Scout Report viewer opens after server-confirmed report access, can be closed and reopened, and explicitly shows authored evidence is pending.
+- [ ] No fabricated clues, NPC dialogue, rewards or mission outcomes are presented.
 - [ ] No spiritual score, faith currency, Communion buff, or automatic mission reward is created.
 
 ## H. Multiplayer
