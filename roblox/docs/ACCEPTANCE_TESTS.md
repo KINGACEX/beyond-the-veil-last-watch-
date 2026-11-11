@@ -137,20 +137,20 @@
 
 ## Automated source checks
 
-- [ ] Lune foundation regression suite passes in CI.
-- [ ] StyLua formatting check passes in CI.
-- [ ] Selene lint passes in CI.
-- [ ] Rojo place build succeeds in CI and the artifact is retained.
+- [x] Lune foundation regression suite passes in CI (Run #32).
+- [x] StyLua formatting check passes in CI (Run #32).
+- [x] Selene lint passes with 0 errors, 0 warnings and 0 parse errors (Run #32).
+- [x] Rojo place build succeeds in CI; `btv-roblox-place` artifact uploaded (Run #32).
 
 ## Current verification state
 
 - Repository source files: PRESENT on `btv/roblox-foundation-001`.
-- Luau syntax/type check: NOT RUN locally; CI checks are configured but no successful run has been confirmed.
-- Headless MissionService and companion catalog regression suite: ADDED; NOT YET EXECUTED.
+- Headless Luau foundation regression suite: PASS in GitHub Actions Run #32.
+- StyLua formatting: PASS in GitHub Actions Run #32.
+- Selene lint: PASS, 0 errors / 0 warnings / 0 parse errors, Run #32.
+- Rojo project build: PASS; artifact uploaded in Run #32.
 - Companion selection runtime and exploit-resistance tests: NOT RUN.
-- Opening mission state and interaction tests: NOT RUN.
-- Rojo project validation: NOT RUN.
-- Roblox Studio import: NOT RUN.
+- Roblox Studio import and play test: NOT RUN.
 - Logos Rhema Temple scene execution: NOT RUN.
 - Ridgeview landscape study execution: NOT RUN.
 - Ember follower runtime and multiplayer tests: NOT RUN.
