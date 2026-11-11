@@ -229,9 +229,16 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any)
 	end)
 
 	remotes.StateUpdated.OnClientEvent:Connect(function(snapshot)
-		if typeof(snapshot) == "table" and typeof(snapshot.emberCommand) == "string" then
+		if typeof(snapshot) ~= "table" then
+			return
+		end
+		if typeof(snapshot.emberCommand) == "string" then
 			currentCommand = snapshot.emberCommand
 			updateToggle()
+		end
+		if typeof(snapshot.equippedCompanion) == "string" then
+			currentCompanion = snapshot.equippedCompanion
+			updateCompanionToggle()
 		end
 	end)
 
