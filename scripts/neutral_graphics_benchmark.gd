@@ -30,11 +30,19 @@ const RUN_COMPLETE := "complete"
 const WARMUP_SECONDS := 5.0
 const VIEWPOINT_DWELL_SECONDS := 3.0
 const VIEWPOINT_TRANSIT_SECONDS := 1.0
+const RENDER_SCALE_PRESETS := [1.0, 0.85, 0.7]
 
+var _render_scale_index := 0
+var _render_scale := 1.0
 var _run_phase := RUN_IDLE
 var _run_phase_elapsed := 0.0
 var _run_viewpoint_index := 0
 var _run_started_at := ""
+var _run_sequence := 0
+var _run_elapsed_seconds := 0.0
+var _run_transition_start := Vector3.ZERO
+var _run_transition_target := Vector3.ZERO
+var _run_transition_look_target := Vector3.ZERO
 var _last_run_metadata: Dictionary = {}
 var _run_export_path := ""
 
@@ -43,11 +51,13 @@ func _process(delta: float) -> void:
 	if _route_active:
 		_advance_route(delta)
 	if delta > 0.0 and is_finite(delta):
-		_advance_benchmark_run(delta)
+		# Sample the phase that owned this frame interval before advancing the state.
+		# The value is a main-loop frame interval, not CPU execution time or GPU time.
 		if _run_phase == RUN_DWELL:
 			_frame_time_samples_ms.append(delta * 1000.0)
 			if _frame_time_samples_ms.size() > MAX_FRAME_SAMPLES:
 				_frame_time_samples_ms.pop_front()
+		_advance_benchmark_run(delta)
 
 
 func get_frame_time_summary() -> Dictionary:
@@ -58,17 +68,39 @@ func get_frame_time_sample_count() -> int:
 	return _frame_time_samples_ms.size()
 
 
+func set_render_scale(scale: float) -> bool:
+	if not is_finite(scale):
+		return false
+	for index in range(RENDER_SCALE_PRESETS.size()):
+		var preset := float(RENDER_SCALE_PRESETS[index])
+		if is_equal_approx(scale, preset):
+			_render_scale_index = index
+			_render_scale = preset
+			get_viewport().scaling_3d_scale = preset
+			_update_telemetry()
+			return true
+	return false
+
+
+func cycle_render_scale() -> bool:
+	var next_index := (_render_scale_index + 1) % RENDER_SCALE_PRESETS.size()
+	return set_render_scale(float(RENDER_SCALE_PRESETS[next_index]))
+
+
 func begin_acceptance_run() -> bool:
 	if _route_points.is_empty() or not is_instance_valid(_camera):
 		return false
 	_frame_time_samples_ms.clear()
 	_run_viewpoint_index = 0
 	_run_phase_elapsed = 0.0
+	_run_elapsed_seconds = 0.0
 	_run_phase = RUN_WARMUP
 	_run_started_at = Time.get_datetime_string_from_system(true)
+	_run_sequence += 1
 	_last_run_metadata.clear()
 	_run_export_path = ""
 	_route_active = false
+	_set_benchmark_viewpoint()
 	_update_telemetry()
 	return true
 
@@ -77,6 +109,7 @@ func get_acceptance_run_state() -> Dictionary:
 	return {
 		"phase": _run_phase,
 		"phase_elapsed": _run_phase_elapsed,
+		"elapsed_seconds": _run_elapsed_seconds,
 		"viewpoint_index": _run_viewpoint_index,
 		"viewpoint_count": _route_points.size(),
 		"sample_count": _frame_time_samples_ms.size(),
@@ -84,27 +117,66 @@ func get_acceptance_run_state() -> Dictionary:
 	}
 
 
+func _run_phase_duration() -> float:
+	match _run_phase:
+		RUN_WARMUP:
+			return WARMUP_SECONDS
+		RUN_TRANSIT:
+			return VIEWPOINT_TRANSIT_SECONDS
+		RUN_DWELL:
+			return VIEWPOINT_DWELL_SECONDS
+	return 0.0
+
+
 func _advance_benchmark_run(delta: float) -> void:
-	if _run_phase == RUN_IDLE or _run_phase == RUN_COMPLETE or delta <= 0.0:
+	if _run_phase == RUN_IDLE or _run_phase == RUN_COMPLETE or not is_finite(delta) or delta <= 0.0:
 		return
-	_run_phase_elapsed += delta
-	if _run_phase == RUN_WARMUP and _run_phase_elapsed >= WARMUP_SECONDS:
-		_run_phase = RUN_TRANSIT
-		_run_phase_elapsed = 0.0
-		_set_benchmark_viewpoint()
-	elif _run_phase == RUN_TRANSIT and _run_phase_elapsed >= VIEWPOINT_TRANSIT_SECONDS:
-		_run_phase = RUN_DWELL
-		_run_phase_elapsed = 0.0
-	elif _run_phase == RUN_DWELL and _run_phase_elapsed >= VIEWPOINT_DWELL_SECONDS:
-		_run_viewpoint_index += 1
-		_run_phase_elapsed = 0.0
-		if _run_viewpoint_index >= _route_points.size():
-			_run_phase = RUN_COMPLETE
-			_last_run_metadata = build_run_metadata()
-		else:
-			_run_phase = RUN_TRANSIT
-			_set_benchmark_viewpoint()
+	var remaining := delta
+	while remaining > 0.000001 and _run_phase != RUN_IDLE and _run_phase != RUN_COMPLETE:
+		var phase_duration := _run_phase_duration()
+		if phase_duration <= 0.0:
+			break
+		var phase_remaining := maxf(phase_duration - _run_phase_elapsed, 0.0)
+		if phase_remaining <= 0.000001:
+			_finish_run_phase()
+			continue
+		var consumed := minf(remaining, phase_remaining)
+		_run_phase_elapsed += consumed
+		_run_elapsed_seconds += consumed
+		remaining -= consumed
+		if _run_phase == RUN_TRANSIT:
+			_update_run_transition()
+		if _run_phase_elapsed >= phase_duration - 0.000001:
+			_finish_run_phase()
 	_update_telemetry()
+
+
+func _finish_run_phase() -> void:
+	_run_phase_elapsed = 0.0
+	match _run_phase:
+		RUN_WARMUP:
+			# Warm-up occurs at the first fixed camera dwell point.
+			_run_phase = RUN_DWELL
+		RUN_DWELL:
+			_run_viewpoint_index += 1
+			if _run_viewpoint_index >= _route_points.size():
+				_run_phase = RUN_COMPLETE
+				_last_run_metadata = build_run_metadata()
+			else:
+				_run_phase = RUN_TRANSIT
+				_run_transition_start = _camera.position
+				_run_transition_target = _route_points[_run_viewpoint_index] + ROUTE_CAMERA_OFFSET
+				_run_transition_look_target = _route_points[_run_viewpoint_index]
+		RUN_TRANSIT:
+			_camera.position = _run_transition_target
+			_camera.look_at(_run_transition_look_target, Vector3.UP)
+			_run_phase = RUN_DWELL
+
+
+func _update_run_transition() -> void:
+	var progress := clampf(_run_phase_elapsed / VIEWPOINT_TRANSIT_SECONDS, 0.0, 1.0)
+	_camera.position = _run_transition_start.lerp(_run_transition_target, progress)
+	_camera.look_at(_run_transition_look_target, Vector3.UP)
 
 
 func _set_benchmark_viewpoint() -> void:
@@ -117,23 +189,57 @@ func _set_benchmark_viewpoint() -> void:
 
 func build_run_metadata() -> Dictionary:
 	var viewpoints: Array[Dictionary] = []
-	for point in _route_points:
-		viewpoints.append({"x": point.x, "y": point.y, "z": point.z})
+	for index in range(_route_points.size()):
+		var point: Vector3 = _route_points[index]
+		viewpoints.append({
+			"id": "viewpoint_%02d" % index,
+			"x": point.x,
+			"y": point.y,
+			"z": point.z,
+		})
 	return {
-		"schema_version": 1,
+		"schema_version": 2,
 		"project": str(ProjectSettings.get_setting("application/config/name", "BTV")),
-		"captured_at": _run_started_at,
+		"run": {
+			"sequence": _run_sequence,
+			"started_at": _run_started_at,
+			"duration_seconds": _run_elapsed_seconds,
+			"traversal_variant": "fixed_camera_dwell_v2",
+			"completion_state": _run_phase,
+		},
+		"build": {
+			"commit": _metadata_value("BTV_BUILD_COMMIT", "GITHUB_SHA"),
+			"scene_revision": _metadata_value("BTV_SCENE_REVISION"),
+			"asset_set_revision": _metadata_value("BTV_ASSET_SET_REVISION"),
+		},
 		"engine_version": Engine.get_version_info(),
 		"platform": OS.get_name(),
+		"device": {
+			"model": _metadata_value("BTV_DEVICE_MODEL"),
+			"soc": _metadata_value("BTV_SOC"),
+			"gpu": _metadata_value("BTV_GPU"),
+			"ram_mb": _metadata_value("BTV_DEVICE_RAM_MB"),
+			"os_version": OS.get_version(),
+			"display_resolution": "NOT_CAPTURED_BY_THIS_SCRIPT",
+			"refresh_rate_hz": "NOT_CAPTURED_BY_THIS_SCRIPT",
+		},
 		"viewport_size": {
 			"width": int(get_viewport().get_visible_rect().size.x),
 			"height": int(get_viewport().get_visible_rect().size.y),
 		},
+		"rendering": {
+			"renderer_method": str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "NOT_CAPTURED")),
+			"graphics_api": "NOT_CAPTURED_BY_THIS_SCRIPT",
+			"render_scale": _render_scale,
+			"render_scale_mode": str(ProjectSettings.get_setting("rendering/scaling_3d/mode", "NOT_CAPTURED")),
+			"quality_control_scope": "scene toggles only; not a renderer-wide quality preset",
+		},
 		"protocol": {
 			"warmup_seconds": WARMUP_SECONDS,
-			"transit_seconds_per_viewpoint": VIEWPOINT_TRANSIT_SECONDS,
+			"transit_seconds_between_viewpoints": VIEWPOINT_TRANSIT_SECONDS,
 			"dwell_seconds_per_viewpoint": VIEWPOINT_DWELL_SECONDS,
 			"viewpoint_count": _route_points.size(),
+			"expected_duration_seconds": WARMUP_SECONDS + VIEWPOINT_DWELL_SECONDS * _route_points.size() + VIEWPOINT_TRANSIT_SECONDS * maxi(_route_points.size() - 1, 0),
 		},
 		"settings": {
 			"shadows": _shadows_enabled,
@@ -144,14 +250,35 @@ func build_run_metadata() -> Dictionary:
 			"npc_proxy_count": _npc_nodes.size(),
 		},
 		"frame_time_measurement": {
-			"source": "Godot process delta during fixed viewpoint dwell windows",
+			"source": "Godot Node._process(delta) during fixed viewpoint dwell windows",
 			"unit": "milliseconds",
+			"scope": "main-loop frame interval observed by the process callback; not CPU execution time",
+			"sample_window": "dwell only; warm-up and camera transit excluded",
 			"sample_count": _frame_time_samples_ms.size(),
 			"summary": BenchmarkMetrics.summarize_frame_times(_frame_time_samples_ms),
-			"limitations": "CPU frame interval observation only; not isolated GPU time, memory, thermal or power telemetry",
+			"limitations": "CPU-side frame interval only; not isolated GPU time, CPU utilization, memory, thermal or power telemetry",
+		},
+		"telemetry_availability": {
+			"cpu_frame_delta_ms": {"available": true, "status": "OBSERVED"},
+			"cpu_utilization": {"available": false, "status": "NOT_CAPTURED"},
+			"gpu_frame_time_ms": {"available": false, "status": "NOT_CAPTURED"},
+			"gpu_utilization": {"available": false, "status": "NOT_CAPTURED"},
+			"process_memory_bytes": {"available": false, "status": "NOT_CAPTURED"},
+			"device_ram_mb": {"available": false, "status": "NOT_CAPTURED_BY_BENCHMARK"},
+			"gpu_memory_bytes": {"available": false, "status": "NOT_CAPTURED"},
+			"thermal_state": {"available": false, "status": "NOT_CAPTURED"},
+			"power_draw_w": {"available": false, "status": "NOT_CAPTURED"},
 		},
 		"viewpoints": viewpoints,
+		"acceptance_status": "STRUCTURAL_ONLY; DEVICE PERFORMANCE NOT CERTIFIED",
 	}
+
+
+func _metadata_value(environment_name: String, fallback_environment_name: String = "") -> String:
+	var value := OS.get_environment(environment_name)
+	if value.is_empty() and not fallback_environment_name.is_empty():
+		value = OS.get_environment(fallback_environment_name)
+	return value if not value.is_empty() else "NOT_CAPTURED"
 
 
 func export_last_run_metadata() -> String:
@@ -220,6 +347,11 @@ func _advance_route(delta: float) -> void:
 
 
 func _ready() -> void:
+	_render_scale = get_viewport().scaling_3d_scale
+	_render_scale_index = 0
+	for index in range(RENDER_SCALE_PRESETS.size()):
+		if is_equal_approx(_render_scale, float(RENDER_SCALE_PRESETS[index])):
+			_render_scale_index = index
 	_build_environment()
 	_build_material_bay()
 	_build_lighting_bay()
@@ -256,6 +388,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			begin_acceptance_run()
 		KEY_8:
 			export_last_run_metadata()
+		KEY_9:
+			cycle_render_scale()
+		KEY_0:
+			set_render_scale(1.0)
 	_update_telemetry()
 
 
@@ -265,6 +401,9 @@ func get_benchmark_state() -> Dictionary:
 		"fog": _fog_enabled,
 		"foliage": _foliage_enabled,
 		"npcs": _npcs_enabled,
+		"quality_controls_scope": "scene-only toggles; one variable per comparison",
+		"render_scale": _render_scale,
+		"supported_render_scales": RENDER_SCALE_PRESETS.duplicate(),
 		"foliage_count": _foliage_nodes.size(),
 		"npc_count": _npc_nodes.size(),
 		"frame_time_sample_count": _frame_time_samples_ms.size(),
@@ -492,13 +631,13 @@ func _update_telemetry() -> void:
 		_telemetry = Label.new()
 		_telemetry.name = "Telemetry"
 		_telemetry.position = Vector2(18.0, 18.0)
-		_telemetry.size = Vector2(680.0, 150.0)
+		_telemetry.size = Vector2(760.0, 230.0)
 		_telemetry.add_theme_color_override("font_color", Color(0.96, 0.97, 0.98))
-		_telemetry.add_theme_font_size_override("font_size", 16)
+		_telemetry.add_theme_font_size_override("font_size", 15)
 		var background := ColorRect.new()
 		background.name = "TelemetryBackground"
 		background.position = Vector2(8.0, 8.0)
-		background.size = Vector2(700.0, 170.0)
+		background.size = Vector2(780.0, 250.0)
 		background.color = Color(0.035, 0.04, 0.045, 0.86)
 		var hud := CanvasLayer.new()
 		hud.name = "HUD"
@@ -514,14 +653,13 @@ func _update_telemetry() -> void:
 			"ON" if _foliage_enabled else "OFF",
 			"ON" if _npcs_enabled else "OFF",
 		]
-		+ "Foliage proxies: %d   NPC placeholders: %d\n" % [_foliage_nodes.size(), _npc_nodes.size()]
-		+ "Frame-time samples: %d   Acceptance run: %s / viewpoint %d of %d\\n" % [_frame_time_samples_ms.size(), _run_phase, _run_viewpoint_index, _route_points.size()]
-		+ "7 Start 5s warm-up + fixed-viewpoint capture   8 Export JSON metadata\\n"
-		+ "Last export: %s\\n" % (_run_export_path if not _run_export_path.is_empty() else "not exported")
-		+ "CPU frame intervals only; no GPU, memory, thermal or Android performance claims."
+		+ "9 Cycle 3D render scale: %.2f   0 Reset to 1.00\n" % _render_scale
+		+ "Quality controls are scene-only; compare one toggle at a time.\n"
+		+ "7 Start: 5s warm-up + 6 fixed dwell points (3s each); 1s transitions\n"
+		+ "8 Export completed run JSON   Phase: %s / viewpoint %d of %d\n" % [_run_phase, _run_viewpoint_index + 1, _route_points.size()]
+		+ "Frame samples: %d   Last export: %s\n" % [_frame_time_samples_ms.size(), _run_export_path if not _run_export_path.is_empty() else "not exported"]
+		+ "CPU main-loop frame intervals only; not CPU execution, GPU, memory, thermal or power telemetry."
 	)
-
-
 func _material(color: Color, roughness: float, metallic: float = 0.0) -> StandardMaterial3D:
 	var material := StandardMaterial3D.new()
 	material.albedo_color = color
