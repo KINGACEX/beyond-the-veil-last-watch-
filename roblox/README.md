@@ -5,7 +5,7 @@
 **Engine:** Roblox  
 **Language:** Luau  
 **Target:** Android-first play experience; multiplayer architecture  
-**Status:** Foundation source and companion catalog committed; not yet imported into Roblox Studio or runtime-tested.
+**Status:** Roblox source foundation and validation workflow configured; not yet imported into Roblox Studio or runtime-tested.
 
 ## Separation rule
 
@@ -44,9 +44,11 @@ Implemented as source files:
 - data-driven eight-animal companion catalog with roles, personalities, signature support behaviours and free-equivalent boundaries;
 - server-authoritative, session-only companion selection with a touch selector populated from the server-owned companion list. Initial access is Ember, Fox, Owl and Horse;
 - a server-generated Logos Rhema Temple environment visual prototype with sanctuary, foyer, seating, lighting and exterior approach. This is a proposed layout, not canon-locked or Studio-verified;
+- a separate Ridgeview landscape study with layered ridges, woodland, road, footpath, stream and lookout. This is proposed geography only and is not canon-locked or Studio-verified;
+- a pinned Roblox toolchain and GitHub Actions validation workflow for headless Luau tests, formatting, lint and Rojo place builds;
 - a server-owned opening-sequence state machine with sanctuary-entry and Scout Report interactions, a live objective HUD and a report viewer that clearly marks mission intelligence as pending. No report evidence is fabricated.
 
-The temple environment and opening interactions are source implementations only; they have not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md` for scope and canon boundaries.
+The Temple and Ridgeview environments and opening interactions are source implementations only; they have not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md` and `docs/RIDGEVIEW_LANDSCAPE_STUDY.md` for scope and canon boundaries. CI is configured, but no successful workflow run has yet been confirmed.
 
 The catalog covers all eight animals. Companion selection now exists for the current session, but ownership is not persistent and premium entitlement verification is not implemented. Eagle, Bear, Leopard and Falcon remain unavailable candidates with no purchase path. Companion models, AI and animations are not implemented. Ember's seven core commands remain available as core functionality; the optional Ember Bond Pack is presentation/bonding only. No product IDs or prices are defined.
 
@@ -54,6 +56,8 @@ Not implemented:
 - final world assets, Asher character model, companion models/AI, combat, completed authored missions, persistence, economy values, monetisation, or published Roblox place.
 
 ## Tooling
+
+The pinned toolchain is defined in `rokit.toml`. GitHub Actions runs the foundation regression suite, StyLua, Selene and a Rojo build for changes under `roblox/`. It uploads a temporary `.rbxlx` artifact and does not publish to Roblox. See `docs/CI_AND_STUDIO_TESTING.md`.
 
 The project is prepared for Rojo-based source mapping. Rojo sync/build and Roblox Studio editing require Windows or macOS. Android can edit and version the source and documentation, but cannot run the full Roblox Studio editor.
 
