@@ -55,6 +55,9 @@ static func validate_profile(profile: Dictionary) -> Array[String]:
 			if not (value is int or value is float):
 				errors.append("reconstruction_confidence values must be numeric")
 				continue
+			if not is_finite(float(value)):
+				errors.append("reconstruction_confidence values must be finite")
+				continue
 			if float(value) < 0.0 or float(value) > 1.0:
 				errors.append("reconstruction_confidence values must be within 0..1")
 
@@ -68,8 +71,9 @@ static func validate_profile(profile: Dictionary) -> Array[String]:
 	elif evidence.has("body_fossil") or evidence.has("trace_fossil"):
 		# Fossil evidence can support a modern/historical profile, but it must not
 		# silently change that profile's temporal classification.
-		if not profile.has("evidence_context"):
-			errors.append("fossil evidence on non-deep_time profiles requires evidence_context")
+		var evidence_context: Variant = profile.get("evidence_context", null)
+		if not evidence_context is String or str(evidence_context).strip_edges().is_empty():
+			errors.append("fossil evidence on non-deep_time profiles requires non-empty evidence_context")
 
 	return errors
 

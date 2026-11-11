@@ -25,6 +25,12 @@ func _run() -> void:
 		"WILDLIFE: poor habitat fails threshold")
 	_check(Wildlife.habitat_suitability({}, good_forest) == 0.0,
 		"WILDLIFE: missing species weights safely return zero")
+	_check(Wildlife.habitat_suitability({"habitat_weights": {"canopy": INF}}, good_forest) == 0.0,
+		"WILDLIFE: non-finite habitat weights fail safely")
+	_check(Wildlife.habitat_suitability(forest_species, {"canopy": NAN}) == 0.0,
+		"WILDLIFE: non-finite habitat observations fail safely")
+	_check(not Wildlife.habitat_is_viable(forest_species, good_forest, NAN),
+		"WILDLIFE: non-finite viability threshold is rejected")
 
 	var needs := {"hunger": 0.8, "thirst": 0.3, "energy": 0.8}
 	var storm := {"weather_severity": 0.95, "shelter_available": true, "water_access": 1.0, "food_access": 1.0}
@@ -36,6 +42,8 @@ func _run() -> void:
 		"WILDLIFE: thirst selects drinking when water is available")
 	_check(Wildlife.choose_behaviour(needs, calm) == Wildlife.BEHAVIOUR_FORAGE,
 		"WILDLIFE: hunger selects foraging")
+	_check(Wildlife.choose_behaviour({"hunger": NAN, "thirst": 0.1, "energy": 0.8}, calm) == Wildlife.BEHAVIOUR_ROAM,
+		"WILDLIFE: non-finite needs use safe defaults")
 	_check(Wildlife.choose_behaviour({"hunger": 0.1, "thirst": 0.1, "energy": 0.1}, calm) == Wildlife.BEHAVIOUR_REST,
 		"WILDLIFE: low energy selects rest")
 	_check(Wildlife.choose_behaviour({"hunger": 0.1, "thirst": 0.1, "energy": 0.8}, calm) == Wildlife.BEHAVIOUR_ROAM,
@@ -56,6 +64,8 @@ func _run() -> void:
 		"WILDLIFE: needs remain within normalized bounds")
 	var no_time: Dictionary = Wildlife.advance_needs(start, Wildlife.BEHAVIOUR_ROAM, -5.0)
 	_check(no_time == start, "WILDLIFE: negative time does not advance needs")
+	var invalid_time: Dictionary = Wildlife.advance_needs(start, Wildlife.BEHAVIOUR_ROAM, INF)
+	_check(invalid_time == start, "WILDLIFE: non-finite time does not advance needs")
 
 	var wander_a := Wildlife.deterministic_wander_direction(17, 42)
 	var wander_b := Wildlife.deterministic_wander_direction(17, 42)
@@ -77,6 +87,8 @@ func _run() -> void:
 		"WILDLIFE: distant agents use far population tier")
 	_check(Wildlife.simulation_tier(60.0, 5.0, 15.0, 40.0) == "offscreen",
 		"WILDLIFE: offscreen populations use coarse tier")
+	_check(Wildlife.simulation_tier(INF, 5.0, 15.0, 40.0) == "far",
+		"WILDLIFE: non-finite distance fails safe to far tier")
 	_check(Wildlife.simulation_tier(2.0, 5.0, 4.0, 40.0) == "far",
 		"WILDLIFE: invalid tier radii fail safe")
 

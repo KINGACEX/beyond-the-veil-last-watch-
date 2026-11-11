@@ -159,6 +159,8 @@ func _build_mammal_study() -> void:
 	var fur := _make_material(Color(0.48, 0.29, 0.16), 0.96)
 	_add_ellipsoid(root, "Body_FurPlaceholder", Vector3(0.0, 1.0, 0.0), Vector3(1.25, 0.62, 0.58), fur)
 	_add_ellipsoid(root, "Head_FurPlaceholder", Vector3(1.05, 1.35, 0.0), Vector3(0.48, 0.48, 0.42), fur)
+	for index in range(4):
+		_add_ellipsoid(root, "SurfaceDetail_FurTuft_%02d" % index, Vector3(-0.62 + float(index) * 0.38, 1.45, 0.0), Vector3(0.14, 0.09, 0.11), fur)
 	var mammal_legs: Array[MeshInstance3D] = []
 	for x in [-0.78, 0.72]:
 		for z in [-0.34, 0.34]:
@@ -179,6 +181,8 @@ func _build_bird_study() -> void:
 	var left_wing := _add_ellipsoid(root, "Wing_Left_FeatherPlaceholder", Vector3(-0.05, 1.14, -0.48), Vector3(0.62, 0.12, 0.34), dark_feather)
 	var right_wing := _add_ellipsoid(root, "Wing_Right_FeatherPlaceholder", Vector3(-0.05, 1.14, 0.48), Vector3(0.62, 0.12, 0.34), dark_feather)
 	_moving_parts["bird_wings"] = [left_wing, right_wing]
+	for index in range(4):
+		_add_ellipsoid(root, "SurfaceDetail_Feather_%02d" % index, Vector3(-0.36 + float(index) * 0.18, 1.43, 0.0), Vector3(0.12, 0.075, 0.12), dark_feather)
 	var bird_legs: Array[MeshInstance3D] = []
 	for side in [-1.0, 1.0]:
 		var leg_index := bird_legs.size()
@@ -194,6 +198,9 @@ func _build_reptile_study() -> void:
 	scales.metallic = 0.04
 	_add_ellipsoid(root, "Body_ScalePlaceholder", Vector3(0.0, 0.72, 0.0), Vector3(1.25, 0.38, 0.48), scales)
 	_add_ellipsoid(root, "Head_ScalePlaceholder", Vector3(1.12, 0.82, 0.0), Vector3(0.48, 0.28, 0.32), scales)
+	for index in range(5):
+		for side in [-1.0, 1.0]:
+			_add_ellipsoid(root, "SurfaceDetail_ScalePlate_%02d_%s" % [index, "L" if side < 0.0 else "R"], Vector3(-0.68 + float(index) * 0.34, 1.08, side * 0.21), Vector3(0.15, 0.055, 0.12), scales)
 	var reptile_tail := _add_capsule(root, "Tail_ScalePlaceholder", Vector3(-1.28, 0.66, 0.0), Vector3(0.16, 0.72, 0.16), scales, Vector3(0.0, 0.0, 1.0))
 	_moving_parts["reptile_tail"] = [reptile_tail]
 	var reptile_legs: Array[MeshInstance3D] = []
@@ -221,16 +228,21 @@ func _is_locomoting(elapsed: float) -> bool:
 	return phase < LOCOMOTION_TRAVEL_SECONDS or (phase >= second_travel_start and phase < second_travel_end)
 
 
+func _ease_motion_progress(progress: float) -> float:
+	var t := clampf(progress, 0.0, 1.0)
+	return t * t * (3.0 - 2.0 * t)
+
+
 func _motion_offset(elapsed: float, amplitude: float) -> float:
 	var phase := fposmod(elapsed, LOCOMOTION_LOOP_SECONDS)
 	var second_travel_start := LOCOMOTION_TRAVEL_SECONDS + ENDPOINT_IDLE_SECONDS
 	var second_travel_end := second_travel_start + LOCOMOTION_TRAVEL_SECONDS
 	if phase < LOCOMOTION_TRAVEL_SECONDS:
-		return lerpf(-amplitude, amplitude, phase / LOCOMOTION_TRAVEL_SECONDS)
+		return lerpf(-amplitude, amplitude, _ease_motion_progress(phase / LOCOMOTION_TRAVEL_SECONDS))
 	if phase < second_travel_start:
 		return amplitude
 	if phase < second_travel_end:
-		return lerpf(amplitude, -amplitude, (phase - second_travel_start) / LOCOMOTION_TRAVEL_SECONDS)
+		return lerpf(amplitude, -amplitude, _ease_motion_progress((phase - second_travel_start) / LOCOMOTION_TRAVEL_SECONDS))
 	return -amplitude
 
 
@@ -360,16 +372,22 @@ func _apply_visual_lod(specimen: Node3D, tier: String) -> void:
 		var part_name := child.name
 		var limb_detail := part_name.begins_with("Leg_") or part_name.begins_with("Tail_")
 		var fine_detail := part_name.begins_with("Wing_") or part_name.begins_with("Beak_")
+		var surface_detail := part_name.begins_with("SurfaceDetail_")
 		if tier == VisualLOD.MID:
-			child.visible = not limb_detail
+			child.visible = not (limb_detail or surface_detail)
 		elif tier == VisualLOD.FAR:
-			child.visible = not (limb_detail or fine_detail)
+			child.visible = not (limb_detail or fine_detail or surface_detail)
 		else:
 			child.visible = true
 
 
 func get_visual_prototype_state() -> Dictionary:
 	var moving_part_total := 0
+	var surface_detail_total := 0
+	for specimen in _specimens.values():
+		for child in (specimen as Node3D).get_children():
+			if child is MeshInstance3D and child.name.begins_with("SurfaceDetail_"):
+				surface_detail_total += 1
 	for part_group in _moving_parts.values():
 		if part_group is Array:
 			moving_part_total += part_group.size()
@@ -377,6 +395,7 @@ func get_visual_prototype_state() -> Dictionary:
 		"prototype_count": _specimens.size(),
 		"prototype_names": _specimens.keys(),
 		"moving_part_count": moving_part_total,
+		"surface_detail_count": surface_detail_total,
 		"elapsed_seconds": _elapsed,
 		"animation_mode": _animation_mode,
 		"habitat_presentation_count": _habitat_roots.size(),

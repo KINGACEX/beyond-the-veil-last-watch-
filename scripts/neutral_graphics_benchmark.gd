@@ -33,8 +33,8 @@ const VIEWPOINT_TRANSIT_SECONDS := 1.0
 const RENDER_SCALE_PRESETS := [1.0, 0.85, 0.7]
 const QUALITY_PROFILE_ORDER := ["reference", "reduced", "minimal"]
 const QUALITY_PROFILES := {
-	"reference": {"shadows": true, "fog": true, "foliage": true, "npcs": true},
-	"reduced": {"shadows": true, "fog": false, "foliage": true, "npcs": false},
+	"reference": {"shadows": true, "fog": false, "foliage": true, "npcs": true},
+	"reduced": {"shadows": false, "fog": false, "foliage": true, "npcs": false},
 	"minimal": {"shadows": false, "fog": false, "foliage": false, "npcs": false},
 }
 

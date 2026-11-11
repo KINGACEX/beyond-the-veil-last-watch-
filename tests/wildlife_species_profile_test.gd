@@ -60,6 +60,10 @@ func _run() -> void:
 	invalid_confidence["reconstruction_confidence"]["diet"] = 1.5
 	_check(not Profile.is_valid_profile(invalid_confidence),
 		"WILDLIFE_PROFILE: confidence values are bounded to 0..1")
+	var non_finite_confidence := modern_profile.duplicate(true)
+	non_finite_confidence["reconstruction_confidence"]["appearance"] = INF
+	_check(not Profile.is_valid_profile(non_finite_confidence),
+		"WILDLIFE_PROFILE: non-finite confidence values are rejected")
 
 	var unsupported_evidence := modern_profile.duplicate(true)
 	unsupported_evidence["evidence_types"] = ["guesswork"]
@@ -70,6 +74,16 @@ func _run() -> void:
 	fossil_context_missing["evidence_types"] = ["modern_observation", "body_fossil"]
 	_check(not Profile.is_valid_profile(fossil_context_missing),
 		"WILDLIFE_PROFILE: mixed fossil evidence requires explicit evidence context")
+	var empty_fossil_context := modern_profile.duplicate(true)
+	empty_fossil_context["evidence_types"] = ["modern_observation", "body_fossil"]
+	empty_fossil_context["evidence_context"] = "   "
+	_check(not Profile.is_valid_profile(empty_fossil_context),
+		"WILDLIFE_PROFILE: empty evidence context is rejected")
+	var contextual_fossil_record := modern_profile.duplicate(true)
+	contextual_fossil_record["evidence_types"] = ["modern_observation", "body_fossil"]
+	contextual_fossil_record["evidence_context"] = "Fossil evidence is cited as historical context, not a modern occurrence claim."
+	_check(Profile.is_valid_profile(contextual_fossil_record),
+		"WILDLIFE_PROFILE: contextualized mixed evidence remains valid")
 
 	print("\nWILDLIFE_SPECIES_PROFILE_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
 	quit(1 if failures > 0 else 0)

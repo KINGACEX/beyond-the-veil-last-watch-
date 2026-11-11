@@ -20,9 +20,15 @@ static func habitat_suitability(species: Dictionary, habitat: Dictionary) -> flo
 	var total_weight := 0.0
 	var weighted_fit := 0.0
 	for key in weights:
-		var weight := maxf(float(weights[key]), 0.0)
+		var raw_weight: Variant = weights[key]
+		var raw_habitat: Variant = habitat.get(key, 0.0)
+		if not (raw_weight is int or raw_weight is float) or not is_finite(float(raw_weight)):
+			return 0.0
+		if not (raw_habitat is int or raw_habitat is float) or not is_finite(float(raw_habitat)):
+			return 0.0
+		var weight := maxf(float(raw_weight), 0.0)
 		total_weight += weight
-		weighted_fit += weight * clampf(float(habitat.get(key, 0.0)), 0.0, 1.0)
+		weighted_fit += weight * clampf(float(raw_habitat), 0.0, 1.0)
 
 	if total_weight <= 0.000001:
 		return 0.0
@@ -30,16 +36,18 @@ static func habitat_suitability(species: Dictionary, habitat: Dictionary) -> flo
 
 
 static func habitat_is_viable(species: Dictionary, habitat: Dictionary, minimum_fit: float = 0.45) -> bool:
+	if not is_finite(minimum_fit):
+		return false
 	return habitat_suitability(species, habitat) >= clampf(minimum_fit, 0.0, 1.0)
 
 
 ## Needs use normalized values: hunger/thirst increase toward 1; energy falls toward 0.
 ## Priority is shelter in severe weather, then drink, forage, rest, and roam.
 static func choose_behaviour(needs: Dictionary, environment: Dictionary) -> String:
-	var hunger := clampf(float(needs.get("hunger", 0.0)), 0.0, 1.0)
-	var thirst := clampf(float(needs.get("thirst", 0.0)), 0.0, 1.0)
-	var energy := clampf(float(needs.get("energy", 1.0)), 0.0, 1.0)
-	var weather_severity := clampf(float(environment.get("weather_severity", 0.0)), 0.0, 1.0)
+	var hunger := _normalized_value(needs, "hunger", 0.0)
+	var thirst := _normalized_value(needs, "thirst", 0.0)
+	var energy := _normalized_value(needs, "energy", 1.0)
+	var weather_severity := _normalized_value(environment, "weather_severity", 0.0)
 
 	if weather_severity >= 0.82 and bool(environment.get("shelter_available", false)):
 		return BEHAVIOUR_SHELTER
@@ -59,17 +67,17 @@ static func advance_needs(
 	delta: float,
 	rates: Dictionary = {}
 ) -> Dictionary:
-	var step := clampf(delta, 0.0, 10.0)
+	var step := clampf(delta, 0.0, 10.0) if is_finite(delta) else 0.0
 	var result := {
-		"hunger": clampf(float(needs.get("hunger", 0.0)), 0.0, 1.0),
-		"thirst": clampf(float(needs.get("thirst", 0.0)), 0.0, 1.0),
-		"energy": clampf(float(needs.get("energy", 1.0)), 0.0, 1.0),
+		"hunger": _normalized_value(needs, "hunger", 0.0),
+		"thirst": _normalized_value(needs, "thirst", 0.0),
+		"energy": _normalized_value(needs, "energy", 1.0),
 	}
 
-	var hunger_rate := maxf(float(rates.get("hunger_rate", 0.012)), 0.0)
-	var thirst_rate := maxf(float(rates.get("thirst_rate", 0.016)), 0.0)
-	var energy_rate := maxf(float(rates.get("energy_rate", 0.025)), 0.0)
-	var recovery_rate := maxf(float(rates.get("recovery_rate", 0.06)), 0.0)
+	var hunger_rate := _nonnegative_rate(rates, "hunger_rate", 0.012)
+	var thirst_rate := _nonnegative_rate(rates, "thirst_rate", 0.016)
+	var energy_rate := _nonnegative_rate(rates, "energy_rate", 0.025)
+	var recovery_rate := _nonnegative_rate(rates, "recovery_rate", 0.06)
 
 	result["hunger"] = clampf(float(result["hunger"]) + hunger_rate * step, 0.0, 1.0)
 	result["thirst"] = clampf(float(result["thirst"]) + thirst_rate * step, 0.0, 1.0)
@@ -100,6 +108,8 @@ static func deterministic_wander_direction(agent_id: int, step_index: int) -> Ve
 ## Distance-based simulation tiers for mobile population budgets.
 ## Radii must be positive and strictly increasing; invalid settings fail safe to far.
 static func simulation_tier(distance: float, near_radius: float, mid_radius: float, far_radius: float) -> String:
+	if not (is_finite(distance) and is_finite(near_radius) and is_finite(mid_radius) and is_finite(far_radius)):
+		return "far"
 	if near_radius <= 0.0 or mid_radius <= near_radius or far_radius <= mid_radius:
 		return "far"
 	var safe_distance := maxf(distance, 0.0)
@@ -163,6 +173,20 @@ static func choose_disturbance_response(
 	if safe_distance <= safe_retreat:
 		return "retreat_to_cover" if cover_available else "increase_distance"
 	return "pause_and_assess"
+
+
+static func _normalized_value(source: Dictionary, key: String, fallback: float) -> float:
+	var raw: Variant = source.get(key, fallback)
+	if not (raw is int or raw is float) or not is_finite(float(raw)):
+		return fallback
+	return clampf(float(raw), 0.0, 1.0)
+
+
+static func _nonnegative_rate(rates: Dictionary, key: String, fallback: float) -> float:
+	var raw: Variant = rates.get(key, fallback)
+	if not (raw is int or raw is float) or not is_finite(float(raw)):
+		return fallback
+	return maxf(float(raw), 0.0)
 
 
 ## Schedules bounded wildlife updates across distance tiers.
