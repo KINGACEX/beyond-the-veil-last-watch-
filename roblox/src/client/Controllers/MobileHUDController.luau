@@ -10,6 +10,7 @@ type RemoteBundle = {
 	RequestEmberCommand: RemoteEvent,
 	RequestCompanionSelection: RemoteEvent,
 	StateUpdated: RemoteEvent,
+	MissionStateUpdated: RemoteEvent,
 }
 
 local COMMANDS = {
@@ -28,7 +29,7 @@ local function makeCorner(parent: Instance, radius: number)
 	corner.Parent = parent
 end
 
-function MobileHUDController.Init(remotes: RemoteBundle, initialState: any)
+function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, initialMissionState: any)
 	local player = game:GetService("Players").LocalPlayer
 	local playerGui = player:WaitForChild("PlayerGui")
 
@@ -71,7 +72,72 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any)
 	subtitle.TextColor3 = Color3.fromRGB(190, 198, 204)
 	subtitle.TextSize = 10
 	subtitle.TextXAlignment = Enum.TextXAlignment.Left
+
 	subtitle.Parent = header
+
+	local missionCard = Instance.new("Frame")
+	missionCard.Name = "MissionObjectiveCard"
+	missionCard.Position = UDim2.fromOffset(12, 74)
+	missionCard.Size = UDim2.new(1, -24, 0, 78)
+	missionCard.BackgroundColor3 = Color3.fromRGB(17, 23, 31)
+	missionCard.BackgroundTransparency = 0.16
+	missionCard.Parent = screenGui
+	makeCorner(missionCard, 10)
+
+	local missionTitle = Instance.new("TextLabel")
+	missionTitle.Name = "MissionTitle"
+	missionTitle.BackgroundTransparency = 1
+	missionTitle.Position = UDim2.fromOffset(12, 7)
+	missionTitle.Size = UDim2.new(1, -24, 0, 17)
+	missionTitle.Font = Enum.Font.GothamBold
+	missionTitle.Text = "OPENING SEQUENCE  •  1 / 6"
+	missionTitle.TextColor3 = Color3.fromRGB(198, 170, 112)
+	missionTitle.TextSize = 10
+	missionTitle.TextXAlignment = Enum.TextXAlignment.Left
+	missionTitle.Parent = missionCard
+
+	local missionObjective = Instance.new("TextLabel")
+	missionObjective.Name = "MissionObjective"
+	missionObjective.BackgroundTransparency = 1
+	missionObjective.Position = UDim2.fromOffset(12, 25)
+	missionObjective.Size = UDim2.new(1, -24, 0, 25)
+	missionObjective.Font = Enum.Font.GothamSemibold
+	missionObjective.Text = "Enter the sanctuary"
+	missionObjective.TextColor3 = Color3.fromRGB(244, 242, 234)
+	missionObjective.TextSize = 14
+	missionObjective.TextWrapped = true
+	missionObjective.TextXAlignment = Enum.TextXAlignment.Left
+	missionObjective.Parent = missionCard
+
+	local missionStatus = Instance.new("TextLabel")
+	missionStatus.Name = "MissionStatus"
+	missionStatus.BackgroundTransparency = 1
+	missionStatus.Position = UDim2.fromOffset(12, 52)
+	missionStatus.Size = UDim2.new(1, -24, 0, 17)
+	missionStatus.Font = Enum.Font.Gotham
+	missionStatus.Text = "First Sunday • Logos Rhema Temple"
+	missionStatus.TextColor3 = Color3.fromRGB(182, 192, 199)
+	missionStatus.TextSize = 10
+	missionStatus.TextXAlignment = Enum.TextXAlignment.Left
+	missionStatus.TextTruncate = Enum.TextTruncate.AtEnd
+	missionStatus.Parent = missionCard
+
+	local function updateMission(snapshot: any)
+		if typeof(snapshot) ~= "table" then
+			return
+		end
+		local index = if typeof(snapshot.sequenceIndex) == "number"
+			then math.clamp(math.floor(snapshot.sequenceIndex), 1, 6)
+			else 1
+		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 6"
+		if typeof(snapshot.objective) == "string" then
+			missionObjective.Text = snapshot.objective
+		end
+		if typeof(snapshot.status) == "string" then
+			missionStatus.Text = snapshot.status
+		end
+	end
+	updateMission(initialMissionState)
 
 	local toggle = Instance.new("TextButton")
 	toggle.Name = "EmberToggle"
@@ -227,6 +293,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any)
 	companionToggle.Activated:Connect(function()
 		companionPanel.Visible = not companionPanel.Visible
 	end)
+
+	remotes.MissionStateUpdated.OnClientEvent:Connect(updateMission)
 
 	remotes.StateUpdated.OnClientEvent:Connect(function(snapshot)
 		if typeof(snapshot) ~= "table" then
