@@ -46,6 +46,37 @@
 
 Do not launch subscriptions in v0.1/v0.2. Auto-renewing products create a continuing delivery obligation and require clear cancellation/value communication.
 
+
+## 2A. Ember premium companion offer — proposed
+
+Ember should have a premium product line, but **Ember must not become a paid requirement for completing the main story**. Ember is a meaningful companion and field partner in BTV canon. The free experience must retain a complete, fair route through every mission, including any mission that uses companion support.
+
+### Proposed product structure
+
+| Product | Type | What the player receives | Fairness boundary |
+|---|---|---|---|
+| Ember — Companion Bond Pack | One-time Game Pass | Premium companion presentation, expanded bonding interactions, approved cosmetic accessories and a dedicated companion profile presentation | Does not gate the base Ember story role or required mission completion |
+| Ember — Field Style Collection | Game Pass or separate cosmetic items | Alternate idle poses, recall animation, command animations, non-canonical visual trail effects and approved accessory looks | Visual/expression only; no stronger stats |
+| Ember — Ability Style Pack | Game Pass | Visual/audio presentation variants for existing commands, such as Scout, Track, Protect and Retrieve | Changes presentation, not detection range, damage, speed, success rate or mission outcome |
+| Ember — Camp & Companion Interactions | Game Pass | Optional non-combat interactions, rest/camp animations and photo poses | No resource generation, healing advantage or progression boost |
+
+### Ability policy
+
+The seven approved commands remain part of the designed companion system: Attack, Protect, Scout, Track, Retrieve, Hold and Regroup. Do not sell access to the basic commands if a mission or tutorial expects players to use them. Keep the actual functional abilities and any balance-relevant upgrades earnable through ordinary gameplay for every player.
+
+Premium may offer **ability presentation variants** and optional non-combat interactions. If the creator later wants a premium early-access route to a functional ability, that ability must also become available through a reasonable, clearly disclosed free progression path, and must not create a competitive advantage or bypass mission design. This is not approved for launch.
+
+### Ember product guardrails
+
+- Ember is not a weapon, damage multiplier, loot generator, paid tracker that reveals otherwise hidden mission evidence, or shortcut around investigation.
+- Do not sell enhanced damage, attack speed, health, detection radius, movement speed, guaranteed retrieval, stealth, or success probability.
+- Do not make Ember's loyalty, affection, spiritual significance or story relationship a purchasable meter.
+- Premium accessories must preserve Ember's locked appearance and recognizable silhouette; cosmetic variants require visual-canon review.
+- Do not sell random accessories, eggs, crates, spins or chance-based companion rewards.
+- Do not imply that buying Ember grants divine favour, spiritual authority, or a special relationship with God.
+
+**Recommended launch approach:** launch one optional Ember cosmetic/interaction pass only after the free Ember implementation is complete and tested. Keep all product IDs unset until the Creator Hub product exists and has been explicitly approved.
+
 ## 3. Pricing and launch approach
 
 Do not lock Robux prices before:
