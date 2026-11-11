@@ -49,8 +49,10 @@ No client remote can directly set a mission phase or award rewards.
 ## Current verification
 
 - Repository implementation and read-back: VERIFIED.
-- Luau type/syntax check: NOT RUN.
-- Rojo build: NOT RUN.
+- Headless Luau foundation regression suite: PASS (GitHub Actions Run #32).
+- StyLua format check: PASS (Run #32).
+- Selene lint: PASS with zero warnings/errors (Run #32).
+- Rojo build: PASS; place artifact uploaded (Run #32).
 - Roblox Studio play test: NOT RUN.
 - Two-player server test: NOT RUN.
 - Android test: NOT RUN.
