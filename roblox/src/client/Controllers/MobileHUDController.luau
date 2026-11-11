@@ -1,10 +1,14 @@
 --!strict
 -- Lightweight touch-first HUD. Presentation only; server remains authoritative.
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CompanionCatalog = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("CompanionCatalog"))
+
 local MobileHUDController = {}
 
 type RemoteBundle = {
 	RequestEmberCommand: RemoteEvent,
+	RequestCompanionSelection: RemoteEvent,
 	StateUpdated: RemoteEvent,
 }
 
@@ -108,6 +112,9 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any)
 	local currentCommand = if initialState and typeof(initialState.emberCommand) == "string"
 		then initialState.emberCommand
 		else "Regroup"
+	local currentCompanion = if initialState and typeof(initialState.equippedCompanion) == "string"
+		then initialState.equippedCompanion
+		else "ember"
 
 	local function updateToggle()
 		toggle.Text = "EMBER: " .. string.upper(currentCommand)
@@ -135,6 +142,92 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any)
 		panel.Visible = not panel.Visible
 	end)
 
+	-- This menu is populated from the server-owned snapshot. The server revalidates every request.
+	local companionToggle = Instance.new("TextButton")
+	companionToggle.Name = "CompanionToggle"
+	companionToggle.AnchorPoint = Vector2.new(0, 1)
+	companionToggle.Position = UDim2.new(0, 16, 1, -18)
+	companionToggle.Size = UDim2.fromOffset(142, 46)
+	companionToggle.BackgroundColor3 = Color3.fromRGB(38, 52, 61)
+	companionToggle.TextColor3 = Color3.fromRGB(245, 242, 230)
+	companionToggle.Font = Enum.Font.GothamBold
+	companionToggle.TextSize = 13
+	companionToggle.Parent = screenGui
+	makeCorner(companionToggle, 12)
+
+	local companionPanel = Instance.new("Frame")
+	companionPanel.Name = "CompanionSelectionPanel"
+	companionPanel.AnchorPoint = Vector2.new(0, 1)
+	companionPanel.Position = UDim2.new(0, 16, 1, -74)
+	companionPanel.Size = UDim2.fromOffset(184, 214)
+	companionPanel.BackgroundColor3 = Color3.fromRGB(17, 23, 31)
+	companionPanel.BackgroundTransparency = 0.06
+	companionPanel.Visible = false
+	companionPanel.Parent = screenGui
+	makeCorner(companionPanel, 12)
+
+	local companionLayout = Instance.new("UIListLayout")
+	companionLayout.Padding = UDim.new(0, 5)
+	companionLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	companionLayout.Parent = companionPanel
+
+	local companionPadding = Instance.new("UIPadding")
+	companionPadding.PaddingTop = UDim.new(0, 8)
+	companionPadding.PaddingBottom = UDim.new(0, 8)
+	companionPadding.PaddingLeft = UDim.new(0, 8)
+	companionPadding.PaddingRight = UDim.new(0, 8)
+	companionPadding.Parent = companionPanel
+
+	local companionButtons: {[string]: TextButton} = {}
+	local ownedCompanions = if initialState and typeof(initialState.ownedCompanions) == "table"
+		then initialState.ownedCompanions
+		else {}
+
+	local function displayNameFor(companionId: string): string
+		for _, definition in CompanionCatalog do
+			if definition.Id == companionId then
+				return definition.DisplayName
+			end
+		end
+		return companionId
+	end
+
+	local function updateCompanionToggle()
+		companionToggle.Text = "COMPANION: " .. string.upper(displayNameFor(currentCompanion))
+		for companionId, button in companionButtons do
+			button.BackgroundColor3 = if currentCompanion == companionId
+				then Color3.fromRGB(74, 91, 73)
+				else Color3.fromRGB(43, 57, 66)
+		end
+	end
+
+	local order = 0
+	for _, definition in CompanionCatalog do
+		if ownedCompanions[definition.Id] == true then
+			order += 1
+			local companionId = definition.Id
+			local button = Instance.new("TextButton")
+			button.Name = companionId .. "SelectButton"
+			button.LayoutOrder = order
+			button.Size = UDim2.new(1, 0, 0, 38)
+			button.BackgroundColor3 = Color3.fromRGB(43, 57, 66)
+			button.TextColor3 = Color3.fromRGB(245, 242, 230)
+			button.Font = Enum.Font.GothamMedium
+			button.TextSize = 13
+			button.Text = definition.DisplayName
+			button.Parent = companionPanel
+			makeCorner(button, 8)
+			companionButtons[companionId] = button
+			button.Activated:Connect(function()
+				remotes.RequestCompanionSelection:FireServer(companionId)
+			end)
+		end
+	end
+
+	companionToggle.Activated:Connect(function()
+		companionPanel.Visible = not companionPanel.Visible
+	end)
+
 	remotes.StateUpdated.OnClientEvent:Connect(function(snapshot)
 		if typeof(snapshot) == "table" and typeof(snapshot.emberCommand) == "string" then
 			currentCommand = snapshot.emberCommand
@@ -143,6 +236,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any)
 	end)
 
 	updateToggle()
+	updateCompanionToggle()
 end
 
 return MobileHUDController
