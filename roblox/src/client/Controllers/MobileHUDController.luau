@@ -210,6 +210,9 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		if snapshot.phase == "report_accessed" then
 			reportPanel.Visible = true
 			reportReopen.Visible = true
+		elseif snapshot.phase == "ridgeview_arrival" then
+			reportPanel.Visible = false
+			reportReopen.Visible = true
 		end
 	end
 	updateMission(initialMissionState)
