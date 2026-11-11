@@ -53,6 +53,10 @@ func _run() -> void:
 		_check(not seen_ids.has(field_note.observation_id), "EXPLORATION: %s has a unique ID" % observation_name)
 		seen_ids[field_note.observation_id] = true
 		_check(field_note.get_node_or_null("Marker") is MeshInstance3D, "EXPLORATION: %s has a visible marker" % observation_name)
+		world.set("_toast_seconds", 0.0)
+		var interaction_toast := world.get_node("HUD/InteractionToast") as Label
+		interaction_toast.text = ""
+		interaction_toast.modulate.a = 1.0
 		player.call("_on_sensor_area_entered", field_note)
 		await process_frame
 		world.call("_process", 0.0) # Update the prompt deterministically; process_frame resumes before node callbacks.

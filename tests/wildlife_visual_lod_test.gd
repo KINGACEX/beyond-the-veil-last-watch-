@@ -2,6 +2,7 @@ extends SceneTree
 ## Pure tests for render-presentation LOD, separate from ecology simulation tiers.
 
 const VisualLOD = preload("res://scripts/wildlife_visual_lod.gd")
+var failures := 0
 
 
 func _initialize() -> void:
@@ -15,13 +16,13 @@ func _initialize() -> void:
 	_check(VisualLOD.classify_distance(-1.0).is_empty(), "WILDLIFE VISUAL LOD: negative distance rejected")
 	_check(VisualLOD.classify_distance(INF).is_empty(), "WILDLIFE VISUAL LOD: infinite distance rejected")
 	_check(VisualLOD.classify_distance(10.0, 20.0, 15.0, 90.0).is_empty(), "WILDLIFE VISUAL LOD: invalid threshold ordering rejected")
-	print("\nWILDLIFE_VISUAL_LOD_TESTS: PASS")
-	quit(0)
+	print("\nWILDLIFE_VISUAL_LOD_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
+	quit(1 if failures > 0 else 0)
 
 
 func _check(condition: bool, label: String) -> void:
 	if condition:
 		print("PASS: ", label)
 	else:
+		failures += 1
 		printerr("FAIL: ", label)
-		quit(1)

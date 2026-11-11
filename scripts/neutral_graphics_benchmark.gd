@@ -228,10 +228,10 @@ func build_run_metadata() -> Dictionary:
 			"height": int(get_viewport().get_visible_rect().size.y),
 		},
 		"rendering": {
-			"renderer_method": str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "NOT_CAPTURED")),
+			"configured_renderer_method": str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "NOT_CAPTURED")),
 			"graphics_api": "NOT_CAPTURED_BY_THIS_SCRIPT",
 			"render_scale": _render_scale,
-			"render_scale_mode": str(ProjectSettings.get_setting("rendering/scaling_3d/mode", "NOT_CAPTURED")),
+			"render_scale_mode": int(get_viewport().scaling_3d_mode),
 			"quality_control_scope": "scene toggles only; not a renderer-wide quality preset",
 		},
 		"protocol": {
@@ -250,7 +250,7 @@ func build_run_metadata() -> Dictionary:
 			"npc_proxy_count": _npc_nodes.size(),
 		},
 		"frame_time_measurement": {
-			"source": "Godot Node._process(delta) during fixed viewpoint dwell windows",
+			"source": "Godot process delta (Node._process(delta)) during fixed viewpoint dwell windows",
 			"unit": "milliseconds",
 			"scope": "main-loop frame interval observed by the process callback; not CPU execution time",
 			"sample_window": "dwell only; warm-up and camera transit excluded",
@@ -298,7 +298,7 @@ func export_last_run_metadata() -> String:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return ""
-	file.store_string(JSON.stringify(_last_run_metadata, "\\t"))
+	file.store_string(JSON.stringify(_last_run_metadata, "\t"))
 	file.close()
 	_run_export_path = path
 	_update_telemetry()
@@ -415,9 +415,9 @@ func _build_environment() -> void:
 	_camera = Camera3D.new()
 	_camera.name = "BenchmarkCamera"
 	_camera.position = Vector3(0.0, 27.0, 37.0)
+	add_child(_camera)
 	_camera.look_at(Vector3(0.0, 0.0, 0.0), Vector3.UP)
 	_camera.current = true
-	add_child(_camera)
 	var world := WorldEnvironment.new()
 	world.name = "BenchmarkWorldEnvironment"
 	_environment = Environment.new()

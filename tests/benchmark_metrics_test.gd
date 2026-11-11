@@ -2,6 +2,7 @@ extends SceneTree
 ## Deterministic tests for benchmark frame-time summaries.
 
 const Metrics = preload("res://scripts/benchmark_metrics.gd")
+var failures := 0
 
 
 func _initialize() -> void:
@@ -21,13 +22,13 @@ func _run() -> void:
 	_check(Metrics.summarize_frame_times([16.0, -1.0]).is_empty(), "BENCHMARK_METRICS: negative sample rejected")
 	_check(Metrics.summarize_frame_times([16.0, INF]).is_empty(), "BENCHMARK_METRICS: non-finite sample rejected")
 	_check(Metrics.summarize_frame_times([16.0], 0.0).is_empty(), "BENCHMARK_METRICS: invalid threshold rejected")
-	print("\nBENCHMARK_METRICS_TESTS: PASS")
-	quit(0)
+	print("\nBENCHMARK_METRICS_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
+	quit(1 if failures > 0 else 0)
 
 
 func _check(condition: bool, label: String) -> void:
 	if condition:
 		print("PASS: ", label)
 	else:
+		failures += 1
 		printerr("FAIL: ", label)
-		quit(1)

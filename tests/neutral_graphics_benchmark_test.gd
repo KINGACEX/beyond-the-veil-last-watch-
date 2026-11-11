@@ -2,6 +2,7 @@ extends SceneTree
 ## Structural acceptance checks for the canon-neutral graphics benchmark.
 
 const BenchmarkScene = preload("res://scenes/neutral_graphics_benchmark.tscn")
+var failures := 0
 
 
 func _initialize() -> void:
@@ -104,8 +105,8 @@ func _run() -> void:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(export_path))
 	root.remove_child(benchmark)
 	benchmark.free()
-	print("\nNEUTRAL_GRAPHICS_BENCHMARK_TESTS: PASS")
-	quit(0)
+	print("\nNEUTRAL_GRAPHICS_BENCHMARK_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
+	quit(1 if failures > 0 else 0)
 
 
 func _key_event(key: Key) -> InputEventKey:
@@ -119,5 +120,5 @@ func _check(condition: bool, label: String) -> void:
 	if condition:
 		print("PASS: ", label)
 	else:
+		failures += 1
 		printerr("FAIL: ", label)
-		quit(1)

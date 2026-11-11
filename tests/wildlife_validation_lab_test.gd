@@ -2,6 +2,7 @@ extends SceneTree
 ## Acceptance tests for the isolated wildlife LOD validation lab.
 
 const LabScene = preload("res://scenes/wildlife_validation_lab.tscn")
+var failures := 0
 
 
 func _initialize() -> void:
@@ -21,13 +22,13 @@ func _run() -> void:
 	_check(telemetry.text.contains("no animal models"), "WILDLIFE LAB: non-production proxy boundary is explicit")
 	root.remove_child(lab)
 	lab.free()
-	print("\nWILDLIFE_VALIDATION_LAB_TESTS: PASS")
-	quit(0)
+	print("\nWILDLIFE_VALIDATION_LAB_TESTS: ", "PASS" if failures == 0 else "FAIL (%d failures)" % failures)
+	quit(1 if failures > 0 else 0)
 
 
 func _check(condition: bool, label: String) -> void:
 	if condition:
 		print("PASS: ", label)
 	else:
+		failures += 1
 		printerr("FAIL: ", label)
-		quit(1)
