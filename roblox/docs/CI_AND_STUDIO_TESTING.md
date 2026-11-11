@@ -9,13 +9,15 @@ The pinned toolchain is defined in `roblox/rokit.toml`:
 - Rojo builds the source tree into a Roblox place file.
 - StyLua checks Luau formatting without modifying files.
 - Selene checks Luau source against Roblox's standard library.
-- Lune is installed as the foundation for fast, headless Luau tests as test suites are added.
+- Lune runs fast, headless Luau regression tests.
+
+The first regression suite is `roblox/tests/foundation.spec.luau`. It checks sequential mission progression, rejection of skipped or repeated phases, player-state cleanup, the eight-animal roster, free equivalents for premium candidates, and Ember's seven core commands.
 
 The workflow uploads the generated `.rbxlx` as a short-lived CI artifact. It does not publish, update, or modify any Roblox experience.
 
 ## What CI does not prove
 
-A successful Rojo build proves that the project mapping can be serialized into a place file. Static lint and formatting checks do not prove that runtime services, UI, physics, character rigs, remotes, or mobile controls behave correctly.
+A successful Rojo build proves that the project mapping can be serialized into a place file. Headless tests cover the pure rules they explicitly exercise. Static lint and formatting checks do not prove that runtime services, UI, physics, character rigs, remotes, or mobile controls behave correctly.
 
 ## Roblox engine validation
 
