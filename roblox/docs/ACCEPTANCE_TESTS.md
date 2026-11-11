@@ -22,8 +22,13 @@
 - [ ] Server rejects commands outside the exact allowlist.
 - [ ] Server throttles repeated command requests.
 - [ ] Server returns only the requesting player's session snapshot.
-- [ ] Companion ownership and selection are validated server-side before implementation is released.
+- [ ] Companion selection requests are validated against server-owned session state.
+- [ ] Initial selectable companions are Ember, Fox, Owl and Horse only.
+- [ ] Eagle, Bear, Leopard and Falcon cannot be equipped without a future approved server-verified entitlement path.
 - [ ] Client cannot claim a premium entitlement by changing local UI state.
+- [ ] Malformed, unknown and unowned companion IDs are rejected.
+- [ ] Companion selection requests are throttled per player.
+- [ ] A selection updates only the requesting player's state snapshot.
 
 ## C. Companion roster and fairness
 
@@ -75,10 +80,18 @@
 - [ ] Check transparent effects, dynamic shadows and particle overdraw.
 - [ ] Establish separate mobile/standard/high visual quality profiles.
 
+## Companion selection implementation notes
+
+- Selection is session-only; reconnecting resets the equipped companion to Ember.
+- The client menu is populated from the server-provided ownership snapshot.
+- The server independently checks the catalog ID and ownership on every request; client UI visibility is not authoritative.
+- No premium purchase prompt, product ID, entitlement grant endpoint or persistent ownership schema exists.
+
 ## Current verification state
 
 - Repository source files: PRESENT on `btv/roblox-foundation-001`.
 - Luau syntax/type check: NOT RUN.
+- Companion selection runtime and exploit-resistance tests: NOT RUN.
 - Rojo project validation: NOT RUN.
 - Roblox Studio import: NOT RUN.
 - Multiplayer test: NOT RUN.
