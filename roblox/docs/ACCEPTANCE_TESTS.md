@@ -74,6 +74,18 @@
 - [ ] Low/mid-range Android frame rate and memory are measured before increasing detail.
 - [ ] Asher and Ember reference assets are used before final character/companion models are approved.
 
+## F1. Ember follower visual prototype
+
+- [ ] Ember appears for a player whose equipped companion is Ember.
+- [ ] Ember follows at a stable trailing offset without obstructing the player.
+- [ ] Ember remains available after character respawn.
+- [ ] Selecting another owned companion removes the Ember actor; selecting Ember again restores it.
+- [ ] Actor cleanup occurs when the player leaves.
+- [ ] The model has no collision, touch, or query interactions.
+- [ ] The current low-poly appearance is clearly treated as a placeholder.
+- [ ] No combat, detection, evidence, reward, speed or mission advantage is granted.
+- [ ] Multiple players receive separate companion actors without shared ownership or position.
+
 ## F2. Ridgeview landscape study
 
 - [ ] Ridgeview landscape study builds without runtime errors.
@@ -138,5 +150,6 @@
 - Roblox Studio import: NOT RUN.
 - Logos Rhema Temple scene execution: NOT RUN.
 - Ridgeview landscape study execution: NOT RUN.
+- Ember follower runtime and multiplayer tests: NOT RUN.
 - Multiplayer test: NOT RUN.
 - Android device test: NOT RUN.
