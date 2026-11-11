@@ -189,9 +189,25 @@ RunService.Heartbeat:Connect(function(deltaTime: number)
 			continue
 		end
 
-		local target = root.CFrame * FOLLOW_OFFSET
+		local idleTime = os.clock()
+		local idleOffset = CFrame.new(0, math.sin(idleTime * 4) * 0.035, 0)
+			* CFrame.Angles(0, math.sin(idleTime * 1.8) * 0.025, 0)
+		local target = root.CFrame * FOLLOW_OFFSET * idleOffset
 		local current = actor.model:GetPivot()
-		actor.model:PivotTo(current:Lerp(target, alpha))
+		local nextPivot = current:Lerp(target, alpha)
+		actor.model:PivotTo(nextPivot)
+
+		-- Small procedural tail motion adds life without granting any gameplay function.
+		local tailMid = actor.model:FindFirstChild("TailMid")
+		local tailTip = actor.model:FindFirstChild("TailTip")
+		if tailMid and tailMid:IsA("BasePart") then
+			tailMid.CFrame = nextPivot * CFrame.new(0, 0.67, 1.34)
+				* CFrame.Angles(0, math.sin(idleTime * 7) * 0.2, 0)
+		end
+		if tailTip and tailTip:IsA("BasePart") then
+			tailTip.CFrame = nextPivot * CFrame.new(0, 0.9, 1.59)
+				* CFrame.Angles(0, math.sin(idleTime * 7 - 0.35) * 0.28, 0)
+		end
 	end
 end)
 
