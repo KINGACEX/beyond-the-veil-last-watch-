@@ -20,9 +20,9 @@ type MissionState = {
 	sequenceIndex: number,
 }
 
-local states: {[number]: MissionState} = {}
+local states: { [number]: MissionState } = {}
 
-local OBJECTIVES: {[string]: string} = {
+local OBJECTIVES: { [string]: string } = {
 	communion_context = "Enter the sanctuary",
 	covenant_alert = "Review the Scout Report",
 	report_accessed = "Scout Report opened — authored evidence pending",
@@ -40,18 +40,18 @@ local SEQUENCE_INDEX: {[string]: number} = {
 	report_accessed = 3,
 }
 
-function MissionService.AddPlayer(player: PlayerIdentity)
+function MissionService.AddPlayer(player: PlayerIdentityIdentity)
 	states[player.UserId] = {
 		phase = "communion_context",
 		sequenceIndex = 1,
 	}
 end
 
-function MissionService.RemovePlayer(player: Player)
+function MissionService.RemovePlayer(player: PlayerIdentity)
 	states[player.UserId] = nil
 end
 
-function MissionService.GetSnapshot(player: Player): MissionSnapshot?
+function MissionService.GetSnapshot(player: PlayerIdentity): MissionSnapshot?
 	local state = states[player.UserId]
 	if state == nil then
 		return nil
@@ -64,7 +64,7 @@ function MissionService.GetSnapshot(player: Player): MissionSnapshot?
 	}
 end
 
-function MissionService.Advance(player: Player, expectedPhase: string, nextPhase: string): (boolean, MissionSnapshot?)
+function MissionService.Advance(player: PlayerIdentity, expectedPhase: string, nextPhase: string): (boolean, MissionSnapshot?)
 	local state = states[player.UserId]
 	if state == nil or state.phase ~= expectedPhase then
 		return false, nil
