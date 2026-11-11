@@ -74,7 +74,18 @@
 - [ ] Low/mid-range Android frame rate and memory are measured before increasing detail.
 - [ ] Asher and Ember reference assets are used before final character/companion models are approved.
 
-## G. Multiplayer
+## G. Opening vertical slice interactions
+
+- [ ] Mission state is created and removed server-side per player.
+- [ ] Initial objective is the passive Communion context followed by sanctuary entry; Communion itself grants no interaction reward or gameplay effect.
+- [ ] Sanctuary entry advances only the interacting player's mission state.
+- [ ] Scout Report prompt is accepted only during the Covenant-alert phase and within server-checked range.
+- [ ] Out-of-order, repeated, remote, and malformed interaction attempts cannot advance mission state.
+- [ ] Mission objective HUD updates only from server-confirmed state.
+- [ ] Scout Report explicitly shows authored evidence is pending; no fabricated clues, NPC dialogue, rewards or mission outcomes are presented.
+- [ ] No spiritual score, faith currency, Communion buff, or automatic mission reward is created.
+
+## H. Multiplayer
 
 - [ ] Two clients can join one test server.
 - [ ] Each client receives only its own initial state snapshot.
@@ -84,7 +95,7 @@
 - [ ] No unreviewed persistent profile schema is written.
 - [ ] Different selected companions can coexist without mission dependency or unfair advantage.
 
-## H. Performance
+## I. Performance
 
 - [ ] Profile on a low/mid-range Android device.
 - [ ] Measure frame rate and memory rather than guessing.
@@ -104,6 +115,7 @@
 - Repository source files: PRESENT on `btv/roblox-foundation-001`.
 - Luau syntax/type check: NOT RUN.
 - Companion selection runtime and exploit-resistance tests: NOT RUN.
+- Opening mission state and interaction tests: NOT RUN.
 - Rojo project validation: NOT RUN.
 - Roblox Studio import: NOT RUN.
 - Logos Rhema Temple scene execution: NOT RUN.
