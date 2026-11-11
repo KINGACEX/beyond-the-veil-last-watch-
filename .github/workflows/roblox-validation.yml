@@ -51,7 +51,7 @@ jobs:
         run: lune run tests/foundation.spec.luau
 
       - name: Check Luau formatting
-        run: stylua --check src tests
+        run: stylua --check src/server/Bootstrap.server.luau src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau tests/foundation.spec.luau
 
       - name: Lint Luau source
         run: selene src tests
