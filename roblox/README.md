@@ -43,14 +43,15 @@ Implemented as source files:
 - initial client HUD and command panel;
 - data-driven eight-animal companion catalog with roles, personalities, signature support behaviours and free-equivalent boundaries;
 - server-authoritative, session-only companion selection with a touch selector populated from the server-owned companion list. Initial access is Ember, Fox, Owl and Horse;
-- a server-generated Logos Rhema Temple environment visual prototype with sanctuary, foyer, seating, lighting and exterior approach. This is a proposed layout, not canon-locked or Studio-verified.
+- a server-generated Logos Rhema Temple environment visual prototype with sanctuary, foyer, seating, lighting and exterior approach. This is a proposed layout, not canon-locked or Studio-verified;
+- a server-owned opening-sequence state machine with sanctuary-entry and Scout Report interactions, plus a live objective HUD. The report content remains intentionally un-authored.
 
-The temple environment source is a first visual study only; it has not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md` for scope and canon boundaries.
+The temple environment and opening interactions are source implementations only; they have not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md` for scope and canon boundaries.
 
 The catalog covers all eight animals. Companion selection now exists for the current session, but ownership is not persistent and premium entitlement verification is not implemented. Eagle, Bear, Leopard and Falcon remain unavailable candidates with no purchase path. Companion models, AI and animations are not implemented. Ember's seven core commands remain available as core functionality; the optional Ember Bond Pack is presentation/bonding only. No product IDs or prices are defined.
 
 Not implemented:
-- final world assets, Asher character model, companion models/AI, combat, missions, persistence, economy values, monetisation, or published Roblox place.
+- final world assets, Asher character model, companion models/AI, combat, completed authored missions, persistence, economy values, monetisation, or published Roblox place.
 
 ## Tooling
 
