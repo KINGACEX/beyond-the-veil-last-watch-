@@ -24,6 +24,12 @@ local OBJECTIVES: {[string]: string} = {
 	report_accessed = "Scout Report opened — authored evidence pending",
 }
 
+local STATUS_TEXT: {[string]: string} = {
+	communion_context = "First Sunday • Communion context",
+	covenant_alert = "Covenant alert received",
+	report_accessed = "Report interface ready; authored evidence pending.",
+}
+
 local SEQUENCE_INDEX: {[string]: number} = {
 	communion_context = 1,
 	covenant_alert = 2,
@@ -50,9 +56,7 @@ function MissionService.GetSnapshot(player: Player): MissionSnapshot?
 		phase = state.phase,
 		sequenceIndex = state.sequenceIndex,
 		objective = OBJECTIVES[state.phase],
-		status = if state.phase == "report_accessed"
-			then "Report interface ready; mission evidence has not yet been authored."
-			else "Opening sequence prototype",
+		status = STATUS_TEXT[state.phase],
 	}
 end
 
