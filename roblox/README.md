@@ -44,7 +44,7 @@ Implemented as source files:
 - data-driven eight-animal companion catalog with roles, personalities, signature support behaviours and free-equivalent boundaries;
 - server-authoritative, session-only companion selection with a touch selector populated from the server-owned companion list. Initial access is Ember, Fox, Owl and Horse;
 - a server-generated Logos Rhema Temple environment visual prototype with sanctuary, foyer, seating, lighting and exterior approach. This is a proposed layout, not canon-locked or Studio-verified;
-- a server-owned opening-sequence state machine with sanctuary-entry and Scout Report interactions, plus a live objective HUD. The report content remains intentionally un-authored.
+- a server-owned opening-sequence state machine with sanctuary-entry and Scout Report interactions, a live objective HUD and a report viewer that clearly marks mission intelligence as pending. No report evidence is fabricated.
 
 The temple environment and opening interactions are source implementations only; they have not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md` for scope and canon boundaries.
 
