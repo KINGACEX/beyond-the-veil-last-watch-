@@ -80,4 +80,40 @@ Players.PlayerAdded:Connect(function(player: Player)
 	end)
 end)
 
-print("[BTV Roblox] Opening mission interactions ready: sanctuary entry and Scout Report access.")
+-- Travel is unlocked only after the player has opened the Scout Report.
+-- The destination is the start of the provisional Ridgeview footpath; this does not
+-- author any investigation facts or evidence.
+local departureMarker = Instance.new("Part")
+departureMarker.Name = "RidgeviewDepartureInteraction"
+departureMarker.Size = Vector3.new(8, 1, 2)
+departureMarker.CFrame = CFrame.new(0, 1.5, -127)
+departureMarker.Anchored = true
+departureMarker.Transparency = 1
+departureMarker.CanCollide = false
+departureMarker.CanTouch = false
+departureMarker.Parent = scene
+
+local departurePrompt = addPrompt(departureMarker, "DepartForRidgeviewPrompt", "Travel", "Ridgeview")
+departurePrompt.Triggered:Connect(function(player: Player)
+	if player.Character == nil or player:DistanceFromCharacter(departureMarker.Position) > 13 then
+		return
+	end
+
+	local accepted = MissionService.Advance(player, "report_accessed", "ridgeview_arrival")
+	if not accepted then
+		return
+	end
+
+	local character = player.Character
+	if character == nil then
+		return
+	end
+	local arrival = Vector3.new(422, 5, 35)
+	character:PivotTo(CFrame.lookAt(arrival, Vector3.new(452, 5, 12)))
+	local snapshot = MissionService.GetSnapshot(player)
+	if snapshot ~= nil then
+		missionStateUpdated:FireClient(player, snapshot)
+	end
+end)
+
+print("[BTV Roblox] Opening mission interactions ready: sanctuary entry, Scout Report access and gated Ridgeview travel.")
