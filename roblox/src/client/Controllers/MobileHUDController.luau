@@ -122,6 +122,62 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	missionStatus.TextTruncate = Enum.TextTruncate.AtEnd
 	missionStatus.Parent = missionCard
 
+	local reportPanel = Instance.new("Frame")
+	reportPanel.Name = "ScoutReportPanel"
+	reportPanel.AnchorPoint = Vector2.new(0.5, 0.5)
+	reportPanel.Position = UDim2.fromScale(0.5, 0.5)
+	reportPanel.Size = UDim2.new(1, -40, 0, 210)
+	reportPanel.BackgroundColor3 = Color3.fromRGB(16, 23, 31)
+	reportPanel.BackgroundTransparency = 0.04
+	reportPanel.Visible = false
+	reportPanel.ZIndex = 30
+	reportPanel.Parent = screenGui
+	makeCorner(reportPanel, 14)
+
+	local reportTitle = Instance.new("TextLabel")
+	reportTitle.Name = "ReportTitle"
+	reportTitle.BackgroundTransparency = 1
+	reportTitle.Position = UDim2.fromOffset(16, 14)
+	reportTitle.Size = UDim2.new(1, -72, 0, 24)
+	reportTitle.Font = Enum.Font.GothamBold
+	reportTitle.Text = "SCOUT REPORT"
+	reportTitle.TextColor3 = Color3.fromRGB(198, 170, 112)
+	reportTitle.TextSize = 16
+	reportTitle.TextXAlignment = Enum.TextXAlignment.Left
+	reportTitle.ZIndex = 31
+	reportTitle.Parent = reportPanel
+
+	local reportClose = Instance.new("TextButton")
+	reportClose.Name = "CloseReport"
+	reportClose.Position = UDim2.new(1, -48, 0, 10)
+	reportClose.Size = UDim2.fromOffset(34, 34)
+	reportClose.BackgroundColor3 = Color3.fromRGB(43, 57, 66)
+	reportClose.Text = "X"
+	reportClose.TextColor3 = Color3.fromRGB(245, 242, 230)
+	reportClose.Font = Enum.Font.GothamBold
+	reportClose.TextSize = 14
+	reportClose.ZIndex = 31
+	reportClose.Parent = reportPanel
+	makeCorner(reportClose, 8)
+	reportClose.Activated:Connect(function()
+		reportPanel.Visible = false
+	end)
+
+	local reportBody = Instance.new("TextLabel")
+	reportBody.Name = "ReportBody"
+	reportBody.BackgroundTransparency = 1
+	reportBody.Position = UDim2.fromOffset(16, 52)
+	reportBody.Size = UDim2.new(1, -32, 1, -68)
+	reportBody.Font = Enum.Font.Gotham
+	reportBody.Text = "MISSION INTELLIGENCE NOT LOADED\n\nNo authored evidence is available in this prototype. Situation, evidence, confidence and recommended response remain unassessed. No mission facts have been fabricated."
+	reportBody.TextColor3 = Color3.fromRGB(224, 229, 230)
+	reportBody.TextSize = 13
+	reportBody.TextWrapped = true
+	reportBody.TextXAlignment = Enum.TextXAlignment.Left
+	reportBody.TextYAlignment = Enum.TextYAlignment.Top
+	reportBody.ZIndex = 31
+	reportBody.Parent = reportPanel
+
 	local function updateMission(snapshot: any)
 		if typeof(snapshot) ~= "table" then
 			return
@@ -135,6 +191,9 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		end
 		if typeof(snapshot.status) == "string" then
 			missionStatus.Text = snapshot.status
+		end
+		if snapshot.phase == "report_accessed" then
+			reportPanel.Visible = true
 		end
 	end
 	updateMission(initialMissionState)
