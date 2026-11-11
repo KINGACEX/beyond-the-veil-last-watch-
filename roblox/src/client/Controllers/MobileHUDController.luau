@@ -169,7 +169,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	reportBody.Position = UDim2.fromOffset(16, 52)
 	reportBody.Size = UDim2.new(1, -32, 1, -68)
 	reportBody.Font = Enum.Font.Gotham
-	reportBody.Text = "MISSION INTELLIGENCE NOT LOADED\n\nNo authored evidence is available in this prototype. Situation, evidence, confidence and recommended response remain unassessed. No mission facts have been fabricated."
+	reportBody.Text =
+		"MISSION INTELLIGENCE NOT LOADED\n\nNo authored evidence is available in this prototype. Situation, evidence, confidence and recommended response remain unassessed. No mission facts have been fabricated."
 	reportBody.TextColor3 = Color3.fromRGB(224, 229, 230)
 	reportBody.TextSize = 13
 	reportBody.TextWrapped = true
@@ -198,9 +199,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		if typeof(snapshot) ~= "table" then
 			return
 		end
-		local index = if typeof(snapshot.sequenceIndex) == "number"
-			then math.clamp(math.floor(snapshot.sequenceIndex), 1, 6)
-			else 1
+		local index = if typeof(snapshot.sequenceIndex) == "number" then math.clamp(math.floor(snapshot.sequenceIndex), 1, 6) else 1
 		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 6"
 		if typeof(snapshot.objective) == "string" then
 			missionObjective.Text = snapshot.objective
@@ -251,12 +250,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	padding.PaddingRight = UDim.new(0, 8)
 	padding.Parent = panel
 
-	local currentCommand = if initialState and typeof(initialState.emberCommand) == "string"
-		then initialState.emberCommand
-		else "Regroup"
-	local currentCompanion = if initialState and typeof(initialState.equippedCompanion) == "string"
-		then initialState.equippedCompanion
-		else "ember"
+	local currentCommand = if initialState and typeof(initialState.emberCommand) == "string" then initialState.emberCommand else "Regroup"
+	local currentCompanion = if initialState and typeof(initialState.equippedCompanion) == "string" then initialState.equippedCompanion else "ember"
 
 	local function updateToggle()
 		toggle.Text = "EMBER: " .. string.upper(currentCommand)
@@ -320,10 +315,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	companionPadding.PaddingRight = UDim.new(0, 8)
 	companionPadding.Parent = companionPanel
 
-	local companionButtons: {[string]: TextButton} = {}
-	local ownedCompanions = if initialState and typeof(initialState.ownedCompanions) == "table"
-		then initialState.ownedCompanions
-		else {}
+	local companionButtons: { [string]: TextButton } = {}
+	local ownedCompanions = if initialState and typeof(initialState.ownedCompanions) == "table" then initialState.ownedCompanions else {}
 
 	local function displayNameFor(companionId: string): string
 		for _, definition in CompanionCatalog do
@@ -337,9 +330,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	local function updateCompanionToggle()
 		companionToggle.Text = "COMPANION: " .. string.upper(displayNameFor(currentCompanion))
 		for companionId, button in companionButtons do
-			button.BackgroundColor3 = if currentCompanion == companionId
-				then Color3.fromRGB(74, 91, 73)
-				else Color3.fromRGB(43, 57, 66)
+			button.BackgroundColor3 = if currentCompanion == companionId then Color3.fromRGB(74, 91, 73) else Color3.fromRGB(43, 57, 66)
 		end
 	end
 
