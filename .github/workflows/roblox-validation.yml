@@ -1,0 +1,67 @@
+name: BTV Roblox Validation
+
+on:
+  push:
+    branches:
+      - btv/roblox-foundation-001
+    paths:
+      - "roblox/**"
+      - ".github/workflows/roblox-validation.yml"
+  pull_request:
+    branches:
+      - btv/roblox-foundation-001
+    paths:
+      - "roblox/**"
+      - ".github/workflows/roblox-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: btv-roblox-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Luau lint, format and Rojo build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: roblox
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pinned Roblox toolchain
+        uses: CompeyDev/setup-rokit@v0.2.1
+
+      - name: Install project tools
+        run: rokit install --no-trust-check
+
+      - name: Verify toolchain
+        run: |
+          rojo --version
+          selene --version
+          stylua --version
+          lune --version
+
+      - name: Check Luau formatting
+        run: stylua --check src
+
+      - name: Lint Luau source
+        run: selene src
+
+      - name: Build Roblox place
+        run: |
+          mkdir -p build
+          rojo build default.project.json --output build/BTVRoblox.rbxlx
+
+      - name: Upload built place artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: btv-roblox-place
+          path: roblox/build/BTVRoblox.rbxlx
+          if-no-files-found: error
+          retention-days: 7
