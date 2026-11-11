@@ -9,7 +9,6 @@ local PlayerStateService = require(script.Parent.Services.PlayerStateService)
 
 local REMOTE_FOLDER_NAME = "BTVRemotes"
 local remoteFolder = ReplicatedStorage:FindFirstChild(REMOTE_FOLDER_NAME)
-
 if remoteFolder == nil then
 	remoteFolder = Instance.new("Folder")
 	remoteFolder.Name = REMOTE_FOLDER_NAME
@@ -22,7 +21,6 @@ local function getOrCreateRemote(className: string, name: string): Instance
 		assert(existing.ClassName == className, name .. " has an unexpected class.")
 		return existing
 	end
-
 	local remote = Instance.new(className)
 	remote.Name = name
 	remote.Parent = remoteFolder
@@ -30,6 +28,7 @@ local function getOrCreateRemote(className: string, name: string): Instance
 end
 
 local requestEmberCommand = getOrCreateRemote("RemoteEvent", "RequestEmberCommand") :: RemoteEvent
+local requestCompanionSelection = getOrCreateRemote("RemoteEvent", "RequestCompanionSelection") :: RemoteEvent
 local stateUpdated = getOrCreateRemote("RemoteEvent", "StateUpdated") :: RemoteEvent
 local getInitialState = getOrCreateRemote("RemoteFunction", "GetInitialState") :: RemoteFunction
 
@@ -39,7 +38,9 @@ for _, command in GameConfig.EmberCommands do
 end
 
 local lastCommandAt: {[number]: number} = {}
+local lastCompanionSelectionAt: {[number]: number} = {}
 local REQUEST_INTERVAL_SECONDS = 0.4
+local COMPANION_SELECTION_INTERVAL_SECONDS = 0.5
 
 local function onPlayerAdded(player: Player)
 	PlayerStateService.AddPlayer(player)
@@ -53,6 +54,7 @@ Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(function(player: Player)
 	PlayerStateService.RemovePlayer(player)
 	lastCommandAt[player.UserId] = nil
+	lastCompanionSelectionAt[player.UserId] = nil
 end)
 
 getInitialState.OnServerInvoke = function(player: Player)
@@ -63,7 +65,6 @@ requestEmberCommand.OnServerEvent:Connect(function(player: Player, command: unkn
 	if typeof(command) ~= "string" or not allowedCommands[command] then
 		return
 	end
-
 	local now = os.clock()
 	local previous = lastCommandAt[player.UserId] or 0
 	if now - previous < REQUEST_INTERVAL_SECONDS then
@@ -75,11 +76,28 @@ requestEmberCommand.OnServerEvent:Connect(function(player: Player, command: unkn
 	if not accepted then
 		return
 	end
-
 	local snapshot = PlayerStateService.GetSnapshot(player)
 	if snapshot ~= nil then
 		stateUpdated:FireClient(player, snapshot)
 	end
 end)
 
-print("[BTV Roblox] Server foundation ready. Persistence and gameplay services are not yet enabled.")
+requestCompanionSelection.OnServerEvent:Connect(function(player: Player, companionId: unknown)
+	local now = os.clock()
+	local previous = lastCompanionSelectionAt[player.UserId] or 0
+	if now - previous < COMPANION_SELECTION_INTERVAL_SECONDS then
+		return
+	end
+	lastCompanionSelectionAt[player.UserId] = now
+
+	local accepted = PlayerStateService.SetEquippedCompanion(player, companionId)
+	if not accepted then
+		return
+	end
+	local snapshot = PlayerStateService.GetSnapshot(player)
+	if snapshot ~= nil then
+		stateUpdated:FireClient(player, snapshot)
+	end
+end)
+
+print("[BTV Roblox] Server foundation ready. Companion selection is session-only; persistence and premium entitlements are not enabled.")
