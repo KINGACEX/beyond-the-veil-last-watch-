@@ -2,7 +2,7 @@
 
 **Status:** Proposed business plan; no products created, priced, or published.  
 **Goal:** Support sustainable Roblox development and, if eligible earnings are converted through Roblox's official process, contribute to the original Godot BTV production budget.  
-**Policy:** Free-first, fair, transparent, cosmetic-led, no pay-to-win.
+**Policy:** Free-first, fair and transparent: cosmetics plus optional quality-of-life convenience, never pay-to-win.
 
 ## 1. Monetization principles
 
@@ -57,14 +57,14 @@ Ember should have a premium product line, but **Ember must not become a paid req
 |---|---|---|---|
 | Ember — Companion Bond Pack | One-time Game Pass | Premium companion presentation, expanded bonding interactions, approved cosmetic accessories and a dedicated companion profile presentation | Does not gate the base Ember story role or required mission completion |
 | Ember — Field Style Collection | Game Pass or separate cosmetic items | Alternate idle poses, recall animation, command animations, non-canonical visual trail effects and approved accessory looks | Visual/expression only; no stronger stats |
-| Ember — Ability Style Pack | Game Pass | Visual/audio presentation variants for existing commands, such as Scout, Track, Protect and Retrieve | Changes presentation, not detection range, damage, speed, success rate or mission outcome |
+| Companion Ability Convenience Pack(s) | One-time Game Pass per companion or clearly priced bundle | Optional command presets, quick-command layouts, saved non-combat routines and companion-specific UX shortcuts | Reduces interface friction only; never changes world stats, mission outcomes, evidence access or competitive balance |
 | Ember — Camp & Companion Interactions | Game Pass | Optional non-combat interactions, rest/camp animations and photo poses | No resource generation, healing advantage or progression boost |
 
 ### Ability policy
 
 The seven approved commands remain part of the designed companion system: Attack, Protect, Scout, Track, Retrieve, Hold and Regroup. Do not sell access to the basic commands if a mission or tutorial expects players to use them. Keep the actual functional abilities and any balance-relevant upgrades earnable through ordinary gameplay for every player.
 
-Premium may offer **ability presentation variants** and optional non-combat interactions. If the creator later wants a premium early-access route to a functional ability, that ability must also become available through a reasonable, clearly disclosed free progression path, and must not create a competitive advantage or bypass mission design. This is not approved for launch.
+Premium may offer **companion-specific convenience abilities**: quicker command access, saved command presets, optional non-combat routines, contextual command shortcuts and clearer companion status/feedback. These can make interactions feel faster and the interface more efficient, but must not make the companion physically faster or stronger, improve detection or success probability, reveal paid-only evidence, or change mission outcomes. Free players must retain the same core command capability and the same quality of mission experience; their route may use a few more deliberate UI steps, but must remain reasonable and never frustrating by design.
 
 ### Ember product guardrails
 
@@ -88,7 +88,7 @@ Do not lock Robux prices before:
 
 Use low-friction, accessible cosmetic pricing rather than premium-priced progression. Do not use artificial scarcity or pressure. Display current prices using Roblox MarketplaceService product information rather than hard-coded UI prices where supported.
 
-Start with one product only: **Asher Vance — Signature Appearance**. Add other cosmetics only after the first purchase entitlement, refunds/support handling, persistence and analytics are reliable.
+Start with one cosmetic product only: **Asher Vance — Signature Appearance**. Add companion selection and premium companion convenience products only after every free companion is complete, balanced and tested, and after purchase entitlements, refunds/support handling, persistence and analytics are reliable.
 
 ## 4. Roblox platform economics
 
@@ -160,6 +160,7 @@ Release gates:
 - Verify ownership server-side; never trust a client-side "purchase succeeded" message.
 - Keep product IDs in server-owned configuration and leave them unset until products exist.
 - No paid product or monetization code is included in Foundation v0.1.
+- Companion-specific premium convenience is a proposal, not approved implementation; all core companion abilities remain available without payment.
 - No product creation, public listing, Robux pricing or publication is authorized by this plan alone.
 
 ## 9. Official Roblox references
