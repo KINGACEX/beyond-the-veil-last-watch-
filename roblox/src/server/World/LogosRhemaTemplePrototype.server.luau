@@ -195,6 +195,13 @@ makePart(structure, "EntranceGlassRight", Vector3.new(0.35, 12, 8), CFrame.new(8
 makePart(structure, "EntranceCanopy", Vector3.new(36, 1.4, 12), CFrame.new(0, 16.4, -74), darkStone, Enum.Material.Slate)
 makePart(structure, "CanopyGoldTrim", Vector3.new(36, 0.25, 0.45), CFrame.new(0, 15.65, -79.6), warmGold, Enum.Material.Metal, false)
 
+-- Foyer roof and entrance canopy complete the attached front volume.
+makePart(structure, "FoyerRoof", Vector3.new(64, 1.8, 36), CFrame.new(0, 18.2, -54), darkStone, Enum.Material.Slate)
+makePart(structure, "FoyerRoofFrontTrim", Vector3.new(62, 0.35, 0.5), CFrame.new(0, 17.2, -72), warmGold, Enum.Material.Metal, false)
+for _, x in {-15, 15} do
+	makePart(structure, "CanopySupport_" .. x, Vector3.new(0.8, 14, 0.8), CFrame.new(x, 8.8, -78), paleStone, Enum.Material.Marble)
+end
+
 -- Flat modern roof with a clean perimeter fascia.
 makePart(structure, "MainRoof", Vector3.new(120, 2.5, 102), CFrame.new(0, 26.5, 10), darkStone, Enum.Material.Slate)
 makePart(structure, "RoofGoldFrontTrim", Vector3.new(118, 0.35, 0.5), CFrame.new(0, 25.1, -41), warmGold, Enum.Material.Metal, false)
