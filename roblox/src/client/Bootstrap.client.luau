@@ -5,6 +5,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local remoteFolder = ReplicatedStorage:WaitForChild("BTVRemotes")
 local requestEmberCommand = remoteFolder:WaitForChild("RequestEmberCommand") :: RemoteEvent
+local requestCompanionSelection = remoteFolder:WaitForChild("RequestCompanionSelection") :: RemoteEvent
 local stateUpdated = remoteFolder:WaitForChild("StateUpdated") :: RemoteEvent
 local getInitialState = remoteFolder:WaitForChild("GetInitialState") :: RemoteFunction
 
@@ -21,5 +22,6 @@ end
 
 MobileHUDController.Init({
 	RequestEmberCommand = requestEmberCommand,
+	RequestCompanionSelection = requestCompanionSelection,
 	StateUpdated = stateUpdated,
 }, initialState)
