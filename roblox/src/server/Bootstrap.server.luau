@@ -6,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local GameConfig = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("GameConfig"))
 local PlayerStateService = require(script.Parent.Services.PlayerStateService)
+local MissionService = require(script.Parent.Services.MissionService)
 
 local REMOTE_FOLDER_NAME = "BTVRemotes"
 local remoteFolder = ReplicatedStorage:FindFirstChild(REMOTE_FOLDER_NAME)
@@ -31,6 +32,8 @@ local requestEmberCommand = getOrCreateRemote("RemoteEvent", "RequestEmberComman
 local requestCompanionSelection = getOrCreateRemote("RemoteEvent", "RequestCompanionSelection") :: RemoteEvent
 local stateUpdated = getOrCreateRemote("RemoteEvent", "StateUpdated") :: RemoteEvent
 local getInitialState = getOrCreateRemote("RemoteFunction", "GetInitialState") :: RemoteFunction
+local missionStateUpdated = getOrCreateRemote("RemoteEvent", "MissionStateUpdated") :: RemoteEvent
+local getMissionState = getOrCreateRemote("RemoteFunction", "GetMissionState") :: RemoteFunction
 
 local allowedCommands: {[string]: boolean} = {}
 for _, command in GameConfig.EmberCommands do
@@ -44,6 +47,7 @@ local COMPANION_SELECTION_INTERVAL_SECONDS = 0.5
 
 local function onPlayerAdded(player: Player)
 	PlayerStateService.AddPlayer(player)
+	MissionService.AddPlayer(player)
 end
 
 for _, player in Players:GetPlayers() do
@@ -53,12 +57,17 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(function(player: Player)
 	PlayerStateService.RemovePlayer(player)
+	MissionService.RemovePlayer(player)
 	lastCommandAt[player.UserId] = nil
 	lastCompanionSelectionAt[player.UserId] = nil
 end)
 
 getInitialState.OnServerInvoke = function(player: Player)
 	return PlayerStateService.GetSnapshot(player)
+end
+
+getMissionState.OnServerInvoke = function(player: Player)
+	return MissionService.GetSnapshot(player)
 end
 
 requestEmberCommand.OnServerEvent:Connect(function(player: Player, command: unknown)
