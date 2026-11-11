@@ -74,6 +74,15 @@
 - [ ] Low/mid-range Android frame rate and memory are measured before increasing detail.
 - [ ] Asher and Ember reference assets are used before final character/companion models are approved.
 
+## F2. Ridgeview landscape study
+
+- [ ] Ridgeview landscape study builds without runtime errors.
+- [ ] Ridgeview remains spatially separate from the Temple prototype.
+- [ ] Road, path, stream, hill forms, trees and lookout are inspected for alignment and collision.
+- [ ] The lookout is reachable from the footpath without unintended jumps or gaps.
+- [ ] No named residents, mission clues, evidence, settlement history or canon facts are introduced.
+- [ ] The scene is profiled on a low/mid-range Android device before additional detail is added.
+
 ## G. Opening vertical slice interactions
 
 - [ ] Mission state is created and removed server-side per player.
@@ -111,14 +120,23 @@
 - The server independently checks the catalog ID and ownership on every request; client UI visibility is not authoritative.
 - No premium purchase prompt, product ID, entitlement grant endpoint or persistent ownership schema exists.
 
+## Automated source checks
+
+- [ ] Lune foundation regression suite passes in CI.
+- [ ] StyLua formatting check passes in CI.
+- [ ] Selene lint passes in CI.
+- [ ] Rojo place build succeeds in CI and the artifact is retained.
+
 ## Current verification state
 
 - Repository source files: PRESENT on `btv/roblox-foundation-001`.
-- Luau syntax/type check: NOT RUN.
+- Luau syntax/type check: NOT RUN locally; CI checks are configured but no successful run has been confirmed.
+- Headless MissionService and companion catalog regression suite: ADDED; NOT YET EXECUTED.
 - Companion selection runtime and exploit-resistance tests: NOT RUN.
 - Opening mission state and interaction tests: NOT RUN.
 - Rojo project validation: NOT RUN.
 - Roblox Studio import: NOT RUN.
 - Logos Rhema Temple scene execution: NOT RUN.
+- Ridgeview landscape study execution: NOT RUN.
 - Multiplayer test: NOT RUN.
 - Android device test: NOT RUN.
