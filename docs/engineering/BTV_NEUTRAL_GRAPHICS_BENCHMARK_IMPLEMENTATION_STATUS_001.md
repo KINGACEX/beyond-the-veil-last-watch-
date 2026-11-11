@@ -1,8 +1,8 @@
 # BTV Neutral Graphics Benchmark — Implementation Status 001
 
-**Date:** 10 November 2026  
+**Updated:** 11 November 2026  
 **Branch:** `btv/controls-hardening-prototype-layout-plan-001`  
-**Status:** STRUCTURAL GREYBOX IMPLEMENTATION; FULL BENCHMARK ACCEPTANCE NOT YET MET  
+**Status:** REPEATABLE SOFTWARE BENCHMARK IMPLEMENTED; PHYSICAL-DEVICE ACCEPTANCE BLOCKED  
 **Engine validation:** Godot 4.7.2 headless CI
 
 ## 1. Implemented structure
@@ -42,26 +42,24 @@ Structural tests verify the presence of the five benchmark zones, route segments
 
 ## 5. Remaining acceptance gaps
 
-The scene is not yet a complete performance benchmark or production-quality graphics demonstration.
+The 11 November follow-up closes the software-side route, warm-up/dwell, run export and supported scene-profile gaps. The benchmark remains a structural greybox and is not a production-quality graphics demonstration.
 
-- No fixed route timings/dwell protocol or automated camera traversal.
-- No renderer switch; renderer choice remains device-dependent and intentionally undecided.
-- No viewport/render-scale control.
-- No live frame-time, memory, CPU/GPU or thermal telemetry.
-- No representative production vegetation, rigged animation, final materials or authored assets.
-- No complete LOD/HLOD transition suite or shadow-distance/resolution variants.
-- No visual comparison captures or defect log from a physical device.
-- No Android export/install or sustained 15-minute device run.
+- No physical-device visual captures or defect log.
+- No device-specific CPU profiler, GPU timestamps/utilization, process/GPU memory, thermal or power telemetry.
+- No physical Android export/install and sustained 15-minute device run.
+- No production vegetation, final materials, rigged characters or production wildlife assets.
+- No complete production LOD/HLOD, shadow-distance or shadow-resolution acceptance.
+- Renderer choice and target-device resource caps remain deliberately undecided.
 
-Do not report FPS, memory, thermal performance or Android readiness from this greybox scene or from headless CI.
+Do not report FPS/performance acceptance, memory, thermal behaviour or Android readiness from headless CI or from the current frame-delta data.
 
 ## 6. Next engineering sequence
 
-1. Add camera-route playback and repeatable benchmark timing.
-2. Add measured frame-time sampling and exportable run metadata, keeping unavailable metrics explicitly unavailable.
-3. Extend shadow/LOD/fog comparison variants without hard-coding device caps.
-4. Profile on a named physical Android device before selecting renderer or quality defaults.
-5. Complete manual visual review and update the acceptance contract only with evidence.
+1. Run the documented procedure on a named physical Android device and retain JSON exports.
+2. Collect device-profiler evidence for CPU execution, GPU timing/utilization, memory, thermal state and power separately.
+3. Capture the six fixed viewpoints at equivalent exposure and record visual/LOD/shadow defects.
+4. Repeat each comparison configuration and preserve run-to-run variance.
+5. Select renderer and production quality defaults only after target-device evidence and an explicit decision record.
 
 ## 7. Boundaries
 
@@ -81,3 +79,37 @@ Two repeatability/measurement improvements are now implemented:
 - CI now runs `tests/benchmark_metrics_test.gd` and extends the graphics benchmark test to cover bounded sampling, summary availability, route start/stop and route completion.
 
 **Remaining acceptance gaps:** device-specific profiler integration; memory/CPU/GPU/thermal observations; render-scale and supported quality variants; fixed dwell points and repeatable run metadata export; visual captures and defect log; physical Android export/install and sustained profiling. Renderer choice remains deliberately undecided.
+
+
+## 9. Follow-up implementation — 11 November 2026
+
+**Starting HEAD:** `3e6cc1670e1ebfe3e2cf109951d947a49e7f9d05`  
+**Implementation commit:** `eae2422881f1561f15292ac46594f7c492959055`  
+**Godot validation:** [run #42999606927](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42999606927) — PASS on Godot 4.7.2. The complete workflow, all contract/regression test steps and both scene-launch steps succeeded.
+
+### Repeatable benchmark protocol
+
+- Six fixed camera dwell points; 5-second warm-up at viewpoint 0; 1-second transit between points; 3-second dwell at each point; 28 seconds total.
+- Frame-delta sampling occurs only during dwell windows. Warm-up and camera transit intervals are excluded.
+- JSON metadata schema v3 records build/scene/asset identifiers when supplied, engine/platform/device context, scene quality profile, render scale, protocol, route points, frame-time summary and explicit telemetry availability.
+- Completed runs export to `user://benchmark_runs/`; export is refused before a completed run.
+- Supported render scales: `1.00`, `0.85`, `0.70`.
+- Supported benchmark-scene profiles: `reference`, `reduced`, `minimal`. These apply only to benchmark shadows/fog/foliage/NPC proxies; they are not project-wide or renderer-wide game quality presets. Individual toggles mark the state as `custom`.
+- Controls: `Q` cycles scene profiles; `9` cycles render scale; `0` restores native scale; `7` starts an acceptance run; `8` exports a completed run. Keys `1`–`4` remain individual scene toggles.
+
+### Telemetry boundary
+
+The only collected measurement is the Godot `Node._process(delta)` main-loop frame interval in milliseconds. It is not CPU execution time or utilization. GPU frame time/utilization, process memory, GPU memory, device RAM telemetry, thermal state and power draw remain explicitly unavailable in the exported record. Device identity fields supplied through environment variables are descriptive metadata, not sensor measurements.
+
+### Wildlife visual and evidence validation
+
+- The isolated visual lab now includes generic fur-tuft, feather-layer and scale-plate surface details, eased bounded locomotion/idle cycles, presentation-only woodland/perch/rocky habitats and near/mid/far/off visual-detail reduction.
+- The species-profile validator rejects non-finite confidence values and requires non-empty evidence context when fossil evidence is attached to a non-deep-time profile.
+- Ecology input guards reject non-finite habitat measurements, weights, thresholds and simulation distances safely.
+- No species is assigned to a placeholder, no habitat prop is treated as occurrence evidence, and no production wildlife or Ember canon is changed.
+
+### Verification
+
+The full Godot 4.7.2 workflow passed on implementation commit `eae2422881f1561f15292ac46594f7c492959055`, including the wildlife visual prototype, wildlife ecology, species schema, visual LOD, benchmark, metrics, existing input/control, movement, optics, weather and exploration regression suites.
+
+Physical-device visual/performance acceptance remains blocked. This implementation does not claim Android frame rate, GPU performance, memory use, thermal stability or production readiness.
