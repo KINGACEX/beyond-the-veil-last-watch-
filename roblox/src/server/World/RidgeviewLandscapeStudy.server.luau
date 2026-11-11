@@ -265,7 +265,7 @@ for index, offset in treePositions do
 end
 
 -- A modest overlook gives the landscape a clear visual destination.
-local deckCenter = ORIGIN + Vector3.new(103, 8, -128)
+local deckCenter = ORIGIN + Vector3.new(103, -0.5, -128)
 makePart(lookout, "LookoutStonePad", Vector3.new(42, 1.5, 34), deckCenter, stone, Enum.Material.Slate)
 makePart(lookout, "LookoutDeck", Vector3.new(34, 0.8, 27), deckCenter + Vector3.new(0, 1.15, 0), bark, Enum.Material.WoodPlanks)
 
