@@ -50,8 +50,17 @@ jobs:
       - name: Run headless foundation regression tests
         run: lune run tests/foundation.spec.luau
 
-      - name: Check Luau formatting
-        run: stylua --check src/server/Bootstrap.server.luau src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau tests/foundation.spec.luau
+      - name: Check MissionService formatting
+        run: stylua --check src/server/Services/MissionService.luau
+
+      - name: Check CompanionActorService formatting
+        run: stylua --check src/server/Services/CompanionActorService.luau
+
+      - name: Check server Bootstrap formatting
+        run: stylua --check src/server/Bootstrap.server.luau
+
+      - name: Check foundation test formatting
+        run: stylua --check tests/foundation.spec.luau
 
       - name: Lint Luau source
         run: selene src tests
