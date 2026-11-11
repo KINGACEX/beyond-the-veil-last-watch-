@@ -39,6 +39,15 @@ expect(report ~= nil and report.sequenceIndex == 3, "report phase is sequence th
 assert(report ~= nil, "report snapshot must exist")
 expect(string.find(report.status, "evidence pending", 1, true) ~= nil, "report does not invent evidence")
 
+local travelAdvanced, arrival = MissionService.Advance(player :: any, "report_accessed", "ridgeview_arrival")
+expect(travelAdvanced, "Ridgeview arrival follows Scout Report access")
+expect(arrival ~= nil and arrival.sequenceIndex == 4, "Ridgeview arrival is sequence four")
+assert(arrival ~= nil, "Ridgeview arrival snapshot must exist")
+expect(arrival.objective == "Arrive at Ridgeview", "Ridgeview arrival objective is correct")
+
+local skippedFinal = MissionService.Advance(player :: any, "communion_context", "ridgeview_arrival")
+expect(skippedFinal == false, "mission cannot jump directly to Ridgeview")
+
 MissionService.RemovePlayer(player :: any)
 expect(MissionService.GetSnapshot(player :: any) == nil, "player state is cleared on removal")
 
