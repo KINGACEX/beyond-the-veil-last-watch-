@@ -258,7 +258,7 @@ makeLight(lightingRig, "FoyerWarmLight", Vector3.new(0, 13, -53), Color3.fromRGB
 -- Foyer details and approved fictional church signage.
 makePart(interior, "WelcomeDesk", Vector3.new(14, 2.2, 3), CFrame.new(0, 1.6, -48), timber, Enum.Material.WoodPlanks)
 makePart(interior, "WelcomeDeskFront", Vector3.new(14, 1.2, 0.3), CFrame.new(0, 1.5, -46.35), darkStone, Enum.Material.Slate, false)
-makeTextSign(interior, "TempleNameSign", Vector3.new(0, 10, -68.8), Vector3.new(18, 4.5, 0.5), "LOGOS RHEMA TEMPLE")
+makeTextSign(interior, "TempleNameSign", Vector3.new(0, 19.1, -71.2), Vector3.new(20, 3.2, 0.5), "LOGOS RHEMA TEMPLE")
 
 -- Exterior forecourt and path.
 makePart(exterior, "ForecourtGround", Vector3.new(180, 1, 100), CFrame.new(0, -1.7, -104), Color3.fromRGB(79, 105, 77), Enum.Material.Grass)
@@ -289,7 +289,7 @@ for index, position in ipairs({
 	Vector3.new(64, 0, -132),
 }) do
 	local tree = makeModel("Tree_" .. index, exterior)
-	local trunk = makePart(tree, "Trunk", Vector3.new(2.2, 11, 2.2), CFrame.new(position + Vector3.new(0, 5.5, 0)), timber, Enum.Material.Wood)
+	local trunk = makePart(tree, "Trunk", Vector3.new(11, 2.2, 2.2), CFrame.new(position + Vector3.new(0, 5.5, 0)) * CFrame.Angles(0, 0, math.rad(90)), timber, Enum.Material.Wood)
 	trunk.Shape = Enum.PartType.Cylinder
 	for crown = 1, 3 do
 		local offset = Vector3.new((crown - 2) * 2.5, 11 + crown * 1.4, (crown % 2) * 1.6)
