@@ -62,7 +62,19 @@
 - [ ] Safe areas and notches do not obscure controls.
 - [ ] UI does not require hover or keyboard.
 
-## F. Multiplayer
+## F. Environment visual prototype
+
+- [ ] Logos Rhema Temple prototype builds without runtime errors.
+- [ ] Foyer and sanctuary entrances remain clear and traversable.
+- [ ] Seating, lectern, platform and Communion table have believable scale and collision.
+- [ ] Cross and church signage remain restrained and contextually appropriate.
+- [ ] No HCI real-world likeness, invented church leader, service order, or Covenant insignia appears.
+- [ ] Communion remains environmental context only; no buff, reward, currency or interaction is introduced.
+- [ ] Scene is visually reviewed against the approved BTV church and visual references.
+- [ ] Low/mid-range Android frame rate and memory are measured before increasing detail.
+- [ ] Asher and Ember reference assets are used before final character/companion models are approved.
+
+## G. Multiplayer
 
 - [ ] Two clients can join one test server.
 - [ ] Each client receives only its own initial state snapshot.
@@ -72,7 +84,7 @@
 - [ ] No unreviewed persistent profile schema is written.
 - [ ] Different selected companions can coexist without mission dependency or unfair advantage.
 
-## G. Performance
+## H. Performance
 
 - [ ] Profile on a low/mid-range Android device.
 - [ ] Measure frame rate and memory rather than guessing.
@@ -94,5 +106,6 @@
 - Companion selection runtime and exploit-resistance tests: NOT RUN.
 - Rojo project validation: NOT RUN.
 - Roblox Studio import: NOT RUN.
+- Logos Rhema Temple scene execution: NOT RUN.
 - Multiplayer test: NOT RUN.
 - Android device test: NOT RUN.
