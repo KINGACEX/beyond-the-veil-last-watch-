@@ -57,7 +57,7 @@ Not implemented:
 
 ## Tooling
 
-The pinned toolchain is defined in `rokit.toml`. GitHub Actions runs the foundation regression suite, per-file StyLua checks for changed foundation scripts, Selene and a Rojo build for changes under `roblox/`. It uploads a temporary `.rbxlx` artifact and does not publish to Roblox. See `docs/CI_AND_STUDIO_TESTING.md`.
+The pinned toolchain is defined in `rokit.toml`. GitHub Actions runs the foundation regression suite, StyLua formatting for the changed foundation scripts (with corrections committed on branch pushes), Selene and a Rojo build for changes under `roblox/`. It uploads a temporary `.rbxlx` artifact and does not publish to Roblox. See `docs/CI_AND_STUDIO_TESTING.md`.
 
 The project is prepared for Rojo-based source mapping. Rojo sync/build and Roblox Studio editing require Windows or macOS. Android can edit and version the source and documentation, but cannot run the full Roblox Studio editor.
 
