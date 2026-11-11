@@ -114,7 +114,7 @@ local hills = {
 	{Vector3.new(-175, 20, -145), Vector3.new(190, 72, 115), grassDark},
 	{Vector3.new(-45, 28, -174), Vector3.new(210, 88, 132), grass},
 	{Vector3.new(105, 24, -150), Vector3.new(200, 78, 120), grassDark},
-	{Vector3.new(220, 17, -105), Vector3.new(145, 58, 110), grassLight},
+	{Vector3.new(220, 17, -205), Vector3.new(145, 58, 110), grassLight},
 	{Vector3.new(-190, 14, 100), Vector3.new(150, 52, 100), grassLight},
 	{Vector3.new(205, 19, 125), Vector3.new(175, 62, 118), grass},
 }
@@ -176,8 +176,9 @@ local trailPoints = {
 	Vector3.new(-8, 0.22, 12),
 	Vector3.new(26, 0.22, -25),
 	Vector3.new(55, 0.22, -63),
-	Vector3.new(76, 0.22, -98),
-	Vector3.new(98, 0.22, -122),
+	Vector3.new(78, 0.22, -69),
+	Vector3.new(104, 0.22, -65),
+	Vector3.new(126, 0.22, -62),
 }
 
 for index = 1, #trailPoints - 1 do
@@ -265,7 +266,7 @@ for index, offset in treePositions do
 end
 
 -- A modest overlook gives the landscape a clear visual destination.
-local deckCenter = ORIGIN + Vector3.new(103, -0.5, -128)
+local deckCenter = ORIGIN + Vector3.new(132, -0.5, -65)
 makePart(lookout, "LookoutStonePad", Vector3.new(42, 1.5, 34), deckCenter, stone, Enum.Material.Slate)
 makePart(lookout, "LookoutDeck", Vector3.new(34, 0.8, 27), deckCenter + Vector3.new(0, 1.15, 0), bark, Enum.Material.WoodPlanks)
 
@@ -293,7 +294,7 @@ end
 -- Simple, non-interactive trail posts. No mission clues or narrative text are authored here.
 for index, position in {
 	Vector3.new(56, 0, -65),
-	Vector3.new(91, 0, -116),
+	Vector3.new(122, 0, -58),
 } do
 	makePart(
 		details,
