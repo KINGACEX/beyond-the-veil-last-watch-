@@ -92,7 +92,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	missionTitle.Font = Enum.Font.GothamBold
 	missionTitle.Text = "OPENING SEQUENCE  •  1 / 6"
 	missionTitle.TextColor3 = Color3.fromRGB(198, 170, 112)
-	missionTitle.TextSize = 10
+	missionTitle.TextSize = 11
 	missionTitle.TextXAlignment = Enum.TextXAlignment.Left
 	missionTitle.Parent = missionCard
 
@@ -117,7 +117,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	missionStatus.Font = Enum.Font.Gotham
 	missionStatus.Text = "First Sunday • Logos Rhema Temple"
 	missionStatus.TextColor3 = Color3.fromRGB(182, 192, 199)
-	missionStatus.TextSize = 10
+	missionStatus.TextSize = 12
 	missionStatus.TextXAlignment = Enum.TextXAlignment.Left
 	missionStatus.TextTruncate = Enum.TextTruncate.AtEnd
 	missionStatus.Parent = missionCard
