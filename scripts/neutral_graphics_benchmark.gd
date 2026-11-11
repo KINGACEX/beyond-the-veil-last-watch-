@@ -294,11 +294,11 @@ func build_run_metadata() -> Dictionary:
 		"frame_time_measurement": {
 			"source": "Godot process delta (Node._process(delta)) during fixed viewpoint dwell windows",
 			"unit": "milliseconds",
-			"scope": "main-loop frame interval observed by the process callback; not CPU execution duration or utilization",
+			"scope": "main-loop frame interval observed by the process callback; not CPU execution time or utilization",
 			"sample_window": "dwell only; warm-up and camera transit excluded",
 			"sample_count": _frame_time_samples_ms.size(),
 			"summary": BenchmarkMetrics.summarize_frame_times(_frame_time_samples_ms),
-			"limitations": "Frame-delta observations only; not CPU execution duration/utilization, GPU timing/utilization, memory, thermal or power telemetry",
+			"limitations": "Frame-delta observations only; not CPU execution time/utilization, not isolated GPU timing/utilization, and no memory, thermal or power telemetry",
 		},
 		"telemetry_availability": {
 			"cpu_frame_delta_ms": {
