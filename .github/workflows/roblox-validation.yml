@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: btv-roblox-validation-${{ github.ref }}
@@ -50,17 +50,25 @@ jobs:
       - name: Run headless foundation regression tests
         run: lune run tests/foundation.spec.luau
 
-      - name: Check MissionService formatting
-        run: stylua --check src/server/Services/MissionService.luau
+      - name: Format foundation Luau on branch pushes
+        if: github.event_name == 'push'
+        run: stylua src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau src/server/Bootstrap.server.luau tests/foundation.spec.luau
 
-      - name: Check CompanionActorService formatting
-        run: stylua --check src/server/Services/CompanionActorService.luau
+      - name: Verify Luau formatting
+        run: stylua --check src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau src/server/Bootstrap.server.luau tests/foundation.spec.luau
 
-      - name: Check server Bootstrap formatting
-        run: stylua --check src/server/Bootstrap.server.luau
-
-      - name: Check foundation test formatting
-        run: stylua --check tests/foundation.spec.luau
+      - name: Commit formatting corrections
+        if: github.event_name == 'push'
+        run: |
+          if git diff --quiet -- src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau src/server/Bootstrap.server.luau tests/foundation.spec.luau; then
+            echo "No formatting corrections needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau src/server/Bootstrap.server.luau tests/foundation.spec.luau
+          git commit -m "style: format BTV Roblox foundation"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Lint Luau source
         run: selene src tests
