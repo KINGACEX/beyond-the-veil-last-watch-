@@ -4,7 +4,6 @@
 -- It deliberately avoids real-world HCI likenesses, named NPCs, invented service order,
 -- Communion mechanics, and any claim that this is the final approved church architecture.
 
-local Lighting = game:GetService("Lighting")
 local Workspace = game:GetService("Workspace")
 
 local WORLD_NAME = "BTV_World"
@@ -265,7 +264,7 @@ makeLight(lightingRig, "FoyerWarmLight", Vector3.new(0, 13, -53), Color3.fromRGB
 -- Foyer details and approved fictional church signage.
 makePart(interior, "WelcomeDesk", Vector3.new(14, 2.2, 3), CFrame.new(0, 1.6, -48), timber, Enum.Material.WoodPlanks)
 makePart(interior, "WelcomeDeskFront", Vector3.new(14, 1.2, 0.3), CFrame.new(0, 1.5, -46.35), darkStone, Enum.Material.Slate, false)
-makeTextSign(interior, "TempleNameSign", Vector3.new(0, 19.1, -71.2), Vector3.new(20, 3.2, 0.5), "LOGOS RHEMA TEMPLE")
+makeTextSign(interior, "TempleNameSign", Vector3.new(0, 19.1, -73), Vector3.new(20, 3.2, 0.5), "LOGOS RHEMA TEMPLE")
 
 -- Exterior forecourt and path.
 makePart(exterior, "ForecourtGround", Vector3.new(180, 1, 100), CFrame.new(0, -1.7, -104), Color3.fromRGB(79, 105, 77), Enum.Material.Grass)
