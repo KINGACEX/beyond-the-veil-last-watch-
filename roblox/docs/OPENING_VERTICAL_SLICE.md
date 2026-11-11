@@ -11,13 +11,14 @@
 3. **Covenant alert** — represented as the next approved opening-sequence state.
 4. **Open Scout Report** — server-validated proximity interaction at the foyer desk advances the player to the report-access state.
 5. **Evidence review** — UI currently states that authored evidence is pending. No evidence, named NPC, dialogue, suspect, threat, confidence score or outcome is invented.
+6. **Travel to Ridgeview** — after report access, a server-validated departure prompt moves the player to the provisional Ridgeview footpath and advances the session to the Ridgeview-arrival phase. The report panel closes on arrival; its reopen control remains available.
 
 The next approved sequence stages—journey to Ridgeview, investigation/response and final report—remain visible in the source-of-truth opening sequence but are not falsely marked implemented here.
 
 ## Technical architecture
 
 - `MissionService.luau` owns per-player, in-memory mission state.
-- `OpeningMission.server.luau` creates the sanctuary-entry and Scout Report proximity prompts and validates interaction distance server-side.
+- `OpeningMission.server.luau` creates sanctuary-entry, Scout Report and gated Ridgeview-departure prompts; it validates interaction distance and travel phase server-side.
 - `Bootstrap.server.luau` owns mission session lifecycle and read-only snapshot retrieval.
 - `Bootstrap.client.luau` receives mission state through server-created remotes.
 - `MobileHUDController.luau` renders the current sequence index, objective and status from server-confirmed snapshots, plus a Scout Report viewer that explicitly shows the absence of authored intelligence.
@@ -27,6 +28,7 @@ No client remote can directly set a mission phase or award rewards.
 ## Deliberate limitations
 
 - Mission state is session-only and resets on reconnect.
+- Ridgeview is a same-place scene transition within the provisional landscape study, not a separate server or streamed place.
 - The Scout Report has no authored evidence payload yet.
 - There is no combat, enemy, NPC, dialogue, reward, currency or save system in this slice.
 - Ridgeview's exact environment and mission evidence remain unimplemented pending approved authored content and world references.
