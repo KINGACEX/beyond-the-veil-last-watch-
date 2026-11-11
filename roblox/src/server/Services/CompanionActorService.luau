@@ -19,7 +19,7 @@ local actors: {[number]: ActorRecord} = {}
 local characterConnections: {[number]: RBXScriptConnection} = {}
 
 local FOLDER_NAME = "BTV_Companions"
-local FOLLOW_OFFSET = CFrame.new(-3.2, 0, 3.4)
+local FOLLOW_OFFSET = CFrame.new(-3.2, -1.8, 3.4)
 local FOLLOW_RESPONSE = 5.5
 
 local coat = Color3.fromRGB(48, 43, 39)
