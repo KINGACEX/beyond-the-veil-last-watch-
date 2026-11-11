@@ -10,6 +10,7 @@
 - [ ] Client source maps to StarterPlayerScripts/BTVClient.
 - [ ] No Roblox files overwrite root Godot files.
 - [ ] No credentials, private keys or tokens exist in source.
+- [ ] CompanionCatalog is available from the shared mapping.
 
 ## B. Server authority
 
@@ -21,8 +22,21 @@
 - [ ] Server rejects commands outside the exact allowlist.
 - [ ] Server throttles repeated command requests.
 - [ ] Server returns only the requesting player's session snapshot.
+- [ ] Companion ownership and selection are validated server-side before implementation is released.
+- [ ] Client cannot claim a premium entitlement by changing local UI state.
 
-## C. Canon
+## C. Companion roster and fairness
+
+- [ ] Catalog contains Ember, Eagle, Fox, Bear, Owl, Leopard, Horse and Falcon.
+- [ ] Every premium-candidate role has a free functional equivalent.
+- [ ] No premium animal reveals exclusive evidence, hidden objectives or entities through cover.
+- [ ] No premium animal grants damage, health, armour, speed, stealth, detection or reward advantages.
+- [ ] Ember's seven core commands remain available without a purchase.
+- [ ] Ember Bond Pack contains presentation/bonding features only.
+- [ ] No product IDs, prices or purchase prompts are active without creator approval.
+- [ ] Horse mounting is not advertised until its separate movement and multiplayer tests pass.
+
+## D. Canon
 
 - [ ] Only Asher Vance is represented as the playable protagonist.
 - [ ] Asher's fixed identity and starting role are not replaced by a character-selection system.
@@ -33,7 +47,7 @@
 - [ ] HCI is not presented as an in-game real organisation.
 - [ ] Unresolved lore is not filled with invented explanations.
 
-## D. Mobile UI
+## E. Mobile UI
 
 - [ ] HUD fits common phone aspect ratios.
 - [ ] Touch targets are comfortably tappable.
@@ -43,7 +57,7 @@
 - [ ] Safe areas and notches do not obscure controls.
 - [ ] UI does not require hover or keyboard.
 
-## E. Multiplayer
+## F. Multiplayer
 
 - [ ] Two clients can join one test server.
 - [ ] Each client receives only its own initial state snapshot.
@@ -51,8 +65,9 @@
 - [ ] Server is authoritative for accepted commands.
 - [ ] Disconnect cleanup removes transient session state.
 - [ ] No unreviewed persistent profile schema is written.
+- [ ] Different selected companions can coexist without mission dependency or unfair advantage.
 
-## F. Performance
+## G. Performance
 
 - [ ] Profile on a low/mid-range Android device.
 - [ ] Measure frame rate and memory rather than guessing.
@@ -62,7 +77,7 @@
 
 ## Current verification state
 
-- Repository source files: pending commit verification.
+- Repository source files: PRESENT on `btv/roblox-foundation-001`.
 - Luau syntax/type check: NOT RUN.
 - Rojo project validation: NOT RUN.
 - Roblox Studio import: NOT RUN.
