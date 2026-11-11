@@ -173,3 +173,8 @@ Product IDs and prices remain unset. Do not create, price or publish products wi
 - Mobile controls remain usable without premium.
 - All entitlements are verified and applied server-side.
 - The Godot BTV project and its canon remain separate and unchanged.
+
+
+## Companion quality-of-life catalogue
+
+The shared option catalogue and free-versus-premium boundaries are maintained in [COMPANION_QOL_CATALOG.md](COMPANION_QOL_CATALOG.md). Treat that catalogue as the selection list for future companion UX work; do not implement every option automatically.
