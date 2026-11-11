@@ -1,11 +1,11 @@
 # BTV Roblox Edition
 
-**Foundation:** v0.1  
+**Foundation:** v0.2 in progress  
 **Product:** Beyond the Veil: The Last Watch — Roblox Edition  
 **Engine:** Roblox  
 **Language:** Luau  
 **Target:** Android-first play experience; multiplayer architecture  
-**Status:** Foundation source and specifications; not yet imported into Roblox Studio or runtime-tested.
+**Status:** Foundation source and companion catalog committed; not yet imported into Roblox Studio or runtime-tested.
 
 ## Separation rule
 
@@ -37,13 +37,16 @@ The Roblox adaptation document records implementation boundaries; it does not su
 
 Implemented as source files:
 - shared BTV identity, protagonist, rank, branch, currency names and Ember command definitions;
-- server-side session state;
+- server-side in-memory session state;
 - server-side currency award boundary (no client award endpoint);
 - validated Ember command requests with a basic per-player request throttle;
-- initial client HUD and command panel.
+- initial client HUD and command panel;
+- data-driven eight-animal companion catalog with roles, personalities, signature support behaviours and free-equivalent boundaries.
+
+The companion catalog is descriptive configuration only. It does not yet implement ownership, selection, companion models, AI, animations or purchases. Ember's seven core commands remain available as core functionality; the optional Ember Bond Pack is a presentation/bonding offer only. No product IDs or prices are defined.
 
 Not implemented:
-- world geometry, Asher character model, Ember model/AI, combat, missions, persistence, economy values, monetisation, or published Roblox place.
+- world geometry, Asher character model, companion models/AI, companion selection, combat, missions, persistence, economy values, monetisation, or published Roblox place.
 
 ## Tooling
 
