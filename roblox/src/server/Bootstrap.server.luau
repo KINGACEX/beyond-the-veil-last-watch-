@@ -33,7 +33,7 @@ local requestEmberCommand = getOrCreateRemote("RemoteEvent", "RequestEmberComman
 local requestCompanionSelection = getOrCreateRemote("RemoteEvent", "RequestCompanionSelection") :: RemoteEvent
 local stateUpdated = getOrCreateRemote("RemoteEvent", "StateUpdated") :: RemoteEvent
 local getInitialState = getOrCreateRemote("RemoteFunction", "GetInitialState") :: RemoteFunction
-local missionStateUpdated = getOrCreateRemote("RemoteEvent", "MissionStateUpdated") :: RemoteEvent
+getOrCreateRemote("RemoteEvent", "MissionStateUpdated")
 local getMissionState = getOrCreateRemote("RemoteFunction", "GetMissionState") :: RemoteFunction
 
 local allowedCommands: { [string]: boolean } = {}
