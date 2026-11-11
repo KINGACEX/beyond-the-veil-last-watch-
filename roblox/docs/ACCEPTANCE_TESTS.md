@@ -101,6 +101,9 @@
 - [ ] Initial objective is the passive Communion context followed by sanctuary entry; Communion itself grants no interaction reward or gameplay effect.
 - [ ] Sanctuary entry advances only the interacting player's mission state.
 - [ ] Scout Report prompt is accepted only during the Covenant-alert phase and within server-checked range.
+- [ ] Ridgeview departure is accepted only after report access and within server-checked range.
+- [ ] Ridgeview arrival places the player on the provisional footpath without spawning inside terrain or props.
+- [ ] Ridgeview arrival advances only the interacting player's mission state and updates only that player's HUD.
 - [ ] Out-of-order, repeated, remote, and malformed interaction attempts cannot advance mission state.
 - [ ] Mission objective HUD updates only from server-confirmed state.
 - [ ] Scout Report viewer opens after server-confirmed report access, can be closed and reopened, and explicitly shows authored evidence is pending.
