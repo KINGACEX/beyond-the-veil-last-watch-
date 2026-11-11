@@ -1,0 +1,151 @@
+name: BTV Godot Validation
+
+on:
+  push:
+    branches:
+      - btv/bootstrap-prototype-001
+      - btv/test-first-contracts-001
+      - btv/camera-relative-mouselook-001
+      - btv/mobile-touch-input-adapter-001
+      - btv/xh-003-input-source-composition-spec-001
+      - btv/controls-hardening-prototype-layout-plan-001
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: btv-godot-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Import, contract tests and scene launch
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Godot 4.7.2
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.2
+          use-dotnet: false
+          include-templates: false
+
+      - name: Verify engine version
+        run: godot --version
+
+      - name: Import project and validate editor parsing
+        run: godot --headless --editor --path . --quit
+
+      - name: Run NLI smoke tests
+        run: godot --headless --path . --script res://tests/nli_smoke_test.gd
+
+      - name: Run NLI handoff and source-registry contract tests
+        run: godot --headless --path . --script res://tests/nli_contract_test.gd
+
+      - name: Run mission data validator contract tests
+        run: godot --headless --path . --script res://tests/mission_data_validator_test.gd
+
+      - name: Run core interaction acceptance tests
+        run: godot --headless --path . --script res://tests/core_interaction_acceptance_test.gd
+
+      - name: Run player camera input tests
+        run: godot --headless --path . --script res://tests/player_camera_input_test.gd
+
+      - name: Run touch input adapter tests
+        run: godot --headless --path . --script res://tests/touch_input_adapter_test.gd
+
+      - name: Run touch controls integration tests
+        run: godot --headless --path . --script res://tests/touch_controls_integration_test.gd
+
+      - name: Run touch controls coexistence tests
+        run: godot --headless --path . --script res://tests/touch_controls_coexistence_test.gd
+
+      - name: Run touch controls composition tests
+        run: godot --headless --path . --script res://tests/touch_controls_composition_test.gd
+
+      - name: Run touch controls input-path tests
+        run: godot --headless --path . --script res://tests/touch_controls_input_path_test.gd
+
+      - name: Run touch controls lifecycle tests
+        run: godot --headless --path . --script res://tests/touch_controls_lifecycle_test.gd
+
+      - name: Run touch controls reconciliation tests
+        run: godot --headless --path . --script res://tests/touch_controls_reconciliation_test.gd
+
+      - name: Run touch controls resize tests
+        run: godot --headless --path . --script res://tests/touch_controls_resize_test.gd
+
+      - name: Run touch input source composition tests
+        run: godot --headless --path . --script res://tests/touch_input_source_composition_test.gd
+
+      - name: Run concurrent multitouch viewport tests
+        run: godot --headless --path . --script res://tests/touch_controls_multitouch_viewport_test.gd
+
+      - name: Run touch controls layout acceptance tests
+        run: godot --headless --path . --script res://tests/touch_controls_layout_acceptance_test.gd
+
+      - name: Run neutral movement physics lab acceptance tests
+        run: godot --headless --path . --script res://tests/movement_physics_lab_acceptance_test.gd
+
+      - name: Run neutral movement physics lab motion tests
+        run: godot --headless --path . --script res://tests/movement_physics_lab_motion_test.gd
+
+      - name: Run neutral movement physics lab collision tests
+        run: godot --headless --path . --script res://tests/movement_physics_lab_collision_test.gd
+
+      - name: Run traversal jump and double-jump tests
+        run: godot --headless --path . --script res://tests/traversal_jump_test.gd
+
+      - name: Run traversal dash tests
+        run: godot --headless --path . --script res://tests/traversal_dash_test.gd
+
+      - name: Run deterministic optics solver tests
+        run: godot --headless --path . --script res://tests/optics_solver_test.gd
+
+      - name: Run optics validation lab scene tests
+        run: godot --headless --path . --script res://tests/optics_validation_lab_test.gd
+
+      - name: Run deterministic wind field tests
+        run: godot --headless --path . --script res://tests/wind_field_test.gd
+
+      - name: Run wildlife ecology simulation tests
+        run: godot --headless --path . --script res://tests/wildlife_ecology_sim_test.gd
+      - name: Run wildlife update scheduler tests
+        run: godot --headless --path . --script res://tests/wildlife_update_scheduler_test.gd
+      - name: Run wildlife validation lab scene tests
+        run: godot --headless --path . --script res://tests/wildlife_validation_lab_test.gd
+      - name: Run wildlife visual prototype lab tests
+        run: godot --headless --path . --script res://tests/wildlife_visual_prototype_lab_test.gd
+      - name: Run wildlife visual LOD tests
+        run: godot --headless --path . --script res://tests/wildlife_visual_lod_test.gd
+      - name: Run neutral graphics benchmark structural tests
+        run: godot --headless --path . --script res://tests/neutral_graphics_benchmark_test.gd
+      - name: Run benchmark frame-time metrics tests
+        run: godot --headless --path . --script res://tests/benchmark_metrics_test.gd
+
+      - name: Run wildlife species profile schema tests
+        run: godot --headless --path . --script res://tests/wildlife_species_profile_test.gd
+
+      - name: Run deterministic weather profile blend tests
+        run: godot --headless --path . --script res://tests/weather_profile_blend_test.gd
+      - name: Run local weather zone blend tests
+        run: godot --headless --path . --script res://tests/weather_zone_blend_test.gd
+      - name: Run weather validation lab scene tests
+        run: godot --headless --path . --script res://tests/weather_validation_lab_test.gd
+      - name: Run environment quality budget tests
+        run: godot --headless --path . --script res://tests/environment_quality_budget_test.gd
+
+      - name: Launch neutral movement physics lab for 10 frames
+        run: godot --headless --path . --quit-after 10
+      - name: Run playable exploration prototype acceptance tests
+        run: godot --headless --path . --script res://tests/exploration_prototype_test.gd
+      - name: Run Logos Rhema vertical-slice prototype acceptance tests
+        run: godot --headless --path . --script res://tests/logos_rhema_prototype_test.gd
+      - name: Run exploration journal persistence tests
+        run: godot --headless --path . --script res://tests/exploration_journal_test.gd
+      - name: Launch playable exploration prototype for 10 frames
+        run: godot --headless --path . --quit-after 10

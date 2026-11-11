@@ -1,0 +1,94 @@
+; Beyond the Veil: The Last Watch
+; Bootstrap prototype — renderer intentionally left undecided pending device comparison.
+
+config_version=5
+
+[application]
+
+config/name="Beyond the Veil: The Last Watch"
+run/main_scene="res://scenes/logos_rhema_prototype.tscn"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+
+[input]
+
+; Movement actions carry a zero InputMap deadzone on purpose.
+; The analog curve (deadzone and rescale) is produced once, by the touch
+; adapter in scripts/touch_input_adapter.gd. A second deadzone here would be
+; applied on top of it by Input.get_vector(), compressing the low end of the
+; joystick range and making the authored deadzone unreachable.
+; Keyboard input is digital (strength exactly 1.0), so a zero deadzone does
+; not change keyboard movement.
+
+move_forward={
+"deadzone": 0.0,
+"events": [Object(InputEventKey,"physical_keycode":87), Object(InputEventKey,"physical_keycode":4194320)]
+}
+move_back={
+"deadzone": 0.0,
+"events": [Object(InputEventKey,"physical_keycode":83), Object(InputEventKey,"physical_keycode":4194322)]
+}
+move_left={
+"deadzone": 0.0,
+"events": [Object(InputEventKey,"physical_keycode":65), Object(InputEventKey,"physical_keycode":4194319)]
+}
+move_right={
+"deadzone": 0.0,
+"events": [Object(InputEventKey,"physical_keycode":68), Object(InputEventKey,"physical_keycode":4194321)]
+}
+interact={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":69)]
+}
+jump={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":32)]
+}
+dash={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":4194325)]
+}
+
+; Touch actions intentionally have no physical events. The touch HUD writes
+; only to this namespace; the player composes it with keyboard actions.
+touch_move_forward={
+"deadzone": 0.0,
+"events": []
+}
+touch_move_back={
+"deadzone": 0.0,
+"events": []
+}
+touch_move_left={
+"deadzone": 0.0,
+"events": []
+}
+touch_move_right={
+"deadzone": 0.0,
+"events": []
+}
+touch_interact={
+"deadzone": 0.0,
+"events": []
+}
+touch_jump={
+"deadzone": 0.0,
+"events": []
+}
+touch_dash={
+"deadzone": 0.0,
+"events": []
+}
+
+[physics]
+
+3d/default_gravity=9.8
+
+[rendering]
+
+textures/vram_compression/import_etc2_astc=true
