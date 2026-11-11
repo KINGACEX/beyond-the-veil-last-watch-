@@ -8,6 +8,8 @@ local requestEmberCommand = remoteFolder:WaitForChild("RequestEmberCommand") :: 
 local requestCompanionSelection = remoteFolder:WaitForChild("RequestCompanionSelection") :: RemoteEvent
 local stateUpdated = remoteFolder:WaitForChild("StateUpdated") :: RemoteEvent
 local getInitialState = remoteFolder:WaitForChild("GetInitialState") :: RemoteFunction
+local missionStateUpdated = remoteFolder:WaitForChild("MissionStateUpdated") :: RemoteEvent
+local getMissionState = remoteFolder:WaitForChild("GetMissionState") :: RemoteFunction
 
 local MobileHUDController = require(script.Parent.Controllers.MobileHUDController)
 
@@ -20,8 +22,17 @@ if not ok then
 	initialState = nil
 end
 
+local missionOk, initialMissionState = pcall(function()
+	return getMissionState:InvokeServer()
+end)
+if not missionOk then
+	warn("[BTV Roblox] Could not retrieve opening mission state.")
+	initialMissionState = nil
+end
+
 MobileHUDController.Init({
 	RequestEmberCommand = requestEmberCommand,
 	RequestCompanionSelection = requestCompanionSelection,
 	StateUpdated = stateUpdated,
-}, initialState)
+	MissionStateUpdated = missionStateUpdated,
+}, initialState, initialMissionState)
