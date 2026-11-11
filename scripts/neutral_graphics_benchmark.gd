@@ -31,7 +31,14 @@ const WARMUP_SECONDS := 5.0
 const VIEWPOINT_DWELL_SECONDS := 3.0
 const VIEWPOINT_TRANSIT_SECONDS := 1.0
 const RENDER_SCALE_PRESETS := [1.0, 0.85, 0.7]
+const QUALITY_PROFILE_ORDER := ["reference", "reduced", "minimal"]
+const QUALITY_PROFILES := {
+	"reference": {"shadows": true, "fog": true, "foliage": true, "npcs": true},
+	"reduced": {"shadows": true, "fog": false, "foliage": true, "npcs": false},
+	"minimal": {"shadows": false, "fog": false, "foliage": false, "npcs": false},
+}
 
+var _quality_profile := "reference"
 var _render_scale_index := 0
 var _render_scale := 1.0
 var _run_phase := RUN_IDLE
@@ -87,6 +94,31 @@ func cycle_render_scale() -> bool:
 	return set_render_scale(float(RENDER_SCALE_PRESETS[next_index]))
 
 
+func set_quality_profile(profile_name: String) -> bool:
+	if not QUALITY_PROFILES.has(profile_name) or _sun == null or _environment == null:
+		return false
+	var profile: Dictionary = QUALITY_PROFILES[profile_name]
+	_shadows_enabled = bool(profile["shadows"])
+	_fog_enabled = bool(profile["fog"])
+	_foliage_enabled = bool(profile["foliage"])
+	_npcs_enabled = bool(profile["npcs"])
+	_sun.shadow_enabled = _shadows_enabled
+	_environment.fog_enabled = _fog_enabled
+	for node in _foliage_nodes:
+		node.visible = _foliage_enabled
+	for node in _npc_nodes:
+		node.visible = _npcs_enabled
+	_quality_profile = profile_name
+	_update_telemetry()
+	return true
+
+
+func cycle_quality_profile() -> bool:
+	var current_index := QUALITY_PROFILE_ORDER.find(_quality_profile)
+	var next_index := (current_index + 1) % QUALITY_PROFILE_ORDER.size()
+	return set_quality_profile(QUALITY_PROFILE_ORDER[next_index])
+
+
 func begin_acceptance_run() -> bool:
 	if _route_points.is_empty() or not is_instance_valid(_camera):
 		return false
@@ -112,6 +144,7 @@ func get_acceptance_run_state() -> Dictionary:
 		"elapsed_seconds": _run_elapsed_seconds,
 		"viewpoint_index": _run_viewpoint_index,
 		"viewpoint_count": _route_points.size(),
+		"sequence": _run_sequence,
 		"sample_count": _frame_time_samples_ms.size(),
 		"export_path": _run_export_path,
 	}
@@ -198,12 +231,13 @@ func build_run_metadata() -> Dictionary:
 			"z": point.z,
 		})
 	return {
-		"schema_version": 2,
+		"schema_version": 3,
 		"project": str(ProjectSettings.get_setting("application/config/name", "BTV")),
 		"run": {
 			"sequence": _run_sequence,
 			"started_at": _run_started_at,
 			"duration_seconds": _run_elapsed_seconds,
+			"comparison_key": "%s_render_scale_%.2f" % [_quality_profile, _render_scale],
 			"traversal_variant": "fixed_camera_dwell_v2",
 			"completion_state": _run_phase,
 		},
@@ -232,14 +266,20 @@ func build_run_metadata() -> Dictionary:
 			"active_renderer_method": "NOT_CAPTURED_BY_THIS_SCRIPT",
 			"graphics_api": "NOT_CAPTURED_BY_THIS_SCRIPT",
 			"render_scale": _render_scale,
+			"supported_render_scales": RENDER_SCALE_PRESETS.duplicate(),
 			"render_scale_mode": int(get_viewport().scaling_3d_mode),
-			"quality_control_scope": "scene toggles only; not a renderer-wide quality preset",
+			"quality_profile": _quality_profile,
+			"supported_quality_profiles": QUALITY_PROFILE_ORDER.duplicate(),
+			"quality_control_scope": "benchmark-scene profiles and toggles only; not project-wide or renderer-wide quality presets",
 		},
 		"protocol": {
 			"warmup_seconds": WARMUP_SECONDS,
 			"transit_seconds_between_viewpoints": VIEWPOINT_TRANSIT_SECONDS,
 			"dwell_seconds_per_viewpoint": VIEWPOINT_DWELL_SECONDS,
 			"viewpoint_count": _route_points.size(),
+			"warmup_location": "fixed viewpoint_00 camera position; warm-up samples excluded",
+			"sampling_policy": "dwell windows only; warm-up and camera transit intervals excluded",
+			"repeatability_requirements": "same build, scene revision, quality profile, render scale, route and timing constants",
 			"expected_duration_seconds": WARMUP_SECONDS + VIEWPOINT_DWELL_SECONDS * _route_points.size() + VIEWPOINT_TRANSIT_SECONDS * maxi(_route_points.size() - 1, 0),
 		},
 		"settings": {
@@ -247,20 +287,25 @@ func build_run_metadata() -> Dictionary:
 			"fog": _fog_enabled,
 			"foliage": _foliage_enabled,
 			"npcs": _npcs_enabled,
+			"quality_profile": _quality_profile,
 			"foliage_proxy_count": _foliage_nodes.size(),
 			"npc_proxy_count": _npc_nodes.size(),
 		},
 		"frame_time_measurement": {
 			"source": "Godot process delta (Node._process(delta)) during fixed viewpoint dwell windows",
 			"unit": "milliseconds",
-			"scope": "main-loop frame interval observed by the process callback; not CPU execution time",
+			"scope": "main-loop frame interval observed by the process callback; not CPU execution duration or utilization",
 			"sample_window": "dwell only; warm-up and camera transit excluded",
 			"sample_count": _frame_time_samples_ms.size(),
 			"summary": BenchmarkMetrics.summarize_frame_times(_frame_time_samples_ms),
-			"limitations": "CPU-side frame interval only; not isolated GPU time, CPU utilization, memory, thermal or power telemetry",
+			"limitations": "Frame-delta observations only; not CPU execution duration/utilization, GPU timing/utilization, memory, thermal or power telemetry",
 		},
 		"telemetry_availability": {
-			"cpu_frame_delta_ms": {"available": true, "status": "OBSERVED"},
+			"cpu_frame_delta_ms": {
+				"available": not _frame_time_samples_ms.is_empty(),
+				"status": "OBSERVED" if not _frame_time_samples_ms.is_empty() else "NO_SAMPLES",
+				"definition": "main-loop frame interval from Node._process(delta); not CPU execution time",
+			},
 			"cpu_utilization": {"available": false, "status": "NOT_CAPTURED"},
 			"gpu_frame_time_ms": {"available": false, "status": "NOT_CAPTURED"},
 			"gpu_utilization": {"available": false, "status": "NOT_CAPTURED"},
@@ -364,6 +409,7 @@ func _ready() -> void:
 	_build_character_pad()
 	_build_settlement_blockout()
 	_build_route_markers()
+	set_quality_profile("reference")
 	_update_telemetry()
 
 
@@ -374,17 +420,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		KEY_1:
 			_shadows_enabled = not _shadows_enabled
 			_sun.shadow_enabled = _shadows_enabled
+			_quality_profile = "custom"
 		KEY_2:
 			_fog_enabled = not _fog_enabled
 			_environment.fog_enabled = _fog_enabled
+			_quality_profile = "custom"
 		KEY_3:
 			_foliage_enabled = not _foliage_enabled
 			for node in _foliage_nodes:
 				node.visible = _foliage_enabled
+			_quality_profile = "custom"
 		KEY_4:
 			_npcs_enabled = not _npcs_enabled
 			for node in _npc_nodes:
 				node.visible = _npcs_enabled
+			_quality_profile = "custom"
 		KEY_5:
 			start_route_playback()
 		KEY_6:
@@ -395,6 +445,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			export_last_run_metadata()
 		KEY_9:
 			cycle_render_scale()
+		KEY_Q:
+			cycle_quality_profile()
 		KEY_0:
 			set_render_scale(1.0)
 	_update_telemetry()
@@ -406,7 +458,9 @@ func get_benchmark_state() -> Dictionary:
 		"fog": _fog_enabled,
 		"foliage": _foliage_enabled,
 		"npcs": _npcs_enabled,
-		"quality_controls_scope": "scene-only toggles; one variable per comparison",
+		"quality_controls_scope": "benchmark-scene profiles and individual toggles; not renderer-wide",
+		"quality_profile": _quality_profile,
+		"supported_quality_profiles": QUALITY_PROFILE_ORDER.duplicate(),
 		"render_scale": _render_scale,
 		"supported_render_scales": RENDER_SCALE_PRESETS.duplicate(),
 		"foliage_count": _foliage_nodes.size(),
@@ -659,7 +713,8 @@ func _update_telemetry() -> void:
 			"ON" if _npcs_enabled else "OFF",
 		]
 		+ "9 Cycle 3D render scale: %.2f   0 Reset to 1.00\n" % _render_scale
-		+ "Quality controls are scene-only; compare one toggle at a time.\n"
+		+ "Q Cycle scene quality profile: %s (reference/reduced/minimal)\n" % _quality_profile
+		+ "Quality profiles are benchmark-scene bundles, not game-wide presets.\n"
 		+ "7 Start: 5s warm-up + 6 fixed dwell points (3s each); 1s transitions\n"
 		+ "8 Export completed run JSON   Phase: %s / viewpoint %d of %d\n" % [_run_phase, _run_viewpoint_index + 1, _route_points.size()]
 		+ "Frame samples: %d   Last export: %s\n" % [_frame_time_samples_ms.size(), _run_export_path if not _run_export_path.is_empty() else "not exported"]
