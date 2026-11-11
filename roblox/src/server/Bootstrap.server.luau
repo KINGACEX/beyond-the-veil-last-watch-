@@ -7,6 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local GameConfig = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("GameConfig"))
 local PlayerStateService = require(script.Parent.Services.PlayerStateService)
 local MissionService = require(script.Parent.Services.MissionService)
+local CompanionActorService = require(script.Parent.Services.CompanionActorService)
 
 local REMOTE_FOLDER_NAME = "BTVRemotes"
 local remoteFolder = ReplicatedStorage:FindFirstChild(REMOTE_FOLDER_NAME)
@@ -48,6 +49,7 @@ local COMPANION_SELECTION_INTERVAL_SECONDS = 0.5
 local function onPlayerAdded(player: Player)
 	PlayerStateService.AddPlayer(player)
 	MissionService.AddPlayer(player)
+	CompanionActorService.BindPlayer(player)
 end
 
 for _, player in Players:GetPlayers() do
@@ -58,6 +60,7 @@ Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(function(player: Player)
 	PlayerStateService.RemovePlayer(player)
 	MissionService.RemovePlayer(player)
+	CompanionActorService.RemovePlayer(player)
 	lastCommandAt[player.UserId] = nil
 	lastCompanionSelectionAt[player.UserId] = nil
 end)
@@ -103,6 +106,7 @@ requestCompanionSelection.OnServerEvent:Connect(function(player: Player, compani
 	if not accepted then
 		return
 	end
+	CompanionActorService.RefreshPlayer(player)
 	local snapshot = PlayerStateService.GetSnapshot(player)
 	if snapshot ~= nil then
 		stateUpdated:FireClient(player, snapshot)
