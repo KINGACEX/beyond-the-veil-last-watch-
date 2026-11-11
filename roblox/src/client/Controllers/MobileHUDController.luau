@@ -101,7 +101,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	missionObjective.BackgroundTransparency = 1
 	missionObjective.Position = UDim2.fromOffset(12, 25)
 	missionObjective.Size = UDim2.new(1, -24, 0, 25)
-	missionObjective.Font = Enum.Font.GothamSemibold
+	missionObjective.Font = Enum.Font.GothamMedium
 	missionObjective.Text = "Enter the sanctuary"
 	missionObjective.TextColor3 = Color3.fromRGB(244, 242, 234)
 	missionObjective.TextSize = 14
