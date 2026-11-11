@@ -40,6 +40,10 @@ func _run() -> void:
 	_check(is_equal_approx(benchmark.get_viewport().scaling_3d_scale, 0.85), "GRAPHICS BENCH: viewport 3D buffer scale changes")
 	_check(not benchmark.call("set_render_scale", 0.5), "GRAPHICS BENCH: unsupported render scale is rejected")
 	_check(is_equal_approx(benchmark.get_viewport().scaling_3d_scale, 0.85), "GRAPHICS BENCH: rejected scale leaves active scale unchanged")
+	_check(benchmark.call("cycle_render_scale"), "GRAPHICS BENCH: render-scale preset cycle is available")
+	_check(is_equal_approx(benchmark.get_viewport().scaling_3d_scale, 0.7), "GRAPHICS BENCH: render-scale cycle selects the next supported preset")
+	_check(benchmark.call("cycle_render_scale"), "GRAPHICS BENCH: render-scale preset cycle wraps")
+	_check(is_equal_approx(benchmark.get_viewport().scaling_3d_scale, 1.0), "GRAPHICS BENCH: render-scale cycle returns to native scale")
 	_check(benchmark.call("set_render_scale", 1.0), "GRAPHICS BENCH: native render scale can be restored")
 	_check(benchmark.get_node_or_null("HUD/Telemetry") is Label, "GRAPHICS BENCH: telemetry is visible")
 	_check(benchmark.has_method("get_frame_time_summary"), "GRAPHICS BENCH: frame-time summary API exists")
@@ -74,11 +78,18 @@ func _run() -> void:
 	for viewpoint in range(6):
 		if viewpoint > 0:
 			var samples_before_transit := int(benchmark.call("get_frame_time_sample_count"))
+			var transition_start: Vector3 = benchmark.get_node("BenchmarkCamera").position
+			benchmark.call("_advance_benchmark_run", 0.5)
+			var transition_midpoint: Vector3 = benchmark.get_node("BenchmarkCamera").position
+			_check(transition_midpoint.distance_to(transition_start) > 0.01, "GRAPHICS BENCH: camera moves between fixed dwell points")
 			benchmark.call("_process", 0.1)
 			_check(int(benchmark.call("get_frame_time_sample_count")) == samples_before_transit, "GRAPHICS BENCH: camera transit intervals are excluded")
-			benchmark.call("_advance_benchmark_run", 0.9)
+			benchmark.call("_advance_benchmark_run", 0.4)
 			run_state = benchmark.call("get_acceptance_run_state")
 			_check(run_state.get("phase") == "dwell", "GRAPHICS BENCH: viewpoint %d reaches its dwell after transit" % viewpoint)
+		var route_points: Array = benchmark.get("_route_points")
+		var dwell_target: Vector3 = route_points[viewpoint]
+		_check(benchmark.get_node("BenchmarkCamera").position.distance_to(dwell_target + Vector3(0.0, 11.0, 15.0)) < 0.001, "GRAPHICS BENCH: viewpoint %d camera settles at its fixed dwell point" % viewpoint)
 		benchmark.call("_process", 0.1)
 		_check(int(benchmark.call("get_frame_time_sample_count")) == viewpoint + 1, "GRAPHICS BENCH: dwell-only sample count advances at viewpoint %d" % viewpoint)
 		benchmark.call("_advance_benchmark_run", 2.9)
@@ -100,7 +111,11 @@ func _run() -> void:
 	_check(not export_path.is_empty() and FileAccess.file_exists(export_path), "GRAPHICS BENCH: JSON metadata export creates a file")
 	if not export_path.is_empty() and FileAccess.file_exists(export_path):
 		var exported_file := FileAccess.open(export_path, FileAccess.READ)
-		var exported_value: Variant = JSON.parse_string(exported_file.get_as_text()) if exported_file != null else null
+		var exported_text := exported_file.get_as_text() if exported_file != null else ""
+		if exported_file != null:
+			exported_file.close()
+		var exported_value: Variant = JSON.parse_string(exported_text)
+		_check(not exported_text.is_empty(), "GRAPHICS BENCH: exported JSON is not empty")
 		_check(exported_value is Dictionary and exported_value.has("telemetry_availability"), "GRAPHICS BENCH: exported JSON retains telemetry availability boundaries")
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(export_path))
 	root.remove_child(benchmark)

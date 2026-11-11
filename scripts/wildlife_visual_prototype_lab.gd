@@ -27,7 +27,9 @@ func _ready() -> void:
 	_build_bird_study()
 	_build_reptile_study()
 	_update_telemetry()
-	update_visual_lod_for_camera(get_viewport().get_camera_3d().global_position)
+	var active_camera := get_viewport().get_camera_3d()
+	if active_camera != null:
+		update_visual_lod_for_camera(active_camera.global_position)
 
 
 func _process(delta: float) -> void:
@@ -207,24 +209,28 @@ func _new_specimen_root(root_name: String, root_position: Vector3) -> Node3D:
 	var root := Node3D.new()
 	root.name = root_name
 	root.position = root_position
-	_base_positions[root_name.trim_prefix("Generic").to_lower()] = root_position
+	_base_positions[root_name.replace("Generic", "").replace("Study", "").to_lower()] = root_position
 	add_child(root)
 	return root
 
 
 func _is_locomoting(elapsed: float) -> bool:
 	var phase := fposmod(elapsed, LOCOMOTION_LOOP_SECONDS)
-	return phase < LOCOMOTION_TRAVEL_SECONDS or (phase >= 3.0 and phase < 5.0)
+	var second_travel_start := LOCOMOTION_TRAVEL_SECONDS + ENDPOINT_IDLE_SECONDS
+	var second_travel_end := second_travel_start + LOCOMOTION_TRAVEL_SECONDS
+	return phase < LOCOMOTION_TRAVEL_SECONDS or (phase >= second_travel_start and phase < second_travel_end)
 
 
 func _motion_offset(elapsed: float, amplitude: float) -> float:
 	var phase := fposmod(elapsed, LOCOMOTION_LOOP_SECONDS)
+	var second_travel_start := LOCOMOTION_TRAVEL_SECONDS + ENDPOINT_IDLE_SECONDS
+	var second_travel_end := second_travel_start + LOCOMOTION_TRAVEL_SECONDS
 	if phase < LOCOMOTION_TRAVEL_SECONDS:
 		return lerpf(-amplitude, amplitude, phase / LOCOMOTION_TRAVEL_SECONDS)
-	if phase < 3.0:
+	if phase < second_travel_start:
 		return amplitude
-	if phase < 5.0:
-		return lerpf(amplitude, -amplitude, (phase - 3.0) / LOCOMOTION_TRAVEL_SECONDS)
+	if phase < second_travel_end:
+		return lerpf(amplitude, -amplitude, (phase - second_travel_start) / LOCOMOTION_TRAVEL_SECONDS)
 	return -amplitude
 
 

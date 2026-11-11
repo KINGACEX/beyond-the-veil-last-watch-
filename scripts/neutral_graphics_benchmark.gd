@@ -229,6 +229,7 @@ func build_run_metadata() -> Dictionary:
 		},
 		"rendering": {
 			"configured_renderer_method": str(ProjectSettings.get_setting("rendering/renderer/rendering_method", "NOT_CAPTURED")),
+			"active_renderer_method": "NOT_CAPTURED_BY_THIS_SCRIPT",
 			"graphics_api": "NOT_CAPTURED_BY_THIS_SCRIPT",
 			"render_scale": _render_scale,
 			"render_scale_mode": int(get_viewport().scaling_3d_mode),
@@ -298,7 +299,11 @@ func export_last_run_metadata() -> String:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return ""
-	file.store_string(JSON.stringify(_last_run_metadata, "\t"))
+	var serialized_metadata := JSON.stringify(_last_run_metadata)
+	if serialized_metadata.is_empty():
+		file.close()
+		return ""
+	file.store_string(serialized_metadata)
 	file.close()
 	_run_export_path = path
 	_update_telemetry()

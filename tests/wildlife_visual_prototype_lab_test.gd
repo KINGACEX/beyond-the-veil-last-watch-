@@ -33,8 +33,13 @@ func _run() -> void:
 	_check(state.get("nonviolent_visual_only", false), "WILDLIFE VISUAL: prototype remains visual-only and nonviolent")
 	_check(not state.get("production_assets", true), "WILDLIFE VISUAL: production asset boundary is explicit")
 	_check(not state.get("species_assignments", true), "WILDLIFE VISUAL: no unsupported species assignment")
-	_check(lab.get_node("HUD/Telemetry").text.contains("generic placeholders"), "WILDLIFE VISUAL: telemetry identifies placeholder status")
+	_check(lab.get_node("HUD/Telemetry").text.to_lower().contains("generic placeholders"), "WILDLIFE VISUAL: telemetry identifies placeholder status")
 	var mammal_root := lab.get_node("GenericMammalStudy") as Node3D
+	var bird_root := lab.get_node("GenericBirdStudy") as Node3D
+	var reptile_root := lab.get_node("GenericReptileStudy") as Node3D
+	_check(mammal_root.position.x < -5.0 and bird_root.position.x > -5.0 and bird_root.position.x < 5.0 and reptile_root.position.x > 5.0, "WILDLIFE VISUAL: body-form studies retain separate authored habitat-stage positions")
+	_check(lab.get_node("Habitat_WoodlandPresentation").get_meta("species_assignment") == "none", "WILDLIFE VISUAL: woodland presentation carries no species assignment")
+	_check(lab.get_node("Habitat_RockyShelfPresentation").get_meta("evidence_status") == "not_species_evidence", "WILDLIFE VISUAL: rocky presentation is explicitly not evidence")
 	var mammal_leg := lab.get_node("GenericMammalStudy/Leg_FurPlaceholder") as MeshInstance3D
 	var bird_wing := lab.get_node("GenericBirdStudy/Wing_Left_FeatherPlaceholder") as MeshInstance3D
 	var start_x := mammal_root.position.x
