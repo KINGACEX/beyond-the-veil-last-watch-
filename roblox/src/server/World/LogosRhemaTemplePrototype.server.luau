@@ -74,7 +74,7 @@ local function makeLight(parent: Instance, name: string, position: Vector3, colo
 	light.Color = color
 	light.Range = range
 	light.Brightness = brightness
-	light.Shadows = true
+	light.Shadows = false
 	light.Parent = holder
 end
 
