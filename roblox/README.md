@@ -41,9 +41,10 @@ Implemented as source files:
 - server-side currency award boundary (no client award endpoint);
 - validated Ember command requests with a basic per-player request throttle;
 - initial client HUD and command panel;
-- data-driven eight-animal companion catalog with roles, personalities, signature support behaviours and free-equivalent boundaries.
+- data-driven eight-animal companion catalog with roles, personalities, signature support behaviours and free-equivalent boundaries;
+- server-authoritative, session-only companion selection with a touch selector populated from the server-owned companion list. Initial access is Ember, Fox, Owl and Horse.
 
-The companion catalog is descriptive configuration only. It does not yet implement ownership, selection, companion models, AI, animations or purchases. Ember's seven core commands remain available as core functionality; the optional Ember Bond Pack is a presentation/bonding offer only. No product IDs or prices are defined.
+The catalog covers all eight animals. Companion selection now exists for the current session, but ownership is not persistent and premium entitlement verification is not implemented. Eagle, Bear, Leopard and Falcon remain unavailable candidates with no purchase path. Companion models, AI and animations are not implemented. Ember's seven core commands remain available as core functionality; the optional Ember Bond Pack is presentation/bonding only. No product IDs or prices are defined.
 
 Not implemented:
 - world geometry, Asher character model, companion models/AI, companion selection, combat, missions, persistence, economy values, monetisation, or published Roblox place.
