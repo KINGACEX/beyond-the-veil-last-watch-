@@ -20,7 +20,7 @@ The next approved sequence stages—journey to Ridgeview, investigation/response
 - `OpeningMission.server.luau` creates the sanctuary-entry and Scout Report proximity prompts and validates interaction distance server-side.
 - `Bootstrap.server.luau` owns mission session lifecycle and read-only snapshot retrieval.
 - `Bootstrap.client.luau` receives mission state through server-created remotes.
-- `MobileHUDController.luau` renders the current sequence index, objective and status from server-confirmed snapshots.
+- `MobileHUDController.luau` renders the current sequence index, objective and status from server-confirmed snapshots, plus a Scout Report viewer that explicitly shows the absence of authored intelligence.
 
 No client remote can directly set a mission phase or award rewards.
 
@@ -46,7 +46,7 @@ No client remote can directly set a mission phase or award rewards.
 
 ## Current verification
 
-- Repository implementation and read-back: expected to be verified after commit.
+- Repository implementation and read-back: VERIFIED.
 - Luau type/syntax check: NOT RUN.
 - Rojo build: NOT RUN.
 - Roblox Studio play test: NOT RUN.
