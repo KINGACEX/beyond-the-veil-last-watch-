@@ -15,8 +15,8 @@ type ActorRecord = {
 }
 
 local CompanionActorService = {}
-local actors: {[number]: ActorRecord} = {}
-local characterConnections: {[number]: RBXScriptConnection} = {}
+local actors: { [number]: ActorRecord } = {}
+local characterConnections: { [number]: RBXScriptConnection } = {}
 
 local FOLDER_NAME = "BTV_Companions"
 local FOLLOW_OFFSET = CFrame.new(-3.2, -1.8, 3.4)
@@ -39,14 +39,7 @@ local function getFolder(): Folder
 	return folder
 end
 
-local function makePart(
-	parent: Instance,
-	name: string,
-	size: Vector3,
-	position: Vector3,
-	color: Color3,
-	shape: Enum.PartType?
-): Part
+local function makePart(parent: Instance, name: string, size: Vector3, position: Vector3, color: Color3, shape: Enum.PartType?): Part
 	local part = Instance.new("Part")
 	part.Name = name
 	part.Size = size
@@ -83,7 +76,7 @@ local function createEmber(player: Player, character: Model): Model
 	makePart(model, "Muzzle", Vector3.new(0.62, 0.38, 0.66), Vector3.new(0, 2.73, -1.58), coatLight, Enum.PartType.Ball)
 	makePart(model, "Nose", Vector3.new(0.24, 0.19, 0.2), Vector3.new(0, 2.78, -1.91), Color3.fromRGB(24, 22, 21), Enum.PartType.Ball)
 
-	for _, side in {-1, 1} do
+	for _, side in { -1, 1 } do
 		makePart(model, "Ear_" .. side, Vector3.new(0.28, 0.52, 0.3), Vector3.new(side * 0.31, 3.48, -0.9), coat, Enum.PartType.Ball)
 		makePart(model, "Eye_" .. side, Vector3.new(0.13, 0.13, 0.09), Vector3.new(side * 0.31, 3.02, -1.43), eyeColor, Enum.PartType.Ball)
 		makePart(model, "EyePupil_" .. side, Vector3.new(0.055, 0.07, 0.045), Vector3.new(side * 0.31, 3.02, -1.49), Color3.fromRGB(28, 24, 22), Enum.PartType.Ball)
@@ -190,8 +183,7 @@ RunService.Heartbeat:Connect(function(deltaTime: number)
 		end
 
 		local idleTime = os.clock()
-		local idleOffset = CFrame.new(0, math.sin(idleTime * 4) * 0.035, 0)
-			* CFrame.Angles(0, math.sin(idleTime * 1.8) * 0.025, 0)
+		local idleOffset = CFrame.new(0, math.sin(idleTime * 4) * 0.035, 0) * CFrame.Angles(0, math.sin(idleTime * 1.8) * 0.025, 0)
 		local target = root.CFrame * FOLLOW_OFFSET * idleOffset
 		local current = actor.model:GetPivot()
 		local nextPivot = current:Lerp(target, alpha)
@@ -201,12 +193,10 @@ RunService.Heartbeat:Connect(function(deltaTime: number)
 		local tailMid = actor.model:FindFirstChild("TailMid")
 		local tailTip = actor.model:FindFirstChild("TailTip")
 		if tailMid and tailMid:IsA("BasePart") then
-			tailMid.CFrame = nextPivot * CFrame.new(0, 0.67, 1.34)
-				* CFrame.Angles(0, math.sin(idleTime * 7) * 0.2, 0)
+			tailMid.CFrame = nextPivot * CFrame.new(0, 0.67, 1.34) * CFrame.Angles(0, math.sin(idleTime * 7) * 0.2, 0)
 		end
 		if tailTip and tailTip:IsA("BasePart") then
-			tailTip.CFrame = nextPivot * CFrame.new(0, 0.9, 1.59)
-				* CFrame.Angles(0, math.sin(idleTime * 7 - 0.35) * 0.28, 0)
+			tailTip.CFrame = nextPivot * CFrame.new(0, 0.9, 1.59) * CFrame.Angles(0, math.sin(idleTime * 7 - 0.35) * 0.28, 0)
 		end
 	end
 end)

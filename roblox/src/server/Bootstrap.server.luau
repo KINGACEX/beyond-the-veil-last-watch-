@@ -36,13 +36,13 @@ local getInitialState = getOrCreateRemote("RemoteFunction", "GetInitialState") :
 local missionStateUpdated = getOrCreateRemote("RemoteEvent", "MissionStateUpdated") :: RemoteEvent
 local getMissionState = getOrCreateRemote("RemoteFunction", "GetMissionState") :: RemoteFunction
 
-local allowedCommands: {[string]: boolean} = {}
+local allowedCommands: { [string]: boolean } = {}
 for _, command in GameConfig.EmberCommands do
 	allowedCommands[command] = true
 end
 
-local lastCommandAt: {[number]: number} = {}
-local lastCompanionSelectionAt: {[number]: number} = {}
+local lastCommandAt: { [number]: number } = {}
+local lastCompanionSelectionAt: { [number]: number } = {}
 local REQUEST_INTERVAL_SECONDS = 0.4
 local COMPANION_SELECTION_INTERVAL_SECONDS = 0.5
 
