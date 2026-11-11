@@ -55,11 +55,13 @@ func _run() -> void:
 		_check(field_note.get_node_or_null("Marker") is MeshInstance3D, "EXPLORATION: %s has a visible marker" % observation_name)
 		player.call("_on_sensor_area_entered", field_note)
 		await process_frame
+		world.call("_process", 0.0) # Update the prompt deterministically; process_frame resumes before node callbacks.
 		var prompt_label := world.get_node("HUD/InteractionPrompt") as Label
 		_check(prompt_label.visible, "EXPLORATION: %s shows a contextual prompt when nearby" % observation_name)
 		_check(prompt_label.text.contains(field_note.interaction_prompt), "EXPLORATION: %s prompt identifies the available interaction" % observation_name)
 		player.call("_try_interact")
 		await process_frame
+		world.call("_process", 0.0)
 		_check(not prompt_label.visible, "EXPLORATION: prompt yields to interaction feedback after use")
 		_check(world.get_node("HUD/InteractionToast").text.contains(field_note.observation_title), "EXPLORATION: %s reaches the HUD" % observation_name)
 		_check(world.get_node("HUD/InteractionToast").text.contains(field_note.observation_text), "EXPLORATION: %s presents its field-note text" % observation_name)
