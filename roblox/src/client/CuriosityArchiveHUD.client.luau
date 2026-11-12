@@ -46,6 +46,12 @@ label.TextWrapped = true
 label.Parent = panel
 
 local function update()
+	local hint = player:GetAttribute("BTVArchiveHint")
+	if typeof(hint) == "string" then
+		panel.Visible = true
+		label.Text = hint
+		return
+	end
 	local count = player:GetAttribute("BTVCurioMarks")
 	local unlocked = player:GetAttribute("BTVArchiveUnlocked")
 	if typeof(count) ~= "number" then
@@ -61,4 +67,5 @@ end
 
 player:GetAttributeChangedSignal("BTVCurioMarks"):Connect(update)
 player:GetAttributeChangedSignal("BTVArchiveUnlocked"):Connect(update)
+player:GetAttributeChangedSignal("BTVArchiveHint"):Connect(update)
 update()
