@@ -67,16 +67,22 @@
 - [ ] HCI is not presented as an in-game real organisation.
 - [ ] Unresolved lore is not filled with invented explanations.
 
-## E. Mobile UI
+## E. Cross-platform UI and input
 
 - [ ] HUD fits common phone aspect ratios.
+- [ ] HUD remains usable on 16:9, 16:10, ultrawide and windowed desktop viewports.
+- [ ] Mouse users can activate every visible HUD button and companion selection control.
+- [ ] Keyboard/mouse gameplay controls do not conflict with mission interactions or default Roblox movement bindings.
+- [ ] Preferred-input changes between touch, keyboard/mouse and gamepad update the HUD layout without requiring a respawn.
+- [ ] UI panels have sensible maximum widths on large PC displays and do not stretch across the entire monitor.
 - [ ] Touch targets are comfortably tappable.
 - [ ] Command panel opens and closes.
 - [ ] All seven official Ember commands can be requested.
-- [ ] UI remains readable at reduced screen size.
+- [ ] UI remains readable at reduced screen size and at standard desktop resolutions.
 - [ ] Safe areas and notches do not obscure controls.
-- [ ] UI does not require hover or keyboard.
+- [ ] UI does not require hover or keyboard; all core actions remain accessible to touch and mouse users.
 - [ ] On touch-enabled devices, companion controls are positioned away from the default left-thumb movement and right-thumb action zones.
+- [ ] On PC, Ember and companion-selection controls are placed in accessible screen corners and do not obscure the central play area.
 - [ ] Companion selection and command panels remain within the visible phone viewport at narrow widths.
 
 ## F. Environment visual prototype
@@ -146,9 +152,18 @@
 - [ ] No unreviewed persistent profile schema is written.
 - [ ] Different selected companions can coexist without mission dependency or unfair advantage.
 
+## H.1 PC and cross-platform multiplayer
+
+- [ ] Two PC clients can complete the opening slice using mouse and keyboard.
+- [ ] A mobile client and PC client can join the same server and see consistent mission and Covenant state.
+- [ ] Companion ownership, rank and team state are identical regardless of client platform.
+- [ ] No platform-specific premium entitlement, damage, movement or reward advantage exists.
+- [ ] Supported gamepad navigation is tested before gamepad support is advertised.
+
 ## I. Performance
 
 - [ ] Profile on a low/mid-range Android device.
+- [ ] Profile on a representative low/mid-range PC and a higher-spec PC.
 - [ ] Measure frame rate and memory rather than guessing.
 - [ ] Inspect streaming behaviour in a region larger than the initial play area.
 - [ ] Check transparent effects, dynamic shadows and particle overdraw.
@@ -207,7 +222,7 @@
 
 ## K. Asher and Ember Signature Presentation
 
-- [ ] Asher remains the sole playable protagonist and is available to every player.
+- [ ] Asher remains the central protagonist of the original main-game continuity; the Roblox Asher & Ember Signature Collection is a separate optional premium presentation offer.
 - [ ] Asher's approved face, apparent age, hairstyle, proportions and Covenant identity match the visual references.
 - [ ] Asher's Signature wardrobe preserves the established Covenant visual language.
 - [ ] Asher's Signature animations do not change movement, combat, stamina or interaction timings.
