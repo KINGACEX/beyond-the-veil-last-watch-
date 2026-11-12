@@ -6,12 +6,18 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
+local ServerStorage = game:GetService("ServerStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local PlayerStateService = require(script.Parent.PlayerStateService)
+local CompanionRigContract = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("CompanionRigContract"))
 
 type ActorRecord = {
 	model: Model,
 	character: Model,
+	animationTracks: { [string]: AnimationTrack },
+	activeAnimation: string?,
+	acknowledgementUntil: number,
 }
 
 local CompanionActorService = {}
@@ -56,6 +62,137 @@ local function makePart(parent: Instance, name: string, size: Vector3, position:
 	part.BottomSurface = Enum.SurfaceType.Smooth
 	part.Parent = parent
 	return part
+end
+
+local assetWarningLogged = false
+
+local function warnInvalidImportedAsset(reason: string)
+	if assetWarningLogged then
+		return
+	end
+	assetWarningLogged = true
+	warn("[BTV Roblox] Imported Ember rig rejected; using the safe placeholder. " .. reason)
+end
+
+local function hasExecutableCode(model: Model): boolean
+	for _, descendant in model:GetDescendants() do
+		if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("ModuleScript") then
+			return true
+		end
+	end
+	return false
+end
+
+local function createImportedEmber(player: Player, character: Model): (Model?, { [string]: AnimationTrack })
+	local assetRoot = ServerStorage:FindFirstChild(CompanionRigContract.AssetFolderName)
+	if assetRoot == nil then
+		return nil, {}
+	end
+
+	local companionFolder = assetRoot:FindFirstChild(CompanionRigContract.CompanionFolderName)
+	local template = if companionFolder then companionFolder:FindFirstChild(CompanionRigContract.ModelName) else nil
+	if template == nil then
+		return nil, {}
+	end
+	if not template:IsA("Model") then
+		warnInvalidImportedAsset("The Ember asset entry is not a Model.")
+		return nil, {}
+	end
+
+	local model = template:Clone()
+	local function reject(reason: string): (Model?, { [string]: AnimationTrack })
+		model:Destroy()
+		warnInvalidImportedAsset(reason)
+		return nil, {}
+	end
+
+	local rootPart = model.PrimaryPart
+	if rootPart == nil or rootPart.Name ~= CompanionRigContract.RootPartName then
+		return reject("PrimaryPart must be named " .. CompanionRigContract.RootPartName .. ".")
+	end
+	if hasExecutableCode(model) then
+		return reject("Imported companion assets must not contain Script, LocalScript or ModuleScript descendants.")
+	end
+
+	local hasMotorJoints = model:FindFirstChildWhichIsA("Motor6D", true) ~= nil
+	local hasBones = model:FindFirstChildWhichIsA("Bone", true) ~= nil
+	if not hasMotorJoints and not hasBones then
+		return reject("The model contains neither Motor6D joints nor a skinned Bone hierarchy.")
+	end
+
+	local controller = model:FindFirstChild(CompanionRigContract.AnimationControllerName, true)
+	if controller == nil or not controller:IsA("AnimationController") then
+		return reject("AnimationController is missing.")
+	end
+	local animator = controller:FindFirstChildOfClass("Animator")
+	if animator == nil then
+		return reject("AnimationController must contain an Animator.")
+	end
+	local animationFolder = model:FindFirstChild(CompanionRigContract.AnimationFolderName, true)
+	if animationFolder == nil or not animationFolder:IsA("Folder") then
+		return reject("Animations folder is missing.")
+	end
+
+	local animationObjects: { [string]: Animation } = {}
+	for _, animationName in CompanionRigContract.RequiredAnimations do
+		local animation = animationFolder:FindFirstChild(animationName)
+		if animation == nil or not animation:IsA("Animation") then
+			return reject("Required animation is missing: " .. animationName .. ".")
+		end
+		if string.match(animation.AnimationId, "^rbxassetid://%d+$") == nil then
+			return reject("Required animation has no valid Roblox asset ID: " .. animationName .. ".")
+		end
+		animationObjects[animationName] = animation
+	end
+
+	for _, descendant in model:GetDescendants() do
+		if descendant:IsA("BasePart") then
+			descendant.CanCollide = false
+			descendant.CanTouch = false
+			descendant.CanQuery = false
+			descendant.Massless = true
+			descendant.Anchored = descendant == rootPart or not hasMotorJoints
+		end
+	end
+
+	model.Name = "Ember_" .. player.UserId
+	model:SetAttribute("CompanionId", "ember")
+	model:SetAttribute("VisualStatus", "IMPORTED RIG PROTOTYPE — NOT FINAL")
+	model:SetAttribute("GameplayAdvantage", false)
+	model.Parent = getFolder()
+	model:PivotTo(character:GetPivot() * FOLLOW_OFFSET)
+
+	local tracks: { [string]: AnimationTrack } = {}
+	for _, animationName in CompanionRigContract.RequiredAnimations do
+		local animation = animationObjects[animationName]
+		local ok, track = pcall(function()
+			return animator:LoadAnimation(animation)
+		end)
+		if not ok or track == nil then
+			for _, loadedTrack in tracks do
+				loadedTrack:Stop(0)
+			end
+			return reject("Roblox could not load animation: " .. animationName .. ".")
+		end
+
+		local settings = CompanionRigContract.AnimationSettings[animationName]
+		track.Looped = settings.Looped
+		if settings.Priority == "Idle" then
+			track.Priority = Enum.AnimationPriority.Idle
+		elseif settings.Priority == "Movement" then
+			track.Priority = Enum.AnimationPriority.Movement
+		else
+			track.Priority = Enum.AnimationPriority.Action
+		end
+		tracks[animationName] = track
+	end
+
+	local idleTrack = tracks.Idle_Breathing
+	if idleTrack ~= nil then
+		idleTrack:Play(0.2)
+	end
+
+	return model, tracks
 end
 
 local function createEmber(player: Player, character: Model): Model
@@ -120,6 +257,9 @@ end
 local function destroyActor(player: Player)
 	local actor = actors[player.UserId]
 	if actor ~= nil then
+		for _, track in actor.animationTracks do
+			track:Stop(0)
+		end
 		actor.model:Destroy()
 		actors[player.UserId] = nil
 	end
@@ -139,9 +279,16 @@ function CompanionActorService.RefreshPlayer(player: Player)
 	end
 
 	destroyActor(player)
+	local model, animationTracks = createImportedEmber(player, character)
+	if model == nil then
+		model = createEmber(player, character)
+	end
 	actors[player.UserId] = {
-		model = createEmber(player, character),
+		model = model,
 		character = character,
+		animationTracks = animationTracks,
+		activeAnimation = if animationTracks.Idle_Breathing ~= nil then "Idle_Breathing" else nil,
+		acknowledgementUntil = 0,
 	}
 end
 
@@ -167,8 +314,54 @@ function CompanionActorService.RemovePlayer(player: Player)
 	destroyActor(player)
 end
 
+function CompanionActorService.AcknowledgeCommand(player: Player)
+	local actor = actors[player.UserId]
+	if actor == nil then
+		return
+	end
+	local track = actor.animationTracks.Alert_Acknowledge
+	if track == nil then
+		return
+	end
+
+	local currentTrack = if actor.activeAnimation then actor.animationTracks[actor.activeAnimation] else nil
+	if currentTrack ~= nil then
+		currentTrack:Stop(0.08)
+	end
+	track:Stop(0)
+	track:Play(0.1)
+	actor.activeAnimation = "Alert_Acknowledge"
+	actor.acknowledgementUntil = os.clock() + math.clamp(track.Length, 0.65, 2)
+end
+
 -- Bound server-side companion transforms to 15 Hz. This limits replicated CFrame churn
 -- while retaining exponential smoothing across variable Heartbeat intervals.
+local function updateAnimation(actor: ActorRecord, root: BasePart, now: number)
+	if next(actor.animationTracks) == nil then
+		return
+	end
+
+	local horizontalVelocity = Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z)
+	local desiredAnimation = if now < actor.acknowledgementUntil
+		then "Alert_Acknowledge"
+		elseif horizontalVelocity.Magnitude > 1.15
+		then "Walk_Cycle"
+		else "Idle_Breathing"
+	if desiredAnimation == actor.activeAnimation then
+		return
+	end
+
+	local currentTrack = if actor.activeAnimation then actor.animationTracks[actor.activeAnimation] else nil
+	if currentTrack ~= nil then
+		currentTrack:Stop(0.16)
+	end
+	local nextTrack = actor.animationTracks[desiredAnimation]
+	if nextTrack ~= nil then
+		nextTrack:Play(0.16)
+		actor.activeAnimation = desiredAnimation
+	end
+end
+
 local FOLLOW_UPDATE_INTERVAL = 1 / 15
 local updateAccumulator = 0
 
@@ -180,6 +373,7 @@ RunService.Heartbeat:Connect(function(deltaTime: number)
 
 	local elapsed = updateAccumulator
 	updateAccumulator = 0
+	local now = os.clock()
 	local alpha = 1 - math.exp(-FOLLOW_RESPONSE * elapsed)
 	for userId, actor in actors do
 		local player = Players:GetPlayerByUserId(userId)
@@ -200,6 +394,7 @@ RunService.Heartbeat:Connect(function(deltaTime: number)
 		local current = actor.model:GetPivot()
 		local nextPivot = current:Lerp(target, alpha)
 		actor.model:PivotTo(nextPivot)
+		updateAnimation(actor, root, now)
 
 		-- Small procedural tail motion adds life without granting any gameplay function.
 		local tailMid = actor.model:FindFirstChild("TailMid")
