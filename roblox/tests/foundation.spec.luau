@@ -470,4 +470,16 @@ local malformedStored, malformedStoredError = ProfileRecordPolicy.TryAcquire(
 	ProfileLeasePolicy
 )
 expect(malformedStored == nil and malformedStoredError ~= nil, "unsupported stored profile cannot be overwritten")
+
+local malformedSaveMarker, malformedSaveMarkerError = ProfileRecordPolicy.TryAcquire(
+	{ profile = PlayerProfileSchema.CreateDefault(), lease = nil, lastSaveOperation = { id = "broken" } },
+	"server-B",
+	200,
+	60,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(malformedSaveMarker == nil and malformedSaveMarkerError ~= nil, "malformed save-operation marker fails closed")
 print("[BTV tests] Profile record policy rules passed.")
