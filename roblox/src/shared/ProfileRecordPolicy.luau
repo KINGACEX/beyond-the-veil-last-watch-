@@ -38,15 +38,16 @@ function ProfileRecordPolicy.TryAcquire(
 	elseif not isRecord(existingRecord) then
 		return nil, "Stored profile record is malformed."
 	else
-		if existingRecord.profile == nil then
+		local record = existingRecord :: any
+		if record.profile == nil then
 			return nil, "Stored profile is missing."
 		end
-		local valid, validationError = profileSchema.Validate(existingRecord.profile, rankCatalog, companionCatalog)
+		local valid, validationError = profileSchema.Validate(record.profile, rankCatalog, companionCatalog)
 		if not valid then
 			return nil, validationError or "Stored profile failed validation."
 		end
-		profile = copyProfile(existingRecord.profile)
-		existingLease = existingRecord.lease
+		profile = copyProfile(record.profile)
+		existingLease = record.lease
 	end
 
 	local lease, leaseError = leasePolicy.TryAcquire(existingLease, ownerToken, now, leaseDuration)
@@ -71,14 +72,18 @@ function ProfileRecordPolicy.TrySave(
 	companionCatalog: any,
 	leasePolicy: any
 ): (any?, string?)
-	if not isRecord(existingRecord) or existingRecord.profile == nil then
+	if not isRecord(existingRecord) then
 		return nil, "Stored profile record is missing or malformed."
 	end
-	if not leasePolicy.IsOwner(existingRecord.lease, ownerToken, now) then
+	local record = existingRecord :: any
+	if record.profile == nil then
+		return nil, "Stored profile record is missing or malformed."
+	end
+	if not leasePolicy.IsOwner(record.lease, ownerToken, now) then
 		return nil, "This server no longer owns the profile lease."
 	end
 
-	local storedProfile = existingRecord.profile
+	local storedProfile = record.profile
 	local candidateValid, candidateError = profileSchema.Validate(candidateProfile, rankCatalog, companionCatalog)
 	if not candidateValid then
 		return nil, candidateError or "Candidate profile failed validation."
@@ -87,13 +92,14 @@ function ProfileRecordPolicy.TrySave(
 	if not storedValid then
 		return nil, "Stored profile failed validation; refusing to overwrite it."
 	end
-	if candidateProfile.revision ~= storedProfile.revision then
+	local candidate = candidateProfile :: any
+	if candidate.revision ~= storedProfile.revision then
 		return nil, "Profile revision conflict; refusing to overwrite newer data."
 	end
 
-	local savedProfile = copyProfile(candidateProfile)
+	local savedProfile = copyProfile(candidate)
 	savedProfile.revision = storedProfile.revision + 1
-	local lease, leaseError = leasePolicy.TryAcquire(existingRecord.lease, ownerToken, now, leaseDuration)
+	local lease, leaseError = leasePolicy.TryAcquire(record.lease, ownerToken, now, leaseDuration)
 	if lease == nil then
 		return nil, leaseError or "Profile lease renewal failed during save."
 	end
@@ -109,17 +115,21 @@ function ProfileRecordPolicy.TryRelease(
 	ownerToken: string,
 	leasePolicy: any
 ): (any?, string?)
-	if not isRecord(existingRecord) or existingRecord.profile == nil then
+	if not isRecord(existingRecord) then
+		return nil, "Stored profile record is missing or malformed."
+	end
+	local record = existingRecord :: any
+	if record.profile == nil then
 		return nil, "Stored profile record is missing or malformed."
 	end
 
-	local released, retainedLease = leasePolicy.TryRelease(existingRecord.lease, ownerToken)
+	local released, retainedLease = leasePolicy.TryRelease(record.lease, ownerToken)
 	if not released then
 		return nil, "This server cannot release a lease owned by another server."
 	end
 
 	return {
-		profile = copyProfile(existingRecord.profile),
+		profile = copyProfile(record.profile),
 		lease = retainedLease,
 	}, nil
 end
