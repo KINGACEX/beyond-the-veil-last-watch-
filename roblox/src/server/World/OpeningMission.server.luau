@@ -14,6 +14,13 @@ local missionStateUpdated = remoteFolder:WaitForChild("MissionStateUpdated") :: 
 local world = Workspace:WaitForChild("BTV_World")
 local scene = world:WaitForChild("LogosRhemaTemple_VisualPrototype")
 local interior = scene:WaitForChild("Interior")
+local ridgeviewScene = world:WaitForChild("Ridgeview_LandscapeStudy")
+local ridgeviewArrivalMarker = ridgeviewScene:WaitForChild("RidgeviewArrivalMarker") :: BasePart
+
+local function getRidgeviewArrivalCFrame(): CFrame
+	local position = ridgeviewArrivalMarker.Position + Vector3.new(0, 3.5, 0)
+	return CFrame.lookAt(position, position + Vector3.new(30, 0, -23))
+end
 
 local function addPrompt(parent: BasePart, name: string, actionText: string, objectText: string): ProximityPrompt
 	local existing = parent:FindFirstChild(name)
@@ -67,9 +74,38 @@ reportPrompt.Triggered:Connect(function(player: Player)
 	publish(player, "covenant_alert", "report_accessed")
 end)
 
--- A player joining after the world script starts is already initialized by Bootstrap.
--- This listener is only diagnostic; mission state remains owned by MissionService.
-Players.PlayerAdded:Connect(function(player: Player)
+-- Keep players at the correct opening-slice location after character respawns.
+-- Mission phase remains server-owned and session-only; this restores position, not progress.
+local characterConnections: { [number]: RBXScriptConnection } = {}
+
+local function restoreRidgeviewPosition(player: Player, character: Model)
+	task.defer(function()
+		local root = character:WaitForChild("HumanoidRootPart", 10)
+		if root == nil or player.Parent ~= Players or player.Character ~= character then
+			return
+		end
+
+		local snapshot = MissionService.GetSnapshot(player)
+		if snapshot ~= nil and snapshot.phase == "ridgeview_arrival" then
+			character:PivotTo(getRidgeviewArrivalCFrame())
+		end
+	end)
+end
+
+local function bindPlayer(player: Player)
+	local previous = characterConnections[player.UserId]
+	if previous ~= nil then
+		previous:Disconnect()
+	end
+
+	characterConnections[player.UserId] = player.CharacterAdded:Connect(function(character: Model)
+		restoreRidgeviewPosition(player, character)
+	end)
+
+	if player.Character ~= nil then
+		restoreRidgeviewPosition(player, player.Character)
+	end
+
 	task.defer(function()
 		if player.Parent == Players then
 			local snapshot = MissionService.GetSnapshot(player)
@@ -78,10 +114,22 @@ Players.PlayerAdded:Connect(function(player: Player)
 			end
 		end
 	end)
+end
+
+for _, player in Players:GetPlayers() do
+	bindPlayer(player)
+end
+Players.PlayerAdded:Connect(bindPlayer)
+Players.PlayerRemoving:Connect(function(player: Player)
+	local connection = characterConnections[player.UserId]
+	if connection ~= nil then
+		connection:Disconnect()
+		characterConnections[player.UserId] = nil
+	end
 end)
 
 -- Travel is unlocked only after the player has opened the Scout Report.
--- The destination is the start of the provisional Ridgeview footpath; this does not
+-- The destination is the scene-owned Ridgeview arrival marker; this does not
 -- author any investigation facts or evidence.
 local departureMarker = Instance.new("Part")
 departureMarker.Name = "RidgeviewDepartureInteraction"
@@ -108,8 +156,7 @@ departurePrompt.Triggered:Connect(function(player: Player)
 	if character == nil then
 		return
 	end
-	local arrival = Vector3.new(422, 5, 35)
-	character:PivotTo(CFrame.lookAt(arrival, Vector3.new(452, 5, 12)))
+	character:PivotTo(getRidgeviewArrivalCFrame())
 	local snapshot = MissionService.GetSnapshot(player)
 	if snapshot ~= nil then
 		missionStateUpdated:FireClient(player, snapshot)
