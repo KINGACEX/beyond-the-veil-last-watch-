@@ -3,7 +3,9 @@
 -- Persistence and premium entitlements are intentionally deferred until their schemas are reviewed.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local CompanionCatalog = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("CompanionCatalog"))
+local shared = ReplicatedStorage:WaitForChild("BTVShared")
+local CompanionCatalog = require(shared:WaitForChild("CompanionCatalog"))
+local CovenantRankCatalog = require(shared:WaitForChild("CovenantRankCatalog"))
 local CompanionOwnershipPolicy = require(script.Parent.CompanionOwnershipPolicy)
 
 local PlayerStateService = {}
@@ -25,7 +27,7 @@ local sessions: {[number]: PlayerSnapshot} = {}
 
 local DEFAULT_STATE: PlayerSnapshot = {
 	characterId = "roblox_player_chosen",
-	covenantRank = "Recruit",
+	covenantRank = CovenantRankCatalog.Ranks[1],
 	covenantBranch = "Unassigned",
 	emberCommand = "Regroup",
 	equippedCompanion = "ember",
