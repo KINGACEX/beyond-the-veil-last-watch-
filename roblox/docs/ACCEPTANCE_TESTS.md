@@ -28,6 +28,8 @@
 - [ ] Client cannot claim a premium entitlement by changing local UI state.
 - [ ] Malformed, unknown and unowned companion IDs are rejected.
 - [ ] Companion selection requests are throttled per player.
+- [ ] Ember imported rig is loaded only from ServerStorage and cannot be supplied by the client.
+- [ ] Invalid rig hierarchy, disconnected Motor6D parts, missing animation IDs or executable scripts cause safe placeholder fallback.
 - [ ] A selection updates only the requesting player's state snapshot.
 
 ## C. Companion roster and fairness
@@ -83,6 +85,9 @@
 - [ ] Actor cleanup occurs when the player leaves.
 - [ ] The model has no collision, touch, or query interactions.
 - [ ] The current low-poly appearance is clearly treated as a placeholder.
+- [ ] A valid imported Ember rig loads Idle_Breathing, Walk_Cycle and Alert_Acknowledge from the shared contract.
+- [ ] Idle/walk transitions follow only the owner's horizontal movement; accepted Ember commands play acknowledgement presentation only.
+- [ ] Imported animation playback changes no damage, health, speed, detection, evidence, rewards or mission outcomes.
 - [ ] No combat, detection, evidence, reward, speed or mission advantage is granted.
 - [ ] Multiple players receive separate companion actors without shared ownership or position.
 
