@@ -4,7 +4,7 @@
 **Product:** Beyond the Veil: The Last Watch — Roblox Edition  
 **Engine:** Roblox  
 **Language:** Luau  
-**Target:** Android-first play experience; multiplayer architecture  
+**Target:** Cross-platform Roblox experience — Android/iOS touch, PC keyboard/mouse, and supported gamepads  
 **Status:** Roblox source foundation and validation workflow configured; not yet imported into Roblox Studio or runtime-tested.
 
 ## Separation rule
@@ -30,7 +30,7 @@ The Roblox adaptation document records implementation boundaries; it does not su
 - `default.project.json` — Rojo mapping for Studio DataModel services.
 - `src/shared` — shared immutable configuration and contracts.
 - `src/server` — server-authoritative gameplay modules.
-- `src/client` — presentation and touch-first controls.
+- `src/client` — responsive presentation and input-aware controls for touch, keyboard/mouse and supported gamepads.
 - `docs` — adaptation, architecture, Android workflow, acceptance criteria and character-production briefs.
 
 ## Current foundation
@@ -59,6 +59,10 @@ The catalog covers all eight animals. Companion selection is server-authoritativ
 
 Not implemented:
 - final world assets, Asher character model, companion models/AI, combat, completed authored missions, persistence, economy values, monetisation, or published Roblox place.
+
+## Supported input and display targets
+
+The Roblox edition is designed for both mobile and PC players. HUD layout responds to viewport size and Roblox preferred input; touch controls avoid the default thumb zones, while desktop players use mouse-driven interface controls. Gameplay actions and server-authoritative progression remain consistent across platforms. Gamepad navigation and input must be verified in Studio before being advertised as fully supported. Device-specific performance profiles are required rather than assuming one graphics configuration fits every device.
 
 ## Tooling
 
