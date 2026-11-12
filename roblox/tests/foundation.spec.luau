@@ -71,7 +71,6 @@ expect(premiumCount == 4, "exactly four animals are premium candidates")
 local ember = CompanionCatalog.Ember
 expect(ember.CoreCommands ~= nil and #ember.CoreCommands == 7, "Ember retains all seven core commands")
 
-
 -- Server ownership policy: default access is isolated, explicit and fail-closed.
 local firstSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
 local secondSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
