@@ -145,23 +145,23 @@
 
 ## Automated source checks
 
-- [x] Lune foundation, companion ownership and Ember rig-contract regression suite passes in CI (Run #63).
-- [x] Companion ownership policy rejects malformed/unknown IDs and premium candidates, including forged ownership-map entries (Run #63).
-- [x] Default ownership contains only Ember, Fox, Owl and Horse; per-session ownership maps are independent (Run #63).
-- [x] Ember rig contract verifies the required import path, root name and three presentation clip names (Run #63).
-- [x] StyLua formatting check passes in CI (Run #63).
-- [x] Selene lint passes with 0 errors, 0 warnings and 0 parse errors (Run #63).
-- [x] Rojo place build succeeds in CI; `btv-roblox-place` artifact uploaded (Run #63).
+- [x] Lune foundation, companion ownership and Ember rig-contract regression suite passes in CI (Run #70).
+- [x] Companion ownership policy rejects malformed/unknown IDs and premium candidates, including forged ownership-map entries (Run #70).
+- [x] Default ownership contains only Ember, Fox, Owl and Horse; per-session ownership maps are independent (Run #70).
+- [x] Ember rig contract verifies the required import path, root name and three presentation clip names (Run #70).
+- [x] StyLua formatting check passes in CI (Run #70).
+- [x] Selene lint passes with 0 errors, 0 warnings and 0 parse errors (Run #70).
+- [x] Rojo place build succeeds in CI; `btv-roblox-place` artifact uploaded (Run #70).
 
 ## Current verification state
 
 - Repository source files: PRESENT on `btv/roblox-foundation-001`.
-- Headless Luau mission, roster, ownership and Ember rig-contract regression suite: PASS in GitHub Actions Run #63.
-- Ownership policy: PASS for default free access, unknown/malformed rejection, premium fail-closed behaviour and per-session map isolation (Run #63).
-- Ember rig contract: PASS for the expected server asset path, root part name and three presentation clip names (Run #63).
-- StyLua formatting: PASS in GitHub Actions Run #63.
-- Selene lint: PASS, 0 errors / 0 warnings / 0 parse errors, Run #63.
-- Rojo project build: PASS; artifact uploaded in Run #63.
+- Headless Luau mission, roster, ownership and Ember rig-contract regression suite: PASS in GitHub Actions Run #70.
+- Ownership policy: PASS for default free access, unknown/malformed rejection, premium fail-closed behaviour and per-session map isolation (Run #70).
+- Ember rig contract: PASS for the expected server asset path, root part name and three presentation clip names (Run #70).
+- StyLua formatting: PASS in GitHub Actions Run #70.
+- Selene lint: PASS, 0 errors / 0 warnings / 0 parse errors, Run #70.
+- Rojo project build: PASS; artifact uploaded in Run #70.
 - Companion selection runtime and exploit-resistance tests: NOT RUN.
 - Roblox Studio import and play test: NOT RUN.
 - Logos Rhema Temple scene execution: NOT RUN.
