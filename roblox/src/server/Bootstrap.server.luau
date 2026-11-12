@@ -87,6 +87,7 @@ requestEmberCommand.OnServerEvent:Connect(function(player: Player, command: unkn
 		return
 	end
 	lastCommandAt[player.UserId] = now
+	CompanionActorService.AcknowledgeCommand(player)
 	local snapshot = PlayerStateService.GetSnapshot(player)
 	if snapshot ~= nil then
 		stateUpdated:FireClient(player, snapshot)
