@@ -83,6 +83,43 @@ local function hasExecutableCode(model: Model): boolean
 	return false
 end
 
+local function hasDisconnectedMotorParts(model: Model, rootPart: BasePart): boolean
+	local connected: { [BasePart]: boolean } = {
+		[rootPart] = true,
+	}
+	local joints: { Motor6D } = {}
+	for _, descendant in model:GetDescendants() do
+		if descendant:IsA("Motor6D") then
+			table.insert(joints, descendant)
+		end
+	end
+
+	local changed = true
+	while changed do
+		changed = false
+		for _, joint in joints do
+			local part0 = joint.Part0
+			local part1 = joint.Part1
+			if part0 ~= nil and part1 ~= nil then
+				if connected[part0] and not connected[part1] then
+					connected[part1] = true
+					changed = true
+				elseif connected[part1] and not connected[part0] then
+					connected[part0] = true
+					changed = true
+				end
+			end
+		end
+	end
+
+	for _, descendant in model:GetDescendants() do
+		if descendant:IsA("BasePart") and not connected[descendant] then
+			return true
+		end
+	end
+	return false
+end
+
 local function createImportedEmber(player: Player, character: Model): (Model?, { [string]: AnimationTrack })
 	local assetRoot = ServerStorage:FindFirstChild(CompanionRigContract.AssetFolderName)
 	if assetRoot == nil then
@@ -118,6 +155,9 @@ local function createImportedEmber(player: Player, character: Model): (Model?, {
 	local hasBones = model:FindFirstChildWhichIsA("Bone", true) ~= nil
 	if not hasMotorJoints and not hasBones then
 		return reject("The model contains neither Motor6D joints nor a skinned Bone hierarchy.")
+	end
+	if hasMotorJoints and hasDisconnectedMotorParts(model, rootPart) then
+		return reject("Every BasePart in a Motor6D rig must be connected to CompanionRoot.")
 	end
 
 	local controller = model:FindFirstChild(CompanionRigContract.AnimationControllerName, true)
