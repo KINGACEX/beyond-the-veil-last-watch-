@@ -24,6 +24,14 @@ function CompanionOwnershipPolicy.CreateDefaultOwnership(): { [string]: boolean 
 	return table.clone(DEFAULT_OWNED_COMPANIONS)
 end
 
+function CompanionOwnershipPolicy.CanUseEmberCommands(equippedCompanion: unknown): (boolean, string?)
+	if equippedCompanion ~= "ember" then
+		return false, "Ember must be equipped to use Ember commands."
+	end
+
+	return true, nil
+end
+
 function CompanionOwnershipPolicy.CanEquip(
 	companionId: unknown,
 	ownedCompanions: { [string]: boolean },
