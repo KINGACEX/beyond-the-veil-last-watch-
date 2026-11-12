@@ -39,6 +39,8 @@ expect(repeated == false, "stale phase cannot advance twice")
 local reportAdvanced, report = MissionService.Advance(player :: any, "covenant_alert", "report_accessed")
 expect(reportAdvanced, "Scout Report access advances the final opening phase")
 expect(report ~= nil and report.sequenceIndex == 3, "report phase is sequence three")
+expect(report ~= nil and report.objective == "Travel to Ridgeview", "report access directs the player to Ridgeview")
+expect(report ~= nil and string.find(report.status, "marked departure point", 1, true) ~= nil, "report status points to the visible Ridgeview waypoint")
 assert(report ~= nil, "report snapshot must exist")
 expect(string.find(report.status, "evidence pending", 1, true) ~= nil, "report does not invent evidence")
 
