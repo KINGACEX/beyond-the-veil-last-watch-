@@ -25,6 +25,23 @@ local scene = Instance.new("Model")
 scene.Name = SCENE_NAME
 scene.Parent = world
 
+-- Stable arrival anchor shared by mission travel and respawn recovery.
+-- It is invisible and has no touch, query, collision or gameplay behaviour.
+local arrivalMarker = Instance.new("Part")
+arrivalMarker.Name = "RidgeviewArrivalMarker"
+arrivalMarker.Size = Vector3.new(5, 1, 5)
+arrivalMarker.CFrame = CFrame.lookAt(
+	ORIGIN + Vector3.new(-38, 0.48, 35),
+	ORIGIN + Vector3.new(-8, 0.48, 12)
+)
+arrivalMarker.Anchored = true
+arrivalMarker.Transparency = 1
+arrivalMarker.CanCollide = false
+arrivalMarker.CanTouch = false
+arrivalMarker.CanQuery = false
+arrivalMarker.CastShadow = false
+arrivalMarker.Parent = scene
+
 local function makeModel(name: string, parent: Instance): Model
 	local model = Instance.new("Model")
 	model.Name = name
