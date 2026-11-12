@@ -48,6 +48,8 @@ Implemented as source files:
 - a server-generated Logos Rhema Temple environment visual prototype with sanctuary, foyer, seating, lighting and exterior approach. This is a proposed layout, not canon-locked or Studio-verified;
 - a separate Ridgeview landscape study with layered ridges, woodland, road, footpath, stream and lookout. This is proposed geography only and is not canon-locked or Studio-verified;
 - a pinned Roblox toolchain and GitHub Actions validation workflow for headless Luau tests, formatting, lint and Rojo place builds (latest confirmed Run #70 passed on 2026-11-12);
+
+- an optional Curiosity Archive exploration feature with three server-tracked, session-only discoveries, a per-player locked entrance, a small progress HUD and a UTC-week rotating non-canon display; no currency, mission, evidence, combat or paid access effects. This source feature has not yet been Studio/runtime-tested.
 - a server-owned opening-sequence state machine with sanctuary-entry and Scout Report interactions, a live objective HUD and a report viewer that clearly marks mission intelligence as pending. No report evidence is fabricated.
 
 The Temple and Ridgeview environments, Ember follower and opening interactions are source implementations only; they have not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md` and `docs/RIDGEVIEW_LANDSCAPE_STUDY.md` for scope and canon boundaries. GitHub Actions Run #70 passed the headless tests, formatting, lint and Rojo place build; this does not establish Roblox runtime playability.
