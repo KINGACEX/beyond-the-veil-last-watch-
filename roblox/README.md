@@ -31,7 +31,7 @@ The Roblox adaptation document records implementation boundaries; it does not su
 - `src/shared` — shared immutable configuration and contracts.
 - `src/server` — server-authoritative gameplay modules.
 - `src/client` — presentation and touch-first controls.
-- `docs` — adaptation, architecture, Android workflow and acceptance criteria.
+- `docs` — adaptation, architecture, Android workflow, acceptance criteria and character-production briefs.
 
 ## Current foundation
 
@@ -47,12 +47,13 @@ Implemented as source files:
 - server-authoritative, session-only companion selection with a touch selector populated from the server-owned companion list. Initial access is Ember, Fox, Owl and Horse; a fail-closed server policy rejects unknown/malformed IDs and blocks all four premium candidates even if a session ownership map is incorrectly marked true;
 - a server-generated Logos Rhema Temple environment visual prototype with sanctuary, foyer, seating, lighting and exterior approach. This is a proposed layout, not canon-locked or Studio-verified;
 - a separate Ridgeview landscape study with layered ridges, woodland, road, footpath, stream and lookout. This is proposed geography only and is not canon-locked or Studio-verified;
-- a pinned Roblox toolchain and GitHub Actions validation workflow for headless Luau tests, formatting, lint and Rojo place builds (latest confirmed Run #70 passed on 2026-11-12);
+- a pinned Roblox toolchain and GitHub Actions validation workflow for headless Luau tests, formatting, lint and Rojo place builds (latest confirmed Run #84 passed on 2026-11-12);
 
+- a proposed Asher and Ember Signature Presentation brief covering premium-quality models, animations, cosmetic tiers and a non-intrusive Showcase; no final models, purchase IDs or payment systems are implemented;
 - an optional Curiosity Archive exploration feature with three server-tracked, session-only discoveries, a per-player locked entrance, a small progress HUD and a UTC-week rotating non-canon display; no currency, mission, evidence, combat or paid access effects. This source feature has not yet been Studio/runtime-tested.
 - a server-owned opening-sequence state machine with sanctuary-entry and Scout Report interactions, a live objective HUD and a report viewer that clearly marks mission intelligence as pending. No report evidence is fabricated.
 
-The Temple and Ridgeview environments, Ember follower and opening interactions are source implementations only; they have not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md` and `docs/RIDGEVIEW_LANDSCAPE_STUDY.md` for scope and canon boundaries. GitHub Actions Run #70 passed the headless tests, formatting, lint and Rojo place build; this does not establish Roblox runtime playability.
+The Temple and Ridgeview environments, Ember follower and opening interactions are source implementations only; they have not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md`, `docs/RIDGEVIEW_LANDSCAPE_STUDY.md` and `docs/SIGNATURE_CHARACTER_PRESENTATION_V0.1.md` for scope and canon boundaries. GitHub Actions Run #84 passed the headless tests, formatting, lint and Rojo place build; this does not establish Roblox runtime playability.
 
 The catalog covers all eight animals. Companion selection is server-authoritative and session-only; ownership is not persistent and premium entitlement verification is not implemented. Eagle, Bear, Leopard and Falcon remain unavailable candidates with no purchase path. The Ember rig import adapter and animation routing are implemented in source, but no 3D asset or Roblox animation IDs have been imported; the low-poly placeholder remains active. Companion AI is not implemented. Ember's seven core commands remain available as core functionality; the optional Ember Bond Pack is presentation/bonding only. No product IDs or prices are defined.
 
