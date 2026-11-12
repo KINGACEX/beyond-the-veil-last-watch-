@@ -119,6 +119,24 @@ Do not enable promotions until promotion criteria and evaluator permissions are 
 
 Do not enable purchases until product catalogue, price presentation, server-side receipt handling, durable entitlement delivery and recovery tests are reviewed.
 
-## 9. Cross-platform invariant
+
+## 9. DataStore adapter implementation gate
+
+The pure policies above are necessary but are not a persistence adapter. The adapter must satisfy all of the following before it is connected to `PlayerStateService`:
+
+- Use one namespaced key per Roblox user and a unique owner token per player session. The token must not be reused by another server or a later session.
+- Perform acquisition, save and release through atomic `UpdateAsync` transformations. The transformation callback must remain deterministic, non-yielding and free of external side effects because Roblox may invoke it more than once.
+- Treat lease contention, malformed stored data, unsupported schema and revision conflict as terminal domain outcomes, not transient service errors.
+- Retry only errors classified as transient, with a bounded attempt count, exponential backoff and jitter. Do not retry every error indiscriminately.
+- Resolve ambiguous write outcomes before retrying a save. An `UpdateAsync` call can fail at the client boundary after a server-side write may have committed; retrying the same revision blindly can misreport a successful save as a conflict. The record policy currently has no durable operation identifier for save reconciliation, so this must be designed and tested before automatic save retries are enabled.
+- Renew a lease comfortably before expiry. A server that cannot renew must stop accepting new authoritative profile mutations and must not overwrite a newer owner's record.
+- Do not create a fresh default profile after a load/acquisition failure. A player must not enter a writable session unless the profile was acquired successfully.
+- On departure, save the latest valid snapshot before releasing the lease. If saving fails, do not claim the profile was saved; release behavior must not erase or replace the stored profile. Shutdown handling must use bounded work and must not depend on an unbounded wait.
+- Use an injectable fake DataStore for deterministic tests of callback retries, contention, service errors, ambiguous outcomes, save ordering and release ownership. Then run Roblox Studio multi-server tests before enabling the adapter in production.
+- Keep the adapter disconnected from live player joins until the above checks pass. The current in-memory service remains the active implementation.
+
+**Current blocker:** the pure record policy does not yet include durable save-operation idempotency/reconciliation. Therefore, a production adapter with automatic save retries is not approved by this contract.
+
+## 10. Cross-platform invariant
 
 Profile and progression rules are platform-independent. PC, mobile and supported gamepad clients use the same server-authoritative data and permissions. Input method may change controls and layout only; it must never change rank, rewards or entitlement.
