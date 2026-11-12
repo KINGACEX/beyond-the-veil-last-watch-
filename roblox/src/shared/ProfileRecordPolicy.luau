@@ -53,6 +53,26 @@ local function copySaveOperation(operation: any)
 	}
 end
 
+local function isValidSaveOperation(operation: unknown): boolean
+	if operation == nil then
+		return true
+	end
+	if typeof(operation) ~= "table" then
+		return false
+	end
+	local value = operation :: any
+	return typeof(value.id) == "string"
+		and value.id ~= ""
+		and #value.id <= 128
+		and typeof(value.ownerToken) == "string"
+		and value.ownerToken ~= ""
+		and typeof(value.baseRevision) == "number"
+		and value.baseRevision >= 0
+		and value.baseRevision % 1 == 0
+		and typeof(value.resultRevision) == "number"
+		and value.resultRevision == value.baseRevision + 1
+end
+
 function ProfileRecordPolicy.TryAcquire(
 	existingRecord: unknown,
 	ownerToken: string,
@@ -75,6 +95,9 @@ function ProfileRecordPolicy.TryAcquire(
 		local record = existingRecord :: any
 		if record.profile == nil then
 			return nil, "Stored profile is missing."
+		end
+		if not isValidSaveOperation(record.lastSaveOperation) then
+			return nil, "Stored save-operation marker is malformed."
 		end
 		local valid, validationError = profileSchema.Validate(record.profile, rankCatalog, companionCatalog)
 		if not valid then
@@ -115,6 +138,9 @@ function ProfileRecordPolicy.TrySave(
 	local record = existingRecord :: any
 	if record.profile == nil then
 		return nil, "Stored profile record is missing or malformed.", nil
+	end
+	if not isValidSaveOperation(record.lastSaveOperation) then
+		return nil, "Stored save-operation marker is malformed.", nil
 	end
 
 	if typeof(operationId) ~= "string" or operationId == "" or #operationId > 128 then
@@ -187,6 +213,9 @@ function ProfileRecordPolicy.TryRelease(
 	local record = existingRecord :: any
 	if record.profile == nil then
 		return nil, "Stored profile record is missing or malformed."
+	end
+	if not isValidSaveOperation(record.lastSaveOperation) then
+		return nil, "Stored save-operation marker is malformed."
 	end
 
 	local released, retainedLease = leasePolicy.TryRelease(record.lease, ownerToken)
