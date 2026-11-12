@@ -8,6 +8,8 @@ The current `PlayerStateService` stores player state in server memory and clears
 
 The current `CovenantRankCatalog` defines the approved 15-rank order. It is a catalogue, not a promotion system.
 
+A pure shared schema module now exists at `src/shared/PlayerProfileSchema.luau`. It creates the proposed version-1 default profile and validates schema version, revision, identity, rank membership, event-list shape, non-negative integer balances, companion IDs, premium-candidate restrictions and equipped-companion ownership. Headless regression tests cover valid defaults and malformed/forged profile cases. This module has no DataStore dependency and does not load, save, migrate or lock live profiles. Persistence remains disabled.
+
 ## 2. Profile ownership
 
 All authoritative profile writes happen on the Roblox server. Clients may request an action, but may not submit an authoritative rank, balance, entitlement, team leader role or promotion result.
