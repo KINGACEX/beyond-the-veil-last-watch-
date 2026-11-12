@@ -137,18 +137,21 @@
 
 ## Automated source checks
 
-- [x] Lune foundation regression suite passes in CI (Run #32).
-- [x] StyLua formatting check passes in CI (Run #32).
-- [x] Selene lint passes with 0 errors, 0 warnings and 0 parse errors (Run #32).
-- [x] Rojo place build succeeds in CI; `btv-roblox-place` artifact uploaded (Run #32).
+- [x] Lune foundation and companion ownership regression suite passes in CI (Run #43).
+- [x] Companion ownership policy rejects malformed/unknown IDs and premium candidates, including forged ownership-map entries (Run #43).
+- [x] Default ownership contains only Ember, Fox, Owl and Horse; per-session ownership maps are independent (Run #43).
+- [x] StyLua formatting check passes in CI (Run #43).
+- [x] Selene lint passes with 0 errors, 0 warnings and 0 parse errors (Run #43).
+- [x] Rojo place build succeeds in CI; `btv-roblox-place` artifact uploaded (Run #43).
 
 ## Current verification state
 
 - Repository source files: PRESENT on `btv/roblox-foundation-001`.
-- Headless Luau foundation regression suite: PASS in GitHub Actions Run #32.
-- StyLua formatting: PASS in GitHub Actions Run #32.
-- Selene lint: PASS, 0 errors / 0 warnings / 0 parse errors, Run #32.
-- Rojo project build: PASS; artifact uploaded in Run #32.
+- Headless Luau mission, roster and companion ownership policy regression suite: PASS in GitHub Actions Run #43.
+- Ownership policy: PASS for default free access, unknown/malformed rejection, premium fail-closed behaviour and per-session map isolation (Run #43).
+- StyLua formatting: PASS in GitHub Actions Run #43.
+- Selene lint: PASS, 0 errors / 0 warnings / 0 parse errors, Run #43.
+- Rojo project build: PASS; artifact uploaded in Run #43.
 - Companion selection runtime and exploit-resistance tests: NOT RUN.
 - Roblox Studio import and play test: NOT RUN.
 - Logos Rhema Temple scene execution: NOT RUN.
