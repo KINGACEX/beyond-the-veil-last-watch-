@@ -11,14 +11,14 @@
 3. **Covenant alert** — represented as the next approved opening-sequence state.
 4. **Open Scout Report** — server-validated proximity interaction at the foyer desk advances the player to the report-access state.
 5. **Evidence review** — UI currently states that authored evidence is pending. No evidence, named NPC, dialogue, suspect, threat, confidence score or outcome is invented.
-6. **Travel to Ridgeview** — after report access, a server-validated departure prompt moves the player to the provisional Ridgeview footpath and advances the session to the Ridgeview-arrival phase. The report panel closes on arrival; its reopen control remains available.
+6. **Travel to Ridgeview** — after report access, the HUD directs the player toward a visible Ridgeview wayfinding sign; a server-validated departure prompt moves the player to the provisional Ridgeview footpath and advances the session to the Ridgeview-arrival phase. The report panel closes on arrival; its reopen control remains available.
 
 Ridgeview arrival is now connected as a provisional same-place transition. The Ridgeview investigation/response and final report stages remain unimplemented pending canon-approved authored content.
 
 ## Technical architecture
 
 - `MissionService.luau` owns per-player, in-memory mission state.
-- `OpeningMission.server.luau` creates sanctuary-entry, Scout Report and gated Ridgeview-departure prompts; it validates interaction distance and travel phase server-side.
+- `OpeningMission.server.luau` creates sanctuary-entry, Scout Report and gated Ridgeview-departure prompts; it validates interaction distance and travel phase server-side. The Ridgeview departure prompt is paired with a visible, non-interactive wayfinding sign.
 - `Bootstrap.server.luau` owns mission session lifecycle and read-only snapshot retrieval.
 - `Bootstrap.client.luau` receives mission state through server-created remotes.
 - `MobileHUDController.luau` renders the current sequence index, objective and status from server-confirmed snapshots, plus a Scout Report viewer that explicitly shows the absence of authored intelligence.
