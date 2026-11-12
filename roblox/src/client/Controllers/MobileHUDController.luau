@@ -258,6 +258,10 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 
 	local function updateToggle()
 		toggle.Text = "EMBER: " .. string.upper(currentCommand)
+		toggle.Visible = currentCompanion == "ember"
+		if not toggle.Visible then
+			panel.Visible = false
+		end
 	end
 
 	for index, command in COMMANDS do
@@ -274,7 +278,9 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		makeCorner(button, 8)
 
 		button.Activated:Connect(function()
-			remotes.RequestEmberCommand:FireServer(command)
+			if currentCompanion == "ember" then
+				remotes.RequestEmberCommand:FireServer(command)
+			end
 		end)
 	end
 
@@ -335,6 +341,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		for companionId, button in companionButtons do
 			button.BackgroundColor3 = if currentCompanion == companionId then Color3.fromRGB(74, 91, 73) else Color3.fromRGB(43, 57, 66)
 		end
+		updateToggle()
 	end
 
 	local order = 0
