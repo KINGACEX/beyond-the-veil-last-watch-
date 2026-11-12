@@ -9,6 +9,7 @@ local CompanionRigContract = require("../src/shared/CompanionRigContract")
 local ArchiveService = require("../src/server/Services/ArchiveService")
 local CovenantRankCatalog = require("../src/shared/CovenantRankCatalog")
 local PlayerProfileSchema = require("../src/shared/PlayerProfileSchema")
+local ProfileLeasePolicy = require("../src/shared/ProfileLeasePolicy")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -257,3 +258,38 @@ expect(not duplicateEventsValid, "duplicate evaluation IDs are rejected")
 defaultProfile.companions.owned.fox = false
 local independentDefault = PlayerProfileSchema.CreateDefault()
 expect(independentDefault.companions.owned.fox == true, "mutating one profile cannot mutate future default profiles")
+
+-- Cross-server profile lease policy is deterministic and fails closed.
+local firstLease, firstLeaseError = ProfileLeasePolicy.TryAcquire(nil, "server-A", 100, 60)
+expect(firstLease ~= nil and firstLeaseError == nil, "empty profile lease can be acquired")
+assert(firstLease ~= nil, "first profile lease must exist")
+expect(firstLease.ownerToken == "server-A" and firstLease.expiresAt == 160, "lease records owner and expiry")
+expect(ProfileLeasePolicy.IsOwner(firstLease, "server-A", 159), "owner holds lease before expiry")
+expect(not ProfileLeasePolicy.IsOwner(firstLease, "server-A", 160), "lease expires at its exact expiry time")
+
+local competingLease, competingError = ProfileLeasePolicy.TryAcquire(firstLease, "server-B", 120, 60)
+expect(competingLease == nil and competingError ~= nil, "second server cannot steal an unexpired lease")
+
+local renewedLease, renewedError = ProfileLeasePolicy.TryAcquire(firstLease, "server-A", 130, 60)
+expect(renewedLease ~= nil and renewedError == nil, "same owner can renew its lease")
+expect(renewedLease ~= nil and renewedLease.expiresAt == 190, "renewal extends from the supplied server time")
+
+local staleTakeover, staleTakeoverError = ProfileLeasePolicy.TryAcquire(firstLease, "server-B", 160, 60)
+expect(staleTakeover ~= nil and staleTakeoverError == nil, "another server can take over an expired lease")
+expect(staleTakeover ~= nil and staleTakeover.ownerToken == "server-B", "expired lease takeover changes owner")
+
+local wrongOwnerRelease, retainedLease = ProfileLeasePolicy.TryRelease(firstLease, "server-B")
+expect(not wrongOwnerRelease and retainedLease == firstLease, "non-owner cannot release another server lease")
+local ownerRelease, releasedLease = ProfileLeasePolicy.TryRelease(firstLease, "server-A")
+expect(ownerRelease and releasedLease == nil, "matching owner can release its lease")
+
+local malformedLease, malformedLeaseError = ProfileLeasePolicy.TryAcquire({ ownerToken = "server-X", expiresAt = "later" }, "server-B", 200, 60)
+expect(malformedLease == nil and malformedLeaseError ~= nil, "malformed stored lease fails closed")
+local invalidDuration, invalidDurationError = ProfileLeasePolicy.TryAcquire(nil, "server-A", 100, 0)
+expect(invalidDuration == nil and invalidDurationError ~= nil, "zero-duration lease request is rejected")
+local emptyToken, emptyTokenError = ProfileLeasePolicy.TryAcquire(nil, "", 100, 60)
+expect(emptyToken == nil and emptyTokenError ~= nil, "empty owner token is rejected")
+local nanLease, nanLeaseError = ProfileLeasePolicy.TryAcquire(nil, "server-A", 0 / 0, 60)
+expect(nanLease == nil and nanLeaseError ~= nil, "non-finite lease clock is rejected")
+
+print("[BTV tests] Profile lease policy rules passed.")
