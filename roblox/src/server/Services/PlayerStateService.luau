@@ -4,6 +4,7 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CompanionCatalog = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("CompanionCatalog"))
+local CompanionOwnershipPolicy = require(script.Parent.CompanionOwnershipPolicy)
 
 local PlayerStateService = {}
 
@@ -21,12 +22,6 @@ export type PlayerSnapshot = {
 local sessions: {[number]: PlayerSnapshot} = {}
 
 -- Initial access is limited to core/free companions. Premium candidates have no entitlement path yet.
-local DEFAULT_OWNED_COMPANIONS: {[string]: boolean} = {
-	ember = true,
-	fox = true,
-	owl = true,
-	horse = true,
-}
 
 local DEFAULT_STATE: PlayerSnapshot = {
 	characterId = "asher_vance",
@@ -41,7 +36,7 @@ local DEFAULT_STATE: PlayerSnapshot = {
 
 function PlayerStateService.AddPlayer(player: Player)
 	local state = table.clone(DEFAULT_STATE)
-	state.ownedCompanions = table.clone(DEFAULT_OWNED_COMPANIONS)
+	state.ownedCompanions = CompanionOwnershipPolicy.CreateDefaultOwnership()
 	sessions[player.UserId] = state
 end
 
@@ -73,25 +68,12 @@ function PlayerStateService.SetEquippedCompanion(player: Player, companionId: un
 	if state == nil then
 		return false, "Session is not ready."
 	end
-	if typeof(companionId) ~= "string" then
-		return false, "Invalid companion selection."
+	local canEquip, reason = CompanionOwnershipPolicy.CanEquip(companionId, state.ownedCompanions, CompanionCatalog)
+	if not canEquip then
+		return false, reason
 	end
 
-	local isCatalogued = false
-	for _, definition in CompanionCatalog do
-		if definition.Id == companionId then
-			isCatalogued = true
-			break
-		end
-	end
-	if not isCatalogued then
-		return false, "Unknown companion."
-	end
-	if state.ownedCompanions[companionId] ~= true then
-		return false, "Companion is not owned by this player."
-	end
-
-	state.equippedCompanion = companionId
+	state.equippedCompanion = companionId :: string
 	return true, nil
 end
 
