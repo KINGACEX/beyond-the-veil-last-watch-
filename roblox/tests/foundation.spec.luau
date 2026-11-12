@@ -248,6 +248,12 @@ malformedEventsProfile.progression.completedMissionIds = { [1] = "mission_a", [3
 local malformedEventsValid = PlayerProfileSchema.Validate(malformedEventsProfile, CovenantRankCatalog, CompanionCatalog)
 expect(not malformedEventsValid, "sparse progression event lists are rejected")
 
+local duplicateEventsProfile = table.clone(defaultProfile)
+duplicateEventsProfile.progression = table.clone(defaultProfile.progression)
+duplicateEventsProfile.progression.completedEvaluations = { "evaluation_001", "evaluation_001" }
+local duplicateEventsValid = PlayerProfileSchema.Validate(duplicateEventsProfile, CovenantRankCatalog, CompanionCatalog)
+expect(not duplicateEventsValid, "duplicate evaluation IDs are rejected")
+
 defaultProfile.companions.owned.fox = false
 local independentDefault = PlayerProfileSchema.CreateDefault()
 expect(independentDefault.companions.owned.fox == true, "mutating one profile cannot mutate future default profiles")
