@@ -46,8 +46,16 @@
 
 ## D. Canon
 
-- [ ] Only Asher Vance is represented as the playable protagonist.
-- [ ] Asher's fixed identity and starting role are not replaced by a character-selection system.
+- [ ] Original main-game continuity retains Asher Vance as its central protagonist.
+- [ ] Each Roblox player has their own player-character identity and is recognised as a Chosen within the Roblox Covenant adaptation.
+- [ ] Roblox player identity is not initialised as `asher_vance`.
+- [ ] Roblox players begin at Recruit unless a reviewed progression/profile migration specifies otherwise.
+- [ ] All fifteen approved Covenant ranks are represented consistently.
+- [ ] Persistent player rank is separate from current-server team assignment and leadership.
+- [ ] Two players can have different ranks and interact as superior, subordinate or teammate according to server assignments.
+- [ ] Covenant NPCs and ordinary world NPCs coexist with player members.
+- [ ] Optional chat uses Roblox TextChatService moderation/filtering and does not require chat to complete missions.
+- [ ] Asher and Ember premium presentation grants no rank, authority, mission, combat, detection or reward advantage.
 - [ ] Ember commands match the official list exactly.
 - [ ] No spiritual score, faith currency, prayer points or divine-favour meter exists.
 - [ ] Communion does not change health, stats, XP, equipment or currency.
