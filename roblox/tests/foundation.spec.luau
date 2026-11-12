@@ -10,6 +10,7 @@ local ArchiveService = require("../src/server/Services/ArchiveService")
 local CovenantRankCatalog = require("../src/shared/CovenantRankCatalog")
 local PlayerProfileSchema = require("../src/shared/PlayerProfileSchema")
 local ProfileLeasePolicy = require("../src/shared/ProfileLeasePolicy")
+local ProfileRecordPolicy = require("../src/shared/ProfileRecordPolicy")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -293,3 +294,115 @@ local nanLease, nanLeaseError = ProfileLeasePolicy.TryAcquire(nil, "server-A", 0
 expect(nanLease == nil and nanLeaseError ~= nil, "non-finite lease clock is rejected")
 
 print("[BTV tests] Profile lease policy rules passed.")
+
+-- Atomic DataStore callback transformations preserve ownership and reject stale writes.
+local acquiredRecord, acquiredRecordError = ProfileRecordPolicy.TryAcquire(
+	nil,
+	"server-A",
+	100,
+	60,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(acquiredRecord ~= nil and acquiredRecordError == nil, "new profile record can be initialized with a lease")
+assert(acquiredRecord ~= nil, "acquired profile record must exist")
+expect(acquiredRecord.profile.progression.covenantRank == "Recruit", "new record starts at Recruit")
+expect(acquiredRecord.profile.revision == 0, "new record starts at revision zero")
+
+local occupiedRecord, occupiedError = ProfileRecordPolicy.TryAcquire(
+	acquiredRecord,
+	"server-B",
+	120,
+	60,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(occupiedRecord == nil and occupiedError ~= nil, "competing server cannot acquire an active profile record")
+
+local candidateProfile = PlayerProfileSchema.CreateDefault()
+candidateProfile.economy.aces = 25
+local savedRecord, savedError = ProfileRecordPolicy.TrySave(
+	acquiredRecord,
+	"server-A",
+	130,
+	60,
+	candidateProfile,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(savedRecord ~= nil and savedError == nil, "current owner can save a valid profile")
+assert(savedRecord ~= nil, "saved record must exist")
+expect(savedRecord.profile.economy.aces == 25, "save persists candidate economy values")
+expect(savedRecord.profile.revision == 1, "successful save increments profile revision")
+expect(acquiredRecord.profile.economy.aces == 0, "save transformation does not mutate stored input")
+
+local staleCandidate = PlayerProfileSchema.CreateDefault()
+staleCandidate.economy.aces = 999
+local staleSave, staleSaveError = ProfileRecordPolicy.TrySave(
+	savedRecord,
+	"server-A",
+	140,
+	60,
+	staleCandidate,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(staleSave == nil and staleSaveError ~= nil, "stale profile revision cannot overwrite a newer save")
+
+local expiredSave, expiredSaveError = ProfileRecordPolicy.TrySave(
+	savedRecord,
+	"server-A",
+	190,
+	60,
+	candidateProfile,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(expiredSave == nil and expiredSaveError ~= nil, "expired owner cannot save without reacquiring lease")
+
+local malformedCandidate = PlayerProfileSchema.CreateDefault()
+malformedCandidate.economy.aces = -50
+local invalidSave, invalidSaveError = ProfileRecordPolicy.TrySave(
+	savedRecord,
+	"server-A",
+	150,
+	60,
+	malformedCandidate,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(invalidSave == nil and invalidSaveError ~= nil, "invalid candidate profile cannot be saved")
+
+local releasedRecord, releaseError = ProfileRecordPolicy.TryRelease(savedRecord, "server-A", ProfileLeasePolicy)
+expect(releasedRecord ~= nil and releaseError == nil, "current owner can release its profile record")
+assert(releasedRecord ~= nil, "released record must exist")
+expect(releasedRecord.lease == nil, "release clears the lease while retaining profile")
+expect(releasedRecord.profile.revision == 1, "release preserves saved revision")
+
+local wrongRelease, wrongReleaseError = ProfileRecordPolicy.TryRelease(savedRecord, "server-B", ProfileLeasePolicy)
+expect(wrongRelease == nil and wrongReleaseError ~= nil, "non-owner cannot release profile record")
+
+local malformedStored, malformedStoredError = ProfileRecordPolicy.TryAcquire(
+	{ profile = { schemaVersion = 99 }, lease = nil },
+	"server-B",
+	200,
+	60,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(malformedStored == nil and malformedStoredError ~= nil, "unsupported stored profile cannot be overwritten")
+print("[BTV tests] Profile record policy rules passed.")
