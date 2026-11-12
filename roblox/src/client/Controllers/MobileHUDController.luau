@@ -70,12 +70,22 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	subtitle.Position = UDim2.fromOffset(12, 28)
 	subtitle.Size = UDim2.new(1, -24, 0, 17)
 	subtitle.Font = Enum.Font.Gotham
-	subtitle.Text = "COVENANT  /  WATCHERS"
+	subtitle.Text = "COVENANT  /  RECRUIT"
 	subtitle.TextColor3 = Color3.fromRGB(190, 198, 204)
 	subtitle.TextSize = 10
 	subtitle.TextXAlignment = Enum.TextXAlignment.Left
 
 	subtitle.Parent = header
+
+	local function updateCovenantIdentity(snapshot: any)
+		if typeof(snapshot) ~= "table" then
+			return
+		end
+		local rank = if typeof(snapshot.covenantRank) == "string" then snapshot.covenantRank else "Recruit"
+		local branch = if typeof(snapshot.covenantBranch) == "string" then snapshot.covenantBranch else "Unassigned"
+		subtitle.Text = "COVENANT  /  " .. string.upper(rank) .. " • " .. string.upper(branch)
+	end
+	updateCovenantIdentity(initialState)
 
 	local missionCard = Instance.new("Frame")
 	missionCard.Name = "MissionObjectiveCard"
@@ -379,6 +389,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		if typeof(snapshot) ~= "table" then
 			return
 		end
+		updateCovenantIdentity(snapshot)
 		if typeof(snapshot.emberCommand) == "string" then
 			currentCommand = snapshot.emberCommand
 			updateToggle()
