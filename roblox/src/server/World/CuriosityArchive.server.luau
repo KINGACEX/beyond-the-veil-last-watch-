@@ -118,7 +118,7 @@ local displayPositions = {
 	archiveCenter + Vector3.new(10, 1.4, -2),
 }
 for index, position in displayPositions do
-	local plinth = makePart(archive, "DisplayPlinth_" .. index, Vector3.new(5, 1, 5), position, Color3.fromRGB(49, 57, 61), Enum.Material.Metal, true)
+	makePart(archive, "DisplayPlinth_" .. index, Vector3.new(5, 1, 5), position, Color3.fromRGB(49, 57, 61), Enum.Material.Metal, true)
 	local orb = makePart(archive, "DisplayCurio_" .. index, Vector3.new(2, 2, 2), position + Vector3.new(0, 2, 0), Color3.fromRGB(188, 151, 79), Enum.Material.Neon, false)
 	orb.Shape = Enum.PartType.Ball
 end
