@@ -32,6 +32,10 @@
 - [ ] Ember imported rig is loaded only from ServerStorage and cannot be supplied by the client.
 - [ ] Invalid rig hierarchy, disconnected Motor6D parts, missing animation IDs or executable scripts cause safe placeholder fallback.
 - [ ] A selection updates only the requesting player's state snapshot.
+- [ ] Each currently free companion (Ember, Fox, Owl and Horse) creates a visible actor for its owner.
+- [ ] Switching among free companions destroys the previous actor and creates the selected actor without leaving the player companionless.
+- [ ] Fox, Owl and Horse blockout actors are clearly marked as placeholders pending approved final rigs and animations.
+- [ ] Ember command controls are hidden for non-Ember companions.
 
 ## C. Companion roster and fairness
 
@@ -101,6 +105,7 @@
 - [ ] Imported animation playback changes no damage, health, speed, detection, evidence, rewards or mission outcomes.
 - [ ] No combat, detection, evidence, reward, speed or mission advantage is granted.
 - [ ] Multiple players receive separate companion actors without shared ownership or position.
+- [ ] Different players can equip different free companion actors concurrently.
 
 ## F2. Ridgeview landscape study
 
