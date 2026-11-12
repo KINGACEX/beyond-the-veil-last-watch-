@@ -72,6 +72,8 @@
 - [ ] UI remains readable at reduced screen size.
 - [ ] Safe areas and notches do not obscure controls.
 - [ ] UI does not require hover or keyboard.
+- [ ] On touch-enabled devices, companion controls are positioned away from the default left-thumb movement and right-thumb action zones.
+- [ ] Companion selection and command panels remain within the visible phone viewport at narrow widths.
 
 ## F. Environment visual prototype
 
@@ -105,6 +107,8 @@
 - [ ] Ridgeview landscape study builds without runtime errors.
 - [ ] Ridgeview remains spatially separate from the Temple prototype.
 - [ ] Ridgeview arrival marker is aligned with the footpath start and has no collision, touch or query behaviour.
+- [ ] The Ridgeview departure interaction has a visible wayfinding sign and remains discoverable from the intended temple route.
+- [ ] The HUD directs players toward the Ridgeview travel marker after Scout Report access.
 - [ ] Road, path, stream, hill forms, trees and lookout are inspected for alignment and collision.
 - [ ] The lookout is reachable from the footpath without unintended jumps or gaps.
 - [ ] No named residents, mission clues, evidence, settlement history or canon facts are introduced.
