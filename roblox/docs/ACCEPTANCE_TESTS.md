@@ -146,23 +146,23 @@
 
 ## Automated source checks
 
-- [x] Lune foundation, companion ownership and Ember rig-contract regression suite passes in CI (Run #70).
-- [x] Companion ownership policy rejects malformed/unknown IDs and premium candidates, including forged ownership-map entries (Run #70).
-- [x] Default ownership contains only Ember, Fox, Owl and Horse; per-session ownership maps are independent (Run #70).
-- [x] Ember rig contract verifies the required import path, root name and three presentation clip names (Run #70).
-- [x] StyLua formatting check passes in CI (Run #70).
-- [x] Selene lint passes with 0 errors, 0 warnings and 0 parse errors (Run #70).
-- [x] Rojo place build succeeds in CI; `btv-roblox-place` artifact uploaded (Run #70).
+- [x] Lune foundation, companion ownership and Ember rig-contract regression suite passes in CI (Run #84).
+- [x] Companion ownership policy rejects malformed/unknown IDs and premium candidates, including forged ownership-map entries (Run #84).
+- [x] Default ownership contains only Ember, Fox, Owl and Horse; per-session ownership maps are independent (Run #84).
+- [x] Ember rig contract verifies the required import path, root name and three presentation clip names (Run #84).
+- [x] StyLua formatting check passes in CI (Run #84).
+- [x] Selene lint passes with 0 errors, 0 warnings and 0 parse errors (Run #84).
+- [x] Rojo place build succeeds in CI; `btv-roblox-place` artifact uploaded (Run #84).
 
 ## Current verification state
 
 - Repository source files: PRESENT on `btv/roblox-foundation-001`.
-- Headless Luau mission, roster, ownership and Ember rig-contract regression suite: PASS in GitHub Actions Run #70.
-- Ownership policy: PASS for default free access, unknown/malformed rejection, premium fail-closed behaviour and per-session map isolation (Run #70).
-- Ember rig contract: PASS for the expected server asset path, root part name and three presentation clip names (Run #70).
-- StyLua formatting: PASS in GitHub Actions Run #70.
-- Selene lint: PASS, 0 errors / 0 warnings / 0 parse errors, Run #70.
-- Rojo project build: PASS; artifact uploaded in Run #70.
+- Headless Luau mission, roster, ownership and Ember rig-contract regression suite: PASS in GitHub Actions Run #84.
+- Ownership policy: PASS for default free access, unknown/malformed rejection, premium fail-closed behaviour and per-session map isolation (Run #84).
+- Ember rig contract: PASS for the expected server asset path, root part name and three presentation clip names (Run #84).
+- StyLua formatting: PASS in GitHub Actions Run #84.
+- Selene lint: PASS, 0 errors / 0 warnings / 0 parse errors, Run #84.
+- Rojo project build: PASS; artifact uploaded in Run #84.
 - Companion selection runtime and exploit-resistance tests: NOT RUN.
 - Roblox Studio import and play test: NOT RUN.
 - Logos Rhema Temple scene execution: NOT RUN.
@@ -187,3 +187,20 @@
 - [ ] Archive contains no Aces, Covenant Credits, XP, loot, paid random rewards or gameplay advantages.
 - [ ] Two-player test confirms one player's discoveries do not unlock the other player's Archive.
 - [ ] Roblox Studio and Android runtime checks are completed before the feature is called playable.
+
+## K. Asher and Ember Signature Presentation
+
+- [ ] Asher remains the sole playable protagonist and is available to every player.
+- [ ] Asher's approved face, apparent age, hairstyle, proportions and Covenant identity match the visual references.
+- [ ] Asher's Signature wardrobe preserves the established Covenant visual language.
+- [ ] Asher's Signature animations do not change movement, combat, stamina or interaction timings.
+- [ ] Ember's model preserves the approved original natural canid identity and reference silhouette.
+- [ ] Ember has no fantasy wings, demonic anatomy, cybernetic body, angelic transformation or human speech.
+- [ ] Ember's Signature accessories and effects do not imply new abilities or reveal hidden information.
+- [ ] Ember's command animations do not change command execution time or results.
+- [ ] Core Asher and Ember models are complete and are not deliberately degraded to sell cosmetics.
+- [ ] Signature and Legacy items are fully previewable with exact contents disclosed.
+- [ ] No randomised paid rewards, artificial scarcity, countdown pressure or expiring cosmetics are used.
+- [ ] No purchase IDs, prices, prompts or entitlement grants exist without separate creator approval.
+- [ ] Signature models pass close, gameplay-distance and far-distance mobile visual review.
+- [ ] Asher and Ember assets pass Roblox Studio, multi-client and low/mid-range Android checks before release.
