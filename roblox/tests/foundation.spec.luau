@@ -6,6 +6,7 @@ local MissionService = require("../src/server/Services/MissionService")
 local CompanionCatalog = require("../src/shared/CompanionCatalog")
 local CompanionOwnershipPolicy = require("../src/server/Services/CompanionOwnershipPolicy")
 local CompanionRigContract = require("../src/shared/CompanionRigContract")
+local ArchiveService = require("../src/server/Services/ArchiveService")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -163,3 +164,29 @@ local freshOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
 expect(freshOwnership.fox == true, "mutating a session snapshot cannot change default ownership")
 
 print("[BTV tests] Foundation and companion ownership rules passed.")
+
+-- Curiosity Archive discoveries are server-owned, session-only and non-economic.
+local archivePlayer = { UserId = 901002 }
+local otherArchivePlayer = { UserId = 901003 }
+ArchiveService.AddPlayer(archivePlayer)
+ArchiveService.AddPlayer(otherArchivePlayer)
+local archiveInitial = ArchiveService.GetSnapshot(archivePlayer, 0)
+expect(archiveInitial ~= nil and archiveInitial.collectedCount == 0, "archive starts with no discoveries")
+expect(archiveInitial ~= nil and archiveInitial.requiredCount == 3 and not archiveInitial.unlocked, "archive requires three marks")
+local unknownMark = ArchiveService.Collect(archivePlayer, "story_evidence")
+expect(unknownMark == false, "unknown archive mark is rejected")
+local firstMark, firstSnapshot = ArchiveService.Collect(archivePlayer, "ridge_marker")
+expect(firstMark and firstSnapshot ~= nil and firstSnapshot.collectedCount == 1, "first curio mark is recorded")
+local duplicateMark, duplicateSnapshot = ArchiveService.Collect(archivePlayer, "ridge_marker")
+expect(not duplicateMark and duplicateSnapshot ~= nil and duplicateSnapshot.collectedCount == 1, "duplicate mark does not increase progress")
+local secondMark, secondSnapshot = ArchiveService.Collect(archivePlayer, "stream_marker")
+expect(secondMark and secondSnapshot ~= nil and secondSnapshot.collectedCount == 2, "second curio mark is recorded")
+local otherSnapshot = ArchiveService.GetSnapshot(otherArchivePlayer)
+expect(otherSnapshot ~= nil and otherSnapshot.collectedCount == 0, "archive progress is isolated per player")
+local thirdMark, unlockedSnapshot = ArchiveService.Collect(archivePlayer, "lookout_marker")
+expect(thirdMark and unlockedSnapshot ~= nil and unlockedSnapshot.unlocked, "third mark unlocks archive")
+expect(unlockedSnapshot ~= nil and unlockedSnapshot.collectedCount == 3, "archive unlock requires all three marks")
+expect(ArchiveService.GetDisplayTitle(0) ~= ArchiveService.GetDisplayTitle(604800), "weekly display rotates by UTC week")
+ArchiveService.RemovePlayer(archivePlayer)
+ArchiveService.RemovePlayer(otherArchivePlayer)
+expect(ArchiveService.GetSnapshot(archivePlayer) == nil, "archive state is cleared on player removal")
