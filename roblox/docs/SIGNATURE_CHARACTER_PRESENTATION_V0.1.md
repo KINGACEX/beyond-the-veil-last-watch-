@@ -136,6 +136,27 @@ The Showcase is not a mission gate, progression gate or required interaction. No
 - Touch UI remains fully usable without premium.
 - Multi-client and Android tests pass before claiming runtime readiness.
 
+
+## 6A. Reference asset audit
+
+The following existing Library images were located and visually inspected. They are visual references, not permission to copy unrelated UI text, stats, lore or gameplay mechanics.
+
+| Reference file | Use | Guardrails |
+|---|---|---|
+| `Beyond the Veil: The Last Watch(2).png` | Primary joint reference for Asher's white/gold Covenant outfit, short textured hair, overall presentation, and Ember's dark canid silhouette with a light harness | Its mock HUD values, level, rank progression and profile text are not implementation authority. The mock age label is not the Roblox adaptation's fixed age. |
+| `Covenant Outpost with Wolf Companion.png` | Gameplay-distance reference for Asher's field coat, backpack and gear; Ember's dark gray/black coat and light harness; third-person scale | The displayed tracking distance and Veil signature UI are concept art, not proof of implemented abilities or exact detection range. |
+| `Asher Vance Character Showcase Sheet.png` | Face, short coily hair, facial-expression, front/side/back and gear-detail reference | The sheet's “Early 20s–30s” description and approximate 1.85 m height are not canon. The Roblox adaptation records Asher as 18; exact height remains unestablished. Its dark casual outfit does not replace the Covenant uniform direction. |
+| `Bustling Riverside Market at Dusk.png` | In-world lighting, Asher's cream/white outerwear with gold accents, backpack and Ember's companion scale | Treat mission text, currency values, command labels and HUD values as mockup content, not locked game systems. |
+| `Beyond the Veil: Last Watch Showcase.png` | Character/companion presentation layout and mobile-screen composition | The displayed combat stats, levels, currencies and equipment values are illustrative UI only, not approved balance or monetization. |
+
+### Reference conflict handling
+- Use the Visual/UI/HUD Bible and Roblox canon adaptation for outfit language and Asher's age; use the image references for visual continuity only.
+- Asher's precise age is 18 in the Roblox adaptation. Do not copy the older age metadata from the character showcase sheet.
+- Do not infer Asher's exact height from an image or its descriptive text.
+- Ember's visual direction may use the dark gray/black canid and light harness shown in the joint gameplay references, but his exact breed, proportions and coat pattern remain open for creator review.
+- The reference images include prototype weapons, stats, UI elements and some speculative visual effects. Those details do not become approved Roblox features by appearing in an image.
+- No new character identity, second Chosen, supernatural power, combat advantage or story fact may be inferred from reference artwork.
+
 ## 7. Current implementation state
 
 **CONFIRMED**
@@ -145,7 +166,7 @@ The Showcase is not a mission gate, progression gate or required interaction. No
 - No purchase IDs, prices, purchase prompts or premium entitlement grants are present.
 
 **UNKNOWN / BLOCKED**
-- The exact approved Asher and Ember reference files have not yet been imported into the Roblox asset pipeline.
+- Existing Asher/Ember visual reference images have been located in the Library and audited above; they have not yet been imported into the Roblox asset pipeline.
 - Final model topology, texture maps, rig, animation assets and Roblox asset IDs remain uncreated or unverified.
 - Roblox Studio runtime, multiplayer visual quality and Android performance have not been tested.
 
