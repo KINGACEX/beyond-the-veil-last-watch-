@@ -71,6 +71,38 @@ expect(premiumCount == 4, "exactly four animals are premium candidates")
 local ember = CompanionCatalog.Ember
 expect(ember.CoreCommands ~= nil and #ember.CoreCommands == 7, "Ember retains all seven core commands")
 
+-- Every premium candidate points to a selectable free baseline, not a mission gate.
+for name, companion in CompanionCatalog do
+	if companion.Access == "PremiumCandidate" then
+		local freeEquivalent = companion.FreeEquivalent and CompanionCatalog[companion.FreeEquivalent]
+		expect(freeEquivalent ~= nil, name .. " has a catalogued free equivalent")
+		assert(freeEquivalent ~= nil, name .. " free equivalent must exist")
+		expect(freeEquivalent.Access == "Core" or freeEquivalent.Access == "Free", name .. " free equivalent is not premium")
+		expect(firstSessionOwnership[freeEquivalent.Id] == true, name .. " free equivalent is initially available")
+	end
+end
+
+-- Ember's seven commands are available only while Ember is the equipped companion.
+local canUseEmber, emberReason = CompanionOwnershipPolicy.CanUseEmberCommands("ember")
+expect(canUseEmber, "Ember commands are allowed while Ember is equipped")
+expect(emberReason == nil, "valid Ember command state has no rejection reason")
+for _, companionId in { "fox", "owl", "horse", "eagle", "bear", "leopard", "falcon" } do
+	local canUse, reason = CompanionOwnershipPolicy.CanUseEmberCommands(companionId)
+	expect(canUse == false, "Ember commands are blocked for another equipped companion: " .. companionId)
+	expect(reason ~= nil, "blocked Ember command state returns a reason: " .. companionId)
+end
+local malformedCommandOwner = CompanionOwnershipPolicy.CanUseEmberCommands(42)
+expect(malformedCommandOwner == false, "malformed equipped companion state cannot use Ember commands")
+
+-- Free catalog membership is not enough: the current player's own map must grant access.
+local unownedFreeOwnership = table.clone(firstSessionOwnership)
+unownedFreeOwnership.fox = false
+local unownedFreeAccepted, unownedFreeReason = CompanionOwnershipPolicy.CanEquip("fox", unownedFreeOwnership, CompanionCatalog)
+expect(unownedFreeAccepted == false, "a free companion cannot be equipped when absent from this player's ownership map")
+expect(unownedFreeReason ~= nil, "unowned free companion returns a rejection reason")
+expect(firstSessionOwnership.fox == true, "failed selection cannot mutate the source ownership map")
+expect(unownedFreeOwnership.fox == false, "selection validation does not silently grant ownership")
+
 -- Server ownership policy: default access is isolated, explicit and fail-closed.
 local firstSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
 local secondSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
