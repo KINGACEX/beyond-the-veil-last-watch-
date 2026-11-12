@@ -2,6 +2,7 @@
 -- Lightweight touch-first HUD. Presentation only; server remains authoritative.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 local CompanionCatalog = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("CompanionCatalog"))
 
 local MobileHUDController = {}
@@ -31,6 +32,7 @@ end
 
 function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, initialMissionState: any)
 	local player = game:GetService("Players").LocalPlayer
+	local touchEnabled = UserInputService.TouchEnabled
 	local playerGui = player:WaitForChild("PlayerGui")
 
 	local screenGui = Instance.new("ScreenGui")
@@ -220,7 +222,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	local toggle = Instance.new("TextButton")
 	toggle.Name = "EmberToggle"
 	toggle.AnchorPoint = Vector2.new(1, 1)
-	toggle.Position = UDim2.new(1, -16, 1, -18)
+	toggle.Position = if touchEnabled then UDim2.new(0.5, -6, 1, -18) else UDim2.new(1, -16, 1, -18)
 	toggle.Size = UDim2.fromOffset(112, 46)
 	toggle.BackgroundColor3 = Color3.fromRGB(38, 52, 61)
 	toggle.TextColor3 = Color3.fromRGB(245, 242, 230)
@@ -233,7 +235,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	local panel = Instance.new("Frame")
 	panel.Name = "EmberCommandPanel"
 	panel.AnchorPoint = Vector2.new(1, 1)
-	panel.Position = UDim2.new(1, -16, 1, -74)
+	panel.Position = if touchEnabled then UDim2.new(0.5, -6, 1, -74) else UDim2.new(1, -16, 1, -74)
 	panel.Size = UDim2.fromOffset(184, 294)
 	panel.BackgroundColor3 = Color3.fromRGB(17, 23, 31)
 	panel.BackgroundTransparency = 0.06
@@ -292,7 +294,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	local companionToggle = Instance.new("TextButton")
 	companionToggle.Name = "CompanionToggle"
 	companionToggle.AnchorPoint = Vector2.new(0, 1)
-	companionToggle.Position = UDim2.new(0, 16, 1, -18)
+	companionToggle.Position = if touchEnabled then UDim2.new(0.5, 6, 1, -18) else UDim2.new(0, 16, 1, -18)
 	companionToggle.Size = UDim2.fromOffset(142, 46)
 	companionToggle.BackgroundColor3 = Color3.fromRGB(38, 52, 61)
 	companionToggle.TextColor3 = Color3.fromRGB(245, 242, 230)
@@ -304,7 +306,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	local companionPanel = Instance.new("Frame")
 	companionPanel.Name = "CompanionSelectionPanel"
 	companionPanel.AnchorPoint = Vector2.new(0, 1)
-	companionPanel.Position = UDim2.new(0, 16, 1, -74)
+	companionPanel.Position = if touchEnabled then UDim2.new(0.5, 6, 1, -74) else UDim2.new(0, 16, 1, -74)
 	companionPanel.Size = UDim2.fromOffset(184, 214)
 	companionPanel.BackgroundColor3 = Color3.fromRGB(17, 23, 31)
 	companionPanel.BackgroundTransparency = 0.06
