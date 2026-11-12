@@ -71,6 +71,10 @@ expect(premiumCount == 4, "exactly four animals are premium candidates")
 local ember = CompanionCatalog.Ember
 expect(ember.CoreCommands ~= nil and #ember.CoreCommands == 7, "Ember retains all seven core commands")
 
+-- Session maps are created independently by the server-side ownership policy.
+local firstSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
+local secondSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
+
 -- Every premium candidate points to a selectable free baseline, not a mission gate.
 for name, companion in CompanionCatalog do
 	if companion.Access == "PremiumCandidate" then
@@ -104,8 +108,6 @@ expect(firstSessionOwnership.fox == true, "failed selection cannot mutate the so
 expect(unownedFreeOwnership.fox == false, "selection validation does not silently grant ownership")
 
 -- Server ownership policy: default access is isolated, explicit and fail-closed.
-local firstSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
-local secondSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
 local defaultOwnedCount = 0
 for companionId, isOwned in firstSessionOwnership do
 	if isOwned then
