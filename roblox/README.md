@@ -47,7 +47,7 @@ Implemented as source files:
 - server-authoritative, session-only companion selection with a touch selector populated from the server-owned companion list. Initial access is Ember, Fox, Owl and Horse; a fail-closed server policy rejects unknown/malformed IDs and blocks all four premium candidates even if a session ownership map is incorrectly marked true;
 - a server-generated Logos Rhema Temple environment visual prototype with sanctuary, foyer, seating, lighting and exterior approach. This is a proposed layout, not canon-locked or Studio-verified;
 - a separate Ridgeview landscape study with layered ridges, woodland, road, footpath, stream and lookout. This is proposed geography only and is not canon-locked or Studio-verified;
-- a pinned Roblox toolchain and GitHub Actions validation workflow for headless Luau tests, formatting, lint and Rojo place builds (latest confirmed Run #84 passed on 2026-11-12);
+- a pinned Roblox toolchain and GitHub Actions validation workflow for headless Luau tests, formatting, lint and Rojo place builds (Run #84 passed on 2026-11-12 before the current fake-store test additions; the latest commits still require a fresh confirmed CI result);
 - a test-only fake profile store that simulates `UpdateAsync` callback replay, competing profile writes, pre-callback service failure and an ambiguous response after a committed save; these scenarios are added to the headless regression suite but still require a fresh CI run;
 
 - a proposed Asher and Ember Signature Presentation brief covering premium-quality models, animations, cosmetic tiers and a non-intrusive Showcase; no final models, purchase IDs or payment systems are implemented;
