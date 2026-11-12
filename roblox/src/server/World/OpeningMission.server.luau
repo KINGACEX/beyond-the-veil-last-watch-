@@ -141,6 +141,48 @@ departureMarker.CanCollide = false
 departureMarker.CanTouch = false
 departureMarker.Parent = scene
 
+-- Visible waypoint makes the previously invisible departure interaction discoverable.
+local waypoint = Instance.new("Part")
+waypoint.Name = "RidgeviewDepartureWaypoint"
+waypoint.Shape = Enum.PartType.Cylinder
+waypoint.Size = Vector3.new(0.8, 8, 0.8)
+waypoint.CFrame = departureMarker.CFrame * CFrame.new(0, 4.5, 0)
+waypoint.Anchored = true
+waypoint.Material = Enum.Material.Neon
+waypoint.Color = Color3.fromRGB(202, 169, 104)
+waypoint.Transparency = 0.22
+waypoint.CanCollide = false
+waypoint.CanTouch = false
+waypoint.CanQuery = false
+waypoint.CastShadow = false
+waypoint.Parent = scene
+
+local waypointLight = Instance.new("PointLight")
+waypointLight.Name = "WaypointLight"
+waypointLight.Color = waypoint.Color
+waypointLight.Brightness = 1.2
+waypointLight.Range = 15
+waypointLight.Parent = waypoint
+
+local waypointLabel = Instance.new("BillboardGui")
+waypointLabel.Name = "RidgeviewWaypointLabel"
+waypointLabel.Size = UDim2.fromOffset(180, 42)
+waypointLabel.StudsOffset = Vector3.new(0, 5.2, 0)
+waypointLabel.MaxDistance = 110
+waypointLabel.AlwaysOnTop = false
+waypointLabel.Parent = waypoint
+
+local waypointText = Instance.new("TextLabel")
+waypointText.Name = "Label"
+waypointText.Size = UDim2.fromScale(1, 1)
+waypointText.BackgroundTransparency = 1
+waypointText.Font = Enum.Font.GothamBold
+waypointText.Text = "RIDGEVIEW  •  DEPARTURE"
+waypointText.TextColor3 = Color3.fromRGB(245, 224, 177)
+waypointText.TextStrokeTransparency = 0.35
+waypointText.TextScaled = true
+waypointText.Parent = waypointLabel
+
 local departurePrompt = addPrompt(departureMarker, "DepartForRidgeviewPrompt", "Travel", "Ridgeview")
 departurePrompt.Triggered:Connect(function(player: Player)
 	if player.Character == nil or player:DistanceFromCharacter(departureMarker.Position) > 13 then
