@@ -105,7 +105,7 @@ addSign(archive, "ArchiveNotice", archiveCenter + Vector3.new(0, 5, 14.35), "Fin
 
 local entryTrigger = makePart(archive, "ArchiveEntryPromptAnchor", Vector3.new(3, 3, 1), archiveCenter + Vector3.new(0, 2, 18), Color3.new(1, 1, 1), Enum.Material.SmoothPlastic, false)
 entryTrigger.Transparency = 1
-local entryPrompt = addPrompt(entryTrigger, "EnterArchivePrompt", "Enter", "Curiosity Archive • 0/3", 9)
+local entryPrompt = addPrompt(entryTrigger, "EnterArchivePrompt", "Enter", "Curiosity Archive", 9)
 
 local exitAnchor = makePart(archive, "ArchiveExitPromptAnchor", Vector3.new(3, 3, 1), archiveCenter + Vector3.new(0, 2, -12), Color3.new(1, 1, 1), Enum.Material.SmoothPlastic, false)
 exitAnchor.Transparency = 1
@@ -154,7 +154,6 @@ entryPrompt.Triggered:Connect(function(player: Player)
 	end
 	local snapshot = ArchiveService.GetSnapshot(player)
 	if snapshot == nil or not snapshot.unlocked then
-		entryPrompt.ObjectText = "Curiosity Archive • Find 3 Curio Marks"
 		return
 	end
 	player.Character:PivotTo(CFrame.new(archiveCenter + Vector3.new(0, 3, 7)))
