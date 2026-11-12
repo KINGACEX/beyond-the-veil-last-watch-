@@ -24,7 +24,7 @@ local sessions: {[number]: PlayerSnapshot} = {}
 -- Initial access is limited to core/free companions. Premium candidates have no entitlement path yet.
 
 local DEFAULT_STATE: PlayerSnapshot = {
-	characterId = "asher_vance",
+	characterId = "covenant_operative",
 	covenantRank = "Agent/Specialist",
 	covenantBranch = "Watchers",
 	emberCommand = "Regroup",
