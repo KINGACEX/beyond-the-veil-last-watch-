@@ -141,6 +141,34 @@ departureMarker.CanCollide = false
 departureMarker.CanTouch = false
 departureMarker.Parent = scene
 
+-- Visible wayfinding makes the departure interaction discoverable without relying on an invisible prompt.
+local departureSign = Instance.new("Part")
+departureSign.Name = "RidgeviewDepartureSign"
+departureSign.Size = Vector3.new(5.5, 2.2, 0.35)
+departureSign.CFrame = CFrame.new(departureMarker.Position + Vector3.new(0, 4.1, 0))
+departureSign.Anchored = true
+departureSign.CanCollide = false
+departureSign.CanTouch = false
+departureSign.CanQuery = false
+departureSign.Material = Enum.Material.WoodPlanks
+departureSign.Color = Color3.fromRGB(83, 65, 47)
+departureSign.Parent = scene
+
+local departureSignGui = Instance.new("SurfaceGui")
+departureSignGui.Name = "RidgeviewWayfinding"
+departureSignGui.Face = Enum.NormalId.Front
+departureSignGui.PixelsPerStud = 45
+departureSignGui.Parent = departureSign
+
+local departureSignLabel = Instance.new("TextLabel")
+departureSignLabel.Size = UDim2.fromScale(1, 1)
+departureSignLabel.BackgroundTransparency = 1
+departureSignLabel.Text = "RIDGEVIEW  →"
+departureSignLabel.TextColor3 = Color3.fromRGB(245, 232, 202)
+departureSignLabel.Font = Enum.Font.GothamBold
+departureSignLabel.TextScaled = true
+departureSignLabel.Parent = departureSignGui
+
 local departurePrompt = addPrompt(departureMarker, "DepartForRidgeviewPrompt", "Travel", "Ridgeview")
 departurePrompt.Triggered:Connect(function(player: Player)
 	if player.Character == nil or player:DistanceFromCharacter(departureMarker.Position) > 13 then
