@@ -7,6 +7,8 @@ local CompanionCatalog = require("../src/shared/CompanionCatalog")
 local CompanionOwnershipPolicy = require("../src/server/Services/CompanionOwnershipPolicy")
 local CompanionRigContract = require("../src/shared/CompanionRigContract")
 local ArchiveService = require("../src/server/Services/ArchiveService")
+local CovenantRankCatalog = require("../src/shared/CovenantRankCatalog")
+local PlayerProfileSchema = require("../src/shared/PlayerProfileSchema")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -190,3 +192,63 @@ expect(ArchiveService.GetDisplayTitle(0) ~= ArchiveService.GetDisplayTitle(60480
 ArchiveService.RemovePlayer(archivePlayer)
 ArchiveService.RemovePlayer(otherArchivePlayer)
 expect(ArchiveService.GetSnapshot(archivePlayer) == nil, "archive state is cleared on player removal")
+
+-- Versioned profile schema validation is pure and does not enable DataStore writes.
+local defaultProfile = PlayerProfileSchema.CreateDefault()
+local validProfile, validProfileReason = PlayerProfileSchema.Validate(defaultProfile, CovenantRankCatalog, CompanionCatalog)
+expect(validProfile, "new versioned profile passes schema validation")
+expect(validProfileReason == nil, "valid profile has no validation error")
+expect(defaultProfile.schemaVersion == 1, "new profile uses the current schema version")
+expect(defaultProfile.progression.covenantRank == "Recruit", "new profile starts at Recruit")
+expect(defaultProfile.companions.owned.ember == true, "new profile owns Ember")
+expect(defaultProfile.companions.owned.fox == true, "new profile owns Fox")
+expect(defaultProfile.companions.owned.owl == true, "new profile owns Owl")
+expect(defaultProfile.companions.owned.horse == true, "new profile owns Horse")
+expect(defaultProfile.companions.owned.eagle ~= true, "new profile does not grant premium candidates")
+
+local unsupportedProfile = table.clone(defaultProfile)
+unsupportedProfile.schemaVersion = 99
+local unsupportedValid = PlayerProfileSchema.Validate(unsupportedProfile, CovenantRankCatalog, CompanionCatalog)
+expect(not unsupportedValid, "unsupported profile schema is rejected")
+
+local unknownRankProfile = table.clone(defaultProfile)
+unknownRankProfile.progression = table.clone(defaultProfile.progression)
+unknownRankProfile.progression.covenantRank = "Supreme Commander"
+local unknownRankValid = PlayerProfileSchema.Validate(unknownRankProfile, CovenantRankCatalog, CompanionCatalog)
+expect(not unknownRankValid, "unknown Covenant rank is rejected")
+
+local negativeBalanceProfile = table.clone(defaultProfile)
+negativeBalanceProfile.economy = table.clone(defaultProfile.economy)
+negativeBalanceProfile.economy.aces = -1
+local negativeBalanceValid = PlayerProfileSchema.Validate(negativeBalanceProfile, CovenantRankCatalog, CompanionCatalog)
+expect(not negativeBalanceValid, "negative currency balance is rejected")
+
+local fractionalBalanceProfile = table.clone(defaultProfile)
+fractionalBalanceProfile.economy = table.clone(defaultProfile.economy)
+fractionalBalanceProfile.economy.covenantCredits = 1.5
+local fractionalBalanceValid = PlayerProfileSchema.Validate(fractionalBalanceProfile, CovenantRankCatalog, CompanionCatalog)
+expect(not fractionalBalanceValid, "fractional currency balance is rejected")
+
+local forgedPremiumProfile = table.clone(defaultProfile)
+forgedPremiumProfile.companions = table.clone(defaultProfile.companions)
+forgedPremiumProfile.companions.owned = table.clone(defaultProfile.companions.owned)
+forgedPremiumProfile.companions.owned.eagle = true
+local forgedPremiumValid = PlayerProfileSchema.Validate(forgedPremiumProfile, CovenantRankCatalog, CompanionCatalog)
+expect(not forgedPremiumValid, "profile cannot forge premium companion ownership")
+
+local unownedEquippedProfile = table.clone(defaultProfile)
+unownedEquippedProfile.companions = table.clone(defaultProfile.companions)
+unownedEquippedProfile.companions.equipped = "eagle"
+local unownedEquippedValid = PlayerProfileSchema.Validate(unownedEquippedProfile, CovenantRankCatalog, CompanionCatalog)
+expect(not unownedEquippedValid, "profile cannot equip an unowned companion")
+
+local malformedEventsProfile = table.clone(defaultProfile)
+malformedEventsProfile.progression = table.clone(defaultProfile.progression)
+malformedEventsProfile.progression.completedMissionIds = { [1] = "mission_a", [3] = "mission_c" }
+local malformedEventsValid = PlayerProfileSchema.Validate(malformedEventsProfile, CovenantRankCatalog, CompanionCatalog)
+expect(not malformedEventsValid, "sparse progression event lists are rejected")
+
+defaultProfile.companions.owned.fox = false
+local independentDefault = PlayerProfileSchema.CreateDefault()
+expect(independentDefault.companions.owned.fox == true, "mutating one profile cannot mutate future default profiles")
+
