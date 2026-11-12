@@ -86,6 +86,9 @@ function PlayerStateService.AdjustCurrency(player: Player, currency: string, amo
 	if state == nil then
 		return false, "Session is not ready."
 	end
+	if typeof(amount) ~= "number" or amount ~= amount or amount <= 0 or amount > 1000000 or amount % 1 ~= 0 then
+		return false, "Currency adjustment must be a positive whole number within the session limit."
+	end
 	if currency == "Aces" then
 		state.aces += amount
 	elseif currency == "Covenant Credits" then
