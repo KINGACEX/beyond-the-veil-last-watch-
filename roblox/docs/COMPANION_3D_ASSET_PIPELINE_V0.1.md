@@ -181,3 +181,41 @@ This specification does not authorise:
 - mounted horse gameplay before its separate technical gate;
 - combat-stat changes or mission-critical evidence detection;
 - replacing the original Godot BTV companion canon with Roblox-only decisions.
+## 13. Roblox import adapter — source implemented, asset not imported
+
+The Roblox server now looks for a reviewed Ember model at:
+
+`ServerStorage/BTVAssets/Companions/Ember`
+
+The model must satisfy the shared contract in `src/shared/CompanionRigContract.luau`:
+
+- A Model with PrimaryPart named `CompanionRoot`.
+- A rig hierarchy containing Motor6D joints or skinned Bones. For Motor6D rigs, every BasePart must be connected to the root.
+- An `AnimationController` containing an `Animator`.
+- An `Animations` folder containing Animation objects named `Idle_Breathing`, `Walk_Cycle`, and `Alert_Acknowledge`, each with a valid Roblox animation asset ID.
+- No Script, LocalScript or ModuleScript descendants.
+- The server disables collision, touch and query on every imported BasePart. The imported actor remains visual-only.
+
+The server loads the three clips, starts idle, switches between idle and walk using the owner's horizontal movement, and plays the one-shot acknowledgement clip after an accepted Ember command. The existing 15 Hz server follow update remains bounded. Missing or invalid imported assets fail closed to the current low-poly placeholder; the client cannot supply an asset or animation ID.
+
+### Existing private technical prototype inspected on 12 November 2026
+
+A private Blendstra project named **BTV Roblox — Ember Technical Rig Prototype** was inspected read-only:
+
+- [Open exact prototype version](https://blendstra.com/studio?project=b0f678ff-c3cf-4848-bc69-071153712baf&version=version_98dd979755d97fdfa22a037c7d92588e6cb77172fdb087b085b4271e13509adf)
+- Source contains a 14-bone armature and 30 separately named mesh parts.
+- Blender source defines `Idle_Breathing`, `Walk_Cycle`, and `Alert_Acknowledge` actions (24 frames per action).
+- The saved web preview reports one `Scene` animation clip of 3 seconds. Separate clip export and Roblox animation asset mapping are therefore **not verified**.
+- The prototype follows the current placeholder palette and is explicitly not an approved final Ember likeness. Exact appearance remains open; no Afterfall asset is reused.
+
+This prototype is not yet in the Git repository, Roblox ServerStorage, or a Roblox place. It does not satisfy the import contract until it is exported, imported and wrapped with the required Roblox root/controller/Animation objects. No Studio import or runtime animation test has been performed.
+
+### Integration status
+
+- [x] Server-side import contract and fail-closed placeholder fallback implemented.
+- [x] Server-side idle/walk/acknowledgement animation routing implemented for a valid imported rig.
+- [x] Accepted Ember commands trigger presentation acknowledgement only.
+- [ ] Prototype GLB exported and imported into Roblox Studio.
+- [ ] Three Roblox animation IDs created and mapped to the contract names.
+- [ ] Studio validation of the imported rig, animation playback, respawn and multiple players.
+- [ ] Android performance and visual review.
