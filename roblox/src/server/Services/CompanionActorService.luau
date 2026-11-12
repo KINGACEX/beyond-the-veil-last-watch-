@@ -167,8 +167,20 @@ function CompanionActorService.RemovePlayer(player: Player)
 	destroyActor(player)
 end
 
+-- Bound server-side companion transforms to 15 Hz. This limits replicated CFrame churn
+-- while retaining exponential smoothing across variable Heartbeat intervals.
+local FOLLOW_UPDATE_INTERVAL = 1 / 15
+local updateAccumulator = 0
+
 RunService.Heartbeat:Connect(function(deltaTime: number)
-	local alpha = math.clamp(deltaTime * FOLLOW_RESPONSE, 0, 1)
+	updateAccumulator += deltaTime
+	if updateAccumulator < FOLLOW_UPDATE_INTERVAL then
+		return
+	end
+
+	local elapsed = updateAccumulator
+	updateAccumulator = 0
+	local alpha = 1 - math.exp(-FOLLOW_RESPONSE * elapsed)
 	for userId, actor in actors do
 		local player = Players:GetPlayerByUserId(userId)
 		local character = actor.character
