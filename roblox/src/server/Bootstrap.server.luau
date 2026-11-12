@@ -82,12 +82,11 @@ requestEmberCommand.OnServerEvent:Connect(function(player: Player, command: unkn
 	if now - previous < REQUEST_INTERVAL_SECONDS then
 		return
 	end
-	lastCommandAt[player.UserId] = now
-
 	local accepted = PlayerStateService.SetEmberCommand(player, command)
 	if not accepted then
 		return
 	end
+	lastCommandAt[player.UserId] = now
 	local snapshot = PlayerStateService.GetSnapshot(player)
 	if snapshot ~= nil then
 		stateUpdated:FireClient(player, snapshot)
@@ -100,12 +99,11 @@ requestCompanionSelection.OnServerEvent:Connect(function(player: Player, compani
 	if now - previous < COMPANION_SELECTION_INTERVAL_SECONDS then
 		return
 	end
-	lastCompanionSelectionAt[player.UserId] = now
-
 	local accepted = PlayerStateService.SetEquippedCompanion(player, companionId)
 	if not accepted then
 		return
 	end
+	lastCompanionSelectionAt[player.UserId] = now
 	CompanionActorService.RefreshPlayer(player)
 	local snapshot = PlayerStateService.GetSnapshot(player)
 	if snapshot ~= nil then
