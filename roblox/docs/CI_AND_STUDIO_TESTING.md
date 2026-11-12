@@ -11,7 +11,7 @@ The pinned toolchain is defined in `roblox/rokit.toml`:
 - Selene checks Luau source against Roblox's standard library.
 - Lune runs fast, headless Luau regression tests.
 
-The first regression suite is `roblox/tests/foundation.spec.luau`. It checks sequential mission progression, rejection of skipped or repeated phases, player-state cleanup, the eight-animal roster, free equivalents for premium candidates, and Ember's seven core commands.
+The first regression suite is `roblox/tests/foundation.spec.luau`. It checks sequential mission progression, rejection of skipped or repeated phases, player-state cleanup, the eight-animal roster, free equivalents for premium candidates, Ember's seven core commands, and the shared Ember rig/animation import contract.
 
 The workflow uploads the generated `.rbxlx` as a short-lived CI artifact. It does not publish, update, or modify any Roblox experience.
 
