@@ -232,8 +232,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 
 	local panel = Instance.new("Frame")
 	panel.Name = "EmberCommandPanel"
-	panel.AnchorPoint = Vector2.new(1, 0)
-	panel.Position = UDim2.new(1, -16, 0, 272)
+	panel.AnchorPoint = Vector2.new(0.5, 0)
+	panel.Position = UDim2.new(0.5, 0, 0, 272)
 	panel.Size = UDim2.fromOffset(184, 294)
 	panel.BackgroundColor3 = Color3.fromRGB(17, 23, 31)
 	panel.BackgroundTransparency = 0.06
@@ -306,8 +306,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 
 	local companionPanel = Instance.new("Frame")
 	companionPanel.Name = "CompanionSelectionPanel"
-	companionPanel.AnchorPoint = Vector2.new(1, 0)
-	companionPanel.Position = UDim2.new(1, -16, 0, 272)
+	companionPanel.AnchorPoint = Vector2.new(0.5, 0)
+	companionPanel.Position = UDim2.new(0.5, 0, 0, 272)
 	companionPanel.Size = UDim2.fromOffset(184, 214)
 	companionPanel.BackgroundColor3 = Color3.fromRGB(17, 23, 31)
 	companionPanel.BackgroundTransparency = 0.06
