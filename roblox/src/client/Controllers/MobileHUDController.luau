@@ -36,7 +36,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	local playerGui = player:WaitForChild("PlayerGui")
 
 	local screenGui = Instance.new("ScreenGui")
-	screenGui.Name = "BTVMobileHUD"
+	screenGui.Name = "BTVHUD"
 	screenGui.ResetOnSpawn = false
 	screenGui.IgnoreGuiInset = false
 	screenGui.DisplayOrder = 20
