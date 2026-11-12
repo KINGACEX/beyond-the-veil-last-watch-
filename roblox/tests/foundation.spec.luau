@@ -40,7 +40,7 @@ local reportAdvanced, report = MissionService.Advance(player :: any, "covenant_a
 expect(reportAdvanced, "Scout Report access advances the final opening phase")
 expect(report ~= nil and report.sequenceIndex == 3, "report phase is sequence three")
 assert(report ~= nil, "report snapshot must exist")
-expect(string.find(report.status, "evidence pending", 1, true) ~= nil, "report does not invent evidence")
+expect(string.find(report.objective, "evidence pending", 1, true) ~= nil, "report does not invent evidence")
 
 local travelAdvanced, arrival = MissionService.Advance(player :: any, "report_accessed", "ridgeview_arrival")
 expect(travelAdvanced, "Ridgeview arrival follows Scout Report access")
