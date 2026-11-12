@@ -171,3 +171,19 @@
 - Imported Ember model validation and animation playback in Roblox Studio: NOT RUN.
 - Multiplayer test: NOT RUN.
 - Android device test: NOT RUN.
+
+## J. Curiosity Archive — optional exploration feature
+
+- [ ] Three Curio Marks are placed in the Ridgeview landscape and are discoverable without purchases.
+- [ ] Server validates proximity and allowlisted mark IDs before recording discoveries.
+- [ ] Duplicate, unknown and malformed mark requests cannot increase progress.
+- [ ] Discovery progress is isolated per player and cleared on disconnect until persistence is reviewed.
+- [ ] All three marks are required to enter the Archive.
+- [ ] The locked wall remains physically closed; access is granted by server-checked per-player teleport, not a global door unlock.
+- [ ] Players without all three marks cannot enter by invoking client-side state or changing local UI.
+- [ ] Archive progress HUD appears only after a discovery and fits phone safe areas.
+- [ ] Weekly display rotates by UTC week; no reward expires and older displays are not permanently removed.
+- [ ] Easter eggs are optional developer/environment references, not canon revelations, mission evidence, Scripture items or sacred artifacts.
+- [ ] Archive contains no Aces, Covenant Credits, XP, loot, paid random rewards or gameplay advantages.
+- [ ] Two-player test confirms one player's discoveries do not unlock the other player's Archive.
+- [ ] Roblox Studio and Android runtime checks are completed before the feature is called playable.
