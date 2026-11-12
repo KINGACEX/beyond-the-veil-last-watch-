@@ -74,19 +74,22 @@ getMissionState.OnServerInvoke = function(player: Player)
 end
 
 requestEmberCommand.OnServerEvent:Connect(function(player: Player, command: unknown)
-	if typeof(command) ~= "string" or not allowedCommands[command] then
-		return
-	end
+	-- Apply the per-player throttle before inspecting payloads or session eligibility.
+	-- Invalid requests must not bypass the rate limit and force unbounded server work.
 	local now = os.clock()
 	local previous = lastCommandAt[player.UserId] or 0
 	if now - previous < REQUEST_INTERVAL_SECONDS then
+		return
+	end
+	lastCommandAt[player.UserId] = now
+
+	if typeof(command) ~= "string" or not allowedCommands[command] then
 		return
 	end
 	local accepted = PlayerStateService.SetEmberCommand(player, command)
 	if not accepted then
 		return
 	end
-	lastCommandAt[player.UserId] = now
 	CompanionActorService.AcknowledgeCommand(player)
 	local snapshot = PlayerStateService.GetSnapshot(player)
 	if snapshot ~= nil then
@@ -95,16 +98,18 @@ requestEmberCommand.OnServerEvent:Connect(function(player: Player, command: unkn
 end)
 
 requestCompanionSelection.OnServerEvent:Connect(function(player: Player, companionId: unknown)
+	-- Throttle every request, including malformed and unowned selections.
 	local now = os.clock()
 	local previous = lastCompanionSelectionAt[player.UserId] or 0
 	if now - previous < COMPANION_SELECTION_INTERVAL_SECONDS then
 		return
 	end
+	lastCompanionSelectionAt[player.UserId] = now
+
 	local accepted = PlayerStateService.SetEquippedCompanion(player, companionId)
 	if not accepted then
 		return
 	end
-	lastCompanionSelectionAt[player.UserId] = now
 	CompanionActorService.RefreshPlayer(player)
 	local snapshot = PlayerStateService.GetSnapshot(player)
 	if snapshot ~= nil then
