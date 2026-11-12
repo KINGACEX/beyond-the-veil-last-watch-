@@ -28,6 +28,7 @@
 - [ ] Client cannot claim a premium entitlement by changing local UI state.
 - [ ] Malformed, unknown and unowned companion IDs are rejected.
 - [ ] Companion selection requests are throttled per player.
+- [ ] Malformed and unowned command/selection requests are rate-limited before payload and ownership validation; repeated invalid requests cannot bypass per-player throttles.
 - [ ] Ember imported rig is loaded only from ServerStorage and cannot be supplied by the client.
 - [ ] Invalid rig hierarchy, disconnected Motor6D parts, missing animation IDs or executable scripts cause safe placeholder fallback.
 - [ ] A selection updates only the requesting player's state snapshot.
