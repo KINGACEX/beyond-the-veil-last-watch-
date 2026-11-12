@@ -7,12 +7,12 @@
 
 | Domain | Canon / approved fact | Roblox implementation boundary |
 |---|---|---|
-| Protagonist | Asher Vance, sole playable protagonist/Chosen, age 18 | Fixed protagonist identity; do not add a second selectable Chosen |
+| Main-game protagonist | Asher Vance, central protagonist, age 18 | Preserve Asher as the original main-game protagonist; Roblox players use their own Chosen identities |
 | Role | Agent/Specialist, Watcher branch at start | Display role only where story context permits |
 | Covenant | Hidden service/protection organisation | Do not present as government agency or Church replacement |
-| Rank | Recruit → Agent/Specialist → Team Leader → Commander → General | Rank is responsibility/trust, not spiritual worth |
+| Roblox rank | Recruit → Field Agent → Senior Agent → Elite Agent → Specialist → Senior Specialist → Principal Specialist → Team Leader → Senior Team Leader → Unit Leader → Field Commander → Senior Commander → Regional Commander → Senior General → High General | Rank is earned responsibility/trust, not spiritual worth; player rank is profile-owned and server leadership is separate |
 | Branches | Guardians, Messengers, Watchers, Shepherds, Scouts, Keepers | Functional roles, not cosmetic-only factions |
-| Ember | Intelligent animal companion and field partner | Not a weapon, omniscient guide or generic pet skin |
+| Ember | Intelligent animal companion and field partner | Not a weapon, omniscient guide or generic pet skin; premium presentation cannot grant gameplay advantage |
 | Ember commands | Attack, Protect, Scout, Track, Retrieve, Hold, Regroup | Allowlist exact command labels; do not treat command availability as approved AI behaviour |
 | Currencies | Aces; Covenant Credits | Separate data fields and presentation; exact values/prices remain open |
 | Prayer | Meaningful, non-transactional | No mana, cooldown reward, guaranteed buff or purchase |
