@@ -90,6 +90,7 @@
 
 - [ ] Ridgeview landscape study builds without runtime errors.
 - [ ] Ridgeview remains spatially separate from the Temple prototype.
+- [ ] Ridgeview arrival marker is aligned with the footpath start and has no collision, touch or query behaviour.
 - [ ] Road, path, stream, hill forms, trees and lookout are inspected for alignment and collision.
 - [ ] The lookout is reachable from the footpath without unintended jumps or gaps.
 - [ ] No named residents, mission clues, evidence, settlement history or canon facts are introduced.
@@ -103,6 +104,8 @@
 - [ ] Scout Report prompt is accepted only during the Covenant-alert phase and within server-checked range.
 - [ ] Ridgeview departure is accepted only after report access and within server-checked range.
 - [ ] Ridgeview arrival places the player on the provisional footpath without spawning inside terrain or props.
+- [ ] A player who respawns after Ridgeview arrival is restored to the Ridgeview marker while their session mission phase remains server-owned.
+- [ ] A player who has not reached Ridgeview continues to respawn at the Temple's initial spawn.
 - [ ] Ridgeview arrival advances only the interacting player's mission state and updates only that player's HUD.
 - [ ] Out-of-order, repeated, remote, and malformed interaction attempts cannot advance mission state.
 - [ ] Mission objective HUD updates only from server-confirmed state.
