@@ -325,7 +325,7 @@ expect(occupiedRecord == nil and occupiedError ~= nil, "competing server cannot 
 
 local candidateProfile = PlayerProfileSchema.CreateDefault()
 candidateProfile.economy.aces = 25
-local savedRecord, savedError = ProfileRecordPolicy.TrySave(
+local savedRecord, savedError, savedOutcome = ProfileRecordPolicy.TrySave(
 	acquiredRecord,
 	"server-A",
 	130,
@@ -338,9 +338,12 @@ local savedRecord, savedError = ProfileRecordPolicy.TrySave(
 	ProfileLeasePolicy
 )
 expect(savedRecord ~= nil and savedError == nil, "current owner can save a valid profile")
+expect(savedOutcome == "Saved", "new save is explicitly classified as saved")
 assert(savedRecord ~= nil, "saved record must exist")
 expect(savedRecord.profile.economy.aces == 25, "save persists candidate economy values")
 expect(savedRecord.profile.revision == 1, "successful save increments profile revision")
+expect(savedRecord.lastSaveOperation.id == "save-operation-001", "save records its operation ID")
+expect(savedRecord.lastSaveOperation.baseRevision == 0 and savedRecord.lastSaveOperation.resultRevision == 1, "save records its revision transition")
 expect(acquiredRecord.profile.economy.aces == 0, "save transformation does not mutate stored input")
 -- A retried save reconciles an ambiguous UpdateAsync result without applying twice.
 local replayedRecord, replayError, replayOutcome = ProfileRecordPolicy.TrySave(
