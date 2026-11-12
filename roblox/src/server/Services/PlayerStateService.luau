@@ -59,6 +59,10 @@ function PlayerStateService.SetEmberCommand(player: Player, command: string): (b
 	if state == nil then
 		return false, "Session is not ready."
 	end
+	local canCommand, reason = CompanionOwnershipPolicy.CanUseEmberCommands(state.equippedCompanion)
+	if not canCommand then
+		return false, reason
+	end
 	state.emberCommand = command
 	return true, nil
 end
