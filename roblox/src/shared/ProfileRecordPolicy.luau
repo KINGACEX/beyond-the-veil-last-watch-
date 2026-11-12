@@ -129,7 +129,7 @@ function ProfileRecordPolicy.TryRelease(
 	end
 
 	return {
-		profile = copyProfile(record.profile),
+		profile = record.profile,
 		lease = retainedLease,
 	}, nil
 end
