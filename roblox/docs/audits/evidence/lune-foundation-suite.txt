@@ -1,0 +1,13 @@
+# Headless regression suite — pinned lune 0.10.5
+
+```
+$ lune run tests/foundation.spec.luau
+[BTV tests] Foundation and companion ownership rules passed.
+exit code: 0
+```
+
+**Result:** PASS, exit code 0, executed locally against the audited commit.
+The suite covers MissionService, CompanionCatalog, CompanionOwnershipPolicy,
+CompanionRigContract and ArchiveService only. It does **not** cover
+CompanionActorService, CurrencyService, PlayerStateService, Bootstrap.server,
+any world script or any client script.
