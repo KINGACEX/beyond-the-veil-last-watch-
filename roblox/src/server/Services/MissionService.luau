@@ -32,7 +32,7 @@ local OBJECTIVES: { [string]: string } = {
 local STATUS_TEXT: { [string]: string } = {
 	communion_context = "First Sunday • Communion context",
 	covenant_alert = "Covenant alert received",
-	report_accessed = "Scout Report opened. Follow the marked departure point to Ridgeview.",
+	report_accessed = "Scout Report opened; authored evidence remains pending. Follow the marked departure point to Ridgeview.",
 	ridgeview_arrival = "Ridgeview landscape study reached; investigation content pending.",
 }
 
