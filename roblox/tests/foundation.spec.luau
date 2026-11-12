@@ -4,6 +4,7 @@
 
 local MissionService = require("../src/server/Services/MissionService")
 local CompanionCatalog = require("../src/shared/CompanionCatalog")
+local CompanionOwnershipPolicy = require("../src/server/Services/CompanionOwnershipPolicy")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -70,4 +71,47 @@ expect(premiumCount == 4, "exactly four animals are premium candidates")
 local ember = CompanionCatalog.Ember
 expect(ember.CoreCommands ~= nil and #ember.CoreCommands == 7, "Ember retains all seven core commands")
 
-print("[BTV tests] Foundation rules passed.")
+
+-- Server ownership policy: default access is isolated, explicit and fail-closed.
+local firstSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
+local secondSessionOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
+local defaultOwnedCount = 0
+for companionId, isOwned in firstSessionOwnership do
+	if isOwned then
+		defaultOwnedCount += 1
+	end
+	local selectable, reason = CompanionOwnershipPolicy.CanEquip(companionId, firstSessionOwnership, CompanionCatalog)
+	expect(selectable, "default-owned companion is selectable: " .. companionId)
+	expect(reason == nil, "valid default selection has no rejection reason")
+end
+expect(defaultOwnedCount == 4, "exactly four companions are initially owned")
+expect(firstSessionOwnership.ember == true, "Ember is initially owned")
+expect(firstSessionOwnership.fox == true, "Fox is initially owned")
+expect(firstSessionOwnership.owl == true, "Owl is initially owned")
+expect(firstSessionOwnership.horse == true, "Horse is initially owned")
+expect(firstSessionOwnership.eagle ~= true, "Eagle is not initially owned")
+expect(firstSessionOwnership.bear ~= true, "Bear is not initially owned")
+expect(firstSessionOwnership.leopard ~= true, "Leopard is not initially owned")
+expect(firstSessionOwnership.falcon ~= true, "Falcon is not initially owned")
+
+-- A forged ownership entry cannot bypass the premium-candidate access gate.
+for _, companionId in { "eagle", "bear", "leopard", "falcon" } do
+	local forgedOwnership = table.clone(firstSessionOwnership)
+	forgedOwnership[companionId] = true
+	local accepted = CompanionOwnershipPolicy.CanEquip(companionId, forgedOwnership, CompanionCatalog)
+	expect(accepted == false, "premium candidate remains blocked even if marked owned: " .. companionId)
+end
+
+local unknownAccepted = CompanionOwnershipPolicy.CanEquip("dragon", firstSessionOwnership, CompanionCatalog)
+expect(unknownAccepted == false, "unknown companion ID is rejected")
+local malformedAccepted = CompanionOwnershipPolicy.CanEquip(42, firstSessionOwnership, CompanionCatalog)
+expect(malformedAccepted == false, "non-string companion ID is rejected")
+local nilAccepted = CompanionOwnershipPolicy.CanEquip(nil, firstSessionOwnership, CompanionCatalog)
+expect(nilAccepted == false, "nil companion ID is rejected")
+
+firstSessionOwnership.fox = false
+expect(secondSessionOwnership.fox == true, "one session cannot mutate another session's ownership map")
+local freshOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
+expect(freshOwnership.fox == true, "mutating a session snapshot cannot change default ownership")
+
+print("[BTV tests] Foundation and companion ownership rules passed.")
