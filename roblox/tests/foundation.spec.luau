@@ -251,4 +251,3 @@ expect(not malformedEventsValid, "sparse progression event lists are rejected")
 defaultProfile.companions.owned.fox = false
 local independentDefault = PlayerProfileSchema.CreateDefault()
 expect(independentDefault.companions.owned.fox == true, "mutating one profile cannot mutate future default profiles")
-
