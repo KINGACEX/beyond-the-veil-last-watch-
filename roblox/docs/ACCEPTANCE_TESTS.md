@@ -20,6 +20,9 @@
 - [ ] Client cannot mark a mission complete.
 - [ ] Server rejects malformed Ember command payloads.
 - [ ] Server rejects commands outside the exact allowlist.
+- [ ] Currency awards require a positive whole-number amount and a bounded, non-empty server context key.
+- [ ] Repeating the same award context for the same player during one session cannot award currency twice.
+- [ ] Currency award idempotency state is cleared on disconnect; durable cross-session idempotency remains blocked until persistence is reviewed.
 - [ ] Server throttles repeated command requests.
 - [ ] Server returns only the requesting player's session snapshot.
 - [ ] Companion selection requests are validated against server-owned session state.
@@ -88,7 +91,7 @@
 - [ ] Placeholder actors are labelled as temporary blockouts and grant no species ability or gameplay advantage.
 - [ ] Ember follows at a stable trailing offset without obstructing the player.
 - [ ] Ember remains available after character respawn.
-- [ ] Selecting another owned companion removes the Ember actor; selecting Ember again restores it.
+- [ ] Selecting another owned companion replaces the active actor with the selected species blockout; selecting Ember again restores Ember.
 - [ ] Actor cleanup occurs when the player leaves.
 - [ ] The model has no collision, touch, or query interactions.
 - [ ] The current low-poly appearance is clearly treated as a placeholder.
@@ -187,6 +190,8 @@
 - [ ] Server validates proximity and allowlisted mark IDs before recording discoveries.
 - [ ] Duplicate, unknown and malformed mark requests cannot increase progress.
 - [ ] Discovery progress is isolated per player and cleared on disconnect until persistence is reviewed.
+- [ ] A locked Archive prompt gives feedback through a player-local attribute/HUD, never by mutating the shared ProximityPrompt object.
+- [ ] A successful Curio Mark discovery clears any prior locked-entry hint for that player.
 - [ ] All three marks are required to enter the Archive.
 - [ ] The locked wall remains physically closed; access is granted by server-checked per-player teleport, not a global door unlock.
 - [ ] Players without all three marks cannot enter by invoking client-side state or changing local UI.
