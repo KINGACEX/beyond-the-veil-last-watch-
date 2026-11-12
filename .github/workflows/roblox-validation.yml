@@ -4,19 +4,22 @@ on:
   push:
     branches:
       - btv/roblox-foundation-001
+      - btv/roblox-covenant-multiplayer-fixes-001
     paths:
       - "roblox/**"
       - ".github/workflows/roblox-validation.yml"
   pull_request:
     branches:
-      - btv/roblox-foundation-001
+      - btv/roblox-covenant-multiplayer-fixes-001
     paths:
       - "roblox/**"
       - ".github/workflows/roblox-validation.yml"
   workflow_dispatch:
 
+# Validation must be read-only. Formatting changes belong in reviewed commits,
+# never in an automated workflow push.
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: btv-roblox-validation-${{ github.ref }}
@@ -50,25 +53,8 @@ jobs:
       - name: Run headless foundation regression tests
         run: lune run tests/foundation.spec.luau
 
-      - name: Format foundation Luau on branch pushes
-        if: github.event_name == 'push'
-        run: stylua src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau src/server/Bootstrap.server.luau src/server/World/OpeningMission.server.luau src/client/Controllers/MobileHUDController.luau tests/foundation.spec.luau
-
       - name: Verify Luau formatting
-        run: stylua --check src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau src/server/Bootstrap.server.luau src/server/World/OpeningMission.server.luau src/client/Controllers/MobileHUDController.luau tests/foundation.spec.luau
-
-      - name: Commit formatting corrections
-        if: github.event_name == 'push'
-        run: |
-          if git diff --quiet -- src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau src/server/Bootstrap.server.luau src/server/World/OpeningMission.server.luau src/client/Controllers/MobileHUDController.luau tests/foundation.spec.luau; then
-            echo "No formatting corrections needed."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau src/server/Bootstrap.server.luau src/server/World/OpeningMission.server.luau src/client/Controllers/MobileHUDController.luau tests/foundation.spec.luau
-          git commit -m "style: format BTV Roblox foundation"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+        run: stylua --check src tests
 
       - name: Lint Luau source
         run: selene src tests
