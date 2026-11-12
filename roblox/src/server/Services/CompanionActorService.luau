@@ -11,6 +11,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local PlayerStateService = require(script.Parent.PlayerStateService)
 local CompanionRigContract = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("CompanionRigContract"))
+local CompanionCatalog = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("CompanionCatalog"))
 
 type ActorRecord = {
 	model: Model,
@@ -294,6 +295,91 @@ local function createEmber(player: Player, character: Model): Model
 	return model
 end
 
+-- Species-distinct blockouts ensure selectable free companions always have a visible actor.
+-- These are temporary presentation models; signature abilities and final rigs are not implemented.
+local function createPlaceholderAnimal(player: Player, character: Model, companionId: string): Model
+	local definition = CompanionCatalog[companionId]
+	local displayName = if definition then definition.DisplayName else companionId
+	local model = Instance.new("Model")
+	model.Name = displayName .. "_" .. player.UserId
+	model:SetAttribute("CompanionId", companionId)
+	model:SetAttribute("VisualStatus", "SPECIES BLOCKOUT — approved production model pending")
+	model:SetAttribute("GameplayAdvantage", false)
+
+	local root = makePart(model, "Root", Vector3.new(0.8, 0.8, 0.8), Vector3.new(0, 2, 0), coat)
+	root.Transparency = 1
+	model.PrimaryPart = root
+	local bodyColor = if companionId == "fox" then Color3.fromRGB(166, 91, 42)
+		elseif companionId == "owl" then Color3.fromRGB(111, 91, 67)
+		elseif companionId == "horse" then Color3.fromRGB(101, 67, 48)
+		else coat
+	local lightColor = if companionId == "fox" then Color3.fromRGB(225, 184, 128)
+		elseif companionId == "owl" then Color3.fromRGB(220, 205, 169)
+		elseif companionId == "horse" then Color3.fromRGB(174, 137, 100)
+		else coatLight
+	local head: BasePart? = nil
+
+	if companionId == "owl" then
+		makePart(model, "Body", Vector3.new(1.25, 1.5, 1.05), Vector3.new(0, 2.05, 0.12), bodyColor, Enum.PartType.Ball)
+		head = makePart(model, "Head", Vector3.new(1.08, 0.98, 0.95), Vector3.new(0, 3.02, -0.28), bodyColor, Enum.PartType.Ball)
+		makePart(model, "Face", Vector3.new(0.88, 0.72, 0.18), Vector3.new(0, 2.98, -0.78), lightColor, Enum.PartType.Ball)
+		makePart(model, "Beak", Vector3.new(0.2, 0.28, 0.2), Vector3.new(0, 2.82, -0.95), copper, Enum.PartType.Ball)
+		for _, side in { -1, 1 } do
+			makePart(model, "Eye_" .. side, Vector3.new(0.24, 0.24, 0.12), Vector3.new(side * 0.22, 3.06, -0.9), eyeColor, Enum.PartType.Ball)
+			makePart(model, "Wing_" .. side, Vector3.new(0.32, 1.05, 0.72), Vector3.new(side * 0.72, 2.1, 0.12), bodyColor, Enum.PartType.Ball)
+			makePart(model, "EarTuft_" .. side, Vector3.new(0.2, 0.42, 0.22), Vector3.new(side * 0.34, 3.63, -0.18), bodyColor, Enum.PartType.Ball)
+			makePart(model, "Foot_" .. side, Vector3.new(0.2, 0.32, 0.2), Vector3.new(side * 0.25, 1.15, -0.08), copper)
+		end
+	elseif companionId == "horse" then
+		makePart(model, "Body", Vector3.new(1.5, 1.25, 2.35), Vector3.new(0, 2.05, 0.1), bodyColor, Enum.PartType.Ball)
+		makePart(model, "Neck", Vector3.new(0.72, 1.48, 0.78), Vector3.new(0, 2.92, -0.78), bodyColor, Enum.PartType.Ball)
+		head = makePart(model, "Head", Vector3.new(0.72, 0.92, 0.78), Vector3.new(0, 3.48, -1.12), bodyColor, Enum.PartType.Ball)
+		makePart(model, "Muzzle", Vector3.new(0.58, 0.38, 0.55), Vector3.new(0, 3.22, -1.55), lightColor, Enum.PartType.Ball)
+		makePart(model, "Mane", Vector3.new(0.2, 1.22, 0.24), Vector3.new(0, 3.28, -0.86), lightColor)
+		for _, side in { -1, 1 } do
+			makePart(model, "Ear_" .. side, Vector3.new(0.2, 0.48, 0.2), Vector3.new(side * 0.22, 4.02, -1.08), bodyColor, Enum.PartType.Ball)
+			makePart(model, "Eye_" .. side, Vector3.new(0.1, 0.1, 0.08), Vector3.new(side * 0.31, 3.55, -1.43), eyeColor, Enum.PartType.Ball)
+			makePart(model, "LegFront_" .. side, Vector3.new(0.24, 1.15, 0.28), Vector3.new(side * 0.48, 1.25, -0.62), bodyColor)
+			makePart(model, "LegRear_" .. side, Vector3.new(0.28, 1.12, 0.3), Vector3.new(side * 0.48, 1.23, 0.82), bodyColor)
+		end
+	else
+		makePart(model, "Body", Vector3.new(1.12, 0.9, 1.72), Vector3.new(0, 2.05, 0.08), bodyColor, Enum.PartType.Ball)
+		makePart(model, "Chest", Vector3.new(0.78, 0.76, 0.62), Vector3.new(0, 2.12, -0.62), lightColor, Enum.PartType.Ball)
+		head = makePart(model, "Head", Vector3.new(0.78, 0.74, 0.82), Vector3.new(0, 2.78, -0.95), bodyColor, Enum.PartType.Ball)
+		makePart(model, "Muzzle", Vector3.new(0.52, 0.32, 0.55), Vector3.new(0, 2.55, -1.48), lightColor, Enum.PartType.Ball)
+		for _, side in { -1, 1 } do
+			makePart(model, "Ear_" .. side, Vector3.new(0.22, 0.48, 0.22), Vector3.new(side * 0.27, 3.28, -0.83), bodyColor, Enum.PartType.Ball)
+			makePart(model, "Eye_" .. side, Vector3.new(0.1, 0.1, 0.08), Vector3.new(side * 0.26, 2.83, -1.35), eyeColor, Enum.PartType.Ball)
+			makePart(model, "LegFront_" .. side, Vector3.new(0.25, 0.78, 0.28), Vector3.new(side * 0.36, 1.45, -0.48), bodyColor, Enum.PartType.Ball)
+			makePart(model, "LegRear_" .. side, Vector3.new(0.28, 0.82, 0.3), Vector3.new(side * 0.36, 1.42, 0.62), bodyColor, Enum.PartType.Ball)
+		end
+		makePart(model, "Tail", Vector3.new(0.42, 0.5, 0.82), Vector3.new(0, 2.62, 1.42), lightColor, Enum.PartType.Ball)
+	end
+
+	if head ~= nil then
+		local tag = Instance.new("BillboardGui")
+		tag.Name = "CompanionNameplate"
+		tag.Size = UDim2.fromOffset(120, 28)
+		tag.StudsOffset = Vector3.new(0, 1.15, 0)
+		tag.MaxDistance = 45
+		tag.Parent = head
+		local label = Instance.new("TextLabel")
+		label.Name = "Name"
+		label.Size = UDim2.fromScale(1, 1)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.GothamBold
+		label.Text = string.upper(displayName)
+		label.TextColor3 = Color3.fromRGB(255, 224, 177)
+		label.TextStrokeTransparency = 0.35
+		label.TextScaled = true
+		label.Parent = tag
+	end
+
+	model.Parent = getFolder()
+	model:PivotTo(character:GetPivot() * FOLLOW_OFFSET)
+	return model
+end
+
 local function destroyActor(player: Player)
 	local actor = actors[player.UserId]
 	if actor ~= nil then
@@ -308,20 +394,25 @@ end
 function CompanionActorService.RefreshPlayer(player: Player)
 	local character = player.Character
 	local snapshot = PlayerStateService.GetSnapshot(player)
-	if character == nil or snapshot == nil or snapshot.equippedCompanion ~= "ember" then
+	if character == nil or snapshot == nil or typeof(snapshot.equippedCompanion) ~= "string" then
 		destroyActor(player)
 		return
 	end
-
+	local companionId = snapshot.equippedCompanion
 	local current = actors[player.UserId]
-	if current ~= nil and current.character == character and current.model.Parent ~= nil then
+	if current ~= nil and current.character == character and current.model.Parent ~= nil
+		and current.model:GetAttribute("CompanionId") == companionId then
 		return
 	end
-
 	destroyActor(player)
-	local model, animationTracks = createImportedEmber(player, character)
-	if model == nil then
-		model = createEmber(player, character)
+	local model: Model
+	local animationTracks: { [string]: AnimationTrack } = {}
+	if companionId == "ember" then
+		local importedModel, importedTracks = createImportedEmber(player, character)
+		model = importedModel or createEmber(player, character)
+		animationTracks = importedTracks
+	else
+		model = createPlaceholderAnimal(player, character, companionId)
 	end
 	actors[player.UserId] = {
 		model = model,
