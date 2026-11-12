@@ -331,6 +331,7 @@ local savedRecord, savedError = ProfileRecordPolicy.TrySave(
 	130,
 	60,
 	candidateProfile,
+	"save-operation-001",
 	PlayerProfileSchema,
 	CovenantRankCatalog,
 	CompanionCatalog,
@@ -341,6 +342,66 @@ assert(savedRecord ~= nil, "saved record must exist")
 expect(savedRecord.profile.economy.aces == 25, "save persists candidate economy values")
 expect(savedRecord.profile.revision == 1, "successful save increments profile revision")
 expect(acquiredRecord.profile.economy.aces == 0, "save transformation does not mutate stored input")
+-- A retried save reconciles an ambiguous UpdateAsync result without applying twice.
+local replayedRecord, replayError, replayOutcome = ProfileRecordPolicy.TrySave(
+	savedRecord,
+	"server-A",
+	500,
+	60,
+	candidateProfile,
+	"save-operation-001",
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(replayedRecord == savedRecord and replayError == nil, "exact retry returns the already committed record")
+expect(replayOutcome == "AlreadyApplied", "exact retry is classified as already applied")
+expect(replayedRecord ~= nil and replayedRecord.profile.revision == 1, "retry does not increment revision twice")
+
+local reusedOperationCandidate = PlayerProfileSchema.CreateDefault()
+reusedOperationCandidate.economy.aces = 26
+local reusedOperation, reusedOperationError = ProfileRecordPolicy.TrySave(
+	savedRecord,
+	"server-A",
+	140,
+	60,
+	reusedOperationCandidate,
+	"save-operation-001",
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(reusedOperation == nil and reusedOperationError ~= nil, "same operation ID with a different payload is rejected")
+
+local invalidOperation, invalidOperationError = ProfileRecordPolicy.TrySave(
+	savedRecord,
+	"server-A",
+	140,
+	60,
+	candidateProfile,
+	"",
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(invalidOperation == nil and invalidOperationError ~= nil, "empty save operation ID is rejected")
+
+local reacquiredAfterSave, reacquireAfterSaveError = ProfileRecordPolicy.TryAcquire(
+	savedRecord,
+	"server-B",
+	200,
+	60,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	ProfileLeasePolicy
+)
+expect(reacquiredAfterSave ~= nil and reacquireAfterSaveError == nil, "expired saved record can be acquired by a later session")
+expect(reacquiredAfterSave ~= nil and reacquiredAfterSave.lastSaveOperation.id == "save-operation-001", "last save operation marker survives acquisition")
+
 
 local staleCandidate = PlayerProfileSchema.CreateDefault()
 staleCandidate.economy.aces = 999
@@ -350,6 +411,7 @@ local staleSave, staleSaveError = ProfileRecordPolicy.TrySave(
 	140,
 	60,
 	staleCandidate,
+	"save-operation-002",
 	PlayerProfileSchema,
 	CovenantRankCatalog,
 	CompanionCatalog,
@@ -363,6 +425,7 @@ local expiredSave, expiredSaveError = ProfileRecordPolicy.TrySave(
 	190,
 	60,
 	candidateProfile,
+	"save-operation-003",
 	PlayerProfileSchema,
 	CovenantRankCatalog,
 	CompanionCatalog,
@@ -378,6 +441,7 @@ local invalidSave, invalidSaveError = ProfileRecordPolicy.TrySave(
 	150,
 	60,
 	malformedCandidate,
+	"save-operation-invalid",
 	PlayerProfileSchema,
 	CovenantRankCatalog,
 	CompanionCatalog,
@@ -390,6 +454,7 @@ expect(releasedRecord ~= nil and releaseError == nil, "current owner can release
 assert(releasedRecord ~= nil, "released record must exist")
 expect(releasedRecord.lease == nil, "release clears the lease while retaining profile")
 expect(releasedRecord.profile.revision == 1, "release preserves saved revision")
+expect(releasedRecord.lastSaveOperation.id == "save-operation-001", "release preserves save reconciliation marker")
 
 local wrongRelease, wrongReleaseError = ProfileRecordPolicy.TryRelease(savedRecord, "server-B", ProfileLeasePolicy)
 expect(wrongRelease == nil and wrongReleaseError ~= nil, "non-owner cannot release profile record")
