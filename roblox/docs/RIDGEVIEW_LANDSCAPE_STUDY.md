@@ -17,6 +17,7 @@ The scene contains:
 - A small stream surface used only as environmental scenery.
 - A modest lookout platform connected visually to the trail.
 - Lightweight, non-interactive trail posts.
+- An invisible, non-colliding arrival marker at the footpath start, shared by the opening mission's travel and respawn-recovery code.
 
 The builder uses Roblox-native Parts and Models. It introduces no external assets, named residents, mission clues, authored Scout Report evidence, settlements, Covenant facilities, or new story facts.
 
@@ -24,14 +25,14 @@ The builder uses Roblox-native Parts and Models. It introduces no external asset
 
 - This is not a final Ridgeview map layout.
 - The road, stream, woodland and lookout are visual proposals, not established canon.
-- The scene is not connected to mission progression or teleportation.
+- The scene contains no mission logic; its arrival marker is only a stable spatial anchor. The opening mission owns the gated transition and player teleport.
 - No combat, rewards, evidence detection, collection loop, or companion advantage is added.
 - The scene has not been executed or profiled in Roblox Studio.
 
 ## Studio review checklist
 
 1. Confirm the Ridgeview scene appears separately from the Temple prototype.
-2. Inspect road and footpath alignment, lookout access, and collision.
+2. Inspect road and footpath alignment, lookout access, arrival-marker placement, and collision.
 3. Check that hills, trees and outcrops do not create unintended spawn traps.
 4. Inspect draw calls, shadows and frame time on a low/mid-range Android device.
 5. Compare the scene against the approved visual direction before treating any geography as canon.
