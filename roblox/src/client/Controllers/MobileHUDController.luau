@@ -200,7 +200,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 			return
 		end
 		local index = if typeof(snapshot.sequenceIndex) == "number" then math.clamp(math.floor(snapshot.sequenceIndex), 1, 6) else 1
-		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 6"
+		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 4"
 		if typeof(snapshot.objective) == "string" then
 			missionObjective.Text = snapshot.objective
 		end
@@ -219,8 +219,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 
 	local toggle = Instance.new("TextButton")
 	toggle.Name = "EmberToggle"
-	toggle.AnchorPoint = Vector2.new(1, 1)
-	toggle.Position = UDim2.new(1, -16, 1, -18)
+	toggle.AnchorPoint = Vector2.new(1, 0)
+	toggle.Position = UDim2.new(1, -16, 0, 166)
 	toggle.Size = UDim2.fromOffset(112, 46)
 	toggle.BackgroundColor3 = Color3.fromRGB(38, 52, 61)
 	toggle.TextColor3 = Color3.fromRGB(245, 242, 230)
@@ -232,8 +232,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 
 	local panel = Instance.new("Frame")
 	panel.Name = "EmberCommandPanel"
-	panel.AnchorPoint = Vector2.new(1, 1)
-	panel.Position = UDim2.new(1, -16, 1, -74)
+	panel.AnchorPoint = Vector2.new(1, 0)
+	panel.Position = UDim2.new(1, -16, 0, 272)
 	panel.Size = UDim2.fromOffset(184, 294)
 	panel.BackgroundColor3 = Color3.fromRGB(17, 23, 31)
 	panel.BackgroundTransparency = 0.06
@@ -286,13 +286,16 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 
 	toggle.Activated:Connect(function()
 		panel.Visible = not panel.Visible
+		if panel.Visible then
+			companionPanel.Visible = false
+		end
 	end)
 
 	-- This menu is populated from the server-owned snapshot. The server revalidates every request.
 	local companionToggle = Instance.new("TextButton")
 	companionToggle.Name = "CompanionToggle"
-	companionToggle.AnchorPoint = Vector2.new(0, 1)
-	companionToggle.Position = UDim2.new(0, 16, 1, -18)
+	companionToggle.AnchorPoint = Vector2.new(1, 0)
+	companionToggle.Position = UDim2.new(1, -16, 0, 220)
 	companionToggle.Size = UDim2.fromOffset(142, 46)
 	companionToggle.BackgroundColor3 = Color3.fromRGB(38, 52, 61)
 	companionToggle.TextColor3 = Color3.fromRGB(245, 242, 230)
@@ -303,8 +306,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 
 	local companionPanel = Instance.new("Frame")
 	companionPanel.Name = "CompanionSelectionPanel"
-	companionPanel.AnchorPoint = Vector2.new(0, 1)
-	companionPanel.Position = UDim2.new(0, 16, 1, -74)
+	companionPanel.AnchorPoint = Vector2.new(1, 0)
+	companionPanel.Position = UDim2.new(1, -16, 0, 272)
 	companionPanel.Size = UDim2.fromOffset(184, 214)
 	companionPanel.BackgroundColor3 = Color3.fromRGB(17, 23, 31)
 	companionPanel.BackgroundTransparency = 0.06
@@ -369,6 +372,9 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 
 	companionToggle.Activated:Connect(function()
 		companionPanel.Visible = not companionPanel.Visible
+		if companionPanel.Visible then
+			panel.Visible = false
+		end
 	end)
 
 	remotes.MissionStateUpdated.OnClientEvent:Connect(updateMission)
