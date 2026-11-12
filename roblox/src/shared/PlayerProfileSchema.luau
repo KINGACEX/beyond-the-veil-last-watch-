@@ -31,10 +31,15 @@ local function validateStringArray(value: unknown): boolean
 	end
 
 	local count = 0
+	local seen: {[string]: boolean} = {}
 	for key, item in value do
 		if typeof(key) ~= "number" or key < 1 or key % 1 ~= 0 or not isNonEmptyString(item) then
 			return false
 		end
+		if seen[item] then
+			return false
+		end
+		seen[item] = true
 		count += 1
 	end
 
