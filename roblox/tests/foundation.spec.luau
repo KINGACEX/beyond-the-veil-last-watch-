@@ -317,7 +317,8 @@ local occupiedRecord, occupiedError = ProfileRecordPolicy.TryAcquire(
 	"server-B",
 	120,
 	60,
-	PlayerProfileSchema,	CovenantRankCatalog,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
 	CompanionCatalog,
 	ProfileLeasePolicy
 )
