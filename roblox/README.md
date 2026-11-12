@@ -42,13 +42,13 @@ Implemented as source files:
 - validated Ember command requests with a basic per-player request throttle;
 - initial client HUD and command panel;
 - data-driven eight-animal companion catalog with roles, personalities, signature support behaviours and free-equivalent boundaries;
-- server-authoritative, session-only companion selection with a touch selector populated from the server-owned companion list. Initial access is Ember, Fox, Owl and Horse;
+- server-authoritative, session-only companion selection with a touch selector populated from the server-owned companion list. Initial access is Ember, Fox, Owl and Horse; a fail-closed server policy rejects unknown/malformed IDs and blocks all four premium candidates even if a session ownership map is incorrectly marked true;
 - a server-generated Logos Rhema Temple environment visual prototype with sanctuary, foyer, seating, lighting and exterior approach. This is a proposed layout, not canon-locked or Studio-verified;
 - a separate Ridgeview landscape study with layered ridges, woodland, road, footpath, stream and lookout. This is proposed geography only and is not canon-locked or Studio-verified;
-- a pinned Roblox toolchain and GitHub Actions validation workflow for headless Luau tests, formatting, lint and Rojo place builds;
+- a pinned Roblox toolchain and GitHub Actions validation workflow for headless Luau tests, formatting, lint and Rojo place builds (latest confirmed Run #43 passed on 2026-11-12);
 - a server-owned opening-sequence state machine with sanctuary-entry and Scout Report interactions, a live objective HUD and a report viewer that clearly marks mission intelligence as pending. No report evidence is fabricated.
 
-The Temple and Ridgeview environments, Ember follower and opening interactions are source implementations only; they have not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md` and `docs/RIDGEVIEW_LANDSCAPE_STUDY.md` for scope and canon boundaries. CI is configured, but no successful workflow run has yet been confirmed.
+The Temple and Ridgeview environments, Ember follower and opening interactions are source implementations only; they have not been executed in Studio or profiled on Android. See `docs/LOGOS_RHEMA_TEMPLE_VISUAL_PROTOTYPE.md` and `docs/RIDGEVIEW_LANDSCAPE_STUDY.md` for scope and canon boundaries. GitHub Actions Run #43 passed the headless tests, formatting, lint and Rojo place build; this does not establish Roblox runtime playability.
 
 The catalog covers all eight animals. Companion selection now exists for the current session, but ownership is not persistent and premium entitlement verification is not implemented. Eagle, Bear, Leopard and Falcon remain unavailable candidates with no purchase path. Companion models, AI and animations are not implemented. Ember's seven core commands remain available as core functionality; the optional Ember Bond Pack is presentation/bonding only. No product IDs or prices are defined.
 
