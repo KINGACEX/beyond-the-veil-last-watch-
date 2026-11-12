@@ -32,7 +32,7 @@ end
 
 function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, initialMissionState: any)
 	local player = game:GetService("Players").LocalPlayer
-	local touchEnabled = UserInputService.TouchEnabled
+	local touchEnabled = UserInputService.PreferredInput == Enum.PreferredInput.Touch
 	local playerGui = player:WaitForChild("PlayerGui")
 
 	local screenGui = Instance.new("ScreenGui")
@@ -41,6 +41,24 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	screenGui.IgnoreGuiInset = false
 	screenGui.DisplayOrder = 20
 	screenGui.Parent = playerGui
+
+	local uiScale = Instance.new("UIScale")
+	uiScale.Name = "ResponsiveScale"
+	uiScale.Parent = screenGui
+
+	local function getViewportSize(): Vector2
+		local camera = workspace.CurrentCamera
+		return if camera ~= nil then camera.ViewportSize else Vector2.new(1280, 720)
+	end
+
+	local function updateResponsiveScale()
+		local viewport = getViewportSize()
+		uiScale.Scale = math.clamp(math.min(viewport.X / 900, viewport.Y / 650), 0.78, 1.08)
+	end
+	updateResponsiveScale()
+	if workspace.CurrentCamera ~= nil then
+		workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(updateResponsiveScale)
+	end
 
 	local header = Instance.new("Frame")
 	header.Name = "Header"
@@ -90,7 +108,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	local missionCard = Instance.new("Frame")
 	missionCard.Name = "MissionObjectiveCard"
 	missionCard.Position = UDim2.fromOffset(12, 74)
-	missionCard.Size = UDim2.new(1, -24, 0, 78)
+	missionCard.Size = UDim2.fromOffset(math.min(getViewportSize().X - 24, 520), 78)
 	missionCard.BackgroundColor3 = Color3.fromRGB(17, 23, 31)
 	missionCard.BackgroundTransparency = 0.16
 	missionCard.Parent = screenGui
@@ -102,7 +120,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	missionTitle.Position = UDim2.fromOffset(12, 7)
 	missionTitle.Size = UDim2.new(1, -104, 0, 17)
 	missionTitle.Font = Enum.Font.GothamBold
-	missionTitle.Text = "OPENING SEQUENCE  •  1 / 6"
+	missionTitle.Text = "OPENING SEQUENCE  •  1 / 4"
 	missionTitle.TextColor3 = Color3.fromRGB(198, 170, 112)
 	missionTitle.TextSize = 11
 	missionTitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -138,7 +156,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	reportPanel.Name = "ScoutReportPanel"
 	reportPanel.AnchorPoint = Vector2.new(0.5, 0.5)
 	reportPanel.Position = UDim2.fromScale(0.5, 0.5)
-	reportPanel.Size = UDim2.new(1, -40, 0, 210)
+	reportPanel.Size = UDim2.fromOffset(math.min(getViewportSize().X - 40, 460), 210)
 	reportPanel.BackgroundColor3 = Color3.fromRGB(16, 23, 31)
 	reportPanel.BackgroundTransparency = 0.04
 	reportPanel.Visible = false
@@ -252,6 +270,17 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	panel.Visible = false
 	panel.Parent = screenGui
 	makeCorner(panel, 12)
+
+
+	local function updateInputLayout()
+		local touchLayout = UserInputService.PreferredInput == Enum.PreferredInput.Touch
+		toggle.Position = if touchLayout then UDim2.new(0.5, -6, 1, -18) else UDim2.new(1, -16, 1, -18)
+		panel.Position = if touchLayout then UDim2.new(0.5, -6, 1, -74) else UDim2.new(1, -16, 1, -74)
+		companionToggle.Position = if touchLayout then UDim2.new(0.5, 6, 1, -18) else UDim2.new(0, 16, 1, -18)
+		companionPanel.Position = if touchLayout then UDim2.new(0.5, 6, 1, -74) else UDim2.new(0, 16, 1, -74)
+	end
+	UserInputService:GetPropertyChangedSignal("PreferredInput"):Connect(updateInputLayout)
+	updateInputLayout()
 
 	local layout = Instance.new("UIListLayout")
 	layout.Padding = UDim.new(0, 5)
