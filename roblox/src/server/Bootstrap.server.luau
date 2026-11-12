@@ -8,6 +8,7 @@ local GameConfig = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForCh
 local PlayerStateService = require(script.Parent.Services.PlayerStateService)
 local MissionService = require(script.Parent.Services.MissionService)
 local CompanionActorService = require(script.Parent.Services.CompanionActorService)
+local CurrencyService = require(script.Parent.Services.CurrencyService)
 
 local REMOTE_FOLDER_NAME = "BTVRemotes"
 local remoteFolder = ReplicatedStorage:FindFirstChild(REMOTE_FOLDER_NAME)
@@ -59,6 +60,7 @@ end
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(function(player: Player)
 	PlayerStateService.RemovePlayer(player)
+	CurrencyService.RemovePlayer(player)
 	MissionService.RemovePlayer(player)
 	CompanionActorService.RemovePlayer(player)
 	lastCommandAt[player.UserId] = nil
