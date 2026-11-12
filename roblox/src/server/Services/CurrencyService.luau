@@ -11,6 +11,14 @@ local VALID_CURRENCIES = {
 	["Covenant Credits"] = true,
 }
 
+-- Session-level idempotency prevents duplicate server award calls from paying twice.
+-- Durable idempotency must be added with the reviewed persistence/receipt schema.
+local awardedContexts: {[number]: {[string]: boolean}} = {}
+
+function CurrencyService.RemovePlayer(player: Player)
+	awardedContexts[player.UserId] = nil
+end
+
 function CurrencyService.AwardFromServer(
 	player: Player,
 	currency: string,
@@ -25,12 +33,25 @@ function CurrencyService.AwardFromServer(
 		return false, "Award amount must be a positive whole number."
 	end
 
-	if typeof(contextKey) ~= "string" or contextKey == "" then
-		return false, "A server-side award context is required."
+	if typeof(contextKey) ~= "string" or contextKey == "" or #contextKey > 128 then
+		return false, "A valid server-side award context is required."
+	end
+
+	local playerContexts = awardedContexts[player.UserId]
+	if playerContexts == nil then
+		playerContexts = {}
+		awardedContexts[player.UserId] = playerContexts
+	end
+	if playerContexts[contextKey] then
+		return false, "This award context has already been processed."
 	end
 
 	-- Call only from trusted server gameplay services after validating the mission outcome.
-	return PlayerStateService.AdjustCurrency(player, currency, amount)
+	local accepted, reason = PlayerStateService.AdjustCurrency(player, currency, amount)
+	if accepted then
+		playerContexts[contextKey] = true
+	end
+	return accepted, reason
 end
 
 function CurrencyService.GetBalances(player: Player): ({aces: number, covenantCredits: number}?, string?)
