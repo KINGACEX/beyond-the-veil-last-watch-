@@ -46,8 +46,11 @@
 
 ## D. Canon
 
-- [ ] Only Asher Vance is represented as the playable protagonist.
-- [ ] Asher's fixed identity and starting role are not replaced by a character-selection system.
+- [ ] Asher Vance remains the sole Chosen and central protagonist.
+- [ ] Each multiplayer user is represented by an individual Covenant operative identity, not a second Chosen or duplicate Asher.
+- [ ] No shared scene spawns multiple Asher protagonists.
+- [ ] Player session snapshots do not assign every user the `asher_vance` character identity.
+- [ ] Asher's fixed story identity and starting role are not replaced by a character-selection system.
 - [ ] Ember commands match the official list exactly.
 - [ ] No spiritual score, faith currency, prayer points or divine-favour meter exists.
 - [ ] Communion does not change health, stats, XP, equipment or currency.
@@ -80,6 +83,9 @@
 ## F1. Ember follower visual prototype
 
 - [ ] Ember appears for a player whose equipped companion is Ember.
+- [ ] Fox, Owl and Horse each spawn a species-labelled placeholder actor when selected, rather than leaving the player without an actor.
+- [ ] Each placeholder actor follows only its owning player and is cleaned up on reselection, respawn and disconnect.
+- [ ] Placeholder actors are labelled as temporary blockouts and grant no species ability or gameplay advantage.
 - [ ] Ember follows at a stable trailing offset without obstructing the player.
 - [ ] Ember remains available after character respawn.
 - [ ] Selecting another owned companion removes the Ember actor; selecting Ember again restores it.
@@ -115,6 +121,9 @@
 - [ ] Ridgeview arrival advances only the interacting player's mission state and updates only that player's HUD.
 - [ ] Out-of-order, repeated, remote, and malformed interaction attempts cannot advance mission state.
 - [ ] Mission objective HUD updates only from server-confirmed state.
+- [ ] The implemented mission HUD displays four states, not an unimplemented six-state total.
+- [ ] After Scout Report access, the objective explicitly directs the player to Ridgeview.
+- [ ] The Ridgeview departure point has a visible, labelled waypoint as well as a server-validated proximity prompt.
 - [ ] Scout Report viewer opens after server-confirmed report access, can be closed and reopened, and explicitly shows authored evidence is pending.
 - [ ] No fabricated clues, NPC dialogue, rewards or mission outcomes are presented.
 - [ ] No spiritual score, faith currency, Communion buff, or automatic mission reward is created.
