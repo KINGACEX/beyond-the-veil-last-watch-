@@ -85,6 +85,7 @@ for _, definition in marks do
 		end
 		local accepted, snapshot = ArchiveService.Collect(player, definition.id)
 		if accepted and snapshot ~= nil then
+			player:SetAttribute("BTVArchiveHint", nil)
 			player:SetAttribute("BTVCurioMarks", snapshot.collectedCount)
 			player:SetAttribute("BTVArchiveUnlocked", snapshot.unlocked)
 		end
