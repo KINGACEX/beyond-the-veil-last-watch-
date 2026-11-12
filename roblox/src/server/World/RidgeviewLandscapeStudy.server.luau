@@ -262,7 +262,8 @@ for index, offset in treePositions do
 		tree,
 		"Trunk",
 		Vector3.new(2.1, height, 2.1),
-		CFrame.new(base + Vector3.new(0, height / 2, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		-- Roblox cylinder parts use their local Y axis as the long axis; keep the trunk upright.
+		CFrame.new(base + Vector3.new(0, height / 2, 0)),
 		bark,
 		Enum.Material.Wood
 	)
