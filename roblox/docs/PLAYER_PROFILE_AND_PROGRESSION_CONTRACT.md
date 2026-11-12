@@ -128,14 +128,14 @@ The pure policies above are necessary but are not a persistence adapter. The ada
 - Perform acquisition, save and release through atomic `UpdateAsync` transformations. The transformation callback must remain deterministic, non-yielding and free of external side effects because Roblox may invoke it more than once.
 - Treat lease contention, malformed stored data, unsupported schema and revision conflict as terminal domain outcomes, not transient service errors.
 - Retry only errors classified as transient, with a bounded attempt count, exponential backoff and jitter. Do not retry every error indiscriminately.
-- Resolve ambiguous write outcomes before retrying a save. An `UpdateAsync` call can fail at the client boundary after a server-side write may have committed; retrying the same revision blindly can misreport a successful save as a conflict. The record policy currently has no durable operation identifier for save reconciliation, so this must be designed and tested before automatic save retries are enabled.
+- Resolve ambiguous write outcomes with a durable save-operation marker. Each save must carry a unique operation ID bound to one immutable candidate snapshot and base revision. The atomic record stores the operation ID, owner token, base revision and resulting revision alongside the profile. A retry is `AlreadyApplied` only when the operation ID, owner, revisions and complete resulting profile match; reuse with a different payload is rejected. Preserve this marker through lease acquisition and release, and fail closed on malformed marker metadata. The caller must serialize saves per profile and must not issue a later save while an earlier result is unresolved.
 - Renew a lease comfortably before expiry. A server that cannot renew must stop accepting new authoritative profile mutations and must not overwrite a newer owner's record.
 - Do not create a fresh default profile after a load/acquisition failure. A player must not enter a writable session unless the profile was acquired successfully.
 - On departure, save the latest valid snapshot before releasing the lease. If saving fails, do not claim the profile was saved; release behavior must not erase or replace the stored profile. Shutdown handling must use bounded work and must not depend on an unbounded wait.
 - Use an injectable fake DataStore for deterministic tests of callback retries, contention, service errors, ambiguous outcomes, save ordering and release ownership. Then run Roblox Studio multi-server tests before enabling the adapter in production.
 - Keep the adapter disconnected from live player joins until the above checks pass. The current in-memory service remains the active implementation.
 
-**Current blocker:** the pure record policy does not yet include durable save-operation idempotency/reconciliation. Therefore, a production adapter with automatic save retries is not approved by this contract.
+**Current status:** the pure record policy now includes save-operation idempotency/reconciliation metadata and exact-payload matching. This is policy-level logic only; no DataStore adapter, transient-error retry loop, pending-save journal or runtime integration exists yet. A production adapter with automatic save retries remains blocked until fake-adapter tests and Roblox Studio multi-server tests pass.
 
 ## 10. Cross-platform invariant
 
