@@ -317,8 +317,7 @@ local occupiedRecord, occupiedError = ProfileRecordPolicy.TryAcquire(
 	"server-B",
 	120,
 	60,
-	PlayerProfileSchema,
-	CovenantRankCatalog,
+	PlayerProfileSchema,	CovenantRankCatalog,
 	CompanionCatalog,
 	ProfileLeasePolicy
 )
@@ -575,3 +574,26 @@ expect(unavailableResult == nil and unavailableError == "simulated temporary ser
 expect(ambiguousStore.callbackCallCount == callbackCountBeforeFailure, "pre-callback failure does not execute transformation")
 
 print("[BTV tests] Fake profile storage and ambiguous-write scenarios passed.")
+
+// Fake store isolation: callers cannot mutate durable records through aliases,
+// and a cancelled transform cannot alter the stored value.
+local isolationStore = FakeProfileStore.new()
+local seedRecord = {
+	profile = PlayerProfileSchema.CreateDefault(),
+	lease = { ownerToken = "server-isolation", expiresAt = 999 },
+}
+isolationStore:Set(profileKey, seedRecord)
+seedRecord.profile.economy.aces = 777
+local isolatedRead = isolationStore:Get(profileKey)
+expect(isolatedRead.profile.economy.aces == 0, "Set stores a defensive copy of the supplied record")
+isolatedRead.profile.economy.aces = 888
+expect(isolationStore:Get(profileKey).profile.economy.aces == 0, "Get returns a defensive copy of the stored record")
+
+local cancelledResult, cancelledError = isolationStore:UpdateAsync(profileKey, function(existing)
+	existing.profile.economy.aces = 999
+	return nil
+end)
+expect(cancelledResult == nil and cancelledError == nil, "nil transform result cancels the fake update")
+expect(isolationStore:Get(profileKey).profile.economy.aces == 0, "cancelled transform cannot mutate stored data through its callback input")
+
+print("[BTV tests] Fake store defensive-copy guarantees passed.")
