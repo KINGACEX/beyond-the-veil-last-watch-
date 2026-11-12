@@ -342,11 +342,7 @@ local function updateAnimation(actor: ActorRecord, root: BasePart, now: number)
 	end
 
 	local horizontalVelocity = Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z)
-	local desiredAnimation = if now < actor.acknowledgementUntil
-		then "Alert_Acknowledge"
-		elseif horizontalVelocity.Magnitude > 1.15
-		then "Walk_Cycle"
-		else "Idle_Breathing"
+	local desiredAnimation = if now < actor.acknowledgementUntil then "Alert_Acknowledge" elseif horizontalVelocity.Magnitude > 1.15 then "Walk_Cycle" else "Idle_Breathing"
 	if desiredAnimation == actor.activeAnimation then
 		return
 	end
