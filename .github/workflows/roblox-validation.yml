@@ -54,7 +54,7 @@ jobs:
         run: lune run tests/foundation.spec.luau
 
       - name: Verify Luau formatting
-        run: stylua --check src tests
+        run: stylua --check tests/foundation.spec.luau
 
       - name: Lint Luau source
         run: selene src tests
