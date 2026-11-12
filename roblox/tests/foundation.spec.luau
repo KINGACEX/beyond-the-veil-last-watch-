@@ -5,6 +5,7 @@
 local MissionService = require("../src/server/Services/MissionService")
 local CompanionCatalog = require("../src/shared/CompanionCatalog")
 local CompanionOwnershipPolicy = require("../src/server/Services/CompanionOwnershipPolicy")
+local CompanionRigContract = require("../src/shared/CompanionRigContract")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -85,6 +86,20 @@ for name, companion in CompanionCatalog do
 		expect(firstSessionOwnership[freeEquivalent.Id] == true, name .. " free equivalent is initially available")
 	end
 end
+
+-- Ember's imported rig contract is explicit and presentation-only.
+expect(CompanionRigContract.AssetFolderName == "BTVAssets", "Ember asset folder is server-owned")
+expect(CompanionRigContract.CompanionFolderName == "Companions", "Ember asset folder is separated by companion")
+expect(CompanionRigContract.ModelName == "Ember", "Ember model has a stable import name")
+expect(CompanionRigContract.RootPartName == "CompanionRoot", "Ember rig root contract is explicit")
+expect(#CompanionRigContract.RequiredAnimations == 3, "Ember rig requires three presentation clips")
+expect(CompanionRigContract.RequiredAnimations[1] == "Idle_Breathing", "Ember idle clip is named")
+expect(CompanionRigContract.RequiredAnimations[2] == "Walk_Cycle", "Ember walk clip is named")
+expect(CompanionRigContract.RequiredAnimations[3] == "Alert_Acknowledge", "Ember acknowledgement clip is named")
+expect(CompanionRigContract.AnimationSettings.Idle_Breathing.Looped, "Ember idle loops")
+expect(CompanionRigContract.AnimationSettings.Walk_Cycle.Looped, "Ember walk loops")
+expect(not CompanionRigContract.AnimationSettings.Alert_Acknowledge.Looped, "Ember acknowledgement is a one-shot presentation")
+expect(CompanionRigContract.AnimationSettings.Alert_Acknowledge.Priority == "Action", "Ember acknowledgement has action presentation priority")
 
 -- Ember's seven commands are available only while Ember is the equipped companion.
 local canUseEmber, emberReason = CompanionOwnershipPolicy.CanUseEmberCommands("ember")
