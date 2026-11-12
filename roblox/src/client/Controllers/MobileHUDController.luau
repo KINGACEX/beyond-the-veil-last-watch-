@@ -272,16 +272,6 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	makeCorner(panel, 12)
 
 
-	local function updateInputLayout()
-		local touchLayout = UserInputService.PreferredInput == Enum.PreferredInput.Touch
-		toggle.Position = if touchLayout then UDim2.new(0.5, -6, 1, -18) else UDim2.new(1, -16, 1, -18)
-		panel.Position = if touchLayout then UDim2.new(0.5, -6, 1, -74) else UDim2.new(1, -16, 1, -74)
-		companionToggle.Position = if touchLayout then UDim2.new(0.5, 6, 1, -18) else UDim2.new(0, 16, 1, -18)
-		companionPanel.Position = if touchLayout then UDim2.new(0.5, 6, 1, -74) else UDim2.new(0, 16, 1, -74)
-	end
-	UserInputService:GetPropertyChangedSignal("PreferredInput"):Connect(updateInputLayout)
-	updateInputLayout()
-
 	local layout = Instance.new("UIListLayout")
 	layout.Padding = UDim.new(0, 5)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -352,6 +342,17 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	companionPanel.Visible = false
 	companionPanel.Parent = screenGui
 	makeCorner(companionPanel, 12)
+
+
+	local function updateInputLayout()
+		local touchLayout = UserInputService.PreferredInput == Enum.PreferredInput.Touch
+		toggle.Position = if touchLayout then UDim2.new(0.5, -6, 1, -18) else UDim2.new(1, -16, 1, -18)
+		panel.Position = if touchLayout then UDim2.new(0.5, -6, 1, -74) else UDim2.new(1, -16, 1, -74)
+		companionToggle.Position = if touchLayout then UDim2.new(0.5, 6, 1, -18) else UDim2.new(0, 16, 1, -18)
+		companionPanel.Position = if touchLayout then UDim2.new(0.5, 6, 1, -74) else UDim2.new(0, 16, 1, -74)
+	end
+	UserInputService:GetPropertyChangedSignal("PreferredInput"):Connect(updateInputLayout)
+	updateInputLayout()
 
 	local companionLayout = Instance.new("UIListLayout")
 	companionLayout.Padding = UDim.new(0, 5)
