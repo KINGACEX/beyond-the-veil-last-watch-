@@ -13,7 +13,7 @@
 5. **Evidence review** — UI currently states that authored evidence is pending. No evidence, named NPC, dialogue, suspect, threat, confidence score or outcome is invented.
 6. **Travel to Ridgeview** — after report access, a server-validated departure prompt moves the player to the provisional Ridgeview footpath and advances the session to the Ridgeview-arrival phase. The report panel closes on arrival; its reopen control remains available.
 
-The next approved sequence stages—journey to Ridgeview, investigation/response and final report—remain visible in the source-of-truth opening sequence but are not falsely marked implemented here.
+Ridgeview arrival is now connected as a provisional same-place transition. The Ridgeview investigation/response and final report stages remain unimplemented pending canon-approved authored content.
 
 ## Technical architecture
 
@@ -49,10 +49,11 @@ No client remote can directly set a mission phase or award rewards.
 ## Current verification
 
 - Repository implementation and read-back: VERIFIED.
-- Headless Luau foundation regression suite: PASS (GitHub Actions Run #32).
-- StyLua format check: PASS (Run #32).
-- Selene lint: PASS with zero warnings/errors (Run #32).
-- Rojo build: PASS; place artifact uploaded (Run #32).
+- Headless Luau mission, roster and companion ownership regression suite: PASS (GitHub Actions Run #43).
+- Companion ownership policy: PASS for four default-owned animals, malformed/unknown rejection, premium fail-closed behaviour and per-session isolation (Run #43).
+- StyLua format check: PASS (Run #43).
+- Selene lint: PASS with zero warnings/errors (Run #43).
+- Rojo build: PASS; place artifact uploaded (Run #43).
 - Roblox Studio play test: NOT RUN.
 - Two-player server test: NOT RUN.
 - Android test: NOT RUN.
