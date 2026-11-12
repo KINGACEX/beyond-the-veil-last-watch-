@@ -1,0 +1,33 @@
+# StyLua formatting audit — pinned version 2.5.2
+
+```
+$ stylua --version
+stylua 2.5.2
+$ stylua --check src/server/Services/MissionService.luau src/server/Services/CompanionActorService.luau src/server/Bootstrap.server.luau src/server/World/OpeningMission.server.luau src/client/Controllers/MobileHUDController.luau tests/foundation.spec.luau
+(no diff — the six files gated by CI pass)
+
+$ stylua --check src tests      # every file, not just the six the CI workflow names
+  Diff in src/server/Services/CompanionOwnershipPolicy.luau:
+  Diff in src/server/Services/CurrencyService.luau:
+  Diff in src/server/Services/PlayerStateService.luau:
+  Diff in src/server/World/CuriosityArchive.server.luau:
+  Diff in src/server/World/LogosRhemaTemplePrototype.server.luau:
+  Diff in src/server/World/RidgeviewLandscapeStudy.server.luau:
+  Diff in src/shared/CompanionCatalog.luau:
+```
+
+**Result:** the six files named in `.github/workflows/roblox-validation.yml` pass.
+Seven further files fail the same check, and none of them is gated:
+
+| File | Gated by CI format step |
+|---|---|
+| `src/server/Services/CompanionOwnershipPolicy.luau` | no |
+| `src/server/Services/CurrencyService.luau` | no |
+| `src/server/Services/PlayerStateService.luau` | no |
+| `src/server/World/CuriosityArchive.server.luau` | no |
+| `src/server/World/LogosRhemaTemplePrototype.server.luau` | no |
+| `src/server/World/RidgeviewLandscapeStudy.server.luau` | no |
+| `src/shared/CompanionCatalog.luau` | no |
+
+Widening the CI gate to `src tests` therefore fails on the current tree.
+This is **evidence only** — no file was reformatted.
