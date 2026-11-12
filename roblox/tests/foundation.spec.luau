@@ -11,6 +11,7 @@ local CovenantRankCatalog = require("../src/shared/CovenantRankCatalog")
 local PlayerProfileSchema = require("../src/shared/PlayerProfileSchema")
 local ProfileLeasePolicy = require("../src/shared/ProfileLeasePolicy")
 local ProfileRecordPolicy = require("../src/shared/ProfileRecordPolicy")
+local FakeProfileStore = require("./support/FakeProfileStore")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -486,3 +487,91 @@ local malformedSaveMarker, malformedSaveMarkerError = ProfileRecordPolicy.TryAcq
 )
 expect(malformedSaveMarker == nil and malformedSaveMarkerError ~= nil, "malformed save-operation marker fails closed")
 print("[BTV tests] Profile record policy rules passed.")
+
+
+-- Fake storage exercises UpdateAsync callback replay and ambiguous write outcomes.
+local fakeStore = FakeProfileStore.new()
+local profileKey = "player:901001"
+fakeStore:QueueCallbackReplay(profileKey, acquiredRecord)
+local replayedAcquire, replayedAcquireError = fakeStore:UpdateAsync(profileKey, function(existing)
+	local nextRecord, policyError = ProfileRecordPolicy.TryAcquire(
+		existing,
+		"server-B",
+		120,
+		60,
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		CompanionCatalog,
+		ProfileLeasePolicy
+	)
+	if policyError ~= nil then
+		return nil
+	end
+	return nextRecord
+end)
+expect(replayedAcquire == nil and replayedAcquireError == nil, "callback replay observes a competing active lease")
+expect(fakeStore.callbackCallCount == 2, "fake store invokes UpdateAsync transformation again after a competing write")
+local competingStoredRecord = fakeStore:Get(profileKey)
+expect(competingStoredRecord ~= nil and competingStoredRecord.lease.ownerToken == "server-A", "callback replay preserves the competing server's record")
+
+local ambiguousStore = FakeProfileStore.new()
+ambiguousStore:Set(profileKey, acquiredRecord)
+ambiguousStore:QueueFailure("AfterCommit", "simulated response loss after durable commit")
+local firstAmbiguousOutcome = nil
+local ambiguousResult, ambiguousError = ambiguousStore:UpdateAsync(profileKey, function(existing)
+	local nextRecord, policyError, outcome = ProfileRecordPolicy.TrySave(
+		existing,
+		"server-A",
+		130,
+		60,
+		candidateProfile,
+		"save-operation-ambiguous",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		CompanionCatalog,
+		ProfileLeasePolicy
+	)
+	firstAmbiguousOutcome = outcome
+	if policyError ~= nil then
+		return nil
+	end
+	return nextRecord
+end)
+expect(ambiguousResult == nil and ambiguousError == "simulated response loss after durable commit", "fake store can simulate an ambiguous committed write")
+expect(firstAmbiguousOutcome == "Saved", "first ambiguous attempt computed a normal save")
+local committedAfterLostResponse = ambiguousStore:Get(profileKey)
+expect(committedAfterLostResponse ~= nil and committedAfterLostResponse.profile.revision == 1, "ambiguous write remains committed in fake storage")
+
+local retryOutcome = nil
+local reconciledResult, reconciledError = ambiguousStore:UpdateAsync(profileKey, function(existing)
+	local nextRecord, policyError, outcome = ProfileRecordPolicy.TrySave(
+		existing,
+		"server-A",
+		500,
+		60,
+		candidateProfile,
+		"save-operation-ambiguous",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		CompanionCatalog,
+		ProfileLeasePolicy
+	)
+	retryOutcome = outcome
+	if policyError ~= nil then
+		return nil
+	end
+	return nextRecord
+end)
+expect(reconciledError == nil and reconciledResult ~= nil, "retry reconciles a committed save after response loss")
+expect(retryOutcome == "AlreadyApplied", "ambiguous retry is identified as already applied")
+expect(reconciledResult ~= nil and reconciledResult.profile.revision == 1, "ambiguous retry does not double-increment profile revision")
+
+local callbackCountBeforeFailure = ambiguousStore.callbackCallCount
+ambiguousStore:QueueFailure("BeforeCallback", "simulated temporary service failure")
+local unavailableResult, unavailableError = ambiguousStore:UpdateAsync(profileKey, function(existing)
+	return existing
+end)
+expect(unavailableResult == nil and unavailableError == "simulated temporary service failure", "fake store can fail before invoking the callback")
+expect(ambiguousStore.callbackCallCount == callbackCountBeforeFailure, "pre-callback failure does not execute transformation")
+
+print("[BTV tests] Fake profile storage and ambiguous-write scenarios passed.")
