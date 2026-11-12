@@ -202,7 +202,7 @@ The server loads the three clips, starts idle, switches between idle and walk us
 
 A private Blendstra project named **BTV Roblox — Ember Technical Rig Prototype** was inspected read-only:
 
-- [Open exact prototype version](https://blendstra.com/studio?project=b0f678ff-c3cf-4848-bc69-071153712baf&version=version_98dd979755d97fdfa22a037c7d92588e6cb77172fdb087b085b4271e13509adf)
+- [Open exact prototype version](https://blendstra.com/studio?workspace=wsp_eb50fef55b992e1938b3c1c3483498a40f6f06c8&project=b0f678ff-c3cf-4848-bc69-071153712baf&version=version_98dd979755d97fdfa22a037c7d92588e6cb77172fdb087b085b4271e13509adf)
 - Source contains a 14-bone armature and 30 separately named mesh parts.
 - Blender source defines `Idle_Breathing`, `Walk_Cycle`, and `Alert_Acknowledge` actions (24 frames per action).
 - The saved web preview reports one `Scene` animation clip of 3 seconds. Separate clip export and Roblox animation asset mapping are therefore **not verified**.
