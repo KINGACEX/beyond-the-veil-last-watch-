@@ -28,6 +28,7 @@ end
 
 local fieldNoteRecorded = getOrCreateRemote("RemoteEvent", "FieldNoteRecorded") :: RemoteEvent
 local getFieldNotes = getOrCreateRemote("RemoteFunction", "GetFieldNotes") :: RemoteFunction
+local missionStateUpdated = getOrCreateRemote("RemoteEvent", "MissionStateUpdated") :: RemoteEvent
 
 local journals: {[number]: FieldNotePolicy.Journal} = {}
 local lastRecordAt: {[number]: number} = {}
@@ -56,7 +57,7 @@ local function recordObservation(player: Player, noteId: string, anchor: BasePar
 	end
 
 	local mission = MissionService.GetSnapshot(player)
-	if mission == nil or mission.phase ~= "ridgeview_arrival" then
+	if mission == nil or (mission.phase ~= "ridgeview_arrival" and mission.phase ~= "ridgeview_investigation") then
 		return
 	end
 
@@ -77,6 +78,13 @@ local function recordObservation(player: Player, noteId: string, anchor: BasePar
 
 	journals[player.UserId] = updated
 	fieldNoteRecorded:FireClient(player, FieldNotePolicy.Snapshot(updated, FieldNoteCatalog))
+
+	if mission.phase == "ridgeview_arrival" then
+		local advanced, snapshot = MissionService.Advance(player, "ridgeview_arrival", "ridgeview_investigation")
+		if advanced and snapshot ~= nil then
+			missionStateUpdated:FireClient(player, snapshot)
+		end
+	end
 end
 
 local world = Workspace:WaitForChild("BTV_World")
