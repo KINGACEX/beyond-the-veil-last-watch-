@@ -84,6 +84,16 @@ function ConstructionPlacementPolicy.ValidateParcel(parcel: unknown, moduleCatal
 	local current = parcel :: any
 	local seenIds: {[string]: boolean} = {}
 	local moduleCounts: {[string]: number} = {}
+	local objectCount = 0
+	for key, object in current.objects do
+		if typeof(key) ~= "number" or key < 1 or key % 1 ~= 0 or typeof(object) ~= "table" then
+			return false, "Parcel construction object list is malformed."
+		end
+		objectCount += 1
+	end
+	if objectCount ~= #current.objects then
+		return false, "Parcel construction object list must be a dense array."
+	end
 
 	for index, object in current.objects do
 		if typeof(index) ~= "number" or index < 1 or index % 1 ~= 0 or typeof(object) ~= "table" then
