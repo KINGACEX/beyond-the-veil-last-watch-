@@ -162,8 +162,8 @@ if existingProps == nil then
 	local vehicleBody = makePart(
 		props,
 		"ParkedWorkVehicleBody",
-		Vector3.new(7, 1.8, 11),
-		vehicleFrame * CFrame.new(0, 1.1, 0),
+		Vector3.new(7, 0.5, 11),
+		vehicleFrame * CFrame.new(0, 0.65, 0),
 		Color3.fromRGB(73, 91, 83),
 		Enum.Material.Metal
 	)
@@ -171,7 +171,7 @@ if existingProps == nil then
 		props,
 		"ParkedWorkVehicleCab",
 		Vector3.new(5.8, 2.2, 4.2),
-		vehicleFrame * CFrame.new(0, 3.0, -1.4),
+		vehicleFrame * CFrame.new(0, 2.0, -1.4),
 		Color3.fromRGB(91, 112, 106),
 		Enum.Material.Metal,
 		false
@@ -180,7 +180,7 @@ if existingProps == nil then
 		props,
 		"VisibleToolkit",
 		Vector3.new(2.1, 0.65, 1.1),
-		vehicleFrame * CFrame.new(0, 2.35, 3.2),
+		vehicleFrame * CFrame.new(0, 1.25, 3.2),
 		Color3.fromRGB(128, 91, 53),
 		Enum.Material.Metal,
 		false
