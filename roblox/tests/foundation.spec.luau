@@ -1100,199 +1100,69 @@ do
 	local invalidClaim, invalidClaimError = PropertyPolicy.TryClaim(emptyParcel, 0)
 	expect(invalidClaim == nil and invalidClaimError ~= nil, "parcel claim rejects invalid user IDs")
 
-	local wrongOwnerPlacement, wrongOwnerPlacementError = ConstructionPlacementPolicy.TryPlace(
-		claimedParcel,
-		901005,
-		1,
-		"foundation_tile",
-		"foundation-wrong-owner",
-		0,
-		0,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local wrongOwnerPlacement, wrongOwnerPlacementError =
+		ConstructionPlacementPolicy.TryPlace(claimedParcel,, 901005,, 1,, "foundation_tile",, "foundation-wrong-owner",, 0,, 0,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(wrongOwnerPlacement == nil and wrongOwnerPlacementError ~= nil, "non-owner cannot place construction modules")
 
-	local foundationParcel, foundationError = ConstructionPlacementPolicy.TryPlace(
-		claimedParcel,
-		901004,
-		1,
-		"foundation_tile",
-		"foundation-001",
-		0,
-		0,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local foundationParcel, foundationError =
+		ConstructionPlacementPolicy.TryPlace(claimedParcel,, 901004,, 1,, "foundation_tile",, "foundation-001",, 0,, 0,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(foundationParcel ~= nil and foundationError == nil, "approved foundation module can be placed")
 	assert(foundationParcel ~= nil, "foundation parcel must exist")
 	expect(foundationParcel.revision == 2 and #foundationParcel.objects == 1, "placement increments revision and records one module")
 
-	local wallParcel, wallError = ConstructionPlacementPolicy.TryPlace(
-		foundationParcel,
-		901004,
-		2,
-		"wall_panel",
-		"wall-001",
-		0,
-		0,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local wallParcel, wallError =
+		ConstructionPlacementPolicy.TryPlace(foundationParcel,, 901004,, 2,, "wall_panel",, "wall-001",, 0,, 0,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(wallParcel ~= nil and wallError == nil, "wall module can be placed over supporting foundation")
 	assert(wallParcel ~= nil, "wall parcel must exist")
 
-	local roofParcel, roofError = ConstructionPlacementPolicy.TryPlace(
-		wallParcel,
-		901004,
-		3,
-		"roof_panel",
-		"roof-001",
-		0,
-		0,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local roofParcel, roofError =
+		ConstructionPlacementPolicy.TryPlace(wallParcel,, 901004,, 3,, "roof_panel",, "roof-001",, 0,, 0,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(roofParcel ~= nil and roofError == nil, "roof module can be placed over supporting wall")
 	assert(roofParcel ~= nil, "roof parcel must exist")
 
-	local chairParcel, chairError = ConstructionPlacementPolicy.TryPlace(
-		roofParcel,
-		901004,
-		4,
-		"chair",
-		"chair-001",
-		0,
-		0,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local chairParcel, chairError =
+		ConstructionPlacementPolicy.TryPlace(roofParcel,, 901004,, 4,, "chair",, "chair-001",, 0,, 0,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(chairParcel ~= nil and chairError == nil, "furniture module can be placed over foundation")
 	assert(chairParcel ~= nil, "chair parcel must exist")
 
-	local overlapPlacement, overlapError = ConstructionPlacementPolicy.TryPlace(
-		chairParcel,
-		901004,
-		5,
-		"wall_panel",
-		"wall-overlap",
-		1,
-		0,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local overlapPlacement, overlapError =
+		ConstructionPlacementPolicy.TryPlace(chairParcel,, 901004,, 5,, "wall_panel",, "wall-overlap",, 1,, 0,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(overlapPlacement == nil and overlapError ~= nil, "overlapping modules on the same layer are rejected")
 
-	local unsupportedPlacement, unsupportedError = ConstructionPlacementPolicy.TryPlace(
-		chairParcel,
-		901004,
-		5,
-		"wall_panel",
-		"wall-floating",
-		4,
-		0,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local unsupportedPlacement, unsupportedError =
+		ConstructionPlacementPolicy.TryPlace(chairParcel,, 901004,, 5,, "wall_panel",, "wall-floating",, 4,, 0,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(unsupportedPlacement == nil and unsupportedError ~= nil, "unsupported wall placement is rejected")
 
-	local outOfBoundsPlacement, outOfBoundsError = ConstructionPlacementPolicy.TryPlace(
-		chairParcel,
-		901004,
-		5,
-		"wall_panel",
-		"wall-outside",
-		11,
-		11,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local outOfBoundsPlacement, outOfBoundsError =
+		ConstructionPlacementPolicy.TryPlace(chairParcel,, 901004,, 5,, "wall_panel",, "wall-outside",, 11,, 11,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(outOfBoundsPlacement == nil and outOfBoundsError ~= nil, "placement beyond parcel bounds is rejected")
 
-	local duplicateObjectId, duplicateObjectIdError = ConstructionPlacementPolicy.TryPlace(
-		chairParcel,
-		901004,
-		5,
-		"chair",
-		"chair-001",
-		2,
-		2,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local duplicateObjectId, duplicateObjectIdError =
+		ConstructionPlacementPolicy.TryPlace(chairParcel,, 901004,, 5,, "chair",, "chair-001",, 2,, 2,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(duplicateObjectId == nil and duplicateObjectIdError ~= nil, "duplicate construction object IDs are rejected")
 
-	local stalePlacement, stalePlacementError = ConstructionPlacementPolicy.TryPlace(
-		chairParcel,
-		901004,
-		4,
-		"chair",
-		"chair-stale",
-		2,
-		2,
-		0,
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local stalePlacement, stalePlacementError =
+		ConstructionPlacementPolicy.TryPlace(chairParcel,, 901004,, 4,, "chair",, "chair-stale",, 2,, 2,, 0,, BuildModuleCatalog,, PropertyPolicy)
 	expect(stalePlacement == nil and stalePlacementError ~= nil, "stale parcel revisions cannot place modules")
 
-	local removeSupport, removeSupportError = ConstructionPlacementPolicy.TryRemove(
-		chairParcel,
-		901004,
-		5,
-		"foundation-001",
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local removeSupport, removeSupportError =
+		ConstructionPlacementPolicy.TryRemove(chairParcel,, 901004,, 5,, "foundation-001",, BuildModuleCatalog,, PropertyPolicy)
 	expect(removeSupport == nil and removeSupportError ~= nil, "supporting foundation cannot be removed while dependent modules remain")
 
-	local removedChair, removeChairError = ConstructionPlacementPolicy.TryRemove(
-		chairParcel,
-		901004,
-		5,
-		"chair-001",
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local removedChair, removeChairError =
+		ConstructionPlacementPolicy.TryRemove(chairParcel,, 901004,, 5,, "chair-001",, BuildModuleCatalog,, PropertyPolicy)
 	expect(removedChair ~= nil and removeChairError == nil, "owner can remove an unreferenced furniture module")
 	assert(removedChair ~= nil, "parcel after chair removal must exist")
-	local removedRoof, removeRoofError = ConstructionPlacementPolicy.TryRemove(
-		removedChair,
-		901004,
-		6,
-		"roof-001",
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local removedRoof, removeRoofError =
+		ConstructionPlacementPolicy.TryRemove(removedChair,, 901004,, 6,, "roof-001",, BuildModuleCatalog,, PropertyPolicy)
 	expect(removedRoof ~= nil and removeRoofError == nil, "owner can remove the roof before its supporting wall")
 	assert(removedRoof ~= nil, "parcel after roof removal must exist")
-	local removedWall, removeWallError = ConstructionPlacementPolicy.TryRemove(
-		removedRoof,
-		901004,
-		7,
-		"wall-001",
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local removedWall, removeWallError =
+		ConstructionPlacementPolicy.TryRemove(removedRoof,, 901004,, 7,, "wall-001",, BuildModuleCatalog,, PropertyPolicy)
 	expect(removedWall ~= nil and removeWallError == nil, "owner can remove wall after roof")
 	assert(removedWall ~= nil, "parcel after wall removal must exist")
-	local removedFoundation, removeFoundationError = ConstructionPlacementPolicy.TryRemove(
-		removedWall,
-		901004,
-		8,
-		"foundation-001",
-		BuildModuleCatalog,
-		PropertyPolicy
-	)
+	local removedFoundation, removeFoundationError =
+		ConstructionPlacementPolicy.TryRemove(removedWall,, 901004,, 8,, "foundation-001",, BuildModuleCatalog,, PropertyPolicy)
 	expect(removedFoundation ~= nil and removeFoundationError == nil, "owner can clear the final foundation")
 	assert(removedFoundation ~= nil, "empty claimed parcel must exist")
 
