@@ -281,7 +281,7 @@ material_override = SubResource("Material_Gold")
 position = Vector3(0, 0, 27)
 
 [node name="ReceptionNpcAnchor" type="Marker3D" parent="HQBuilding/Markers"]
-position = Vector3(0, 0, 6)
+position = Vector3(4.5, 0, 6)
 
 [node name="OperationsBriefingAnchor" type="Marker3D" parent="HQBuilding/Markers"]
 position = Vector3(-10, 0, -2)
