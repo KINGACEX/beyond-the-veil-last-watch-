@@ -277,9 +277,9 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - [x] Add item catalogue and inventory policy with pure regression tests.
 - [x] Add a bounded recent-transaction journal to profile schema v3 with v1/v2 migration.
 - [x] Add pure NPC merchant purchase/sale policy with exact-payload idempotency and exploit validation tests.
-- [ ] Add a server-side NPC merchant transaction service and idempotent save integration.
-- [ ] Add a configured NPC merchant buy/sell vertical slice after price review.
-- [ ] Add persistence-adapter integration and interruption-recovery tests.
+- [x] Add an injected server-side NPC merchant transaction coordinator using server-owned offer tables and the profile persistence adapter.
+- [x] Test durable buy/sell saves, duplicate requests, payload mismatch, rate limits, unoffered items and ambiguous commit recovery.
+- [ ] Configure reviewed merchant prices and stock policy; no live offers are enabled.
 - [ ] Validate PC/mobile UI in Studio.
 
 ### Gate C — property
@@ -309,16 +309,18 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - Pure bounded inventory policy with validation, add/remove transformations and regression tests.
 - Profile schema v3 includes inventory and a bounded recent-transaction journal; valid v1 and v2 profiles migrate while preserving progression, balances and existing v2 inventory. Record acquisition applies migration atomically.
 - Pure NPC merchant transaction rules validate server-supplied prices, positive integer quantities, tradeability, inventory capacity and Aces balance. Exact duplicate transaction IDs reconcile without double debit/credit; payload mismatch is rejected. Test prices are fixtures, not live merchant prices.
+- An injected server-side `MerchantService` coordinates trusted offer lookup, request throttling, per-player transaction serialization and profile-adapter saves. Headless tests cover durable purchase/sale, duplicate request IDs, altered-payload rejection, unknown merchants/items and ambiguous commit recovery. It is not wired to remotes, live joins or a configured offer catalogue.
 
 **NOT IMPLEMENTED**
 - Live DataStore integration or persistent player profiles.
-- Live DataStore integration, live inventory sessions, configured merchant prices/stock or merchant UI.
+- Live DataStore integration and player lifecycle wiring; merchant service remains an injected, unconnected module.
+- Configured merchant prices/stock, merchant UI/remotes or live inventory sessions.
 - Escrow, player contracts, businesses or property.
 - Construction tools, parcels, build validation or inspection.
 - Any Robux product, price, receipt handler or purchase entitlement.
 
 **BLOCKERS**
-- Latest completed GitHub Actions validation run #165 for commit `5555a26` passed headless regression tests, StyLua, Selene, Rojo build and artifact upload.
+- Latest completed GitHub Actions validation run #171 for commit `93acef9` passed headless regression tests, StyLua, Selene, Rojo build and artifact upload.
 - Roblox Studio multi-client and device testing has not been performed.
 - No production persistence or economy should be enabled until the relevant gates pass.
 
