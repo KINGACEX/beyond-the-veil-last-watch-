@@ -177,7 +177,7 @@ Apply these principles in original BTV designs. Do not copy protected maps, char
 
 ## 13. Governance and audit limits
 
-- No code, canon, branch merge, release, public upload, paid generation or subscription was changed or initiated during this audit.
+- No gameplay code or canon was changed. After the read-only audit, the Godot validation workflow and project documentation were updated in reversible commits. No branch merge, release, public upload, paid generation or subscription was initiated.
 - No game was launched in the Godot editor or on a physical Android device during this audit.
 - This report distinguishes source-code presence and historical CI evidence from runtime/device verification.
 - The audit baseline is the latest complete Godot feature branch found, not proof of the user's local checkout.
