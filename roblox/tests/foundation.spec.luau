@@ -297,31 +297,14 @@ expect(nanLease == nil and nanLeaseError ~= nil, "non-finite lease clock is reje
 print("[BTV tests] Profile lease policy rules passed.")
 
 -- Atomic DataStore callback transformations preserve ownership and reject stale writes.
-local acquiredRecord, acquiredRecordError = ProfileRecordPolicy.TryAcquire(
-	nil,
-	"server-A",
-	100,
-	60,
-	PlayerProfileSchema,
-	CovenantRankCatalog,
-	CompanionCatalog,
-	ProfileLeasePolicy
-)
+local acquiredRecord, acquiredRecordError = ProfileRecordPolicy.TryAcquire(nil, "server-A", 100, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, ProfileLeasePolicy)
 expect(acquiredRecord ~= nil and acquiredRecordError == nil, "new profile record can be initialized with a lease")
 assert(acquiredRecord ~= nil, "acquired profile record must exist")
 expect(acquiredRecord.profile.progression.covenantRank == "Recruit", "new record starts at Recruit")
 expect(acquiredRecord.profile.revision == 0, "new record starts at revision zero")
 
-local occupiedRecord, occupiedError = ProfileRecordPolicy.TryAcquire(
-	acquiredRecord,
-	"server-B",
-	120,
-	60,
-	PlayerProfileSchema,
-	CovenantRankCatalog,
-	CompanionCatalog,
-	ProfileLeasePolicy
-)
+local occupiedRecord, occupiedError =
+	ProfileRecordPolicy.TryAcquire(acquiredRecord, "server-B", 120, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, ProfileLeasePolicy)
 expect(occupiedRecord == nil and occupiedError ~= nil, "competing server cannot acquire an active profile record")
 
 local candidateProfile = PlayerProfileSchema.CreateDefault()
@@ -379,33 +362,14 @@ local reusedOperation, reusedOperationError = ProfileRecordPolicy.TrySave(
 )
 expect(reusedOperation == nil and reusedOperationError ~= nil, "same operation ID with a different payload is rejected")
 
-local invalidOperation, invalidOperationError = ProfileRecordPolicy.TrySave(
-	savedRecord,
-	"server-A",
-	140,
-	60,
-	candidateProfile,
-	"",
-	PlayerProfileSchema,
-	CovenantRankCatalog,
-	CompanionCatalog,
-	ProfileLeasePolicy
-)
+local invalidOperation, invalidOperationError =
+	ProfileRecordPolicy.TrySave(savedRecord, "server-A", 140, 60, candidateProfile, "", PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, ProfileLeasePolicy)
 expect(invalidOperation == nil and invalidOperationError ~= nil, "empty save operation ID is rejected")
 
-local reacquiredAfterSave, reacquireAfterSaveError = ProfileRecordPolicy.TryAcquire(
-	savedRecord,
-	"server-B",
-	200,
-	60,
-	PlayerProfileSchema,
-	CovenantRankCatalog,
-	CompanionCatalog,
-	ProfileLeasePolicy
-)
+local reacquiredAfterSave, reacquireAfterSaveError =
+	ProfileRecordPolicy.TryAcquire(savedRecord, "server-B", 200, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, ProfileLeasePolicy)
 expect(reacquiredAfterSave ~= nil and reacquireAfterSaveError == nil, "expired saved record can be acquired by a later session")
 expect(reacquiredAfterSave ~= nil and reacquiredAfterSave.lastSaveOperation.id == "save-operation-001", "last save operation marker survives acquisition")
-
 
 local staleCandidate = PlayerProfileSchema.CreateDefault()
 staleCandidate.economy.aces = 999
@@ -494,16 +458,8 @@ local fakeStore = FakeProfileStore.new()
 local profileKey = "player:901001"
 fakeStore:QueueCallbackReplay(profileKey, acquiredRecord)
 local replayedAcquire, replayedAcquireError = fakeStore:UpdateAsync(profileKey, function(existing)
-	local nextRecord, policyError = ProfileRecordPolicy.TryAcquire(
-		existing,
-		"server-B",
-		120,
-		60,
-		PlayerProfileSchema,
-		CovenantRankCatalog,
-		CompanionCatalog,
-		ProfileLeasePolicy
-	)
+	local nextRecord, policyError =
+		ProfileRecordPolicy.TryAcquire(existing, "server-B", 120, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, ProfileLeasePolicy)
 	if policyError ~= nil then
 		return nil
 	end
