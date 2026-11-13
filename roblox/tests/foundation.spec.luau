@@ -306,6 +306,69 @@ assert(acquiredRecord ~= nil, "acquired profile record must exist")
 expect(acquiredRecord.profile.progression.covenantRank == "Recruit", "new record starts at Recruit")
 expect(acquiredRecord.profile.revision == 0, "new record starts at revision zero")
 
+-- Schema v1 profiles migrate to v2 without losing established progress or balances.
+local legacyProfile = PlayerProfileSchema.CreateDefault()
+legacyProfile.schemaVersion = 1
+legacyProfile.inventory = nil
+legacyProfile.economy.aces = 91
+legacyProfile.progression.completedMissionIds = { "mission-legacy-001" }
+local migratedProfile, migrationError = PlayerProfileSchema.Migrate(
+	legacyProfile,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	InventoryPolicy,
+	ItemCatalog
+)
+expect(migratedProfile ~= nil and migrationError == nil, "valid v1 profile migrates to the current schema")
+assert(migratedProfile ~= nil, "migrated profile must exist")
+expect(migratedProfile.schemaVersion == 2, "migration advances profile schema to version two")
+expect(migratedProfile.economy.aces == 91, "migration preserves existing Aces")
+expect(migratedProfile.progression.completedMissionIds[1] == "mission-legacy-001", "migration preserves mission progress")
+expect(migratedProfile.inventory.items ~= nil and next(migratedProfile.inventory.items) == nil, "migration adds an empty inventory")
+expect(legacyProfile.schemaVersion == 1 and legacyProfile.inventory == nil, "migration does not mutate the stored legacy profile")
+
+local invalidLegacyProfile = PlayerProfileSchema.CreateDefault()
+invalidLegacyProfile.schemaVersion = 1
+invalidLegacyProfile.inventory = nil
+invalidLegacyProfile.economy.aces = -1
+local rejectedLegacy, rejectedLegacyError = PlayerProfileSchema.Migrate(
+	invalidLegacyProfile,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	InventoryPolicy,
+	ItemCatalog
+)
+expect(rejectedLegacy == nil and rejectedLegacyError ~= nil, "malformed legacy profiles fail closed")
+
+local invalidInventoryProfile = PlayerProfileSchema.CreateDefault()
+invalidInventoryProfile.inventory.items.unknown_item = 1
+local invalidInventoryProfileValid, invalidInventoryProfileError = PlayerProfileSchema.Validate(
+	invalidInventoryProfile,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	InventoryPolicy,
+	ItemCatalog
+)
+expect(invalidInventoryProfileValid == false and invalidInventoryProfileError ~= nil, "current schema rejects unknown inventory item IDs")
+
+local migratedRecord, migratedRecordError = ProfileRecordPolicy.TryAcquire(
+	{ profile = legacyProfile, lease = nil },
+	"migration-server",
+	100,
+	60,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	InventoryPolicy,
+	ItemCatalog,
+	ProfileLeasePolicy
+)
+expect(migratedRecord ~= nil and migratedRecordError == nil, "atomic record acquisition migrates a valid legacy profile")
+assert(migratedRecord ~= nil, "migrated record must exist")
+expect(migratedRecord.profile.schemaVersion == 2, "acquired record contains the current schema")
+expect(migratedRecord.profile.economy.aces == 91, "record migration preserves the legacy balance")
+
+
 local occupiedRecord, occupiedError =
 	ProfileRecordPolicy.TryAcquire(acquiredRecord, "server-B", 120, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
 expect(occupiedRecord == nil and occupiedError ~= nil, "competing server cannot acquire an active profile record")
