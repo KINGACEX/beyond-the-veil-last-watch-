@@ -1,0 +1,53 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/covenant_hq/reception_officer.gd" id="1_script"]
+
+[sub_resource type="SphereShape3D" id="Shape_Interaction"]
+radius = 1.7
+
+[sub_resource type="CapsuleMesh" id="Mesh_Body"]
+radius = 0.35
+height = 1.5
+
+[sub_resource type="SphereMesh" id="Mesh_Head"]
+radius = 0.23
+height = 0.46
+
+[sub_resource type="BoxMesh" id="Mesh_Badge"]
+size = Vector3(0.16, 0.12, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="Material_Placeholder"]
+albedo_color = Color(0.42, 0.48, 0.55, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="Material_Badge"]
+albedo_color = Color(0.68, 0.54, 0.28, 1)
+metallic = 0.25
+roughness = 0.58
+
+[node name="ReceptionOfficer" type="Area3D"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_script")
+interaction_id = "hq-reception-officer-001"
+interaction_prompt = "Speak with reception officer"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape_Interaction")
+
+[node name="VisualPlaceholder" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="VisualPlaceholder"]
+position = Vector3(0, 0.95, 0)
+mesh = SubResource("Mesh_Body")
+material_override = SubResource("Material_Placeholder")
+
+[node name="Head" type="MeshInstance3D" parent="VisualPlaceholder"]
+position = Vector3(0, 1.86, 0)
+mesh = SubResource("Mesh_Head")
+material_override = SubResource("Material_Placeholder")
+
+[node name="BadgePlaceholder" type="MeshInstance3D" parent="VisualPlaceholder"]
+position = Vector3(0.25, 1.15, -0.28)
+mesh = SubResource("Mesh_Badge")
+material_override = SubResource("Material_Badge")
