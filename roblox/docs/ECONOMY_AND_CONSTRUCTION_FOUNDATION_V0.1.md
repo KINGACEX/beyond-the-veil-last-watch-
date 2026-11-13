@@ -275,10 +275,11 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 ### Gate B — minimum viable economy
 - [x] Review profile schema expansion and migration plan.
 - [x] Add item catalogue and inventory policy with pure regression tests.
-- [ ] Add bounded durable transaction IDs to the profile and pure merchant transaction policy.
+- [x] Add a bounded recent-transaction journal to profile schema v3 with v1/v2 migration.
+- [x] Add pure NPC merchant purchase/sale policy with exact-payload idempotency and exploit validation tests.
 - [ ] Add a server-side NPC merchant transaction service and idempotent save integration.
-- [ ] Add NPC merchant buy/sell vertical slice.
-- [ ] Add recovery and exploit tests.
+- [ ] Add a configured NPC merchant buy/sell vertical slice after price review.
+- [ ] Add persistence-adapter integration and interruption-recovery tests.
 - [ ] Validate PC/mobile UI in Studio.
 
 ### Gate C — property
@@ -306,16 +307,18 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - Injectable profile persistence adapter with bounded retry, lease acquisition/release and ambiguous-save reconciliation; not connected to live joins.
 - Construction-supply item catalogue with stable IDs, stack caps and merchant-group metadata; no prices or live stock.
 - Pure bounded inventory policy with validation, add/remove transformations and regression tests.
-- Profile schema v2 includes inventory; valid v1 profiles migrate to v2 while preserving progression and balances. Record acquisition applies the migration atomically.
+- Profile schema v3 includes inventory and a bounded recent-transaction journal; valid v1 and v2 profiles migrate while preserving progression, balances and existing v2 inventory. Record acquisition applies migration atomically.
+- Pure NPC merchant transaction rules validate server-supplied prices, positive integer quantities, tradeability, inventory capacity and Aces balance. Exact duplicate transaction IDs reconcile without double debit/credit; payload mismatch is rejected. Test prices are fixtures, not live merchant prices.
 
 **NOT IMPLEMENTED**
 - Live DataStore integration or persistent player profiles.
-- Durable inventory, merchant transactions, escrow, contracts, businesses or property.
+- Live DataStore integration, live inventory sessions, configured merchant prices/stock or merchant UI.
+- Escrow, player contracts, businesses or property.
 - Construction tools, parcels, build validation or inspection.
 - Any Robux product, price, receipt handler or purchase entitlement.
 
 **BLOCKERS**
-- Latest completed GitHub Actions validation run #157 for commit `928ebb2` passed headless regression tests, StyLua, Selene and Rojo build.
+- Latest completed GitHub Actions validation run #165 for commit `5555a26` passed headless regression tests, StyLua, Selene, Rojo build and artifact upload.
 - Roblox Studio multi-client and device testing has not been performed.
 - No production persistence or economy should be enabled until the relevant gates pass.
 
