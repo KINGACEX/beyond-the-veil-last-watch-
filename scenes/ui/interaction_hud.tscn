@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/interaction_hud.gd" id="1_script"]
+
+[node name="InteractionHUD" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="SafeArea" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+mouse_filter = 2
+
+[node name="PromptPanel" type="PanelContainer" parent="SafeArea"]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -220.0
+offset_top = -72.0
+offset_right = 220.0
+offset_bottom = -24.0
+mouse_filter = 2
+
+[node name="PromptLabel" type="Label" parent="SafeArea/PromptPanel"]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FeedbackPanel" type="PanelContainer" parent="SafeArea"]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -280.0
+offset_top = -136.0
+offset_right = 280.0
+offset_bottom = -88.0
+mouse_filter = 2
+
+[node name="FeedbackLabel" type="Label" parent="SafeArea/FeedbackPanel"]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
