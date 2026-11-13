@@ -150,7 +150,7 @@ if existingProps == nil then
 		Vector3.new(0.18, 0.76, 1.55),
 		belongings.CFrame * CFrame.new(0.15, 0, 0),
 		Color3.fromRGB(52, 45, 38),
-		Enum.Material.Leather,
+		Enum.Material.Fabric,
 		false
 	)
 	belongingsStrap.CanQuery = false
