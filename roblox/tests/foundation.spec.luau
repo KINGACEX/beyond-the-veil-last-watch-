@@ -12,6 +12,7 @@ local PlayerProfileSchema = require("../src/shared/PlayerProfileSchema")
 local ProfileLeasePolicy = require("../src/shared/ProfileLeasePolicy")
 local ProfileRecordPolicy = require("../src/shared/ProfileRecordPolicy")
 local FakeProfileStore = require("./support/FakeProfileStore")
+local ProfilePersistenceAdapter = require("../src/server/Services/ProfilePersistenceAdapter")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -552,3 +553,96 @@ expect(cancelledResult == nil and cancelledError == nil, "nil transform result c
 expect(isolationStore:Get(profileKey).profile.economy.aces == 0, "cancelled transform cannot mutate stored data through its callback input")
 
 print("[BTV tests] Fake store defensive-copy guarantees passed.")
+
+
+-- Injectable persistence adapter: retries only transient failures and reconciles ambiguous saves.
+local adapterStore = FakeProfileStore.new()
+local adapterClock = 100
+local adapterWaitCount = 0
+local adapter = ProfilePersistenceAdapter.new({
+	Store = adapterStore,
+	ProfileSchema = PlayerProfileSchema,
+	RankCatalog = CovenantRankCatalog,
+	CompanionCatalog = CompanionCatalog,
+	LeasePolicy = ProfileLeasePolicy,
+	RecordPolicy = ProfileRecordPolicy,
+	Clock = function()
+		return adapterClock
+	end,
+	Wait = function(_seconds)
+		adapterWaitCount += 1
+	end,
+	GenerateToken = function()
+		return "adapter-owner-token"
+	end,
+	Random = function()
+		return 0
+	end,
+	MaxAttempts = 3,
+	BaseDelaySeconds = 0.1,
+	LeaseDurationSeconds = 120,
+})
+expect(ProfilePersistenceAdapter.GetKeyForUser(901002) == "player:901002", "adapter uses a stable namespaced user key")
+expect(ProfilePersistenceAdapter.GetKeyForUser(0) == nil, "adapter rejects invalid user IDs")
+
+local adapterSession, adapterAcquireError = adapter:Acquire(901002)
+expect(adapterSession ~= nil and adapterAcquireError == nil, "adapter acquires a new profile through the injected store")
+assert(adapterSession ~= nil, "adapter session must exist")
+expect(adapterSession.profile.progression.covenantRank == "Recruit", "adapter returns the validated default profile")
+expect(adapterSession.ownerToken == "adapter-owner-token", "adapter binds the session to its unique owner token")
+
+local adapterCandidate = adapterSession.profile
+adapterCandidate.economy.aces = 30
+local adapterSaved, adapterSaveError = adapter:Save(901002, adapterSession.ownerToken, adapterCandidate, "adapter-save-001")
+expect(adapterSaved ~= nil and adapterSaveError == nil, "adapter saves a valid profile")
+assert(adapterSaved ~= nil, "adapter save result must exist")
+expect(adapterSaved.revision == 1 and adapterSaved.outcome == "Saved", "adapter reports the committed revision and outcome")
+
+local retryCandidate = adapterSaved.profile
+retryCandidate.economy.aces = 45
+adapterStore:QueueFailure("BeforeCallback", "simulated temporary service failure")
+local retriedSave, retriedSaveError = adapter:Save(901002, adapterSession.ownerToken, retryCandidate, "adapter-save-002")
+expect(retriedSave ~= nil and retriedSaveError == nil, "adapter retries a transient pre-callback service failure")
+assert(retriedSave ~= nil, "retried save result must exist")
+expect(retriedSave.revision == 2 and retriedSave.profile.economy.aces == 45, "transient retry commits the intended snapshot")
+expect(adapterWaitCount == 1, "transient retry uses the injected backoff wait")
+
+local ambiguousCandidate = retriedSave.profile
+ambiguousCandidate.economy.aces = 55
+adapterStore:QueueFailure("AfterCommit", "simulated response loss after durable commit")
+local reconciledSave, reconcileError = adapter:Save(901002, adapterSession.ownerToken, ambiguousCandidate, "adapter-save-003")
+expect(reconciledSave ~= nil and reconcileError == nil, "adapter reconciles a committed save after response loss")
+assert(reconciledSave ~= nil, "reconciled save result must exist")
+expect(reconciledSave.revision == 3 and reconciledSave.outcome == "AlreadyApplied", "ambiguous retry does not duplicate the committed revision")
+expect(reconciledSave.profile.economy.aces == 55, "ambiguous retry preserves the exact saved payload")
+
+local competingAdapter = ProfilePersistenceAdapter.new({
+	Store = adapterStore,
+	ProfileSchema = PlayerProfileSchema,
+	RankCatalog = CovenantRankCatalog,
+	CompanionCatalog = CompanionCatalog,
+	LeasePolicy = ProfileLeasePolicy,
+	RecordPolicy = ProfileRecordPolicy,
+	Clock = function()
+		return adapterClock
+	end,
+	Wait = function(_seconds)
+		adapterWaitCount += 1
+	end,
+	GenerateToken = function()
+		return "competing-owner-token"
+	end,
+	Random = function()
+		return 0
+	end,
+})
+local competingSession, competingAcquireError = competingAdapter:Acquire(901002)
+expect(competingSession == nil and competingAcquireError ~= nil, "adapter refuses a competing active profile lease")
+expect(adapterWaitCount == 2, "domain lease contention is not retried as a transient service failure")
+
+local adapterReleased, adapterReleaseError = adapter:Release(901002, adapterSession.ownerToken)
+expect(adapterReleased and adapterReleaseError == nil, "adapter releases only its owned profile lease")
+local releasedAdapterRecord = adapterStore:Get("player:901002")
+expect(releasedAdapterRecord ~= nil and releasedAdapterRecord.lease == nil, "adapter release retains the profile while clearing its lease")
+
+print("[BTV tests] Injectable persistence adapter retry and recovery scenarios passed.")
