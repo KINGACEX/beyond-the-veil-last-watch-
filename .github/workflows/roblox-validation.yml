@@ -6,12 +6,14 @@ on:
       - btv/roblox-foundation-001
       - btv/roblox-covenant-multiplayer-fixes-001
       - btv/roblox-playable-prototype-001
+      - btv/roblox-settlement-playable-001
     paths:
       - "roblox/**"
       - ".github/workflows/roblox-validation.yml"
   pull_request:
     branches:
       - btv/roblox-covenant-multiplayer-fixes-001
+      - btv/roblox-settlement-playable-001
     paths:
       - "roblox/**"
       - ".github/workflows/roblox-validation.yml"
