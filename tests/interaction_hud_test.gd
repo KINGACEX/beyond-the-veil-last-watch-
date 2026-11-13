@@ -2,7 +2,11 @@ extends SceneTree
 
 const MAIN_SCENE := "res://scenes/main.tscn"
 
-func _init() -> void:
+func _initialize() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
 	var packed := load(MAIN_SCENE) as PackedScene
 	if packed == null:
 		push_error("FAIL: main scene did not load for interaction HUD test.")
