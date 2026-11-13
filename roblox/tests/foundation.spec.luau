@@ -971,7 +971,6 @@ do
 	print("[BTV tests] NPC merchant transaction and idempotency rules passed.")
 end
 
-
 do
 	-- The server merchant coordinator binds trusted offers to durable profile saves.
 	local merchantStore = FakeProfileStore.new()
@@ -988,8 +987,7 @@ do
 		Clock = function()
 			return serviceClock
 		end,
-		Wait = function(_seconds)
-		end,
+		Wait = function(_seconds) end,
 		GenerateToken = function()
 			return "merchant-service-owner-token"
 		end,
@@ -1002,8 +1000,7 @@ do
 	assert(serviceSession ~= nil, "merchant service session must exist")
 	local fundedServiceProfile = serviceSession.profile
 	fundedServiceProfile.economy.aces = 100
-	local fundedServiceSave, fundedServiceSaveError =
-		serviceAdapter:Save(901003, serviceSession.ownerToken, fundedServiceProfile, "merchant-service-seed-001")
+	local fundedServiceSave, fundedServiceSaveError = serviceAdapter:Save(901003, serviceSession.ownerToken, fundedServiceProfile, "merchant-service-seed-001")
 	expect(fundedServiceSave ~= nil and fundedServiceSaveError == nil, "merchant service test profile is funded through a durable save")
 	assert(fundedServiceSave ~= nil, "funded merchant service profile must exist")
 	serviceSession.profile = fundedServiceSave.profile
@@ -1033,91 +1030,43 @@ do
 		MinimumRequestIntervalSeconds = 0.1,
 	})
 	local merchantPlayer = { UserId = 901003 }
-	local servicePurchase, servicePurchaseError = merchantService:Purchase(
-		merchantPlayer,
-		"building_supply",
-		"timber_plank",
-		3,
-		"service-buy-0001"
-	)
+	local servicePurchase, servicePurchaseError = merchantService:Purchase(merchantPlayer, "building_supply", "timber_plank", 3, "service-buy-0001")
 	expect(servicePurchase ~= nil and servicePurchaseError == nil, "merchant service commits a purchase using server-owned prices")
 	assert(servicePurchase ~= nil, "merchant service purchase receipt must exist")
 	expect(servicePurchase.balance == 88 and servicePurchase.acesDelta == -12, "merchant service returns the committed debit")
 	expect(merchantStore:Get("player:901003").profile.inventory.items.timber_plank == 3, "merchant service persists the granted inventory")
 
-	local throttledPurchase, throttledPurchaseError = merchantService:Purchase(
-		merchantPlayer,
-		"building_supply",
-		"timber_plank",
-		1,
-		"service-buy-throttle"
-	)
+	local throttledPurchase, throttledPurchaseError = merchantService:Purchase(merchantPlayer, "building_supply", "timber_plank", 1, "service-buy-throttle")
 	expect(throttledPurchase == nil and throttledPurchaseError ~= nil, "merchant service rate-limits rapid requests")
 
 	serviceClock += 1
-	local duplicateServicePurchase, duplicateServicePurchaseError = merchantService:Purchase(
-		merchantPlayer,
-		"building_supply",
-		"timber_plank",
-		3,
-		"service-buy-0001"
-	)
+	local duplicateServicePurchase, duplicateServicePurchaseError = merchantService:Purchase(merchantPlayer, "building_supply", "timber_plank", 3, "service-buy-0001")
 	expect(duplicateServicePurchase ~= nil and duplicateServicePurchaseError == nil, "merchant service reconciles duplicate request IDs")
 	assert(duplicateServicePurchase ~= nil, "duplicate merchant receipt must exist")
 	expect(duplicateServicePurchase.outcome == "AlreadyApplied" and duplicateServicePurchase.balance == 88, "duplicate request does not debit twice")
 
 	serviceClock += 1
-	local conflictingRequest, conflictingRequestError = merchantService:Purchase(
-		merchantPlayer,
-		"building_supply",
-		"timber_plank",
-		2,
-		"service-buy-0001"
-	)
+	local conflictingRequest, conflictingRequestError = merchantService:Purchase(merchantPlayer, "building_supply", "timber_plank", 2, "service-buy-0001")
 	expect(conflictingRequest == nil and conflictingRequestError ~= nil, "merchant service rejects request ID reuse with a changed payload")
 
 	serviceClock += 1
-	local unknownMerchant, unknownMerchantError = merchantService:Purchase(
-		merchantPlayer,
-		"unregistered_merchant",
-		"timber_plank",
-		1,
-		"service-buy-0002"
-	)
+	local unknownMerchant, unknownMerchantError = merchantService:Purchase(merchantPlayer, "unregistered_merchant", "timber_plank", 1, "service-buy-0002")
 	expect(unknownMerchant == nil and unknownMerchantError ~= nil, "merchant service rejects unknown merchant IDs")
 
 	serviceClock += 1
-	local unofferedItem, unofferedItemError = merchantService:Purchase(
-		merchantPlayer,
-		"building_supply",
-		"stone_block",
-		1,
-		"service-buy-0003"
-	)
+	local unofferedItem, unofferedItemError = merchantService:Purchase(merchantPlayer, "building_supply", "stone_block", 1, "service-buy-0003")
 	expect(unofferedItem == nil and unofferedItemError ~= nil, "merchant service rejects items not in the server offer table")
 
 	serviceClock += 1
 	merchantStore:QueueFailure("AfterCommit", "simulated response loss after durable commit")
-	local ambiguousServicePurchase, ambiguousServicePurchaseError = merchantService:Purchase(
-		merchantPlayer,
-		"building_supply",
-		"timber_plank",
-		1,
-		"service-buy-0004"
-	)
+	local ambiguousServicePurchase, ambiguousServicePurchaseError = merchantService:Purchase(merchantPlayer, "building_supply", "timber_plank", 1, "service-buy-0004")
 	expect(ambiguousServicePurchase ~= nil and ambiguousServicePurchaseError == nil, "merchant service recovers an ambiguous committed purchase")
 	assert(ambiguousServicePurchase ~= nil, "ambiguous merchant receipt must exist")
 	expect(ambiguousServicePurchase.outcome == "AlreadyApplied", "ambiguous save retry is reconciled by the profile adapter")
 	expect(ambiguousServicePurchase.balance == 84, "ambiguous purchase is reflected exactly once")
 
 	serviceClock += 1
-	local serviceSale, serviceSaleError = merchantService:Sell(
-		merchantPlayer,
-		"building_supply",
-		"timber_plank",
-		2,
-		"service-sell-0001"
-	)
+	local serviceSale, serviceSaleError = merchantService:Sell(merchantPlayer, "building_supply", "timber_plank", 2, "service-sell-0001")
 	expect(serviceSale ~= nil and serviceSaleError == nil, "merchant service commits a sale")
 	assert(serviceSale ~= nil, "merchant sale receipt must exist")
 	expect(serviceSale.balance == 88 and serviceSale.acesDelta == 4, "merchant sale credits the configured buyback value")
