@@ -300,62 +300,64 @@ expect(nanLease == nil and nanLeaseError ~= nil, "non-finite lease clock is reje
 print("[BTV tests] Profile lease policy rules passed.")
 
 -- Atomic DataStore callback transformations preserve ownership and reject stale writes.
-local acquiredRecord, acquiredRecordError = ProfileRecordPolicy.TryAcquire(nil, "server-A", 100, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
+local acquiredRecord, acquiredRecordError =
+	ProfileRecordPolicy.TryAcquire(nil, "server-A", 100, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
 expect(acquiredRecord ~= nil and acquiredRecordError == nil, "new profile record can be initialized with a lease")
 assert(acquiredRecord ~= nil, "acquired profile record must exist")
 expect(acquiredRecord.profile.progression.covenantRank == "Recruit", "new record starts at Recruit")
 expect(acquiredRecord.profile.revision == 0, "new record starts at revision zero")
 
 do
--- Schema v1 profiles migrate to v2 without losing established progress or balances.
-local legacyProfile = PlayerProfileSchema.CreateDefault()
-legacyProfile.schemaVersion = 1
-legacyProfile.inventory = nil
-legacyProfile.economy.aces = 91
-legacyProfile.progression.completedMissionIds = { "mission-legacy-001" }
-local migratedProfile, migrationError = PlayerProfileSchema.Migrate(
-	legacyProfile,
-	CovenantRankCatalog,
-	CompanionCatalog,
-	InventoryPolicy,
-	ItemCatalog
-)
-expect(migratedProfile ~= nil and migrationError == nil, "valid v1 profile migrates to the current schema")
-assert(migratedProfile ~= nil, "migrated profile must exist")
-expect(migratedProfile.schemaVersion == 2, "migration advances profile schema to version two")
-expect(migratedProfile.economy.aces == 91, "migration preserves existing Aces")
-expect(migratedProfile.progression.completedMissionIds[1] == "mission-legacy-001", "migration preserves mission progress")
-expect(migratedProfile.inventory.items ~= nil and next(migratedProfile.inventory.items) == nil, "migration adds an empty inventory")
-expect(legacyProfile.schemaVersion == 1 and legacyProfile.inventory == nil, "migration does not mutate the stored legacy profile")
+	-- Schema v1 profiles migrate to v2 without losing established progress or balances.
+	local legacyProfile = PlayerProfileSchema.CreateDefault()
+	legacyProfile.schemaVersion = 1
+	legacyProfile.inventory = nil
+	legacyProfile.economy.aces = 91
+	legacyProfile.progression.completedMissionIds = { "mission-legacy-001" }
+	local migratedProfile, migrationError = PlayerProfileSchema.Migrate(legacyProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	expect(migratedProfile ~= nil and migrationError == nil, "valid v1 profile migrates to the current schema")
+	assert(migratedProfile ~= nil, "migrated profile must exist")
+	expect(migratedProfile.schemaVersion == 2, "migration advances profile schema to version two")
+	expect(migratedProfile.economy.aces == 91, "migration preserves existing Aces")
+	expect(migratedProfile.progression.completedMissionIds[1] == "mission-legacy-001", "migration preserves mission progress")
+	expect(migratedProfile.inventory.items ~= nil and next(migratedProfile.inventory.items) == nil, "migration adds an empty inventory")
+	expect(legacyProfile.schemaVersion == 1 and legacyProfile.inventory == nil, "migration does not mutate the stored legacy profile")
 
-local invalidLegacyProfile = PlayerProfileSchema.CreateDefault()
-invalidLegacyProfile.schemaVersion = 1
-invalidLegacyProfile.inventory = nil
-invalidLegacyProfile.economy.aces = -1
-local rejectedLegacy, rejectedLegacyError = PlayerProfileSchema.Migrate(
-	invalidLegacyProfile,
-	CovenantRankCatalog,
-	CompanionCatalog,
-	InventoryPolicy,
-	ItemCatalog
-)
-expect(rejectedLegacy == nil and rejectedLegacyError ~= nil, "malformed legacy profiles fail closed")
+	local invalidLegacyProfile = PlayerProfileSchema.CreateDefault()
+	invalidLegacyProfile.schemaVersion = 1
+	invalidLegacyProfile.inventory = nil
+	invalidLegacyProfile.economy.aces = -1
+	local rejectedLegacy, rejectedLegacyError = PlayerProfileSchema.Migrate(invalidLegacyProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	expect(rejectedLegacy == nil and rejectedLegacyError ~= nil, "malformed legacy profiles fail closed")
 
-local invalidInventoryProfile = PlayerProfileSchema.CreateDefault()
-invalidInventoryProfile.inventory.items.unknown_item = 1
-local invalidInventoryProfileValid, invalidInventoryProfileError = PlayerProfileSchema.Validate(
-	invalidInventoryProfile,
-	CovenantRankCatalog,
-	CompanionCatalog,
-	InventoryPolicy,
-	ItemCatalog
-)
-expect(invalidInventoryProfileValid == false and invalidInventoryProfileError ~= nil, "current schema rejects unknown inventory item IDs")
+	local invalidInventoryProfile = PlayerProfileSchema.CreateDefault()
+	invalidInventoryProfile.inventory.items.unknown_item = 1
+	local invalidInventoryProfileValid, invalidInventoryProfileError =
+		PlayerProfileSchema.Validate(invalidInventoryProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	expect(invalidInventoryProfileValid == false and invalidInventoryProfileError ~= nil, "current schema rejects unknown inventory item IDs")
 
-local migratedRecord, migratedRecordError = ProfileRecordPolicy.TryAcquire(
-	{ profile = legacyProfile, lease = nil },
-	"migration-server",
-	100,
+	local migratedRecord, migratedRecordError = ProfileRecordPolicy.TryAcquire(
+		{ profile = legacyProfile, lease = nil },
+		"migration-server",
+		100,
+		60,
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		CompanionCatalog,
+		InventoryPolicy,
+		ItemCatalog,
+		ProfileLeasePolicy
+	)
+	expect(migratedRecord ~= nil and migratedRecordError == nil, "atomic record acquisition migrates a valid legacy profile")
+	assert(migratedRecord ~= nil, "migrated record must exist")
+	expect(migratedRecord.profile.schemaVersion == 2, "acquired record contains the current schema")
+	expect(migratedRecord.profile.economy.aces == 91, "record migration preserves the legacy balance")
+end
+
+local occupiedRecord, occupiedError = ProfileRecordPolicy.TryAcquire(
+	acquiredRecord,
+	"server-B",
+	120,
 	60,
 	PlayerProfileSchema,
 	CovenantRankCatalog,
@@ -364,15 +366,6 @@ local migratedRecord, migratedRecordError = ProfileRecordPolicy.TryAcquire(
 	ItemCatalog,
 	ProfileLeasePolicy
 )
-expect(migratedRecord ~= nil and migratedRecordError == nil, "atomic record acquisition migrates a valid legacy profile")
-assert(migratedRecord ~= nil, "migrated record must exist")
-expect(migratedRecord.profile.schemaVersion == 2, "acquired record contains the current schema")
-expect(migratedRecord.profile.economy.aces == 91, "record migration preserves the legacy balance")
-end
-
-
-local occupiedRecord, occupiedError =
-	ProfileRecordPolicy.TryAcquire(acquiredRecord, "server-B", 120, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
 expect(occupiedRecord == nil and occupiedError ~= nil, "competing server cannot acquire an active profile record")
 
 local candidateProfile = PlayerProfileSchema.CreateDefault()
@@ -436,8 +429,20 @@ local reusedOperation, reusedOperationError = ProfileRecordPolicy.TrySave(
 )
 expect(reusedOperation == nil and reusedOperationError ~= nil, "same operation ID with a different payload is rejected")
 
-local invalidOperation, invalidOperationError =
-	ProfileRecordPolicy.TrySave(savedRecord, "server-A", 140, 60, candidateProfile, "", PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
+local invalidOperation, invalidOperationError = ProfileRecordPolicy.TrySave(
+	savedRecord,
+	"server-A",
+	140,
+	60,
+	candidateProfile,
+	"",
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	InventoryPolicy,
+	ItemCatalog,
+	ProfileLeasePolicy
+)
 expect(invalidOperation == nil and invalidOperationError ~= nil, "empty save operation ID is rejected")
 
 local reacquiredAfterSave, reacquireAfterSaveError =
@@ -541,7 +546,8 @@ local fakeStore = FakeProfileStore.new()
 local profileKey = "player:901001"
 fakeStore:QueueCallbackReplay(profileKey, acquiredRecord)
 local replayedAcquire, replayedAcquireError = fakeStore:UpdateAsync(profileKey, function(existing)
-	local nextRecord, policyError = ProfileRecordPolicy.TryAcquire(existing, "server-B", 120, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
+	local nextRecord, policyError =
+		ProfileRecordPolicy.TryAcquire(existing, "server-B", 120, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
 	if policyError ~= nil then
 		return nil
 	end
@@ -642,147 +648,147 @@ expect(isolationStore:Get(profileKey).profile.economy.aces == 0, "cancelled tran
 print("[BTV tests] Fake store defensive-copy guarantees passed.")
 
 do
--- Injectable persistence adapter: retries only transient failures and reconciles ambiguous saves.
-local adapterStore = FakeProfileStore.new()
-local adapterClock = 100
-local adapterWaitCount = 0
-local adapter = ProfilePersistenceAdapter.new({
-	Store = adapterStore,
-	ProfileSchema = PlayerProfileSchema,
-	RankCatalog = CovenantRankCatalog,
-	CompanionCatalog = CompanionCatalog,
-	InventoryPolicy = InventoryPolicy,
-	ItemCatalog = ItemCatalog,
-	LeasePolicy = ProfileLeasePolicy,
-	RecordPolicy = ProfileRecordPolicy,
-	Clock = function()
-		return adapterClock
-	end,
-	Wait = function(_seconds)
-		adapterWaitCount += 1
-	end,
-	GenerateToken = function()
-		return "adapter-owner-token"
-	end,
-	Random = function()
-		return 0
-	end,
-	MaxAttempts = 3,
-	BaseDelaySeconds = 0.1,
-	LeaseDurationSeconds = 120,
-})
-expect(ProfilePersistenceAdapter.GetKeyForUser(901002) == "player:901002", "adapter uses a stable namespaced user key")
-expect(ProfilePersistenceAdapter.GetKeyForUser(0) == nil, "adapter rejects invalid user IDs")
+	-- Injectable persistence adapter: retries only transient failures and reconciles ambiguous saves.
+	local adapterStore = FakeProfileStore.new()
+	local adapterClock = 100
+	local adapterWaitCount = 0
+	local adapter = ProfilePersistenceAdapter.new({
+		Store = adapterStore,
+		ProfileSchema = PlayerProfileSchema,
+		RankCatalog = CovenantRankCatalog,
+		CompanionCatalog = CompanionCatalog,
+		InventoryPolicy = InventoryPolicy,
+		ItemCatalog = ItemCatalog,
+		LeasePolicy = ProfileLeasePolicy,
+		RecordPolicy = ProfileRecordPolicy,
+		Clock = function()
+			return adapterClock
+		end,
+		Wait = function(_seconds)
+			adapterWaitCount += 1
+		end,
+		GenerateToken = function()
+			return "adapter-owner-token"
+		end,
+		Random = function()
+			return 0
+		end,
+		MaxAttempts = 3,
+		BaseDelaySeconds = 0.1,
+		LeaseDurationSeconds = 120,
+	})
+	expect(ProfilePersistenceAdapter.GetKeyForUser(901002) == "player:901002", "adapter uses a stable namespaced user key")
+	expect(ProfilePersistenceAdapter.GetKeyForUser(0) == nil, "adapter rejects invalid user IDs")
 
-local adapterSession, adapterAcquireError = adapter:Acquire(901002)
-expect(adapterSession ~= nil and adapterAcquireError == nil, "adapter acquires a new profile through the injected store")
-assert(adapterSession ~= nil, "adapter session must exist")
-expect(adapterSession.profile.progression.covenantRank == "Recruit", "adapter returns the validated default profile")
-expect(adapterSession.ownerToken == "adapter-owner-token", "adapter binds the session to its unique owner token")
+	local adapterSession, adapterAcquireError = adapter:Acquire(901002)
+	expect(adapterSession ~= nil and adapterAcquireError == nil, "adapter acquires a new profile through the injected store")
+	assert(adapterSession ~= nil, "adapter session must exist")
+	expect(adapterSession.profile.progression.covenantRank == "Recruit", "adapter returns the validated default profile")
+	expect(adapterSession.ownerToken == "adapter-owner-token", "adapter binds the session to its unique owner token")
 
-local adapterCandidate = adapterSession.profile
-adapterCandidate.economy.aces = 30
-local adapterSaved, adapterSaveError = adapter:Save(901002, adapterSession.ownerToken, adapterCandidate, "adapter-save-001")
-expect(adapterSaved ~= nil and adapterSaveError == nil, "adapter saves a valid profile")
-assert(adapterSaved ~= nil, "adapter save result must exist")
-expect(adapterSaved.revision == 1 and adapterSaved.outcome == "Saved", "adapter reports the committed revision and outcome")
+	local adapterCandidate = adapterSession.profile
+	adapterCandidate.economy.aces = 30
+	local adapterSaved, adapterSaveError = adapter:Save(901002, adapterSession.ownerToken, adapterCandidate, "adapter-save-001")
+	expect(adapterSaved ~= nil and adapterSaveError == nil, "adapter saves a valid profile")
+	assert(adapterSaved ~= nil, "adapter save result must exist")
+	expect(adapterSaved.revision == 1 and adapterSaved.outcome == "Saved", "adapter reports the committed revision and outcome")
 
-local retryCandidate = adapterSaved.profile
-retryCandidate.economy.aces = 45
-adapterStore:QueueFailure("BeforeCallback", "simulated temporary service failure")
-local retriedSave, retriedSaveError = adapter:Save(901002, adapterSession.ownerToken, retryCandidate, "adapter-save-002")
-expect(retriedSave ~= nil and retriedSaveError == nil, "adapter retries a transient pre-callback service failure")
-assert(retriedSave ~= nil, "retried save result must exist")
-expect(retriedSave.revision == 2 and retriedSave.profile.economy.aces == 45, "transient retry commits the intended snapshot")
-expect(adapterWaitCount == 1, "transient retry uses the injected backoff wait")
+	local retryCandidate = adapterSaved.profile
+	retryCandidate.economy.aces = 45
+	adapterStore:QueueFailure("BeforeCallback", "simulated temporary service failure")
+	local retriedSave, retriedSaveError = adapter:Save(901002, adapterSession.ownerToken, retryCandidate, "adapter-save-002")
+	expect(retriedSave ~= nil and retriedSaveError == nil, "adapter retries a transient pre-callback service failure")
+	assert(retriedSave ~= nil, "retried save result must exist")
+	expect(retriedSave.revision == 2 and retriedSave.profile.economy.aces == 45, "transient retry commits the intended snapshot")
+	expect(adapterWaitCount == 1, "transient retry uses the injected backoff wait")
 
-local ambiguousCandidate = retriedSave.profile
-ambiguousCandidate.economy.aces = 55
-adapterStore:QueueFailure("AfterCommit", "simulated response loss after durable commit")
-local reconciledSave, reconcileError = adapter:Save(901002, adapterSession.ownerToken, ambiguousCandidate, "adapter-save-003")
-expect(reconciledSave ~= nil and reconcileError == nil, "adapter reconciles a committed save after response loss")
-assert(reconciledSave ~= nil, "reconciled save result must exist")
-expect(reconciledSave.revision == 3 and reconciledSave.outcome == "AlreadyApplied", "ambiguous retry does not duplicate the committed revision")
-expect(reconciledSave.profile.economy.aces == 55, "ambiguous retry preserves the exact saved payload")
+	local ambiguousCandidate = retriedSave.profile
+	ambiguousCandidate.economy.aces = 55
+	adapterStore:QueueFailure("AfterCommit", "simulated response loss after durable commit")
+	local reconciledSave, reconcileError = adapter:Save(901002, adapterSession.ownerToken, ambiguousCandidate, "adapter-save-003")
+	expect(reconciledSave ~= nil and reconcileError == nil, "adapter reconciles a committed save after response loss")
+	assert(reconciledSave ~= nil, "reconciled save result must exist")
+	expect(reconciledSave.revision == 3 and reconciledSave.outcome == "AlreadyApplied", "ambiguous retry does not duplicate the committed revision")
+	expect(reconciledSave.profile.economy.aces == 55, "ambiguous retry preserves the exact saved payload")
 
-local competingAdapter = ProfilePersistenceAdapter.new({
-	Store = adapterStore,
-	ProfileSchema = PlayerProfileSchema,
-	RankCatalog = CovenantRankCatalog,
-	CompanionCatalog = CompanionCatalog,
-	InventoryPolicy = InventoryPolicy,
-	ItemCatalog = ItemCatalog,
-	LeasePolicy = ProfileLeasePolicy,
-	RecordPolicy = ProfileRecordPolicy,
-	Clock = function()
-		return adapterClock
-	end,
-	Wait = function(_seconds)
-		adapterWaitCount += 1
-	end,
-	GenerateToken = function()
-		return "competing-owner-token"
-	end,
-	Random = function()
-		return 0
-	end,
-})
-local competingSession, competingAcquireError = competingAdapter:Acquire(901002)
-expect(competingSession == nil and competingAcquireError ~= nil, "adapter refuses a competing active profile lease")
-expect(adapterWaitCount == 2, "domain lease contention is not retried as a transient service failure")
+	local competingAdapter = ProfilePersistenceAdapter.new({
+		Store = adapterStore,
+		ProfileSchema = PlayerProfileSchema,
+		RankCatalog = CovenantRankCatalog,
+		CompanionCatalog = CompanionCatalog,
+		InventoryPolicy = InventoryPolicy,
+		ItemCatalog = ItemCatalog,
+		LeasePolicy = ProfileLeasePolicy,
+		RecordPolicy = ProfileRecordPolicy,
+		Clock = function()
+			return adapterClock
+		end,
+		Wait = function(_seconds)
+			adapterWaitCount += 1
+		end,
+		GenerateToken = function()
+			return "competing-owner-token"
+		end,
+		Random = function()
+			return 0
+		end,
+	})
+	local competingSession, competingAcquireError = competingAdapter:Acquire(901002)
+	expect(competingSession == nil and competingAcquireError ~= nil, "adapter refuses a competing active profile lease")
+	expect(adapterWaitCount == 2, "domain lease contention is not retried as a transient service failure")
 
-local adapterReleased, adapterReleaseError = adapter:Release(901002, adapterSession.ownerToken)
-expect(adapterReleased and adapterReleaseError == nil, "adapter releases only its owned profile lease")
-local releasedAdapterRecord = adapterStore:Get("player:901002")
-expect(releasedAdapterRecord ~= nil and releasedAdapterRecord.lease == nil, "adapter release retains the profile while clearing its lease")
+	local adapterReleased, adapterReleaseError = adapter:Release(901002, adapterSession.ownerToken)
+	expect(adapterReleased and adapterReleaseError == nil, "adapter releases only its owned profile lease")
+	local releasedAdapterRecord = adapterStore:Get("player:901002")
+	expect(releasedAdapterRecord ~= nil and releasedAdapterRecord.lease == nil, "adapter release retains the profile while clearing its lease")
 
-print("[BTV tests] Injectable persistence adapter retry and recovery scenarios passed.")
+	print("[BTV tests] Injectable persistence adapter retry and recovery scenarios passed.")
 end
 
 do
--- Construction supply inventory rules are bounded, immutable and price-independent.
-local emptyInventory = InventoryPolicy.CreateDefault()
-local validEmptyInventory, emptyInventoryError = InventoryPolicy.Validate(emptyInventory, ItemCatalog)
-expect(validEmptyInventory and emptyInventoryError == nil, "empty inventory is valid")
+	-- Construction supply inventory rules are bounded, immutable and price-independent.
+	local emptyInventory = InventoryPolicy.CreateDefault()
+	local validEmptyInventory, emptyInventoryError = InventoryPolicy.Validate(emptyInventory, ItemCatalog)
+	expect(validEmptyInventory and emptyInventoryError == nil, "empty inventory is valid")
 
-local timberDefinition = ItemCatalog.timber_plank
-expect(timberDefinition ~= nil and timberDefinition.MaxStack == 50, "timber plank has a bounded stack definition")
-expect(timberDefinition ~= nil and timberDefinition.Tradeable, "construction supply is marked tradeable")
-expect(timberDefinition ~= nil and timberDefinition.MerchantGroup == "BuildingSupply", "construction supply belongs to the supply merchant group")
-expect(timberDefinition ~= nil and (timberDefinition :: any).Price == nil, "catalogue does not hard-code unreviewed prices")
+	local timberDefinition = ItemCatalog.timber_plank
+	expect(timberDefinition ~= nil and timberDefinition.MaxStack == 50, "timber plank has a bounded stack definition")
+	expect(timberDefinition ~= nil and timberDefinition.Tradeable, "construction supply is marked tradeable")
+	expect(timberDefinition ~= nil and timberDefinition.MerchantGroup == "BuildingSupply", "construction supply belongs to the supply merchant group")
+	expect(timberDefinition ~= nil and (timberDefinition :: any).Price == nil, "catalogue does not hard-code unreviewed prices")
 
-local inventoryWithTimber, addTimberError = InventoryPolicy.TryAdd(emptyInventory, "timber_plank", 12, ItemCatalog)
-expect(inventoryWithTimber ~= nil and addTimberError == nil, "valid item quantity can be added")
-assert(inventoryWithTimber ~= nil, "updated inventory must exist")
-expect(inventoryWithTimber.items.timber_plank == 12, "added item quantity is recorded")
-expect(emptyInventory.items.timber_plank == nil, "adding an item does not mutate the source inventory")
+	local inventoryWithTimber, addTimberError = InventoryPolicy.TryAdd(emptyInventory, "timber_plank", 12, ItemCatalog)
+	expect(inventoryWithTimber ~= nil and addTimberError == nil, "valid item quantity can be added")
+	assert(inventoryWithTimber ~= nil, "updated inventory must exist")
+	expect(inventoryWithTimber.items.timber_plank == 12, "added item quantity is recorded")
+	expect(emptyInventory.items.timber_plank == nil, "adding an item does not mutate the source inventory")
 
-local fullTimberStack, fullStackError = InventoryPolicy.TryAdd(inventoryWithTimber, "timber_plank", 38, ItemCatalog)
-expect(fullTimberStack ~= nil and fullStackError == nil, "adding up to the exact stack limit is allowed")
-assert(fullTimberStack ~= nil, "full stack inventory must exist")
-expect(fullTimberStack.items.timber_plank == 50, "stack reaches but does not exceed its configured limit")
+	local fullTimberStack, fullStackError = InventoryPolicy.TryAdd(inventoryWithTimber, "timber_plank", 38, ItemCatalog)
+	expect(fullTimberStack ~= nil and fullStackError == nil, "adding up to the exact stack limit is allowed")
+	assert(fullTimberStack ~= nil, "full stack inventory must exist")
+	expect(fullTimberStack.items.timber_plank == 50, "stack reaches but does not exceed its configured limit")
 
-local overflowStack, overflowError = InventoryPolicy.TryAdd(fullTimberStack, "timber_plank", 1, ItemCatalog)
-expect(overflowStack == nil and overflowError ~= nil, "stack overflow is rejected")
-local unknownItem, unknownItemError = InventoryPolicy.TryAdd(emptyInventory, "unregistered_item", 1, ItemCatalog)
-expect(unknownItem == nil and unknownItemError ~= nil, "unknown item IDs are rejected")
-local fractionalItem, fractionalItemError = InventoryPolicy.TryAdd(emptyInventory, "stone_block", 1.5, ItemCatalog)
-expect(fractionalItem == nil and fractionalItemError ~= nil, "fractional item quantities are rejected")
-local negativeItem, negativeItemError = InventoryPolicy.TryAdd(emptyInventory, "stone_block", -1, ItemCatalog)
-expect(negativeItem == nil and negativeItemError ~= nil, "negative item quantities are rejected")
-local zeroItem, zeroItemError = InventoryPolicy.TryAdd(emptyInventory, "stone_block", 0, ItemCatalog)
-expect(zeroItem == nil and zeroItemError ~= nil, "zero item quantities are rejected")
+	local overflowStack, overflowError = InventoryPolicy.TryAdd(fullTimberStack, "timber_plank", 1, ItemCatalog)
+	expect(overflowStack == nil and overflowError ~= nil, "stack overflow is rejected")
+	local unknownItem, unknownItemError = InventoryPolicy.TryAdd(emptyInventory, "unregistered_item", 1, ItemCatalog)
+	expect(unknownItem == nil and unknownItemError ~= nil, "unknown item IDs are rejected")
+	local fractionalItem, fractionalItemError = InventoryPolicy.TryAdd(emptyInventory, "stone_block", 1.5, ItemCatalog)
+	expect(fractionalItem == nil and fractionalItemError ~= nil, "fractional item quantities are rejected")
+	local negativeItem, negativeItemError = InventoryPolicy.TryAdd(emptyInventory, "stone_block", -1, ItemCatalog)
+	expect(negativeItem == nil and negativeItemError ~= nil, "negative item quantities are rejected")
+	local zeroItem, zeroItemError = InventoryPolicy.TryAdd(emptyInventory, "stone_block", 0, ItemCatalog)
+	expect(zeroItem == nil and zeroItemError ~= nil, "zero item quantities are rejected")
 
-local reducedInventory, removeItemError = InventoryPolicy.TryRemove(inventoryWithTimber, "timber_plank", 5, ItemCatalog)
-expect(reducedInventory ~= nil and removeItemError == nil, "owned items can be removed")
-assert(reducedInventory ~= nil, "reduced inventory must exist")
-expect(reducedInventory.items.timber_plank == 7, "item removal subtracts the requested quantity")
-local insufficientInventory, insufficientItemError = InventoryPolicy.TryRemove(inventoryWithTimber, "timber_plank", 13, ItemCatalog)
-expect(insufficientInventory == nil and insufficientItemError ~= nil, "removing more than owned quantity is rejected")
-local invalidInventory, invalidInventoryError = InventoryPolicy.Validate({ items = { timber_plank = 51 } }, ItemCatalog)
-expect(invalidInventory == false and invalidInventoryError ~= nil, "loaded inventory above a stack cap fails validation")
-local unknownInventory, unknownInventoryError = InventoryPolicy.Validate({ items = { unknown_item = 1 } }, ItemCatalog)
-expect(unknownInventory == false and unknownInventoryError ~= nil, "loaded inventory with unknown IDs fails validation")
+	local reducedInventory, removeItemError = InventoryPolicy.TryRemove(inventoryWithTimber, "timber_plank", 5, ItemCatalog)
+	expect(reducedInventory ~= nil and removeItemError == nil, "owned items can be removed")
+	assert(reducedInventory ~= nil, "reduced inventory must exist")
+	expect(reducedInventory.items.timber_plank == 7, "item removal subtracts the requested quantity")
+	local insufficientInventory, insufficientItemError = InventoryPolicy.TryRemove(inventoryWithTimber, "timber_plank", 13, ItemCatalog)
+	expect(insufficientInventory == nil and insufficientItemError ~= nil, "removing more than owned quantity is rejected")
+	local invalidInventory, invalidInventoryError = InventoryPolicy.Validate({ items = { timber_plank = 51 } }, ItemCatalog)
+	expect(invalidInventory == false and invalidInventoryError ~= nil, "loaded inventory above a stack cap fails validation")
+	local unknownInventory, unknownInventoryError = InventoryPolicy.Validate({ items = { unknown_item = 1 } }, ItemCatalog)
+	expect(unknownInventory == false and unknownInventoryError ~= nil, "loaded inventory with unknown IDs fails validation")
 
-print("[BTV tests] Construction supply catalogue and inventory policy rules passed.")
+	print("[BTV tests] Construction supply catalogue and inventory policy rules passed.")
 end
