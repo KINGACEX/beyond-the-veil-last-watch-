@@ -229,8 +229,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		if typeof(snapshot) ~= "table" then
 			return
 		end
-		local index = if typeof(snapshot.sequenceIndex) == "number" then math.clamp(math.floor(snapshot.sequenceIndex), 1, 4) else 1
-		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 4"
+		local index = if typeof(snapshot.sequenceIndex) == "number" then math.clamp(math.floor(snapshot.sequenceIndex), 1, 5) else 1
+		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 5"
 		if typeof(snapshot.objective) == "string" then
 			missionObjective.Text = snapshot.objective
 		end
@@ -240,7 +240,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		if snapshot.phase == "report_accessed" then
 			reportPanel.Visible = true
 			reportReopen.Visible = true
-		elseif snapshot.phase == "ridgeview_arrival" then
+		elseif snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation" then
 			reportPanel.Visible = false
 			reportReopen.Visible = true
 		end
