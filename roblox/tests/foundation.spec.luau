@@ -366,7 +366,6 @@ do
 	expect(migratedV2Profile.economy.aces == 37, "v2 migration preserves Aces")
 	expect(migratedV2Profile.inventory.items.timber_plank == 4, "v2 migration preserves inventory")
 	expect(#migratedV2Profile.economy.recentTransactions == 0, "v2 migration initializes a bounded transaction journal")
-
 end
 
 local occupiedRecord, occupiedError = ProfileRecordPolicy.TryAcquire(
@@ -807,7 +806,6 @@ do
 
 	print("[BTV tests] Construction supply catalogue and inventory policy rules passed.")
 end
-
 
 do
 	-- NPC merchant rules are pure, bounded and idempotent; test prices are fixtures, not live balance values.
