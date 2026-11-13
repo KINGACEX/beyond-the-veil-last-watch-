@@ -17,6 +17,8 @@ local function copyProfile(profile: any)
 	copy.economy = table.clone(profile.economy)
 	copy.companions = table.clone(profile.companions)
 	copy.companions.owned = table.clone(profile.companions.owned)
+	copy.inventory = table.clone(profile.inventory)
+	copy.inventory.items = table.clone(profile.inventory.items)
 	return copy
 end
 
@@ -81,6 +83,8 @@ function ProfileRecordPolicy.TryAcquire(
 	profileSchema: any,
 	rankCatalog: any,
 	companionCatalog: any,
+	inventoryPolicy: any,
+	itemCatalog: any,
 	leasePolicy: any
 ): (any?, string?)
 	local profile
@@ -99,11 +103,17 @@ function ProfileRecordPolicy.TryAcquire(
 		if not isValidSaveOperation(record.lastSaveOperation) then
 			return nil, "Stored save-operation marker is malformed."
 		end
-		local valid, validationError = profileSchema.Validate(record.profile, rankCatalog, companionCatalog)
-		if not valid then
-			return nil, validationError or "Stored profile failed validation."
+		local migratedProfile, migrationError = profileSchema.Migrate(
+			record.profile,
+			rankCatalog,
+			companionCatalog,
+			inventoryPolicy,
+			itemCatalog
+		)
+		if migratedProfile == nil then
+			return nil, migrationError or "Stored profile failed validation or migration."
 		end
-		profile = copyProfile(record.profile)
+		profile = migratedProfile
 		existingLease = record.lease
 		lastSaveOperation = copySaveOperation(record.lastSaveOperation)
 	end
@@ -130,6 +140,8 @@ function ProfileRecordPolicy.TrySave(
 	profileSchema: any,
 	rankCatalog: any,
 	companionCatalog: any,
+	inventoryPolicy: any,
+	itemCatalog: any,
 	leasePolicy: any
 ): (any?, string?, string?)
 	if not isRecord(existingRecord) then
@@ -147,11 +159,11 @@ function ProfileRecordPolicy.TrySave(
 		return nil, "Save operation ID must be a non-empty string of at most 128 characters.", nil
 	end
 
-	local candidateValid, candidateError = profileSchema.Validate(candidateProfile, rankCatalog, companionCatalog)
+	local candidateValid, candidateError = profileSchema.Validate(candidateProfile, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog)
 	if not candidateValid then
 		return nil, candidateError or "Candidate profile failed validation.", nil
 	end
-	local storedValid = profileSchema.Validate(record.profile, rankCatalog, companionCatalog)
+	local storedValid = profileSchema.Validate(record.profile, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog)
 	if not storedValid then
 		return nil, "Stored profile failed validation; refusing to overwrite it.", nil
 	end
