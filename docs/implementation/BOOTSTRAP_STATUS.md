@@ -85,7 +85,7 @@ Do not mark NLI lifecycle complete.
 
 ## 5. Verification boundary
 
-**CONFIRMED — run 43411504832:** the expanded feature-branch workflow passed on Ubuntu with Godot 4.7.2, including all 16 test scripts, chapel scene loading, HQ blockout structure/collision validation and main-scene startup.
+**CONFIRMED — run 43411985668:** the expanded feature-branch workflow passed on Ubuntu with Godot 4.7.2, including all 17 test scripts, interaction HUD feedback, chapel scene loading, HQ blockout structure/collision validation and main-scene startup.
 
 Not verified:
 1. Editor visual inspection.
