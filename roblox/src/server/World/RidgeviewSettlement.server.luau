@@ -4,7 +4,6 @@
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TweenService = game:GetService("TweenService")
 local Workspace = game:GetService("Workspace")
 
 local shared = ReplicatedStorage:WaitForChild("BTVShared")
@@ -358,28 +357,6 @@ local function startConversation(player: Player, npcId: string)
 	})
 end
 
-local function sendSequence(player: Player, speaker: string, lines: { DialogueLine }, step: number, nextPhase: string, nextLabel: string)
-	local state = conversations[player.UserId]
-	if state == nil then
-		return
-	end
-	local line = lines[step]
-	if line == nil then
-		state.phase = nextPhase
-		state.step = 1
-		send(player, speaker, nextLabel, {
-			{ Label = "Continue", Action = "Continue" },
-			{ Label = "End conversation", Action = "Close" },
-		})
-		return
-	end
-	state.step = step
-	send(player, line.Speaker, line.Text, {
-		{ Label = "Continue", Action = "Continue" },
-		{ Label = "End conversation", Action = "Close" },
-	})
-end
-
 local wrenIntro: { DialogueLine } = {
 	{ Speaker = "Asher", Text = "Yes. We can take our time." },
 	{ Speaker = "Wren", Text = "Not here. People notice who asks what." },
@@ -477,7 +454,7 @@ local function onAction(player: Player, action: unknown)
 		return
 	end
 
-	if (state.phase == "wren_consent" or state.phase == "wren_permission") and action == "KeepPrivate" then
+	if (state.phase == "wren_consent" or state.phase == "wren_permission" or state.phase == "wren_permission_pending") and action == "KeepPrivate" then
 		state.policy = SettlementPolicy.RecordWrenTestimony(state.policy)
 		local updated = SettlementPolicy.SetWrenSharePermission(state.policy, false)
 		if updated ~= nil then
