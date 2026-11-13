@@ -84,5 +84,8 @@ jobs:
       - name: Load and validate chapel study scene
         run: godot --headless --path . --script res://tests/chapel_study_001_load_test.gd
 
+      - name: Validate Covenant HQ blockout and playtest scene
+        run: godot --headless --path . --script res://tests/covenant_hq_blockout_test.gd
+
       - name: Launch main scene for 10 frames
         run: godot --headless --path . --quit-after 10
