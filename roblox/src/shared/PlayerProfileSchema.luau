@@ -4,8 +4,10 @@
 
 local PlayerProfileSchema = {}
 
-local CURRENT_SCHEMA_VERSION = 2
+local CURRENT_SCHEMA_VERSION = 3
 local LEGACY_SCHEMA_VERSION = 1
+local INVENTORY_SCHEMA_VERSION = 2
+local MAX_RECENT_TRANSACTIONS = 50
 local DEFAULT_OWNERSHIP: {[string]: boolean} = table.freeze({
 	ember = true,
 	fox = true,
@@ -54,6 +56,12 @@ local function copyProfile(profile: any)
 	copy.progression.completedEvaluations = table.clone(profile.progression.completedEvaluations)
 	copy.progression.completedMissionIds = table.clone(profile.progression.completedMissionIds)
 	copy.economy = table.clone(profile.economy)
+	if profile.economy.recentTransactions ~= nil then
+		copy.economy.recentTransactions = table.clone(profile.economy.recentTransactions)
+		for index, transaction in copy.economy.recentTransactions do
+			copy.economy.recentTransactions[index] = table.clone(transaction)
+		end
+	end
 	copy.companions = table.clone(profile.companions)
 	copy.companions.owned = table.clone(profile.companions.owned)
 	if profile.inventory ~= nil then
@@ -138,13 +146,44 @@ local function validateProfile(
 		return false, "An unconfigured premium companion cannot be equipped."
 	end
 
-	if expectedVersion == CURRENT_SCHEMA_VERSION then
+	if expectedVersion >= INVENTORY_SCHEMA_VERSION then
 		if inventoryPolicy == nil or itemCatalog == nil then
 			return false, "Inventory validation dependencies are missing."
 		end
 		local inventoryValid, inventoryError = inventoryPolicy.Validate(profile.inventory, itemCatalog)
 		if not inventoryValid then
 			return false, inventoryError or "Profile inventory is malformed."
+		end
+	end
+
+	if expectedVersion == CURRENT_SCHEMA_VERSION then
+		local recentTransactions = economy.recentTransactions
+		if typeof(recentTransactions) ~= "table" or #recentTransactions > MAX_RECENT_TRANSACTIONS then
+			return false, "Recent transaction journal is malformed or exceeds its limit."
+		end
+		local seenTransactionIds: {[string]: boolean} = {}
+		for index, transaction in recentTransactions do
+			if typeof(index) ~= "number" or index < 1 or index % 1 ~= 0 or typeof(transaction) ~= "table" then
+				return false, "Recent transaction journal contains a malformed entry."
+			end
+			if not isNonEmptyString(transaction.id) or #transaction.id > 128 or seenTransactionIds[transaction.id] then
+				return false, "Recent transaction journal contains an invalid or duplicate ID."
+			end
+			if (transaction.kind ~= "MerchantPurchase" and transaction.kind ~= "MerchantSale")
+				or not isNonEmptyString(transaction.itemId)
+				or not isNonNegativeInteger(transaction.quantity)
+				or transaction.quantity == 0
+				or not isNonNegativeInteger(transaction.unitPrice)
+				or transaction.unitPrice == 0
+				or typeof(transaction.acesDelta) ~= "number"
+				or transaction.acesDelta ~= transaction.acesDelta
+				or transaction.acesDelta == math.huge
+				or transaction.acesDelta == -math.huge
+				or transaction.acesDelta % 1 ~= 0
+			then
+				return false, "Recent transaction journal contains invalid transaction data."
+			end
+			seenTransactionIds[transaction.id] = true
 		end
 	end
 
@@ -167,6 +206,7 @@ function PlayerProfileSchema.CreateDefault()
 		economy = {
 			aces = 0,
 			covenantCredits = 0,
+			recentTransactions = {},
 		},
 		companions = {
 			owned = table.clone(DEFAULT_OWNERSHIP),
@@ -199,22 +239,26 @@ function PlayerProfileSchema.Migrate(
 		return nil, "Profile must be a table."
 	end
 
-	if profile.schemaVersion == LEGACY_SCHEMA_VERSION then
-		local legacyValid, legacyError = validateProfile(
+	if profile.schemaVersion == LEGACY_SCHEMA_VERSION or profile.schemaVersion == INVENTORY_SCHEMA_VERSION then
+		local sourceVersion = profile.schemaVersion
+		local sourceValid, sourceError = validateProfile(
 			profile,
-			LEGACY_SCHEMA_VERSION,
+			sourceVersion,
 			rankCatalog,
 			companionCatalog,
-			nil,
-			nil
+			if sourceVersion >= INVENTORY_SCHEMA_VERSION then inventoryPolicy else nil,
+			if sourceVersion >= INVENTORY_SCHEMA_VERSION then itemCatalog else nil
 		)
-		if not legacyValid then
-			return nil, legacyError or "Legacy profile failed validation."
+		if not sourceValid then
+			return nil, sourceError or "Legacy profile failed validation."
 		end
 
 		local migrated = copyProfile(profile)
+		if sourceVersion == LEGACY_SCHEMA_VERSION then
+			migrated.inventory = inventoryPolicy.CreateDefault()
+		end
+		migrated.economy.recentTransactions = {}
 		migrated.schemaVersion = CURRENT_SCHEMA_VERSION
-		migrated.inventory = inventoryPolicy.CreateDefault()
 		local migratedValid, migratedError = validateProfile(
 			migrated,
 			CURRENT_SCHEMA_VERSION,
