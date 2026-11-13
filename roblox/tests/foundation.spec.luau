@@ -1182,7 +1182,5 @@ do
 	}
 	local sparseParcelValid, sparseParcelError = ConstructionPlacementPolicy.ValidateParcel(sparseParcel, BuildModuleCatalog, PropertyPolicy)
 	expect(sparseParcelValid == false and sparseParcelError ~= nil, "parcel validation rejects sparse object arrays")
-
-
 	print("[BTV tests] Property ownership and construction placement rules passed.")
 end
