@@ -27,13 +27,15 @@ local OBJECTIVES: { [string]: string } = {
 	covenant_alert = "Review the Scout Report",
 	report_accessed = "Scout Report opened — authored evidence pending",
 	ridgeview_arrival = "Arrive at Ridgeview",
+	ridgeview_investigation = "Investigate Ridgeview",
 }
 
 local STATUS_TEXT: { [string]: string } = {
 	communion_context = "First Sunday • Communion context",
 	covenant_alert = "Covenant alert received",
 	report_accessed = "Scout Report available. Follow the Ridgeview travel marker.",
-	ridgeview_arrival = "Ridgeview landscape study reached; investigation content pending.",
+	ridgeview_arrival = "Ridgeview reached. Explore the outpost and record one verifiable observation.",
+	ridgeview_investigation = "First observation recorded. Continue exploring and preserve only what you can verify.",
 }
 
 local SEQUENCE_INDEX: { [string]: number } = {
@@ -41,6 +43,7 @@ local SEQUENCE_INDEX: { [string]: number } = {
 	covenant_alert = 2,
 	report_accessed = 3,
 	ridgeview_arrival = 4,
+	ridgeview_investigation = 5,
 }
 
 function MissionService.AddPlayer(player: PlayerIdentity)
