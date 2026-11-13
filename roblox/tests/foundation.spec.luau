@@ -452,14 +452,12 @@ local malformedSaveMarker, malformedSaveMarkerError = ProfileRecordPolicy.TryAcq
 expect(malformedSaveMarker == nil and malformedSaveMarkerError ~= nil, "malformed save-operation marker fails closed")
 print("[BTV tests] Profile record policy rules passed.")
 
-
 -- Fake storage exercises UpdateAsync callback replay and ambiguous write outcomes.
 local fakeStore = FakeProfileStore.new()
 local profileKey = "player:901001"
 fakeStore:QueueCallbackReplay(profileKey, acquiredRecord)
 local replayedAcquire, replayedAcquireError = fakeStore:UpdateAsync(profileKey, function(existing)
-	local nextRecord, policyError =
-		ProfileRecordPolicy.TryAcquire(existing, "server-B", 120, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, ProfileLeasePolicy)
+	local nextRecord, policyError = ProfileRecordPolicy.TryAcquire(existing, "server-B", 120, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, ProfileLeasePolicy)
 	if policyError ~= nil then
 		return nil
 	end
