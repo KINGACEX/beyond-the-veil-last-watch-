@@ -306,6 +306,7 @@ assert(acquiredRecord ~= nil, "acquired profile record must exist")
 expect(acquiredRecord.profile.progression.covenantRank == "Recruit", "new record starts at Recruit")
 expect(acquiredRecord.profile.revision == 0, "new record starts at revision zero")
 
+do
 -- Schema v1 profiles migrate to v2 without losing established progress or balances.
 local legacyProfile = PlayerProfileSchema.CreateDefault()
 legacyProfile.schemaVersion = 1
@@ -367,6 +368,7 @@ expect(migratedRecord ~= nil and migratedRecordError == nil, "atomic record acqu
 assert(migratedRecord ~= nil, "migrated record must exist")
 expect(migratedRecord.profile.schemaVersion == 2, "acquired record contains the current schema")
 expect(migratedRecord.profile.economy.aces == 91, "record migration preserves the legacy balance")
+end
 
 
 local occupiedRecord, occupiedError =
@@ -639,6 +641,7 @@ expect(isolationStore:Get(profileKey).profile.economy.aces == 0, "cancelled tran
 
 print("[BTV tests] Fake store defensive-copy guarantees passed.")
 
+do
 -- Injectable persistence adapter: retries only transient failures and reconciles ambiguous saves.
 local adapterStore = FakeProfileStore.new()
 local adapterClock = 100
@@ -734,7 +737,9 @@ local releasedAdapterRecord = adapterStore:Get("player:901002")
 expect(releasedAdapterRecord ~= nil and releasedAdapterRecord.lease == nil, "adapter release retains the profile while clearing its lease")
 
 print("[BTV tests] Injectable persistence adapter retry and recovery scenarios passed.")
+end
 
+do
 -- Construction supply inventory rules are bounded, immutable and price-independent.
 local emptyInventory = InventoryPolicy.CreateDefault()
 local validEmptyInventory, emptyInventoryError = InventoryPolicy.Validate(emptyInventory, ItemCatalog)
@@ -780,3 +785,4 @@ local unknownInventory, unknownInventoryError = InventoryPolicy.Validate({ items
 expect(unknownInventory == false and unknownInventoryError ~= nil, "loaded inventory with unknown IDs fails validation")
 
 print("[BTV tests] Construction supply catalogue and inventory policy rules passed.")
+end
