@@ -12,7 +12,7 @@
 - White base materials, restrained gold trim and a small cross-centred entrance emblem.
 - Structural collision on floors, perimeter walls, partitions and pillars.
 - Markers for player spawn, reception NPC, operations briefing, mission board, training court and Ember follow-path waypoints.
-- A separate playtest scene that instances the existing capsule player and touch controls.
+- A separate playtest scene that instances the existing capsule player, touch controls and contextual interaction HUD.
 
 ## Deliberate limitations
 
@@ -30,4 +30,4 @@ Run:
 
 `godot --headless --path . --script res://tests/covenant_hq_blockout_test.gd`
 
-The test checks scene loading, required layout markers, structural collision coverage and the separate playtest scene. **CONFIRMED:** GitHub Actions run [43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832) passed this test with Godot 4.7.2. Passing it proves scene structure only; it does not prove visual quality, navigation feel or device performance.
+The test checks scene loading, required layout markers, structural collision coverage and the separate playtest scene. **CONFIRMED:** GitHub Actions run [43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832) passed this test with Godot 4.7.2. The playtest scene now also includes the generic interaction HUD, which is covered by [run 43411985668](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411985668). Passing it proves scene structure only; it does not prove visual quality, navigation feel or device performance.
