@@ -15,6 +15,7 @@ local FakeProfileStore = require("./support/FakeProfileStore")
 local ProfilePersistenceAdapter = require("../src/server/Services/ProfilePersistenceAdapter")
 local ItemCatalog = require("../src/shared/ItemCatalog")
 local InventoryPolicy = require("../src/shared/InventoryPolicy")
+local MerchantTransactionPolicy = require("../src/shared/MerchantTransactionPolicy")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -204,7 +205,7 @@ local defaultProfile = PlayerProfileSchema.CreateDefault()
 local validProfile, validProfileReason = PlayerProfileSchema.Validate(defaultProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 expect(validProfile, "new versioned profile passes schema validation")
 expect(validProfileReason == nil, "valid profile has no validation error")
-expect(defaultProfile.schemaVersion == 2, "new profile uses the current schema version")
+expect(defaultProfile.schemaVersion == 3, "new profile uses the current schema version")
 expect(defaultProfile.progression.covenantRank == "Recruit", "new profile starts at Recruit")
 expect(defaultProfile.companions.owned.ember == true, "new profile owns Ember")
 expect(defaultProfile.companions.owned.fox == true, "new profile owns Fox")
@@ -308,7 +309,7 @@ expect(acquiredRecord.profile.progression.covenantRank == "Recruit", "new record
 expect(acquiredRecord.profile.revision == 0, "new record starts at revision zero")
 
 do
-	-- Schema v1 profiles migrate to v2 without losing established progress or balances.
+	-- Legacy profiles migrate to v3 without losing established progress or balances.
 	local legacyProfile = PlayerProfileSchema.CreateDefault()
 	legacyProfile.schemaVersion = 1
 	legacyProfile.inventory = nil
@@ -317,7 +318,7 @@ do
 	local migratedProfile, migrationError = PlayerProfileSchema.Migrate(legacyProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(migratedProfile ~= nil and migrationError == nil, "valid v1 profile migrates to the current schema")
 	assert(migratedProfile ~= nil, "migrated profile must exist")
-	expect(migratedProfile.schemaVersion == 2, "migration advances profile schema to version two")
+	expect(migratedProfile.schemaVersion == 3, "migration advances profile schema to version three")
 	expect(migratedProfile.economy.aces == 91, "migration preserves existing Aces")
 	expect(migratedProfile.progression.completedMissionIds[1] == "mission-legacy-001", "migration preserves mission progress")
 	expect(migratedProfile.inventory.items ~= nil and next(migratedProfile.inventory.items) == nil, "migration adds an empty inventory")
@@ -350,8 +351,28 @@ do
 	)
 	expect(migratedRecord ~= nil and migratedRecordError == nil, "atomic record acquisition migrates a valid legacy profile")
 	assert(migratedRecord ~= nil, "migrated record must exist")
-	expect(migratedRecord.profile.schemaVersion == 2, "acquired record contains the current schema")
+	expect(migratedRecord.profile.schemaVersion == 3, "acquired record contains the current schema")
 	expect(migratedRecord.profile.economy.aces == 91, "record migration preserves the legacy balance")
+
+	local legacyV2Profile = PlayerProfileSchema.CreateDefault()
+	legacyV2Profile.schemaVersion = 2
+	legacyV2Profile.economy.recentTransactions = nil
+	legacyV2Profile.economy.aces = 37
+	legacyV2Profile.inventory.items.timber_plank = 4
+	local migratedV2Profile, migratedV2Error = PlayerProfileSchema.Migrate(
+		legacyV2Profile,
+		CovenantRankCatalog,
+		CompanionCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(migratedV2Profile ~= nil and migratedV2Error == nil, "valid v2 profile migrates to v3")
+	assert(migratedV2Profile ~= nil, "migrated v2 profile must exist")
+	expect(migratedV2Profile.schemaVersion == 3, "v2 migration advances the schema version")
+	expect(migratedV2Profile.economy.aces == 37, "v2 migration preserves Aces")
+	expect(migratedV2Profile.inventory.items.timber_plank == 4, "v2 migration preserves inventory")
+	expect(#migratedV2Profile.economy.recentTransactions == 0, "v2 migration initializes a bounded transaction journal")
+
 end
 
 local occupiedRecord, occupiedError = ProfileRecordPolicy.TryAcquire(
@@ -791,4 +812,156 @@ do
 	expect(unknownInventory == false and unknownInventoryError ~= nil, "loaded inventory with unknown IDs fails validation")
 
 	print("[BTV tests] Construction supply catalogue and inventory policy rules passed.")
+end
+
+
+do
+	-- NPC merchant rules are pure, bounded and idempotent; test prices are fixtures, not live balance values.
+	local merchantProfile = PlayerProfileSchema.CreateDefault()
+	merchantProfile.economy.aces = 100
+
+	local purchasedProfile, purchaseError, purchaseOutcome = MerchantTransactionPolicy.TryPurchase(
+		merchantProfile,
+		"timber_plank",
+		3,
+		4,
+		"merchant-buy-001",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		CompanionCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(purchasedProfile ~= nil and purchaseError == nil and purchaseOutcome == "Applied", "valid NPC merchant purchase is applied")
+	assert(purchasedProfile ~= nil, "purchased profile must exist")
+	expect(purchasedProfile.economy.aces == 88, "purchase debits the exact server price")
+	expect(purchasedProfile.inventory.items.timber_plank == 3, "purchase grants the requested item quantity")
+	expect(merchantProfile.economy.aces == 100 and merchantProfile.inventory.items.timber_plank == nil, "purchase does not mutate the source profile")
+	expect(#purchasedProfile.economy.recentTransactions == 1, "purchase records its durable idempotency entry")
+
+	local repeatedPurchase, repeatedPurchaseError, repeatedPurchaseOutcome = MerchantTransactionPolicy.TryPurchase(
+		purchasedProfile,
+		"timber_plank",
+		3,
+		4,
+		"merchant-buy-001",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(repeatedPurchase ~= nil and repeatedPurchaseError == nil and repeatedPurchaseOutcome == "AlreadyApplied", "exact duplicate purchase is reconciled without applying twice")
+	assert(repeatedPurchase ~= nil, "reconciled purchase profile must exist")
+	expect(repeatedPurchase.economy.aces == 88 and repeatedPurchase.inventory.items.timber_plank == 3, "duplicate purchase cannot double debit or grant")
+
+	local reusedPurchaseId, reusedPurchaseIdError = MerchantTransactionPolicy.TryPurchase(
+		purchasedProfile,
+		"timber_plank",
+		2,
+		4,
+		"merchant-buy-001",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(reusedPurchaseId == nil and reusedPurchaseIdError ~= nil, "transaction ID reuse with a different payload is rejected")
+
+	local insufficientPurchase, insufficientPurchaseError = MerchantTransactionPolicy.TryPurchase(
+		merchantProfile,
+		"timber_plank",
+		26,
+		4,
+		"merchant-buy-insufficient",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(insufficientPurchase == nil and insufficientPurchaseError ~= nil, "purchase rejects insufficient Aces")
+
+	local invalidPrice, invalidPriceError = MerchantTransactionPolicy.TryPurchase(
+		merchantProfile,
+		"timber_plank",
+		1,
+		0,
+		"merchant-buy-zero",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(invalidPrice == nil and invalidPriceError ~= nil, "purchase rejects zero server prices")
+
+	local invalidQuantity, invalidQuantityError = MerchantTransactionPolicy.TryPurchase(
+		merchantProfile,
+		"timber_plank",
+		1.5,
+		4,
+		"merchant-buy-fractional",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(invalidQuantity == nil and invalidQuantityError ~= nil, "purchase rejects fractional quantities")
+
+	local unknownPurchase, unknownPurchaseError = MerchantTransactionPolicy.TryPurchase(
+		merchantProfile,
+		"not_a_real_item",
+		1,
+		4,
+		"merchant-buy-unknown",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(unknownPurchase == nil and unknownPurchaseError ~= nil, "purchase rejects unknown item IDs")
+
+	local soldProfile, saleError, saleOutcome = MerchantTransactionPolicy.TrySell(
+		purchasedProfile,
+		"timber_plank",
+		2,
+		2,
+		"merchant-sell-001",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(soldProfile ~= nil and saleError == nil and saleOutcome == "Applied", "valid NPC merchant sale is applied")
+	assert(soldProfile ~= nil, "sold profile must exist")
+	expect(soldProfile.economy.aces == 92, "sale credits the configured server buyback value")
+	expect(soldProfile.inventory.items.timber_plank == 1, "sale removes the requested item quantity")
+
+	local repeatedSale, repeatedSaleError, repeatedSaleOutcome = MerchantTransactionPolicy.TrySell(
+		soldProfile,
+		"timber_plank",
+		2,
+		2,
+		"merchant-sell-001",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(repeatedSale ~= nil and repeatedSaleError == nil and repeatedSaleOutcome == "AlreadyApplied", "exact duplicate sale is reconciled without paying twice")
+	assert(repeatedSale ~= nil, "reconciled sale profile must exist")
+	expect(repeatedSale.economy.aces == 92 and repeatedSale.inventory.items.timber_plank == 1, "duplicate sale cannot double credit or remove")
+
+	local insufficientSale, insufficientSaleError = MerchantTransactionPolicy.TrySell(
+		soldProfile,
+		"timber_plank",
+		2,
+		2,
+		"merchant-sell-insufficient",
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		InventoryPolicy,
+		ItemCatalog
+	)
+	expect(insufficientSale == nil and insufficientSaleError ~= nil, "sale rejects quantities the player does not own")
+
+	print("[BTV tests] NPC merchant transaction and idempotency rules passed.")
 end
