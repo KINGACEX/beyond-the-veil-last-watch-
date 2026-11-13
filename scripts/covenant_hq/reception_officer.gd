@@ -8,7 +8,7 @@ var _has_greeted_player := false
 
 
 func interact(actor: Node) -> String:
-	if actor is not BTVPlayerController:
+	if not actor is BTVPlayerController:
 		return "The reception officer is waiting to assist a visitor."
 
 	var look_target := actor.global_position
