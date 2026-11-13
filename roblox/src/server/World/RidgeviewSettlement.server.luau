@@ -533,7 +533,11 @@ local function onAction(player: Player, action: unknown)
 				{ Label = "End conversation", Action = "Close" },
 			})
 		else
-			state.policy = SettlementPolicy.RecordPikeAdmission(state.policy)
+			local admittedState = SettlementPolicy.RecordPikeAdmission(state.policy)
+			if admittedState == nil then
+				return
+			end
+			state.policy = admittedState
 			state.phase = "pike_admission_recorded"
 			send(player, "Journal", "Pike's limited admission is recorded for this session. It does not establish every accusation or a legal finding.", {
 				{ Label = "End conversation", Action = "Close" },
