@@ -1,10 +1,11 @@
 --!strict
--- Pure, side-effect-free player profile schema rules.
+-- Pure, side-effect-free player profile schema and migration rules.
 -- This module deliberately does not access DataStoreService or enable persistence.
 
 local PlayerProfileSchema = {}
 
-local CURRENT_SCHEMA_VERSION = 1
+local CURRENT_SCHEMA_VERSION = 2
+local LEGACY_SCHEMA_VERSION = 1
 local DEFAULT_OWNERSHIP: {[string]: boolean} = table.freeze({
 	ember = true,
 	fox = true,
@@ -46,35 +47,34 @@ local function validateStringArray(value: unknown): boolean
 	return count == #value
 end
 
-function PlayerProfileSchema.CreateDefault()
-	return {
-		schemaVersion = CURRENT_SCHEMA_VERSION,
-		revision = 0,
-		identity = {
-			characterId = "roblox_player_chosen",
-			covenantBranch = "Unassigned",
-		},
-		progression = {
-			covenantRank = "Recruit",
-			completedEvaluations = {},
-			completedMissionIds = {},
-		},
-		economy = {
-			aces = 0,
-			covenantCredits = 0,
-		},
-		companions = {
-			owned = table.clone(DEFAULT_OWNERSHIP),
-			equipped = "ember",
-		},
-	}
+local function copyProfile(profile: any)
+	local copy = table.clone(profile)
+	copy.identity = table.clone(profile.identity)
+	copy.progression = table.clone(profile.progression)
+	copy.progression.completedEvaluations = table.clone(profile.progression.completedEvaluations)
+	copy.progression.completedMissionIds = table.clone(profile.progression.completedMissionIds)
+	copy.economy = table.clone(profile.economy)
+	copy.companions = table.clone(profile.companions)
+	copy.companions.owned = table.clone(profile.companions.owned)
+	if profile.inventory ~= nil then
+		copy.inventory = table.clone(profile.inventory)
+		copy.inventory.items = table.clone(profile.inventory.items)
+	end
+	return copy
 end
 
-function PlayerProfileSchema.Validate(profile: unknown, rankCatalog: any, companionCatalog: any): (boolean, string?)
+local function validateProfile(
+	profile: unknown,
+	expectedVersion: number,
+	rankCatalog: any,
+	companionCatalog: any,
+	inventoryPolicy: any?,
+	itemCatalog: any?
+): (boolean, string?)
 	if typeof(profile) ~= "table" then
 		return false, "Profile must be a table."
 	end
-	if profile.schemaVersion ~= CURRENT_SCHEMA_VERSION then
+	if profile.schemaVersion ~= expectedVersion then
 		return false, "Unsupported profile schema version."
 	end
 	if not isNonNegativeInteger(profile.revision) then
@@ -138,7 +138,113 @@ function PlayerProfileSchema.Validate(profile: unknown, rankCatalog: any, compan
 		return false, "An unconfigured premium companion cannot be equipped."
 	end
 
+	if expectedVersion == CURRENT_SCHEMA_VERSION then
+		if inventoryPolicy == nil or itemCatalog == nil then
+			return false, "Inventory validation dependencies are missing."
+		end
+		local inventoryValid, inventoryError = inventoryPolicy.Validate(profile.inventory, itemCatalog)
+		if not inventoryValid then
+			return false, inventoryError or "Profile inventory is malformed."
+		end
+	end
+
 	return true, nil
+end
+
+function PlayerProfileSchema.CreateDefault()
+	return {
+		schemaVersion = CURRENT_SCHEMA_VERSION,
+		revision = 0,
+		identity = {
+			characterId = "roblox_player_chosen",
+			covenantBranch = "Unassigned",
+		},
+		progression = {
+			covenantRank = "Recruit",
+			completedEvaluations = {},
+			completedMissionIds = {},
+		},
+		economy = {
+			aces = 0,
+			covenantCredits = 0,
+		},
+		companions = {
+			owned = table.clone(DEFAULT_OWNERSHIP),
+			equipped = "ember",
+		},
+		inventory = {
+			items = {},
+		},
+	}
+end
+
+function PlayerProfileSchema.Validate(
+	profile: unknown,
+	rankCatalog: any,
+	companionCatalog: any,
+	inventoryPolicy: any,
+	itemCatalog: any
+): (boolean, string?)
+	return validateProfile(profile, CURRENT_SCHEMA_VERSION, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog)
+end
+
+function PlayerProfileSchema.Migrate(
+	profile: unknown,
+	rankCatalog: any,
+	companionCatalog: any,
+	inventoryPolicy: any,
+	itemCatalog: any
+): (any?, string?)
+	if typeof(profile) ~= "table" then
+		return nil, "Profile must be a table."
+	end
+
+	if profile.schemaVersion == LEGACY_SCHEMA_VERSION then
+		local legacyValid, legacyError = validateProfile(
+			profile,
+			LEGACY_SCHEMA_VERSION,
+			rankCatalog,
+			companionCatalog,
+			nil,
+			nil
+		)
+		if not legacyValid then
+			return nil, legacyError or "Legacy profile failed validation."
+		end
+
+		local migrated = copyProfile(profile)
+		migrated.schemaVersion = CURRENT_SCHEMA_VERSION
+		migrated.inventory = inventoryPolicy.CreateDefault()
+		local migratedValid, migratedError = validateProfile(
+			migrated,
+			CURRENT_SCHEMA_VERSION,
+			rankCatalog,
+			companionCatalog,
+			inventoryPolicy,
+			itemCatalog
+		)
+		if not migratedValid then
+			return nil, migratedError or "Migrated profile failed validation."
+		end
+		return migrated, nil
+	end
+
+	if profile.schemaVersion == CURRENT_SCHEMA_VERSION then
+		local valid, validationError = validateProfile(
+			profile,
+			CURRENT_SCHEMA_VERSION,
+			rankCatalog,
+			companionCatalog,
+			inventoryPolicy,
+			itemCatalog
+		)
+		if not valid then
+			return nil, validationError or "Profile failed validation."
+		end
+		return copyProfile(profile), nil
+	end
+
+	return nil, "Unsupported profile schema version."
 end
 
 return table.freeze(PlayerProfileSchema)
