@@ -303,7 +303,8 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 **IMPLEMENTED AS SOURCE / HEADLESS RULES ONLY**
 - Injectable profile persistence adapter with bounded retry, lease acquisition/release and ambiguous-save reconciliation; not connected to live joins.
 - Construction-supply item catalogue with stable IDs, stack caps and merchant-group metadata; no prices or live stock.
-- Pure bounded inventory policy with validation, add/remove transformations and regression tests; not yet added to the persistent profile schema.
+- Pure bounded inventory policy with validation, add/remove transformations and regression tests.
+- Profile schema v2 now includes inventory; valid v1 profiles migrate to v2 while preserving progression and balances. Record acquisition applies the migration atomically.
 
 **NOT IMPLEMENTED**
 - Live DataStore integration or persistent player profiles.
@@ -312,7 +313,7 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - Any Robux product, price, receipt handler or purchase entitlement.
 
 **BLOCKERS**
-- Latest completed GitHub Actions validation run after the inventory-policy tests passed: headless regression tests, StyLua, Selene and Rojo build.
+- Latest completed GitHub Actions validation run after schema migration and inventory tests passed: headless regression tests, StyLua, Selene and Rojo build.
 - Roblox Studio multi-client and device testing has not been performed.
 - No production persistence or economy should be enabled until the relevant gates pass.
 
