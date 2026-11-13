@@ -90,5 +90,8 @@ jobs:
       - name: Validate Covenant HQ blockout and playtest scene
         run: godot --headless --path . --script res://tests/covenant_hq_blockout_test.gd
 
+      - name: Run HQ reception officer interaction tests
+        run: godot --headless --path . --script res://tests/hq_reception_officer_test.gd
+
       - name: Launch main scene for 10 frames
         run: godot --headless --path . --quit-after 10
