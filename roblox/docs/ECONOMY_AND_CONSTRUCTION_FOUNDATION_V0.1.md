@@ -283,8 +283,9 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - [ ] Validate PC/mobile UI in Studio.
 
 ### Gate C — property
-- [ ] Add property catalogue, parcel ownership and revision rules.
-- [ ] Add modular build catalogue and placement policy.
+- [x] Add a curated residential parcel catalogue and pure ownership/revision rules.
+- [x] Add a modular build catalogue and grid-based placement validation with overlap, boundary and support checks.
+- [ ] Persist parcel claims and construction objects; connect placement to inventory/material transactions.
 - [ ] Add contract state machine and escrow coordinator.
 - [ ] Add inspection, cancellation, dispute and recovery tests.
 - [ ] Add a small residential construction demo and performance budget.
@@ -310,17 +311,19 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - Profile schema v3 includes inventory and a bounded recent-transaction journal; valid v1 and v2 profiles migrate while preserving progression, balances and existing v2 inventory. Record acquisition applies migration atomically.
 - Pure NPC merchant transaction rules validate server-supplied prices, positive integer quantities, tradeability, inventory capacity and Aces balance. Exact duplicate transaction IDs reconcile without double debit/credit; payload mismatch is rejected. Test prices are fixtures, not live merchant prices.
 - An injected server-side `MerchantService` coordinates trusted offer lookup, request throttling, per-player transaction serialization and profile-adapter saves. Headless tests cover durable purchase/sale, duplicate request IDs, altered-payload rejection, unknown merchants/items and ambiguous commit recovery. It is not wired to remotes, live joins or a configured offer catalogue.
+- Three starter Ridgeview residential parcel definitions and ten modular build definitions are present in source. Pure parcel rules enforce single-owner claims, owner-only release, revisions and clearing before release. Placement rules enforce integer grid bounds, approved modules, same-layer collision rejection, module/object caps, support requirements and safe removal; tests cover stale revisions, overlapping/out-of-bounds/unsupported placement, and removal of structural support.
 
 **NOT IMPLEMENTED**
 - Live DataStore integration or persistent player profiles.
 - Live DataStore integration and player lifecycle wiring; merchant service remains an injected, unconnected module.
 - Configured merchant prices/stock, merchant UI/remotes or live inventory sessions.
-- Escrow, player contracts, businesses or property.
+- Live parcel persistence, property purchase/claim UI, construction tools, material consumption, building costs, inspection or 3D build assets.
+- Escrow, player contracts, businesses or player employment.
 - Construction tools, parcels, build validation or inspection.
 - Any Robux product, price, receipt handler or purchase entitlement.
 
 **BLOCKERS**
-- Latest completed GitHub Actions validation run #171 for commit `93acef9` passed headless regression tests, StyLua, Selene, Rojo build and artifact upload.
+- Latest fully successful validation before the construction-policy tests: GitHub Actions Run #171 for commit `93acef9` passed headless regression tests, StyLua, Selene, Rojo build and artifact upload. Run #189 passed the expanded regression tests but failed only the StyLua check on a redundant blank line; that whitespace correction is committed in `0172dcc` and awaits a fresh full run.
 - Roblox Studio multi-client and device testing has not been performed.
 - No production persistence or economy should be enabled until the relevant gates pass.
 
