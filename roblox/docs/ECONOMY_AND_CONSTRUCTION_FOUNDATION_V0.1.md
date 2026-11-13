@@ -43,20 +43,20 @@ Aces are player/gameplay value; Robux is platform monetization. A successful pla
 
 ## 3. Phase 0 — persistence and transaction readiness
 
-The repository contains a version-1 pure player profile schema, pure lease and profile-record policies, a fake profile store for callback replay and ambiguous-result tests, and a session-only PlayerStateService and CurrencyService.
+The repository now contains a version-2 pure player profile schema, pure lease and profile-record policies, an injectable DataStore adapter, a fake profile store for callback replay and ambiguous-result tests, and a session-only PlayerStateService and CurrencyService. The adapter has passed headless tests but is not wired into live joins.
 
-The policy/test foundations are not a live DataStore adapter. Current balances, inventory, ownership and companion state are still session-only.
+Current balances, inventory, ownership and companion state remain session-only. The adapter is not production-ready until lifecycle orchestration and Roblox Studio multi-server tests are complete.
 
-Before any economy feature depends on persistence, implement and validate:
-1. A server-only DataStore adapter using atomic UpdateAsync transformations.
-2. Profile load/acquire/save/release lifecycle with session leases.
-3. Bounded retry/backoff for classified transient failures only.
-4. Durable idempotency for every economic operation.
-5. Recovery for ambiguous write outcomes and player departure.
-6. A migration strategy before expanding the profile schema.
-7. Fake-adapter tests for concurrency, retries, duplicate operations, failure recovery and corrupt data.
-8. Roblox Studio multi-server tests with at least two clients and server instances.
-9. A read-only failure mode: if a profile cannot be acquired, do not create a writable fresh profile or allow economic actions.
+Before any economy feature depends on persistence, complete and validate:
+1. Connect the adapter only through a server-only profile lifecycle service using atomic UpdateAsync transformations.
+2. Serialize saves per profile and keep each operation ID bound to one immutable snapshot.
+3. Add proactive lease renewal and stop mutations immediately when ownership cannot be confirmed.
+4. Add pending-save handling, safe PlayerRemoving and BindToClose orchestration.
+5. Add durable idempotency for each economic operation and a bounded transaction journal.
+6. Add recovery for ambiguous writes and interrupted player departure.
+7. Extend fake-adapter tests for save ordering, departure, shutdown and corrupt data.
+8. Run Roblox Studio multi-server tests with at least two clients and server instances.
+9. Preserve a read-only failure mode: if a profile cannot be acquired, do not create a writable fresh profile or allow economic actions.
 
 Do not connect persistence to live joins until these gates pass.
 
@@ -266,15 +266,17 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 ## 10. Implementation backlog and gates
 
 ### Gate A — persistence reliability
-- [ ] Diagnose and repair the current failing headless regression run.
-- [ ] Run the full CI sequence: Lune tests, StyLua, Selene and Rojo build.
-- [ ] Implement and test the DataStore adapter behind a disabled-by-default feature gate.
+- [x] Repair the profile/inventory schema migration and regression suite.
+- [x] Run the full CI sequence: Lune tests, StyLua, Selene and Rojo build.
+- [x] Implement and headlessly test the injectable DataStore adapter.
+- [ ] Add per-profile save serialization, pending-save lifecycle and proactive lease renewal.
 - [ ] Run Studio multi-server persistence tests before live join integration.
 
 ### Gate B — minimum viable economy
-- [ ] Review profile schema expansion and migration plan.
-- [ ] Add item catalogue and inventory policy with pure regression tests.
-- [ ] Add durable transaction journal/coordinator.
+- [x] Review profile schema expansion and migration plan.
+- [x] Add item catalogue and inventory policy with pure regression tests.
+- [ ] Add bounded durable transaction IDs to the profile and pure merchant transaction policy.
+- [ ] Add a server-side NPC merchant transaction service and idempotent save integration.
 - [ ] Add NPC merchant buy/sell vertical slice.
 - [ ] Add recovery and exploit tests.
 - [ ] Validate PC/mobile UI in Studio.
@@ -304,7 +306,7 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - Injectable profile persistence adapter with bounded retry, lease acquisition/release and ambiguous-save reconciliation; not connected to live joins.
 - Construction-supply item catalogue with stable IDs, stack caps and merchant-group metadata; no prices or live stock.
 - Pure bounded inventory policy with validation, add/remove transformations and regression tests.
-- Profile schema v2 now includes inventory; valid v1 profiles migrate to v2 while preserving progression and balances. Record acquisition applies the migration atomically.
+- Profile schema v2 includes inventory; valid v1 profiles migrate to v2 while preserving progression and balances. Record acquisition applies the migration atomically.
 
 **NOT IMPLEMENTED**
 - Live DataStore integration or persistent player profiles.
@@ -313,7 +315,7 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - Any Robux product, price, receipt handler or purchase entitlement.
 
 **BLOCKERS**
-- Latest completed GitHub Actions validation run after schema migration and inventory tests passed: headless regression tests, StyLua, Selene and Rojo build.
+- Latest completed GitHub Actions validation run #157 for commit `928ebb2` passed headless regression tests, StyLua, Selene and Rojo build.
 - Roblox Studio multi-client and device testing has not been performed.
 - No production persistence or economy should be enabled until the relevant gates pass.
 
