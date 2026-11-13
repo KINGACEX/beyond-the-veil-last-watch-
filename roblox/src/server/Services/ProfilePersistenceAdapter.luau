@@ -75,8 +75,8 @@ function ProfilePersistenceAdapter.new(options: Options)
 	local baseDelay = options.BaseDelaySeconds or 0.25
 	local leaseDuration = options.LeaseDurationSeconds or 120
 	assert(isPositiveInteger(maxAttempts) and maxAttempts <= 5, "MaxAttempts must be an integer from 1 to 5.")
-	assert(typeof(baseDelay) == "number" and baseDelay >= 0, "BaseDelaySeconds must be non-negative.")
-	assert(typeof(leaseDuration) == "number" and leaseDuration >= 30, "LeaseDurationSeconds must be at least 30.")
+	assert(typeof(baseDelay) == "number" and baseDelay == baseDelay and baseDelay ~= math.huge and baseDelay >= 0, "BaseDelaySeconds must be finite and non-negative.")
+	assert(typeof(leaseDuration) == "number" and leaseDuration == leaseDuration and leaseDuration ~= math.huge and leaseDuration >= 30, "LeaseDurationSeconds must be finite and at least 30.")
 
 	return setmetatable({
 		store = options.Store,
@@ -102,7 +102,7 @@ function ProfilePersistenceAdapter.GetKeyForUser(userId: unknown): string?
 	return "player:" .. tostring(userId)
 end
 
-function ProfilePersistenceAdapter:_UpdateWithRetry(key: string, buildTransform: (number, () -> ()) -> ((any) -> any)): (any?, string?, string?)
+function ProfilePersistenceAdapter:_UpdateWithRetry(key: string, buildTransform: (number, (string?, string?) -> ()) -> ((any) -> any)): (any?, string?, string?)
 	for attempt = 1, self.maxAttempts do
 		local now = self.clock()
 		local callbackError: string? = nil
@@ -136,7 +136,9 @@ function ProfilePersistenceAdapter:_UpdateWithRetry(key: string, buildTransform:
 		end
 
 		local exponentialDelay = self.baseDelaySeconds * (2 ^ (attempt - 1))
-		local jitter = math.clamp(self.random(), 0, 1) * self.baseDelaySeconds
+		local randomValue = self.random()
+		local normalizedRandom = if randomValue == randomValue then math.max(0, math.min(1, randomValue)) else 0
+		local jitter = normalizedRandom * self.baseDelaySeconds
 		self.wait(exponentialDelay + jitter)
 	end
 
