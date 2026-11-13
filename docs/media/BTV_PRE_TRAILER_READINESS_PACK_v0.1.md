@@ -95,7 +95,7 @@ A full open world, large NPC population, complex daily schedules, advanced comba
 - [x] Verify the GLB import and chapel load test in that run.
 - [ ] Establish one designated working branch and keep main isolated.
 
-**P0 validation evidence:** GitHub Actions run [43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832) passed on commit `c0f0db04ffb8da4ef993c8ea95a36aa5a1086589`: Godot 4.7.2, editor import/parsing, 16 test scripts, chapel scene-load, HQ blockout structure/collision test and 10-frame main-scene launch. This is headless validation, not Android or visual/device certification.
+**P0 validation evidence:** GitHub Actions run [43411985668](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411985668) passed on commit `775cd8cc3c6cc6ad927122799e56d83371bed68a`: Godot 4.7.2, editor import/parsing, 17 test scripts, interaction HUD prompt/feedback test, chapel scene-load, HQ blockout structure/collision test and 10-frame main-scene launch. This is headless validation, not Android or visual/device certification.
 
 ### P1 — Functional vertical slice
 - [ ] Approve Asher production reference and integrate model/rig.
@@ -104,6 +104,7 @@ A full open world, large NPC population, complex daily schedules, advanced comba
 - [ ] Implement reliable Ember follow behaviour and test it before commands.
 - [x] Build separate Covenant HQ blockout and capsule-player playtest scene; structure/marker/collision test passes.
 - [ ] Visually review the HQ blockout in the Godot editor and refine the layout before integrating it into the main scene.
+- [x] Add generic contextual interaction prompt and feedback HUD; headless regression passed.
 - [ ] Add one functional NPC interaction.
 - [ ] Add a working mission board backed by approved mission data.
 - [ ] Implement one short mission introduction using existing BTV story material.
@@ -123,7 +124,7 @@ A full open world, large NPC population, complex daily schedules, advanced comba
 - [ ] Identify minimum target Android device and comparison device.
 - [ ] Add and validate Android export configuration.
 - [ ] Export, install and launch on physical device.
-- [ ] Test safe areas, touch layout, multitouch and display scaling.
+- [ ] Implement and test device-specific safe-area insets, touch layout, multitouch and display scaling.
 - [ ] Profile frame-time, memory, loading, thermal state and sustained stability.
 - [ ] Choose renderer and graphics tiers from measured results, not assumptions.
 
