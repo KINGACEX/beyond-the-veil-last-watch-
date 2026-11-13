@@ -12,14 +12,14 @@ func _init() -> void:
 
 	var environment_root := environment_packed.instantiate()
 	var required_markers := [
-		"Markers/PlayerSpawn",
-		"Markers/ReceptionNpcAnchor",
-		"Markers/OperationsBriefingAnchor",
-		"Markers/MissionBoardAnchor",
-		"Markers/TrainingCourtAnchor",
-		"Markers/EmberFollowPath/PointA",
-		"Markers/EmberFollowPath/PointB",
-		"Markers/EmberFollowPath/PointC",
+		"HQBuilding/Markers/PlayerSpawn",
+		"HQBuilding/Markers/ReceptionNpcAnchor",
+		"HQBuilding/Markers/OperationsBriefingAnchor",
+		"HQBuilding/Markers/MissionBoardAnchor",
+		"HQBuilding/Markers/TrainingCourtAnchor",
+		"HQBuilding/Markers/EmberFollowPath/PointA",
+		"HQBuilding/Markers/EmberFollowPath/PointB",
+		"HQBuilding/Markers/EmberFollowPath/PointC",
 	]
 	for marker_path in required_markers:
 		if environment_root.get_node_or_null(marker_path) == null:
