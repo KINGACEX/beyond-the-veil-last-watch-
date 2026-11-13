@@ -359,13 +359,7 @@ do
 	legacyV2Profile.economy.recentTransactions = nil
 	legacyV2Profile.economy.aces = 37
 	legacyV2Profile.inventory.items.timber_plank = 4
-	local migratedV2Profile, migratedV2Error = PlayerProfileSchema.Migrate(
-		legacyV2Profile,
-		CovenantRankCatalog,
-		CompanionCatalog,
-		InventoryPolicy,
-		ItemCatalog
-	)
+	local migratedV2Profile, migratedV2Error = PlayerProfileSchema.Migrate(legacyV2Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(migratedV2Profile ~= nil and migratedV2Error == nil, "valid v2 profile migrates to v3")
 	assert(migratedV2Profile ~= nil, "migrated v2 profile must exist")
 	expect(migratedV2Profile.schemaVersion == 3, "v2 migration advances the schema version")
@@ -851,7 +845,10 @@ do
 		InventoryPolicy,
 		ItemCatalog
 	)
-	expect(repeatedPurchase ~= nil and repeatedPurchaseError == nil and repeatedPurchaseOutcome == "AlreadyApplied", "exact duplicate purchase is reconciled without applying twice")
+	expect(
+		repeatedPurchase ~= nil and repeatedPurchaseError == nil and repeatedPurchaseOutcome == "AlreadyApplied",
+		"exact duplicate purchase is reconciled without applying twice"
+	)
 	assert(repeatedPurchase ~= nil, "reconciled purchase profile must exist")
 	expect(repeatedPurchase.economy.aces == 88 and repeatedPurchase.inventory.items.timber_plank == 3, "duplicate purchase cannot double debit or grant")
 
