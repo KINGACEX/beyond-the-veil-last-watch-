@@ -1,0 +1,304 @@
+[gd_scene load_steps=27 format=3]
+
+[sub_resource type="Environment" id="Environment_HQ"]
+background_mode = 1
+background_color = Color(0.035, 0.045, 0.06, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.78, 0.8, 0.84, 1)
+ambient_light_energy = 0.62
+
+[sub_resource type="StandardMaterial3D" id="Material_White"]
+albedo_color = Color(0.88, 0.9, 0.91, 1)
+roughness = 0.78
+
+[sub_resource type="StandardMaterial3D" id="Material_Gold"]
+albedo_color = Color(0.68, 0.54, 0.28, 1)
+metallic = 0.42
+roughness = 0.48
+
+[sub_resource type="StandardMaterial3D" id="Material_Dark"]
+albedo_color = Color(0.13, 0.17, 0.22, 1)
+roughness = 0.82
+
+[sub_resource type="BoxShape3D" id="Shape_Ground"]
+size = Vector3(52, 1, 52)
+
+[sub_resource type="BoxMesh" id="Mesh_Ground"]
+size = Vector3(52, 1, 52)
+
+[sub_resource type="BoxShape3D" id="Shape_MainFloor"]
+size = Vector3(32, 0.2, 26)
+
+[sub_resource type="BoxMesh" id="Mesh_MainFloor"]
+size = Vector3(32, 0.2, 26)
+
+[sub_resource type="BoxShape3D" id="Shape_CourtFloor"]
+size = Vector3(24, 0.2, 14)
+
+[sub_resource type="BoxMesh" id="Mesh_CourtFloor"]
+size = Vector3(24, 0.2, 14)
+
+[sub_resource type="BoxShape3D" id="Shape_LongWall"]
+size = Vector3(0.6, 7, 26)
+
+[sub_resource type="BoxMesh" id="Mesh_LongWall"]
+size = Vector3(0.6, 7, 26)
+
+[sub_resource type="BoxShape3D" id="Shape_RearWall"]
+size = Vector3(32, 7, 0.6)
+
+[sub_resource type="BoxMesh" id="Mesh_RearWall"]
+size = Vector3(32, 7, 0.6)
+
+[sub_resource type="BoxShape3D" id="Shape_FrontWall"]
+size = Vector3(10, 7, 0.6)
+
+[sub_resource type="BoxMesh" id="Mesh_FrontWall"]
+size = Vector3(10, 7, 0.6)
+
+[sub_resource type="BoxShape3D" id="Shape_Partition"]
+size = Vector3(0.4, 5, 12)
+
+[sub_resource type="BoxMesh" id="Mesh_Partition"]
+size = Vector3(0.4, 5, 12)
+
+[sub_resource type="BoxShape3D" id="Shape_Pillar"]
+size = Vector3(0.8, 6, 0.8)
+
+[sub_resource type="BoxMesh" id="Mesh_Pillar"]
+size = Vector3(0.8, 6, 0.8)
+
+[sub_resource type="BoxMesh" id="Mesh_Counter"]
+size = Vector3(5, 1.2, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_Board"]
+size = Vector3(0.18, 2.6, 3.8)
+
+[sub_resource type="BoxMesh" id="Mesh_EmblemPanel"]
+size = Vector3(3.2, 2.2, 0.3)
+
+[sub_resource type="BoxMesh" id="Mesh_CrossVertical"]
+size = Vector3(0.34, 1.5, 0.12)
+
+[sub_resource type="BoxMesh" id="Mesh_CrossHorizontal"]
+size = Vector3(1.05, 0.34, 0.12)
+
+[sub_resource type="BoxMesh" id="Mesh_RoofBeam"]
+size = Vector3(0.45, 0.45, 26)
+
+[node name="CovenantHeadquartersBlockout001" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_HQ")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, -28, 0)
+light_energy = 1.05
+shadow_enabled = true
+
+[node name="Ground" type="StaticBody3D" parent="."]
+position = Vector3(0, -0.7, 5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("Shape_Ground")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("Mesh_Ground")
+material_override = SubResource("Material_Dark")
+
+[node name="HQBuilding" type="Node3D" parent="."]
+
+[node name="MainFloor" type="StaticBody3D" parent="HQBuilding"]
+position = Vector3(0, -0.1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/MainFloor"]
+shape = SubResource("Shape_MainFloor")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/MainFloor"]
+mesh = SubResource("Mesh_MainFloor")
+material_override = SubResource("Material_White")
+
+[node name="ArrivalCourt" type="StaticBody3D" parent="HQBuilding"]
+position = Vector3(0, -0.1, 22)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/ArrivalCourt"]
+shape = SubResource("Shape_CourtFloor")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/ArrivalCourt"]
+mesh = SubResource("Mesh_CourtFloor")
+material_override = SubResource("Material_Dark")
+
+[node name="WestWall" type="StaticBody3D" parent="HQBuilding"]
+position = Vector3(-15.7, 3.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/WestWall"]
+shape = SubResource("Shape_LongWall")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/WestWall"]
+mesh = SubResource("Mesh_LongWall")
+material_override = SubResource("Material_White")
+
+[node name="EastWall" type="StaticBody3D" parent="HQBuilding"]
+position = Vector3(15.7, 3.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/EastWall"]
+shape = SubResource("Shape_LongWall")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/EastWall"]
+mesh = SubResource("Mesh_LongWall")
+material_override = SubResource("Material_White")
+
+[node name="RearWall" type="StaticBody3D" parent="HQBuilding"]
+position = Vector3(0, 3.5, -12.7)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/RearWall"]
+shape = SubResource("Shape_RearWall")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/RearWall"]
+mesh = SubResource("Mesh_RearWall")
+material_override = SubResource("Material_White")
+
+[node name="FrontWallWest" type="StaticBody3D" parent="HQBuilding"]
+position = Vector3(-11, 3.5, 12.7)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/FrontWallWest"]
+shape = SubResource("Shape_FrontWall")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/FrontWallWest"]
+mesh = SubResource("Mesh_FrontWall")
+material_override = SubResource("Material_White")
+
+[node name="FrontWallEast" type="StaticBody3D" parent="HQBuilding"]
+position = Vector3(11, 3.5, 12.7)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/FrontWallEast"]
+shape = SubResource("Shape_FrontWall")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/FrontWallEast"]
+mesh = SubResource("Mesh_FrontWall")
+material_override = SubResource("Material_White")
+
+[node name="OperationsPartition" type="StaticBody3D" parent="HQBuilding"]
+position = Vector3(-6.5, 2.5, -1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/OperationsPartition"]
+shape = SubResource("Shape_Partition")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/OperationsPartition"]
+mesh = SubResource("Mesh_Partition")
+material_override = SubResource("Material_White")
+
+[node name="TrainingPartition" type="StaticBody3D" parent="HQBuilding"]
+position = Vector3(6.5, 2.5, -1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/TrainingPartition"]
+shape = SubResource("Shape_Partition")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/TrainingPartition"]
+mesh = SubResource("Mesh_Partition")
+material_override = SubResource("Material_White")
+
+[node name="StructuralPillars" type="Node3D" parent="HQBuilding"]
+
+[node name="PillarWestFront" type="StaticBody3D" parent="HQBuilding/StructuralPillars"]
+position = Vector3(-5.8, 3, 8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/StructuralPillars/PillarWestFront"]
+shape = SubResource("Shape_Pillar")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/StructuralPillars/PillarWestFront"]
+mesh = SubResource("Mesh_Pillar")
+material_override = SubResource("Material_White")
+
+[node name="PillarEastFront" type="StaticBody3D" parent="HQBuilding/StructuralPillars"]
+position = Vector3(5.8, 3, 8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/StructuralPillars/PillarEastFront"]
+shape = SubResource("Shape_Pillar")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/StructuralPillars/PillarEastFront"]
+mesh = SubResource("Mesh_Pillar")
+material_override = SubResource("Material_White")
+
+[node name="PillarWestRear" type="StaticBody3D" parent="HQBuilding/StructuralPillars"]
+position = Vector3(-5.8, 3, -8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/StructuralPillars/PillarWestRear"]
+shape = SubResource("Shape_Pillar")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/StructuralPillars/PillarWestRear"]
+mesh = SubResource("Mesh_Pillar")
+material_override = SubResource("Material_White")
+
+[node name="PillarEastRear" type="StaticBody3D" parent="HQBuilding/StructuralPillars"]
+position = Vector3(5.8, 3, -8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HQBuilding/StructuralPillars/PillarEastRear"]
+shape = SubResource("Shape_Pillar")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HQBuilding/StructuralPillars/PillarEastRear"]
+mesh = SubResource("Mesh_Pillar")
+material_override = SubResource("Material_White")
+
+[node name="ReceptionCounter" type="MeshInstance3D" parent="HQBuilding"]
+position = Vector3(0, 0.6, 8.5)
+mesh = SubResource("Mesh_Counter")
+material_override = SubResource("Material_Dark")
+
+[node name="MissionBoardPanel" type="MeshInstance3D" parent="HQBuilding"]
+position = Vector3(-15.25, 2.1, -2.5)
+mesh = SubResource("Mesh_Board")
+material_override = SubResource("Material_Dark")
+
+[node name="EntranceEmblemPanel" type="MeshInstance3D" parent="HQBuilding"]
+position = Vector3(0, 5.5, 12.95)
+mesh = SubResource("Mesh_EmblemPanel")
+material_override = SubResource("Material_Dark")
+
+[node name="CrossVertical" type="MeshInstance3D" parent="HQBuilding/EntranceEmblemPanel"]
+position = Vector3(0, 0, -0.2)
+mesh = SubResource("Mesh_CrossVertical")
+material_override = SubResource("Material_Gold")
+
+[node name="CrossHorizontal" type="MeshInstance3D" parent="HQBuilding/EntranceEmblemPanel"]
+position = Vector3(0, 0.12, -0.2)
+mesh = SubResource("Mesh_CrossHorizontal")
+material_override = SubResource("Material_Gold")
+
+[node name="RoofBeamWest" type="MeshInstance3D" parent="HQBuilding"]
+position = Vector3(-15.1, 7.1, 0)
+mesh = SubResource("Mesh_RoofBeam")
+material_override = SubResource("Material_Gold")
+
+[node name="RoofBeamEast" type="MeshInstance3D" parent="HQBuilding"]
+position = Vector3(15.1, 7.1, 0)
+mesh = SubResource("Mesh_RoofBeam")
+material_override = SubResource("Material_Gold")
+
+[node name="Markers" type="Node3D" parent="HQBuilding"]
+
+[node name="PlayerSpawn" type="Marker3D" parent="HQBuilding/Markers"]
+position = Vector3(0, 0, 27)
+
+[node name="ReceptionNpcAnchor" type="Marker3D" parent="HQBuilding/Markers"]
+position = Vector3(0, 0, 6)
+
+[node name="OperationsBriefingAnchor" type="Marker3D" parent="HQBuilding/Markers"]
+position = Vector3(-10, 0, -2)
+
+[node name="MissionBoardAnchor" type="Marker3D" parent="HQBuilding/Markers"]
+position = Vector3(-14.2, 0, -2.5)
+
+[node name="TrainingCourtAnchor" type="Marker3D" parent="HQBuilding/Markers"]
+position = Vector3(10, 0, -2)
+
+[node name="EmberFollowPath" type="Node3D" parent="HQBuilding/Markers"]
+
+[node name="PointA" type="Marker3D" parent="HQBuilding/Markers/EmberFollowPath"]
+position = Vector3(0, 0, 19)
+
+[node name="PointB" type="Marker3D" parent="HQBuilding/Markers/EmberFollowPath"]
+position = Vector3(0, 0, 10)
+
+[node name="PointC" type="Marker3D" parent="HQBuilding/Markers/EmberFollowPath"]
+position = Vector3(0, 0, 0)
