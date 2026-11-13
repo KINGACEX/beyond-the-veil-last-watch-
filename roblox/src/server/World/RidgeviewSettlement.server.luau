@@ -303,7 +303,7 @@ local function canInteract(player: Player, npcId: string): boolean
 		return false
 	end
 	local mission = MissionService.GetSnapshot(player)
-	return mission ~= nil and mission.phase == "ridgeview_arrival"
+	return mission ~= nil and (mission.phase == "ridgeview_arrival" or mission.phase == "ridgeview_investigation")
 end
 
 local function startConversation(player: Player, npcId: string)
