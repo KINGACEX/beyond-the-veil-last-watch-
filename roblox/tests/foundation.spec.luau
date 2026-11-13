@@ -65,6 +65,14 @@ do
 	assert(arrival ~= nil, "Ridgeview arrival snapshot must exist")
 	expect(arrival.objective == "Arrive at Ridgeview", "Ridgeview arrival objective is correct")
 
+	local investigationAdvanced, investigation = MissionService.Advance(player :: any, "ridgeview_arrival", "ridgeview_investigation")
+	expect(investigationAdvanced, "first Ridgeview observation can advance the investigation objective")
+	expect(investigation ~= nil and investigation.sequenceIndex == 5, "Ridgeview investigation is sequence five")
+	assert(investigation ~= nil, "Ridgeview investigation snapshot must exist")
+	expect(investigation.objective == "Investigate Ridgeview", "Ridgeview investigation objective is correct")
+	local repeatedInvestigation = MissionService.Advance(player :: any, "ridgeview_arrival", "ridgeview_investigation")
+	expect(repeatedInvestigation == false, "stale Ridgeview arrival cannot advance twice")
+
 	local skippedFinal = MissionService.Advance(player :: any, "communion_context", "ridgeview_arrival")
 	expect(skippedFinal == false, "mission cannot jump directly to Ridgeview")
 
