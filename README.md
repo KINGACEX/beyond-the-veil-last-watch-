@@ -4,9 +4,11 @@ BTV is a Christian action-adventure survival RPG set in a modern world of spirit
 
 ## Current repository state
 
-The active isolated engineering/research branch is `btv/test-first-contracts-001`. It contains the Godot greybox foundation originally developed on `btv/bootstrap-prototype-001`, additional interaction and NLI contract tests, recovered source-of-truth design documents, audits and research.
+The current pre-trailer working baseline is `btv/chapel-visual-integration-001`. It extends `btv/test-first-contracts-001` by 34 commits and carries the Godot greybox foundation, hardened keyboard/touch input, expanded interaction tests, recovered source-of-truth documents, audits, research and the unapproved chapel-interior study. The actual local checkout is not observable from GitHub.
 
-The branch is not merged into `main`. Do not treat this branch as a finished game or a playable vertical slice.
+This working branch is not merged into `main`. The default branch does not currently contain the Godot project entry point. Do not treat this branch as a finished game or a playable vertical slice.
+
+See [BTV Pre-Trailer Technical and Development Audit](docs/audits/BTV_PRE_TRAILER_TECHNICAL_AND_DEVELOPMENT_AUDIT_2026-11-13.md) for the evidence-based readiness baseline.
 
 ### Project foundation
 - `project.godot` — Godot project entry point and input actions.
