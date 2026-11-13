@@ -52,13 +52,16 @@ jobs:
           lune --version
 
       - name: Run headless foundation regression tests
-        run: lune run tests/foundation.spec.luau
+        run: |
+          lune run tests/foundation.spec.luau
+          lune run tests/settlement.spec.luau
 
       - name: Verify Luau formatting
         run: |
-          stylua --check tests/foundation.spec.luau
+          stylua --check tests/foundation.spec.luau tests/settlement.spec.luau
           stylua --check src/shared/RidgeviewFieldNoteCatalog.luau src/shared/RidgeviewFieldNotePolicy.luau
           stylua --check src/server/Services/RidgeviewFieldNotes.server.luau src/client/RidgeviewFieldNotes.client.luau
+          stylua --check src/shared/RidgeviewSettlementPolicy.luau src/server/World/RidgeviewSettlement.server.luau src/client/RidgeviewSettlement.client.luau
 
       - name: Lint Luau source
         run: selene src tests
