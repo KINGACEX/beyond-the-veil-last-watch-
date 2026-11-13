@@ -18,9 +18,10 @@ See [BTV Pre-Trailer Technical and Development Audit](docs/audits/BTV_PRE_TRAILE
 - `scenes/touch_controls.tscn` / `scripts/touch_controls.gd` — initial touch overlay mapped to shared InputMap actions.
 - `scripts/player_controller.gd` — movement and nearest-interactable selection.
 - `scripts/interactable.gd` — reusable Area3D interaction contract.
+- `scripts/ui/interaction_hud.gd` / `scenes/ui/interaction_hud.tscn` — contextual interaction prompt and feedback presentation.
 - `scripts/nli/` — deterministic NLI parser, validator, request gate, authored knowledge base and orchestration service.
 - `scripts/mission/mission_data_validator.gd` — neutral typed-registry ID/reference validation utility (Phase 1 only).
-- `tests/` — NLI, mission-validator, interaction, camera/touch, chapel-load and Covenant HQ blockout regression tests.
+- `tests/` — NLI, mission-validator, interaction/HUD, camera/touch, chapel-load and Covenant HQ blockout regression tests.
 - `.github/workflows/godot-validation.yml` — headless Godot validation workflow.
 
 ### Read these first
@@ -29,8 +30,9 @@ See [BTV Pre-Trailer Technical and Development Audit](docs/audits/BTV_PRE_TRAILE
 3. [NLI handoff and source-registry contract](docs/implementation/NLI_003_HANDOFF_AND_SOURCE_REGISTRY_CONTRACT.md).
 4. [NLI contract gap audit — 6 November 2026](docs/audits/BTV_NLI_CONTRACT_GAP_AUDIT_2026-11-06.md).
 5. [Core interaction acceptance matrix](docs/qa/CORE_INTERACTION_003_EDGE_CASE_ACCEPTANCE_MATRIX.md).
-6. [Research-to-design traceability matrix — 6 November 2026](docs/coordination/BTV_RESEARCH_TO_DESIGN_TRACEABILITY_MATRIX_2026-11-06.md).
-7. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
+6. [Interaction HUD implementation note](docs/implementation/BTV_INTERACTION_HUD_IMPLEMENTATION_001.md).
+7. [Research-to-design traceability matrix — 6 November 2026](docs/coordination/BTV_RESEARCH_TO_DESIGN_TRACEABILITY_MATRIX_2026-11-06.md).
+8. [Separated workstream execution board](docs/coordination/BTV_SEPARATED_WORKSTREAM_EXECUTION_BOARD_2026-11-05.md).
 
 ### Implementation contracts
 - [Mission data validation contract](docs/implementation/MISSION_DATA_VALIDATION_CONTRACT_001.md) — Phase 1 neutral registry validator implemented; full mission/dialogue graph validation and Ridgeview content remain unimplemented.
@@ -69,9 +71,9 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Verification
 
-**CONFIRMED — latest completed full validation run 43411504832** passed on commit `c0f0db04ffb8da4ef993c8ea95a36aa5a1086589`. It used Godot 4.7.2 and passed editor import/parsing, 16 test scripts including the new Covenant HQ blockout test, chapel GLB load validation and a 10-frame main-scene launch.
+**CONFIRMED — latest completed full validation run 43411985668** passed on commit `775cd8cc3c6cc6ad927122799e56d83371bed68a`. It used Godot 4.7.2 and passed editor import/parsing, 17 test scripts including interaction HUD and Covenant HQ blockout tests, chapel GLB load validation and a 10-frame main-scene launch.
 
-[View latest completed full validation run 43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832).
+[View latest completed full validation run 43411985668](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411985668).
 
 **CONFIRMED — code/test validation run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
 
