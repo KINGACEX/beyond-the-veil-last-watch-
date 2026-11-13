@@ -43,10 +43,13 @@ function RidgeviewSettlementPolicy.CanDiscussWrenWithPike(state: State): boolean
 	return state.wrenTestimonyRecorded and state.wrenTestimonyShareable
 end
 
-function RidgeviewSettlementPolicy.RecordPikeAdmission(state: State): State
+function RidgeviewSettlementPolicy.RecordPikeAdmission(state: State): (State?, string?)
+	if not RidgeviewSettlementPolicy.CanDiscussWrenWithPike(state) then
+		return nil, "Pike's response requires recorded testimony and explicit sharing permission."
+	end
 	local updated = table.clone(state)
 	updated.pikeAdmissionRecorded = true
-	return updated
+	return updated, nil
 end
 
 return table.freeze(RidgeviewSettlementPolicy)
