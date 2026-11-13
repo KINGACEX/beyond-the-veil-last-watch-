@@ -300,14 +300,19 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - PC and mobile are equal targets.
 - Existing profile/lease/record policy and fake-store test foundations exist.
 
+**IMPLEMENTED AS SOURCE / HEADLESS RULES ONLY**
+- Injectable profile persistence adapter with bounded retry, lease acquisition/release and ambiguous-save reconciliation; not connected to live joins.
+- Construction-supply item catalogue with stable IDs, stack caps and merchant-group metadata; no prices or live stock.
+- Pure bounded inventory policy with validation, add/remove transformations and regression tests; not yet added to the persistent profile schema.
+
 **NOT IMPLEMENTED**
-- Live DataStore adapter or persistent player profiles.
+- Live DataStore integration or persistent player profiles.
 - Durable inventory, merchant transactions, escrow, contracts, businesses or property.
 - Construction tools, parcels, build validation or inspection.
 - Any Robux product, price, receipt handler or purchase entitlement.
 
 **BLOCKERS**
-- Latest known GitHub Actions validation run for the active Roblox branch failed in the headless foundation regression test step; downstream format/lint/build steps were skipped.
+- Latest completed GitHub Actions validation run after the inventory-policy tests passed: headless regression tests, StyLua, Selene and Rojo build.
 - Roblox Studio multi-client and device testing has not been performed.
 - No production persistence or economy should be enabled until the relevant gates pass.
 
