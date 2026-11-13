@@ -86,7 +86,7 @@ local function restoreRidgeviewPosition(player: Player, character: Model)
 		end
 
 		local snapshot = MissionService.GetSnapshot(player)
-		if snapshot ~= nil and snapshot.phase == "ridgeview_arrival" then
+		if snapshot ~= nil and (snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation") then
 			character:PivotTo(getRidgeviewArrivalCFrame())
 		end
 	end)
