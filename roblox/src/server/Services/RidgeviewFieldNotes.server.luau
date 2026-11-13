@@ -186,6 +186,17 @@ if existingProps == nil then
 		false
 	)
 	for _, side in {-1, 1} do
+		makePart(
+			props,
+			"VehicleBedRail_" .. side,
+			Vector3.new(0.25, 0.8, 4.2),
+			vehicleFrame * CFrame.new(side * 3.15, 1.15, 3.15),
+			Color3.fromRGB(73, 91, 83),
+			Enum.Material.Metal,
+			false
+		)
+	end
+	for _, side in {-1, 1} do
 		for _, z in {-3.4, 3.4} do
 			local wheel = makePart(
 				props,
