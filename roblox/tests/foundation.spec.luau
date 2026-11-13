@@ -13,6 +13,8 @@ local ProfileLeasePolicy = require("../src/shared/ProfileLeasePolicy")
 local ProfileRecordPolicy = require("../src/shared/ProfileRecordPolicy")
 local FakeProfileStore = require("./support/FakeProfileStore")
 local ProfilePersistenceAdapter = require("../src/server/Services/ProfilePersistenceAdapter")
+local ItemCatalog = require("../src/shared/ItemCatalog")
+local InventoryPolicy = require("../src/shared/InventoryPolicy")
 
 local function expect(condition: boolean, message: string)
 	if not condition then
@@ -645,3 +647,50 @@ local releasedAdapterRecord = adapterStore:Get("player:901002")
 expect(releasedAdapterRecord ~= nil and releasedAdapterRecord.lease == nil, "adapter release retains the profile while clearing its lease")
 
 print("[BTV tests] Injectable persistence adapter retry and recovery scenarios passed.")
+
+
+-- Construction supply inventory rules are bounded, immutable and price-independent.
+local emptyInventory = InventoryPolicy.CreateDefault()
+local validEmptyInventory, emptyInventoryError = InventoryPolicy.Validate(emptyInventory, ItemCatalog)
+expect(validEmptyInventory and emptyInventoryError == nil, "empty inventory is valid")
+
+local timberDefinition = ItemCatalog.timber_plank
+expect(timberDefinition ~= nil and timberDefinition.MaxStack == 50, "timber plank has a bounded stack definition")
+expect(timberDefinition ~= nil and timberDefinition.Tradeable, "construction supply is marked tradeable")
+expect(timberDefinition ~= nil and timberDefinition.MerchantGroup == "BuildingSupply", "construction supply belongs to the supply merchant group")
+expect(timberDefinition ~= nil and (timberDefinition :: any).Price == nil, "catalogue does not hard-code unreviewed prices")
+
+local inventoryWithTimber, addTimberError = InventoryPolicy.TryAdd(emptyInventory, "timber_plank", 12, ItemCatalog)
+expect(inventoryWithTimber ~= nil and addTimberError == nil, "valid item quantity can be added")
+assert(inventoryWithTimber ~= nil, "updated inventory must exist")
+expect(inventoryWithTimber.items.timber_plank == 12, "added item quantity is recorded")
+expect(emptyInventory.items.timber_plank == nil, "adding an item does not mutate the source inventory")
+
+local fullTimberStack, fullStackError = InventoryPolicy.TryAdd(inventoryWithTimber, "timber_plank", 38, ItemCatalog)
+expect(fullTimberStack ~= nil and fullStackError == nil, "adding up to the exact stack limit is allowed")
+assert(fullTimberStack ~= nil, "full stack inventory must exist")
+expect(fullTimberStack.items.timber_plank == 50, "stack reaches but does not exceed its configured limit")
+
+local overflowStack, overflowError = InventoryPolicy.TryAdd(fullTimberStack, "timber_plank", 1, ItemCatalog)
+expect(overflowStack == nil and overflowError ~= nil, "stack overflow is rejected")
+local unknownItem, unknownItemError = InventoryPolicy.TryAdd(emptyInventory, "unregistered_item", 1, ItemCatalog)
+expect(unknownItem == nil and unknownItemError ~= nil, "unknown item IDs are rejected")
+local fractionalItem, fractionalItemError = InventoryPolicy.TryAdd(emptyInventory, "stone_block", 1.5, ItemCatalog)
+expect(fractionalItem == nil and fractionalItemError ~= nil, "fractional item quantities are rejected")
+local negativeItem, negativeItemError = InventoryPolicy.TryAdd(emptyInventory, "stone_block", -1, ItemCatalog)
+expect(negativeItem == nil and negativeItemError ~= nil, "negative item quantities are rejected")
+local zeroItem, zeroItemError = InventoryPolicy.TryAdd(emptyInventory, "stone_block", 0, ItemCatalog)
+expect(zeroItem == nil and zeroItemError ~= nil, "zero item quantities are rejected")
+
+local reducedInventory, removeItemError = InventoryPolicy.TryRemove(inventoryWithTimber, "timber_plank", 5, ItemCatalog)
+expect(reducedInventory ~= nil and removeItemError == nil, "owned items can be removed")
+assert(reducedInventory ~= nil, "reduced inventory must exist")
+expect(reducedInventory.items.timber_plank == 7, "item removal subtracts the requested quantity")
+local insufficientInventory, insufficientItemError = InventoryPolicy.TryRemove(inventoryWithTimber, "timber_plank", 13, ItemCatalog)
+expect(insufficientInventory == nil and insufficientItemError ~= nil, "removing more than owned quantity is rejected")
+local invalidInventory, invalidInventoryError = InventoryPolicy.Validate({ items = { timber_plank = 51 } }, ItemCatalog)
+expect(invalidInventory == false and invalidInventoryError ~= nil, "loaded inventory above a stack cap fails validation")
+local unknownInventory, unknownInventoryError = InventoryPolicy.Validate({ items = { unknown_item = 1 } }, ItemCatalog)
+expect(unknownInventory == false and unknownInventoryError ~= nil, "loaded inventory with unknown IDs fails validation")
+
+print("[BTV tests] Construction supply catalogue and inventory policy rules passed.")
