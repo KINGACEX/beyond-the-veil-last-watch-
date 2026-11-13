@@ -118,7 +118,6 @@ local function buildHouse(name: string, position: Vector3, yaw: number)
 	makePart(house, "Roof", Vector3.new(27, 2, 22), baseFrame * CFrame.new(0, 13.5, 0), roof, Enum.Material.Slate)
 	for _, side in {-1, 1} do
 		makePart(house, "Window_" .. side, Vector3.new(0.35, 3.2, 4.5), baseFrame * CFrame.new(side * 11.1, 7.5, -1), window, Enum.Material.Glass, false)
-		makePart(house, "WindowTrim_" .. side, Vector3.new(0.55, 3.7, 5), baseFrame * CFrame.new(side * 11.3, 7.5, -1), timber, Enum.Material.Wood, false)
 	end
 	return house
 end
@@ -195,6 +194,7 @@ local function createNpc(npcId: string, displayName: string, position: Vector3, 
 	model.Parent = settlement
 	local root = makeNpcPart(model, "HumanoidRootPart", Vector3.new(1.5, 3.4, 1.1), CFrame.new(position + Vector3.new(0, 2.1, 0)), palette[1])
 	model.PrimaryPart = root
+	root.Transparency = 1
 	makeNpcPart(model, "Torso", Vector3.new(2.1, 2.6, 1.1), root.CFrame * CFrame.new(0, 0.15, 0), palette[1])
 	makeNpcPart(model, "Head", Vector3.new(1.25, 1.25, 1.25), root.CFrame * CFrame.new(0, 2.05, 0), palette[2], Enum.PartType.Ball)
 	makeNpcPart(model, "LeftArm", Vector3.new(0.55, 2.2, 0.65), root.CFrame * CFrame.new(-1.35, 0.1, 0), palette[2])
