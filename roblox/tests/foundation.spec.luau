@@ -648,7 +648,6 @@ expect(releasedAdapterRecord ~= nil and releasedAdapterRecord.lease == nil, "ada
 
 print("[BTV tests] Injectable persistence adapter retry and recovery scenarios passed.")
 
-
 -- Construction supply inventory rules are bounded, immutable and price-independent.
 local emptyInventory = InventoryPolicy.CreateDefault()
 local validEmptyInventory, emptyInventoryError = InventoryPolicy.Validate(emptyInventory, ItemCatalog)
