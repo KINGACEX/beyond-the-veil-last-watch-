@@ -91,9 +91,11 @@ A full open world, large NPC population, complex daily schedules, advanced comba
 - [x] Inspect repository, branches, project configuration, scenes, scripts, assets and historical CI evidence.
 - [x] Record pre-trailer technical audit.
 - [x] Add the chapel feature branch to the Godot validation workflow and expand test commands.
-- [ ] Obtain a fresh successful CI run on the current feature branch.
-- [ ] Verify the GLB import and chapel load test in that run.
+- [x] Obtain a successful full CI run on the current feature branch.
+- [x] Verify the GLB import and chapel load test in that run.
 - [ ] Establish one designated working branch and keep main isolated.
+
+**P0 validation evidence:** GitHub Actions run [43410957023](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43410957023) passed on commit `9e7d9c3fd84d10aaaff6c1c8b54a50043fa4bfd1`: Godot 4.7.2, editor import/parsing, 15 test scripts, chapel scene-load test and 10-frame main-scene launch. The later documentation-only commit is being revalidated. This is headless validation, not Android or visual/device certification.
 
 ### P1 — Functional vertical slice
 - [ ] Approve Asher production reference and integrate model/rig.
