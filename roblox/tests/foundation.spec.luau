@@ -554,7 +554,6 @@ expect(isolationStore:Get(profileKey).profile.economy.aces == 0, "cancelled tran
 
 print("[BTV tests] Fake store defensive-copy guarantees passed.")
 
-
 -- Injectable persistence adapter: retries only transient failures and reconciles ambiguous saves.
 local adapterStore = FakeProfileStore.new()
 local adapterClock = 100
