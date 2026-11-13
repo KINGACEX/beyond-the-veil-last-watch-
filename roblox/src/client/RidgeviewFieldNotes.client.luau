@@ -9,6 +9,8 @@ local UserInputService = game:GetService("UserInputService")
 local remotes = ReplicatedStorage:WaitForChild("BTVRemotes")
 local fieldNoteRecorded = remotes:WaitForChild("FieldNoteRecorded") :: RemoteEvent
 local getFieldNotes = remotes:WaitForChild("GetFieldNotes") :: RemoteFunction
+local missionStateUpdated = remotes:WaitForChild("MissionStateUpdated") :: RemoteEvent
+local getMissionState = remotes:WaitForChild("GetMissionState") :: RemoteFunction
 
 local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
@@ -30,6 +32,7 @@ toggle.Font = Enum.Font.GothamBold
 toggle.TextSize = 12
 toggle.AutoButtonColor = true
 toggle.Parent = screenGui
+toggle.Visible = false
 
 local toggleCorner = Instance.new("UICorner")
 toggleCorner.CornerRadius = UDim.new(0, 9)
@@ -154,7 +157,24 @@ toggle.Activated:Connect(function()
 	panel.Visible = not panel.Visible
 end)
 
+local function updateMissionAccess(snapshot: any)
+	local unlocked = typeof(snapshot) == "table" and snapshot.phase == "ridgeview_arrival"
+	toggle.Visible = unlocked
+	if not unlocked then
+		panel.Visible = false
+	end
+end
+
+missionStateUpdated.OnClientEvent:Connect(updateMissionAccess)
+
 local function requestInitialNotes()
+	local missionOk, missionSnapshot = pcall(function()
+		return getMissionState:InvokeServer()
+	end)
+	if missionOk then
+		updateMissionAccess(missionSnapshot)
+	end
+
 	local ok, entries = pcall(function()
 		return getFieldNotes:InvokeServer()
 	end)
