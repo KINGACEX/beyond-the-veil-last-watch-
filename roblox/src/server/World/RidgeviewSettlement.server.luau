@@ -192,15 +192,15 @@ local function createNpc(npcId: string, displayName: string, position: Vector3, 
 	model:SetAttribute("DisplayName", displayName)
 	model:SetAttribute("Role", "Adult NPC blockout")
 	model.Parent = settlement
-	local root = makeNpcPart(model, "HumanoidRootPart", Vector3.new(1.5, 3.4, 1.1), CFrame.new(position + Vector3.new(0, 2.1, 0)), palette[1])
+	local root = makeNpcPart(model, "HumanoidRootPart", Vector3.new(1.5, 3.4, 1.1), CFrame.new(position + Vector3.new(0, 2.8, 0)), palette[1])
 	model.PrimaryPart = root
 	root.Transparency = 1
-	makeNpcPart(model, "Torso", Vector3.new(2.1, 2.6, 1.1), root.CFrame * CFrame.new(0, 0.15, 0), palette[1])
-	makeNpcPart(model, "Head", Vector3.new(1.25, 1.25, 1.25), root.CFrame * CFrame.new(0, 2.05, 0), palette[2], Enum.PartType.Ball)
-	makeNpcPart(model, "LeftArm", Vector3.new(0.55, 2.2, 0.65), root.CFrame * CFrame.new(-1.35, 0.1, 0), palette[2])
-	makeNpcPart(model, "RightArm", Vector3.new(0.55, 2.2, 0.65), root.CFrame * CFrame.new(1.35, 0.1, 0), palette[2])
-	makeNpcPart(model, "LeftLeg", Vector3.new(0.7, 2.2, 0.75), root.CFrame * CFrame.new(-0.48, -2.25, 0), palette[3])
-	makeNpcPart(model, "RightLeg", Vector3.new(0.7, 2.2, 0.75), root.CFrame * CFrame.new(0.48, -2.25, 0), palette[3])
+	makeNpcPart(model, "Torso", Vector3.new(2.1, 2.6, 1.1), root.CFrame, palette[1])
+	makeNpcPart(model, "Head", Vector3.new(1.25, 1.25, 1.25), root.CFrame * CFrame.new(0, 2.2, 0), palette[2], Enum.PartType.Ball)
+	makeNpcPart(model, "LeftArm", Vector3.new(0.55, 2.2, 0.65), root.CFrame * CFrame.new(-1.3, 0, 0), palette[2])
+	makeNpcPart(model, "RightArm", Vector3.new(0.55, 2.2, 0.65), root.CFrame * CFrame.new(1.3, 0, 0), palette[2])
+	makeNpcPart(model, "LeftLeg", Vector3.new(0.7, 2.2, 0.75), root.CFrame * CFrame.new(-0.45, -2, 0), palette[3])
+	makeNpcPart(model, "RightLeg", Vector3.new(0.7, 2.2, 0.75), root.CFrame * CFrame.new(0.45, -2, 0), palette[3])
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.Name = "TalkPrompt"
 	prompt.ActionText = "Talk"
@@ -233,7 +233,7 @@ local function moveBetween(model: Model, first: Vector3, second: Vector3, pause:
 		local destination = second
 		while model.Parent ~= nil do
 			local current = model:GetPivot()
-			local target = CFrame.lookAt(destination + Vector3.new(0, 2.1, 0), destination + Vector3.new(0, 2.1, 0) + forward)
+			local target = CFrame.lookAt(destination + Vector3.new(0, 2.8, 0), destination + Vector3.new(0, 2.8, 0) + forward)
 			local duration = math.max(2, (target.Position - current.Position).Magnitude / 2.2)
 			local started = os.clock()
 			while model.Parent ~= nil do
