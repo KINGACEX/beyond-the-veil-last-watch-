@@ -323,7 +323,7 @@ Do not advertise gamepad support until selection, focus, navigation and activati
 - Any Robux product, price, receipt handler or purchase entitlement.
 
 **BLOCKERS**
-- Latest fully successful validation before the construction-policy tests: GitHub Actions Run #171 for commit `93acef9` passed headless regression tests, StyLua, Selene, Rojo build and artifact upload. Run #189 passed the expanded regression tests but failed only the StyLua check on a redundant blank line; that whitespace correction is committed in `0172dcc` and awaits a fresh full run.
+- Latest completed GitHub Actions validation: Run #192 for commit `39b062b` passed headless regression tests, StyLua, Selene, Rojo build and artifact upload, including the property and construction policy tests.
 - Roblox Studio multi-client and device testing has not been performed.
 - No production persistence or economy should be enabled until the relevant gates pass.
 
