@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/covenant_hq/covenant_headquarters_blockout_001.tscn" id="1_environment"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/touch_controls.tscn" id="3_touch"]
+[ext_resource type="PackedScene" path="res://scenes/ui/interaction_hud.tscn" id="4_interaction_hud"]
 
 [node name="CovenantHeadquartersPlaytest001" type="Node3D"]
 
@@ -12,3 +13,5 @@
 position = Vector3(0, 0, 27)
 
 [node name="TouchControls" parent="." instance=ExtResource("3_touch")]
+
+[node name="InteractionHUD" parent="." instance=ExtResource("4_interaction_hud")]
