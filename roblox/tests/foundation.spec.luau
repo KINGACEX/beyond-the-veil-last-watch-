@@ -20,6 +20,8 @@ local MerchantService = require("../src/server/Services/MerchantService")
 local BuildModuleCatalog = require("../src/shared/BuildModuleCatalog")
 local PropertyCatalog = require("../src/shared/PropertyCatalog")
 local PropertyPolicy = require("../src/shared/PropertyPolicy")
+local RidgeviewFieldNoteCatalog = require("../src/shared/RidgeviewFieldNoteCatalog")
+local RidgeviewFieldNotePolicy = require("../src/shared/RidgeviewFieldNotePolicy")
 local ConstructionPlacementPolicy = require("../src/shared/ConstructionPlacementPolicy")
 
 local function expect(condition: boolean, message: string)
@@ -1183,4 +1185,32 @@ do
 	local sparseParcelValid, sparseParcelError = ConstructionPlacementPolicy.ValidateParcel(sparseParcel, BuildModuleCatalog, PropertyPolicy)
 	expect(sparseParcelValid == false and sparseParcelError ~= nil, "parcel validation rejects sparse object arrays")
 	print("[BTV tests] Property ownership and construction placement rules passed.")
+end
+
+
+do
+	-- Ridgeview field notes are session records of approved observations, not conclusions.
+	local emptyJournal = {}
+	local unknown, unknownError = RidgeviewFieldNotePolicy.TryRecord(emptyJournal, "invented_clue", RidgeviewFieldNoteCatalog)
+	expect(unknown == nil and unknownError ~= nil, "field-note policy rejects unknown observation IDs")
+
+	local firstJournal, firstError = RidgeviewFieldNotePolicy.TryRecord(emptyJournal, "approach_belongings", RidgeviewFieldNoteCatalog)
+	expect(firstJournal ~= nil and firstError == nil, "approved approach observation can be recorded")
+	assert(firstJournal ~= nil, "recorded field-note journal must exist")
+	expect(emptyJournal.approach_belongings == nil, "recording does not mutate the source journal")
+
+	local duplicate, duplicateError = RidgeviewFieldNotePolicy.TryRecord(firstJournal, "approach_belongings", RidgeviewFieldNoteCatalog)
+	expect(duplicate == nil and duplicateError ~= nil, "duplicate observation cannot be recorded twice")
+
+	local secondJournal, secondError = RidgeviewFieldNotePolicy.TryRecord(firstJournal, "parked_work_vehicle", RidgeviewFieldNoteCatalog)
+	expect(secondJournal ~= nil and secondError == nil, "work-vehicle observation can be recorded")
+	assert(secondJournal ~= nil, "second field-note journal must exist")
+
+	local snapshot = RidgeviewFieldNotePolicy.Snapshot(secondJournal, RidgeviewFieldNoteCatalog)
+	expect(#snapshot == 2, "field-note snapshot contains both recorded observations")
+	expect(snapshot[1].Id == "approach_belongings", "field notes use stable catalog order")
+	expect(snapshot[2].Id == "parked_work_vehicle", "second field note follows catalog order")
+	expect(snapshot[1].Confidence == "Observed", "field notes preserve the approved confidence label")
+	expect(string.find(snapshot[2].Text, "not established", 1, true) ~= nil, "field notes do not invent ownership or cause")
+	print("[BTV tests] Ridgeview field-note policy passed.")
 end
