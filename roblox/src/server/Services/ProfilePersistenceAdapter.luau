@@ -11,6 +11,8 @@ type Options = {
 	ProfileSchema: any,
 	RankCatalog: any,
 	CompanionCatalog: any,
+	InventoryPolicy: any,
+	ItemCatalog: any,
 	LeasePolicy: any,
 	RecordPolicy: any,
 	Clock: () -> number,
@@ -65,6 +67,7 @@ function ProfilePersistenceAdapter.new(options: Options)
 	assert(typeof(options) == "table", "Adapter options are required.")
 	assert(options.Store ~= nil, "A DataStore-like Store is required.")
 	assert(options.ProfileSchema ~= nil and options.RankCatalog ~= nil and options.CompanionCatalog ~= nil, "Profile validation dependencies are required.")
+	assert(options.InventoryPolicy ~= nil and options.ItemCatalog ~= nil, "Inventory validation dependencies are required.")
 	assert(options.LeasePolicy ~= nil and options.RecordPolicy ~= nil, "Profile record policy dependencies are required.")
 	assert(typeof(options.Clock) == "function", "Clock dependency is required.")
 	assert(typeof(options.Wait) == "function", "Wait dependency is required.")
@@ -83,6 +86,8 @@ function ProfilePersistenceAdapter.new(options: Options)
 		profileSchema = options.ProfileSchema,
 		rankCatalog = options.RankCatalog,
 		companionCatalog = options.CompanionCatalog,
+		inventoryPolicy = options.InventoryPolicy,
+		itemCatalog = options.ItemCatalog,
 		leasePolicy = options.LeasePolicy,
 		recordPolicy = options.RecordPolicy,
 		clock = options.Clock,
@@ -166,6 +171,8 @@ function ProfilePersistenceAdapter:Acquire(userId: unknown): (any?, string?)
 				self.profileSchema,
 				self.rankCatalog,
 				self.companionCatalog,
+				self.inventoryPolicy,
+				self.itemCatalog,
 				self.leasePolicy
 			)
 			setCallbackResult(policyError, nil)
@@ -209,6 +216,8 @@ function ProfilePersistenceAdapter:Save(userId: unknown, ownerToken: unknown, ca
 				self.profileSchema,
 				self.rankCatalog,
 				self.companionCatalog,
+				self.inventoryPolicy,
+				self.itemCatalog,
 				self.leasePolicy
 			)
 			setCallbackResult(policyError, policyOutcome)
