@@ -158,7 +158,7 @@ toggle.Activated:Connect(function()
 end)
 
 local function updateMissionAccess(snapshot: any)
-	local unlocked = typeof(snapshot) == "table" and snapshot.phase == "ridgeview_arrival"
+	local unlocked = typeof(snapshot) == "table" and (snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation")
 	toggle.Visible = unlocked
 	if not unlocked then
 		panel.Visible = false
