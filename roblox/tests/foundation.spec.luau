@@ -28,6 +28,7 @@ local function expect(condition: boolean, message: string)
 	end
 end
 
+do
 local player = { UserId = 901001 }
 
 -- Mission progression is server-owned, sequential and rejects skipped phases.
@@ -178,8 +179,10 @@ local freshOwnership = CompanionOwnershipPolicy.CreateDefaultOwnership()
 expect(freshOwnership.fox == true, "mutating a session snapshot cannot change default ownership")
 
 print("[BTV tests] Foundation and companion ownership rules passed.")
+end
 
 -- Curiosity Archive discoveries are server-owned, session-only and non-economic.
+do
 local archivePlayer = { UserId = 901002 }
 local otherArchivePlayer = { UserId = 901003 }
 ArchiveService.AddPlayer(archivePlayer)
@@ -204,7 +207,9 @@ expect(ArchiveService.GetDisplayTitle(0) ~= ArchiveService.GetDisplayTitle(60480
 ArchiveService.RemovePlayer(archivePlayer)
 ArchiveService.RemovePlayer(otherArchivePlayer)
 expect(ArchiveService.GetSnapshot(archivePlayer) == nil, "archive state is cleared on player removal")
+end
 
+do
 -- Versioned profile schema validation is pure and does not enable DataStore writes.
 local defaultProfile = PlayerProfileSchema.CreateDefault()
 local validProfile, validProfileReason = PlayerProfileSchema.Validate(defaultProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
@@ -269,7 +274,9 @@ expect(not duplicateEventsValid, "duplicate evaluation IDs are rejected")
 defaultProfile.companions.owned.fox = false
 local independentDefault = PlayerProfileSchema.CreateDefault()
 expect(independentDefault.companions.owned.fox == true, "mutating one profile cannot mutate future default profiles")
+end
 
+do
 -- Cross-server profile lease policy is deterministic and fails closed.
 local firstLease, firstLeaseError = ProfileLeasePolicy.TryAcquire(nil, "server-A", 100, 60)
 expect(firstLease ~= nil and firstLeaseError == nil, "empty profile lease can be acquired")
@@ -304,6 +311,7 @@ local nanLease, nanLeaseError = ProfileLeasePolicy.TryAcquire(nil, "server-A", 0
 expect(nanLease == nil and nanLeaseError ~= nil, "non-finite lease clock is rejected")
 
 print("[BTV tests] Profile lease policy rules passed.")
+end
 
 -- Atomic DataStore callback transformations preserve ownership and reject stale writes.
 local acquiredRecord, acquiredRecordError =
