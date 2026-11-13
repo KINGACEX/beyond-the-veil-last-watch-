@@ -12,14 +12,15 @@ See [BTV Pre-Trailer Technical and Development Audit](docs/audits/BTV_PRE_TRAILE
 
 ### Project foundation
 - `project.godot` — Godot project entry point and input actions.
-- `scenes/main.tscn` — greybox test area.
+- `scenes/main.tscn` — original greybox test area.
+- `scenes/covenant_hq/` — additive Covenant HQ blockout and capsule playtest scene; still a greybox, not a finished facility.
 - `scenes/player.tscn` — capsule placeholder, collision, third-person camera and proximity sensor.
 - `scenes/touch_controls.tscn` / `scripts/touch_controls.gd` — initial touch overlay mapped to shared InputMap actions.
 - `scripts/player_controller.gd` — movement and nearest-interactable selection.
 - `scripts/interactable.gd` — reusable Area3D interaction contract.
 - `scripts/nli/` — deterministic NLI parser, validator, request gate, authored knowledge base and orchestration service.
 - `scripts/mission/mission_data_validator.gd` — neutral typed-registry ID/reference validation utility (Phase 1 only).
-- `tests/` — NLI smoke/contract tests, neutral mission-validator tests and core interaction acceptance tests.
+- `tests/` — NLI, mission-validator, interaction, camera/touch, chapel-load and Covenant HQ blockout regression tests.
 - `.github/workflows/godot-validation.yml` — headless Godot validation workflow.
 
 ### Read these first
@@ -68,9 +69,9 @@ Android export, installation, touch usability, sustained performance, memory and
 
 ## Verification
 
-**CONFIRMED — latest completed full validation run 43410957023** passed on commit `9e7d9c3fd84d10aaaff6c1c8b54a50043fa4bfd1`. It used Godot 4.7.2 and passed editor import/parsing, NLI smoke and contract tests, mission-data validation, core interaction, player camera input, touch adapter, touch integration/coexistence/composition/input-path/lifecycle/reconciliation/resize tests, XH-003 same-action composition, the chapel GLB load test and a 10-frame main-scene launch.
+**CONFIRMED — latest completed full validation run 43411504832** passed on commit `c0f0db04ffb8da4ef993c8ea95a36aa5a1086589`. It used Godot 4.7.2 and passed editor import/parsing, 16 test scripts including the new Covenant HQ blockout test, chapel GLB load validation and a 10-frame main-scene launch.
 
-[View latest completed full validation run 43410957023](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43410957023).
+[View latest completed full validation run 43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832).
 
 **CONFIRMED — code/test validation run 42031646069** passed on commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`. It ran Godot 4.7.2 installation/version check, headless editor import/project parsing, NLI smoke tests, NLI handoff/source-registry contract tests (including normalized request-state lookup), core interaction acceptance tests (including INT-025–INT-028), and a 10-frame main-scene launch.
 
