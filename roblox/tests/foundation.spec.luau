@@ -1180,8 +1180,7 @@ do
 	sparseParcel.objects = {
 		[2] = { id = "sparse-object", moduleId = "foundation_tile", x = 0, z = 0, layer = 0, rotation = 0 },
 	}
-	local sparseParcelValid, sparseParcelError =
-		ConstructionPlacementPolicy.ValidateParcel(sparseParcel, BuildModuleCatalog, PropertyPolicy)
+	local sparseParcelValid, sparseParcelError = ConstructionPlacementPolicy.ValidateParcel(sparseParcel, BuildModuleCatalog, PropertyPolicy)
 	expect(sparseParcelValid == false and sparseParcelError ~= nil, "parcel validation rejects sparse object arrays")
 
 
