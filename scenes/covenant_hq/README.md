@@ -30,4 +30,4 @@ Run:
 
 `godot --headless --path . --script res://tests/covenant_hq_blockout_test.gd`
 
-The test checks scene loading, required layout markers, structural collision coverage and the separate playtest scene. Passing it proves scene structure only; it does not prove visual quality, navigation feel or device performance.
+The test checks scene loading, required layout markers, structural collision coverage and the separate playtest scene. **CONFIRMED:** GitHub Actions run [43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832) passed this test with Godot 4.7.2. Passing it proves scene structure only; it does not prove visual quality, navigation feel or device performance.
