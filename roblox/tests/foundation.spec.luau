@@ -576,8 +576,8 @@ expect(ambiguousStore.callbackCallCount == callbackCountBeforeFailure, "pre-call
 
 print("[BTV tests] Fake profile storage and ambiguous-write scenarios passed.")
 
-// Fake store isolation: callers cannot mutate durable records through aliases,
-// and a cancelled transform cannot alter the stored value.
+-- Fake store isolation: callers cannot mutate durable records through aliases,
+-- and a cancelled transform cannot alter the stored value.
 local isolationStore = FakeProfileStore.new()
 local seedRecord = {
 	profile = PlayerProfileSchema.CreateDefault(),
