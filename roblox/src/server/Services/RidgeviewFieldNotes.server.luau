@@ -204,7 +204,7 @@ if existingProps == nil then
 				Vector3.new(1.05, 1.05, 0.55),
 				vehicleFrame * CFrame.new(side * 3.55, 0.72, z),
 				Color3.fromRGB(31, 33, 34),
-				Enum.Material.Rubber,
+				Enum.Material.SmoothPlastic,
 				false
 			)
 			wheel.Shape = Enum.PartType.Cylinder
