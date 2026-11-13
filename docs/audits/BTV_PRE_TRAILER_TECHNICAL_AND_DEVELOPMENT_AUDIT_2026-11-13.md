@@ -123,7 +123,7 @@ No local Godot executable or Android build tool was available in the audit conta
 
 The latest successful CI run found on the documented test-first branch is run **42297356878**, dated 6 November 2026, commit `023855507523bd1bcf9ece8840fc33ceba61506b`. It installed Godot 4.7.2 and passed project import/parsing, NLI smoke tests, NLI contract tests, mission-data validator tests, core interaction tests and a 10-frame main-scene launch.
 
-The newer chapel branch has no recorded Actions run. Its workflow file includes additional camera/touch test commands, but the workflow's push branch list does not include `btv/chapel-visual-integration-001`. The chapel GLB load test and several touch lifecycle/composition suites are not in that workflow's executed test list.
+The newer chapel branch had no recorded Actions run at audit time. After inspection, `.github/workflows/godot-validation.yml` was updated in commit `6043090bf24fd315c0efd0824eabb59334db25c1` to include the chapel branch, increase the timeout to 15 minutes, run the additional touch lifecycle/composition/input suites, and run the chapel GLB load test. No new Actions run appeared after that commit during this session, so this expanded workflow remains **NOT VERIFIED**.
 
 A previous XH-003 implementation note reports 14 suites / 276 assertions passing locally on its ancestor branch. That is historical branch evidence, not a fresh CI result for the current chapel branch.
 
