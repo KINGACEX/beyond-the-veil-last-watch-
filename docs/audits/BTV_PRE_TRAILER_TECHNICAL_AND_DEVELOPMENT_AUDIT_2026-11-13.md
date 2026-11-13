@@ -51,7 +51,7 @@ GitHub exposes repository refs, not the user's current local checkout. Therefore
 - Touch action composition is separated from keyboard actions.
 - Proximity sensor tracks interactable areas and selects the nearest eligible target with deterministic tie-breaking and duplicate-ID exclusion.
 
-These are real prototype systems, but the player is still a capsule. There is no Asher model, animation state machine, jump/parkour system, polished collision traversal or final camera presentation.
+A generic interaction HUD was added after the audit: the player emits target-prompt and interaction-feedback signals, and the HUD presents those messages in the main and HQ playtest scenes. The player is still a capsule. There is no Asher model, animation state machine, jump/parkour system, polished collision traversal or final camera presentation.
 
 ### Interaction, NLI and mission data
 - Reusable `BTVInteractable` contract and a neutral test interactable.
@@ -125,11 +125,11 @@ No local Godot executable or Android build tool was available in the audit conta
 
 The latest successful CI run found on the documented test-first branch is run **42297356878**, dated 6 November 2026, commit `023855507523bd1bcf9ece8840fc33ceba61506b`. It installed Godot 4.7.2 and passed project import/parsing, NLI smoke tests, NLI contract tests, mission-data validator tests, core interaction tests and a 10-frame main-scene launch.
 
-After inspection, `.github/workflows/godot-validation.yml` was updated in commit `6043090bf24fd315c0efd0824eabb59334db25c1` to include the chapel branch, increase the timeout to 15 minutes, run the additional touch lifecycle/composition/input suites, and run the chapel GLB load test. **CONFIRMED:** GitHub Actions run [43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832) completed successfully on commit `c0f0db04ffb8da4ef993c8ea95a36aa5a1086589`. It passed Godot 4.7.2 verification, editor import/parsing, all 16 test scripts (including the chapel GLB load test and Covenant HQ blockout test), and a 10-frame main-scene launch. The HQ blockout is still greybox-only and has not been visually reviewed in the editor or on Android.
+After inspection, `.github/workflows/godot-validation.yml` was updated in commit `6043090bf24fd315c0efd0824eabb59334db25c1` to include the chapel branch, increase the timeout to 15 minutes, run the additional touch lifecycle/composition/input suites, and run the chapel GLB load test. **CONFIRMED:** GitHub Actions run [43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832) completed successfully on commit `c0f0db04ffb8da4ef993c8ea95a36aa5a1086589`. It passed Godot 4.7.2 verification, editor import/parsing, all 17 test scripts (including the chapel GLB load test and Covenant HQ blockout test), and a 10-frame main-scene launch. The HQ blockout is still greybox-only and has not been visually reviewed in the editor or on Android.
 
 A previous XH-003 implementation note reports 14 suites / 276 assertions passing locally on its ancestor branch. That is historical branch evidence, not a fresh CI result for the current chapel branch.
 
-**Baseline conclusion:** The prototype foundation has historical headless CI evidence. The current feature branch, chapel asset import, Android build and device behaviour are not presently verified.
+**Baseline conclusion:** The prototype foundation has historical headless CI evidence. The current feature branch and chapel/HQ scene structure are headlessly verified. The interaction HUD is also headlessly tested. Android build and device behaviour remain unverified; the HUD's 16-pixel viewport margin is not device-safe-area support.
 
 ## 10. Reference-video lessons carried forward
 
@@ -155,6 +155,7 @@ Apply these principles in original BTV designs. Do not copy protected maps, char
 | Ember companion | NOT IMPLEMENTED | No model, rig, follow/command AI or animation |
 | Covenant Headquarters | INITIAL BLOCKOUT IMPLEMENTED; functional HQ not implemented | Separate additive blockout with collision and anchors; no live NPC, mission board or Ember systems |
 | Third-person movement/camera | PROTOTYPE IMPLEMENTED | Capsule controller and camera; not presentation-polished |
+| Interaction prompt/feedback HUD | IMPLEMENTED / HEADLESS TESTED | Generic HUD in main and HQ playtest scenes; fixed margin only, no device-safe-area verification |
 | Touch input | PROTOTYPE IMPLEMENTED | Source code and tests; physical device not checked |
 | NPC ecosystem | NOT IMPLEMENTED | No NPC actors/routines/persistent state |
 | Mission board / selection | NOT IMPLEMENTED | No mission runtime or board |
