@@ -847,6 +847,7 @@ do
 		"merchant-buy-001",
 		PlayerProfileSchema,
 		CovenantRankCatalog,
+		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog
 	)
@@ -862,6 +863,7 @@ do
 		"merchant-buy-001",
 		PlayerProfileSchema,
 		CovenantRankCatalog,
+		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog
 	)
@@ -875,6 +877,7 @@ do
 		"merchant-buy-insufficient",
 		PlayerProfileSchema,
 		CovenantRankCatalog,
+		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog
 	)
@@ -888,6 +891,7 @@ do
 		"merchant-buy-zero",
 		PlayerProfileSchema,
 		CovenantRankCatalog,
+		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog
 	)
@@ -901,6 +905,7 @@ do
 		"merchant-buy-fractional",
 		PlayerProfileSchema,
 		CovenantRankCatalog,
+		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog
 	)
@@ -914,6 +919,7 @@ do
 		"merchant-buy-unknown",
 		PlayerProfileSchema,
 		CovenantRankCatalog,
+		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog
 	)
@@ -927,6 +933,7 @@ do
 		"merchant-sell-001",
 		PlayerProfileSchema,
 		CovenantRankCatalog,
+		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog
 	)
@@ -943,6 +950,7 @@ do
 		"merchant-sell-001",
 		PlayerProfileSchema,
 		CovenantRankCatalog,
+		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog
 	)
@@ -958,6 +966,7 @@ do
 		"merchant-sell-insufficient",
 		PlayerProfileSchema,
 		CovenantRankCatalog,
+		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog
 	)
