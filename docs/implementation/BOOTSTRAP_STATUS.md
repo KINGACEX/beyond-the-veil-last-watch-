@@ -1,9 +1,9 @@
 # BTV Prototype — Implementation Status
 
-**Active isolated branch:** `btv/test-first-contracts-001`  
+**Current pre-trailer working baseline:** `btv/chapel-visual-integration-001`  
 **Prototype origin:** `btv/bootstrap-prototype-001`  
 **Status:** HEADLESS CI PASSED; visual/runtime and Android device validation remain pending.  
-**Latest verified successful run at this document revision:** [42031646069](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/42031646069), commit `67b799558b4a7690275dfb383b3a23e7cb8599cc`.
+**Latest completed full validation:** [43410957023](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43410957023), commit `9e7d9c3fd84d10aaaff6c1c8b54a50043fa4bfd1`; 15 test scripts and a 10-frame main-scene launch passed on Godot 4.7.2.
 
 ## 1. Implemented source
 
@@ -85,7 +85,7 @@ Do not mark NLI lifecycle complete.
 
 ## 5. Verification boundary
 
-**CONFIRMED — run 42030200114:** headless CI passed on Ubuntu with Godot 4.7.2, including import/parsing, NLI tests, interaction tests and main-scene startup.
+**CONFIRMED — run 43410957023:** the expanded feature-branch workflow passed on Ubuntu with Godot 4.7.2, including all 15 test scripts, chapel scene loading and main-scene startup.
 
 Not verified:
 1. Editor visual inspection.
