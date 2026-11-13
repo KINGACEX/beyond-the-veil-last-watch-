@@ -1187,7 +1187,6 @@ do
 	print("[BTV tests] Property ownership and construction placement rules passed.")
 end
 
-
 do
 	-- Ridgeview field notes are session records of approved observations, not conclusions.
 	local emptyJournal = {}
