@@ -1081,7 +1081,6 @@ do
 	print("[BTV tests] Server merchant service, durable saves and recovery passed.")
 end
 
-
 do
 	-- Parcel ownership and construction placement are server-verifiable, bounded and revisioned.
 	local emptyParcel, parcelCreateError = PropertyPolicy.CreateState("ridgeview_residential_01", PropertyCatalog)
