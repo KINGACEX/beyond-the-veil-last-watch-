@@ -75,7 +75,17 @@ function PropertyPolicy.Validate(parcel: unknown): (boolean, string?)
 	if value.ownerUserId ~= nil and not isPositiveInteger(value.ownerUserId) then
 		return false, "Parcel owner ID is malformed."
 	end
-	if #value.objects > value.maxObjects then
+	local objectCount = 0
+	for key, object in value.objects do
+		if typeof(key) ~= "number" or key < 1 or key % 1 ~= 0 or typeof(object) ~= "table" then
+			return false, "Parcel construction object list is malformed."
+		end
+		objectCount += 1
+	end
+	if objectCount ~= #value.objects then
+		return false, "Parcel construction object list must be a dense array."
+	end
+	if objectCount > value.maxObjects then
 		return false, "Parcel exceeds its object limit."
 	end
 	return true, nil
