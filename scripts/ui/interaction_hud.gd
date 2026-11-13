@@ -1,10 +1,10 @@
 extends CanvasLayer
 class_name BTVInteractionHUD
 
-@onready var _prompt_panel: PanelContainer = $SafeArea/PromptPanel
-@onready var _prompt_label: Label = $SafeArea/PromptPanel/PromptLabel
-@onready var _feedback_panel: PanelContainer = $SafeArea/FeedbackPanel
-@onready var _feedback_label: Label = $SafeArea/FeedbackPanel/FeedbackLabel
+@onready var _prompt_panel: PanelContainer = $ViewportMargin/PromptPanel
+@onready var _prompt_label: Label = $ViewportMargin/PromptPanel/PromptLabel
+@onready var _feedback_panel: PanelContainer = $ViewportMargin/FeedbackPanel
+@onready var _feedback_label: Label = $ViewportMargin/FeedbackPanel/FeedbackLabel
 
 var _bound_player: BTVPlayerController = null
 
