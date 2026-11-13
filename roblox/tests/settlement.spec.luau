@@ -11,6 +11,8 @@ local function expect(condition: boolean, message: string)
 end
 
 local state = SettlementPolicy.NewState()
+local prematureAdmission = SettlementPolicy.RecordPikeAdmission(state)
+expect(prematureAdmission == nil, "Pike admission cannot be recorded before Wren disclosure is authorized")
 expect(state.wrenTestimonyRecorded == false, "Wren testimony begins unrecorded")
 expect(state.wrenTestimonyShareable == false, "Wren testimony begins private")
 expect(not SettlementPolicy.CanDiscussWrenWithPike(state), "Pike cannot access unrecorded testimony")
@@ -42,7 +44,9 @@ expect(not reRecorded.wrenTestimonyShareable, "re-recording clears prior permiss
 expect(not SettlementPolicy.CanDiscussWrenWithPike(reRecorded), "Pike branch relocks when permission is not current")
 
 local admitted = SettlementPolicy.RecordPikeAdmission(sharedState)
+expect(admitted ~= nil, "Pike admission is accepted after the authorized branch")
+assert(admitted ~= nil, "authorized Pike admission state must exist")
 expect(admitted.pikeAdmissionRecorded, "Pike's limited admission can be recorded after the authorized branch")
-expect(not state.pikeAdmissionRecorded, "policy transformations do not mutate prior state")
+expect(not sharedState.pikeAdmissionRecorded, "policy transformations do not mutate prior state")
 
 print("[BTV settlement tests] PASS — Wren testimony disclosure requires recording and explicit permission.")
