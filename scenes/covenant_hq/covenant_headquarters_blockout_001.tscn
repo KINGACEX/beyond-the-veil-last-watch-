@@ -33,7 +33,7 @@ size = Vector3(32, 0.2, 26)
 size = Vector3(32, 0.2, 26)
 
 [sub_resource type="BoxShape3D" id="Shape_CourtFloor"]
-size = Vector3(24, 0.2, 14)
+size = Vector3(24, 0.2, 16)
 
 [sub_resource type="BoxMesh" id="Mesh_CourtFloor"]
 size = Vector3(24, 0.2, 14)
@@ -256,12 +256,12 @@ mesh = SubResource("Mesh_EmblemPanel")
 material_override = SubResource("Material_Dark")
 
 [node name="CrossVertical" type="MeshInstance3D" parent="HQBuilding/EntranceEmblemPanel"]
-position = Vector3(0, 0, -0.2)
+position = Vector3(0, 0, 0.2)
 mesh = SubResource("Mesh_CrossVertical")
 material_override = SubResource("Material_Gold")
 
 [node name="CrossHorizontal" type="MeshInstance3D" parent="HQBuilding/EntranceEmblemPanel"]
-position = Vector3(0, 0.12, -0.2)
+position = Vector3(0, 0.12, 0.2)
 mesh = SubResource("Mesh_CrossHorizontal")
 material_override = SubResource("Material_Gold")
 
