@@ -244,7 +244,6 @@ function MerchantService:RemovePlayer(player: any)
 		local userId = player.UserId
 		if isPositiveInteger(userId) then
 			self.lastRequestAt[userId] = nil
-			self.busy[userId] = nil
 		end
 	end
 end
