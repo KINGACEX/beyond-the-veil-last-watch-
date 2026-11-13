@@ -1168,5 +1168,14 @@ do
 	local malformedModuleValid, malformedModuleError = ConstructionPlacementPolicy.ValidateParcel(malformedModuleParcel, BuildModuleCatalog, PropertyPolicy)
 	expect(malformedModuleValid == false and malformedModuleError ~= nil, "parcel validation rejects unapproved modules")
 
+	local sparseParcel = table.clone(claimedParcel)
+	sparseParcel.objects = {
+		[2] = { id = "sparse-object", moduleId = "foundation_tile", x = 0, z = 0, layer = 0, rotation = 0 },
+	}
+	local sparseParcelValid, sparseParcelError =
+		ConstructionPlacementPolicy.ValidateParcel(sparseParcel, BuildModuleCatalog, PropertyPolicy)
+	expect(sparseParcelValid == false and sparseParcelError ~= nil, "parcel validation rejects sparse object arrays")
+
+
 	print("[BTV tests] Property ownership and construction placement rules passed.")
 end
