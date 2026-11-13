@@ -53,7 +53,7 @@ No wings, cybernetics, demonic/angelic anatomy, human speech, divine status or g
 
 **Status:** PROPOSED — no Covenant HQ scene exists.
 
-The headquarters must be a distinct Covenant facility, not a renamed church or reuse of the Logos Rhema chapel study. The Church and Covenant remain separate in BTV canon.
+The headquarters must be a distinct Covenant facility, not a renamed church or reuse of the Logos Rhema chapel study. The Church and Covenant remain separate in BTV canon. An initial additive greybox now exists at `scenes/covenant_hq/covenant_headquarters_blockout_001.tscn`; it has a separate capsule-player playtest scene and a passing structural test. It is not final art or a functional HQ.
 
 ### Vertical-slice footprint
 
@@ -95,14 +95,15 @@ A full open world, large NPC population, complex daily schedules, advanced comba
 - [x] Verify the GLB import and chapel load test in that run.
 - [ ] Establish one designated working branch and keep main isolated.
 
-**P0 validation evidence:** GitHub Actions run [43410957023](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43410957023) passed on commit `9e7d9c3fd84d10aaaff6c1c8b54a50043fa4bfd1`: Godot 4.7.2, editor import/parsing, 15 test scripts, chapel scene-load test and 10-frame main-scene launch. The later documentation-only commit is being revalidated. This is headless validation, not Android or visual/device certification.
+**P0 validation evidence:** GitHub Actions run [43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832) passed on commit `c0f0db04ffb8da4ef993c8ea95a36aa5a1086589`: Godot 4.7.2, editor import/parsing, 16 test scripts, chapel scene-load, HQ blockout structure/collision test and 10-frame main-scene launch. This is headless validation, not Android or visual/device certification.
 
 ### P1 — Functional vertical slice
 - [ ] Approve Asher production reference and integrate model/rig.
 - [ ] Implement Asher animation state machine and camera presentation.
 - [ ] Approve BTV Ember reference and integrate natural canine model/rig.
 - [ ] Implement reliable Ember follow behaviour and test it before commands.
-- [ ] Build separate Covenant HQ blockout and connect it to the main scene.
+- [x] Build separate Covenant HQ blockout and capsule-player playtest scene; structure/marker/collision test passes.
+- [ ] Visually review the HQ blockout in the Godot editor and refine the layout before integrating it into the main scene.
 - [ ] Add one functional NPC interaction.
 - [ ] Add a working mission board backed by approved mission data.
 - [ ] Implement one short mission introduction using existing BTV story material.
