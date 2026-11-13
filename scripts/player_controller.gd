@@ -1,6 +1,9 @@
 extends CharacterBody3D
 class_name BTVPlayerController
 
+signal interaction_target_changed(prompt: String)
+signal interaction_feedback(message: String)
+
 ## Minimal third-person greybox controller with deterministic proximity interaction.
 
 @export_range(0.5, 12.0, 0.1) var move_speed: float = 4.0
@@ -14,6 +17,7 @@ class_name BTVPlayerController
 var _gravity: float = 9.8
 var _camera_yaw_radians: float = 0.0
 var _nearby_interactables: Array[BTVInteractable] = []
+var _current_interactable: BTVInteractable = null
 
 
 func _ready() -> void:
@@ -41,6 +45,7 @@ func _physics_process(delta: float) -> void:
 		rotation.y = lerp_angle(rotation.y, target_yaw, min(turn_speed * delta, 1.0))
 	move_and_slide()
 	_sync_camera_yaw()
+	_refresh_interaction_target()
 	if Input.is_action_just_pressed("interact") or Input.is_action_just_pressed("touch_interact"):
 		_try_interact()
 
@@ -135,6 +140,16 @@ func _on_sensor_area_exited(area: Area3D) -> void:
 		_nearby_interactables.erase(area as BTVInteractable)
 
 
+func _refresh_interaction_target() -> void:
+	var nearest := _select_nearest_interactable()
+	var current_is_valid := is_instance_valid(_current_interactable)
+	if (current_is_valid and nearest == _current_interactable) or (not current_is_valid and nearest == null):
+		return
+	_current_interactable = nearest
+	var prompt := nearest.interaction_prompt if nearest != null else ""
+	interaction_target_changed.emit(prompt)
+
+
 func _select_nearest_interactable() -> BTVInteractable:
 	var candidates: Array[BTVInteractable] = []
 	var retained_nearby: Array[BTVInteractable] = []
@@ -184,5 +199,8 @@ func _interaction_order(a: BTVInteractable, b: BTVInteractable) -> bool:
 func _try_interact() -> String:
 	var nearest := _select_nearest_interactable()
 	if nearest == null:
+		interaction_feedback.emit("")
 		return ""
-	return nearest.interact(self)
+	var result := nearest.interact(self)
+	interaction_feedback.emit(result)
+	return result
