@@ -55,7 +55,10 @@ jobs:
         run: lune run tests/foundation.spec.luau
 
       - name: Verify Luau formatting
-        run: stylua --check tests/foundation.spec.luau
+        run: |
+          stylua --check tests/foundation.spec.luau
+          stylua --check src/shared/RidgeviewFieldNoteCatalog.luau src/shared/RidgeviewFieldNotePolicy.luau
+          stylua --check src/server/Services/RidgeviewFieldNotes.server.luau src/client/RidgeviewFieldNotes.client.luau
 
       - name: Lint Luau source
         run: selene src tests
