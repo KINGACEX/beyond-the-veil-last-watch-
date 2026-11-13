@@ -9,7 +9,7 @@
 
 ## 1. Executive finding
 
-BTV currently has a tested Godot prototype foundation, not a playable cinematic vertical slice. The repository contains a basic third-person capsule controller, keyboard/mouse and touch input paths, proximity interaction, deterministic NLI foundations, mission-data validation, and one imported chapel-interior study. It does not yet contain Asher's production character, Ember, a Covenant Headquarters, a functional NPC ecosystem, a mission board, companion AI, authored gameplay missions, production animation, or a verified Android build.
+BTV currently has a tested Godot prototype foundation, not a playable cinematic vertical slice. The repository contains a basic third-person capsule controller, keyboard/mouse and touch input paths, proximity interaction, deterministic NLI foundations, mission-data validation, and one imported chapel-interior study. It does not yet contain Asher's production character, Ember, a finished Covenant Headquarters, a functional NPC ecosystem, a working mission board, companion AI, authored gameplay missions or production animation. An initial additive HQ blockout was implemented after the audit and has headless structure validation; Android build verification remains outstanding.
 
 The most important governance issue is branch separation: the repository default branch `main` does not currently contain the Godot project entry point. The most complete Godot feature branch is separate and unmerged. No branch was merged or published during this audit.
 
@@ -99,7 +99,9 @@ No Asher model, Ember model, character rig, animation clips, character textures,
 
 ## 7. Covenant Headquarters and gameplay readiness
 
-No Covenant Headquarters scene, exterior, explorable floor plan, mission board, interactive command area, NPC routine system, contextual dialogue runtime, persistent NPC state, companion interaction point or mission selection flow exists in the current main scene.
+An additive HQ blockout now exists under `scenes/covenant_hq/`, with arrival court, reception/atrium, operations and training wings, structural collision, a placeholder entrance emblem, and anchors for player spawn, reception NPC, mission board, training court and Ember follow path. A separate capsule-player/touch playtest scene is included. The existing main scene remains unchanged.
+
+This is **not** a finished or fully functional HQ: NPC, mission-board and Ember anchors are placeholders only. There is no NPC actor/routine, dialogue, mission selection, companion actor or HQ-specific main-scene integration yet.
 
 The chapel study cannot substitute for the HQ. The first HQ slice should be a compact, purpose-built Covenant facility with a clear navigation loop, a small number of functional rooms, and only the interactions required for the first mission. Do not build the entire open world before this loop works.
 
@@ -123,7 +125,7 @@ No local Godot executable or Android build tool was available in the audit conta
 
 The latest successful CI run found on the documented test-first branch is run **42297356878**, dated 6 November 2026, commit `023855507523bd1bcf9ece8840fc33ceba61506b`. It installed Godot 4.7.2 and passed project import/parsing, NLI smoke tests, NLI contract tests, mission-data validator tests, core interaction tests and a 10-frame main-scene launch.
 
-After inspection, `.github/workflows/godot-validation.yml` was updated in commit `6043090bf24fd315c0efd0824eabb59334db25c1` to include the chapel branch, increase the timeout to 15 minutes, run the additional touch lifecycle/composition/input suites, and run the chapel GLB load test. **CONFIRMED:** GitHub Actions run [43410957023](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43410957023) completed successfully on commit `9e7d9c3fd84d10aaaff6c1c8b54a50043fa4bfd1`. It passed Godot 4.7.2 verification, editor import/parsing, all 15 test scripts (including the chapel GLB load test), and a 10-frame main-scene launch. The later documentation-only commit `10a6946003170911f33552af6cd43b386770c25d` has a new validation run in progress; it does not change game code.
+After inspection, `.github/workflows/godot-validation.yml` was updated in commit `6043090bf24fd315c0efd0824eabb59334db25c1` to include the chapel branch, increase the timeout to 15 minutes, run the additional touch lifecycle/composition/input suites, and run the chapel GLB load test. **CONFIRMED:** GitHub Actions run [43411504832](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43411504832) completed successfully on commit `c0f0db04ffb8da4ef993c8ea95a36aa5a1086589`. It passed Godot 4.7.2 verification, editor import/parsing, all 16 test scripts (including the chapel GLB load test and Covenant HQ blockout test), and a 10-frame main-scene launch. The HQ blockout is still greybox-only and has not been visually reviewed in the editor or on Android.
 
 A previous XH-003 implementation note reports 14 suites / 276 assertions passing locally on its ancestor branch. That is historical branch evidence, not a fresh CI result for the current chapel branch.
 
@@ -151,7 +153,7 @@ Apply these principles in original BTV designs. Do not copy protected maps, char
 | Current branch headless validation | BLOCKED | No CI run on chapel branch; no local Godot executable |
 | Asher production character | NOT IMPLEMENTED | No model, rig, textures or animation |
 | Ember companion | NOT IMPLEMENTED | No model, rig, follow/command AI or animation |
-| Covenant Headquarters | NOT IMPLEMENTED | Only separate chapel study; no HQ |
+| Covenant Headquarters | INITIAL BLOCKOUT IMPLEMENTED; functional HQ not implemented | Separate additive blockout with collision and anchors; no live NPC, mission board or Ember systems |
 | Third-person movement/camera | PROTOTYPE IMPLEMENTED | Capsule controller and camera; not presentation-polished |
 | Touch input | PROTOTYPE IMPLEMENTED | Source code and tests; physical device not checked |
 | NPC ecosystem | NOT IMPLEMENTED | No NPC actors/routines/persistent state |
@@ -182,4 +184,4 @@ Apply these principles in original BTV designs. Do not copy protected maps, char
 - This report distinguishes source-code presence and historical CI evidence from runtime/device verification.
 - The audit baseline is the latest complete Godot feature branch found, not proof of the user's local checkout.
 
-**Final verdict: NOT READY.** BTV has a useful prototype foundation and an environment asset study, but it does not yet have the required character, companion, Covenant Headquarters or functional gameplay loop for credible trailer recording.
+**Final verdict: NOT READY.** BTV has a useful prototype foundation, one separate environment asset study and an initial HQ blockout, but it does not yet have the required character, companion, functional NPC/mission systems or verified Android gameplay loop for credible trailer recording.
