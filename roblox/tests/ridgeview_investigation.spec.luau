@@ -14,6 +14,7 @@ end
 do
 	local firstPlayer = Policy.NewState()
 	local secondPlayer = Policy.NewState()
+	expect(not Policy.CanSubmitFindings(firstPlayer), "an empty investigation cannot be submitted")
 
 	local invalidType, invalidTypeError = Policy.TryRecordObservation(firstPlayer, 42, Catalog)
 	expect(invalidType == nil and invalidTypeError ~= nil, "observation IDs must be strings")
@@ -41,6 +42,7 @@ do
 	expect(withTestimony.wrenTestimonyRecorded, "Wren testimony is recorded separately from observations")
 	expect(not withTestimony.wrenSharePermission, "recording testimony does not imply sharing permission")
 	expect(not withTestimony.pikeAdmissionRecorded, "Pike admission cannot pre-exist testimony disclosure")
+	expect(not Policy.CanSubmitFindings(withTestimony), "findings cannot be submitted before Wren's explicit privacy decision")
 
 	local malformedPermission, malformedPermissionError = Policy.SetWrenSharePermission(withTestimony, "yes")
 	expect(malformedPermission == nil and malformedPermissionError ~= nil, "permission requires an explicit boolean")
@@ -49,6 +51,7 @@ do
 	expect(privatePermission ~= nil and privatePermissionError == nil, "Wren can keep testimony private")
 	assert(privatePermission ~= nil, "private permission state exists")
 	expect(not Policy.CanDiscussWrenWithPike(privatePermission), "private testimony cannot be discussed with Pike")
+	expect(Policy.CanSubmitFindings(privatePermission), "the private testimony route can submit after both observations and testimony are recorded")
 	local blockedAdmission, blockedAdmissionError = Policy.RecordPikeAdmission(privatePermission)
 	expect(blockedAdmission == nil and blockedAdmissionError ~= nil, "Pike admission is blocked without permission")
 
@@ -56,6 +59,7 @@ do
 	expect(authorized ~= nil and authorizationError == nil, "explicit permission can be granted after testimony")
 	assert(authorized ~= nil, "authorized state exists")
 	expect(Policy.CanDiscussWrenWithPike(authorized), "authorized detail can be discussed with Pike")
+	expect(not Policy.CanSubmitFindings(authorized), "the consented route requires Pike's follow-up before submission")
 
 	local authorizedEntries = Policy.Snapshot(authorized, Catalog)
 	local disclosureEntry = nil
@@ -77,12 +81,14 @@ do
 	expect(admission ~= nil and admissionError == nil, "Pike admission is recordable after authorized discussion")
 	assert(admission ~= nil, "Pike admission state exists")
 	expect(admission.pikeAdmissionRecorded, "Pike admission flag is set")
+	expect(Policy.CanSubmitFindings(admission), "the consented route can submit after Pike's limited admission")
 	local completeEntries = Policy.Snapshot(admission, Catalog)
 	expect(#completeEntries == 5, "journal combines two observations, testimony, permission and Pike's admission")
 
 	local retold = Policy.RecordWrenTestimony(admission)
 	expect(not retold.wrenSharePermission, "a newly recorded testimony never inherits previous permission")
 	expect(not retold.pikeAdmissionRecorded, "a newly recorded testimony resets dependent Pike admission")
+	expect(not Policy.CanSubmitFindings(retold), "re-recording testimony requires the disclosure decision to be completed again")
 	local retoldAdmission, retoldError = Policy.RecordPikeAdmission(retold)
 	expect(retoldAdmission == nil and retoldError ~= nil, "Pike admission is blocked after permission reset")
 
@@ -121,8 +127,22 @@ do
 	expect(testimonyDone, "Wren testimony unlocks the explicit disclosure decision")
 	local consentedPath = MissionService.AdvanceRidgeviewObjective(player, "choose_disclosure", "pike_followup")
 	expect(consentedPath, "authorized disclosure unlocks Pike follow-up")
+	local earlyCompletion = MissionService.CompleteRidgeviewInvestigation(player)
+	expect(not earlyCompletion, "Ridgeview cannot complete before the review objective")
 	local review = MissionService.AdvanceRidgeviewObjective(player, "pike_followup", "review_findings")
 	expect(review, "Pike's limited admission advances to review")
+	local completed, completionSnapshot = MissionService.CompleteRidgeviewInvestigation(player)
+	expect(completed and completionSnapshot ~= nil, "Ridgeview can be completed after the review objective")
+	assert(completionSnapshot ~= nil, "completion snapshot exists")
+	expect(completionSnapshot.phase == "mission_complete" and completionSnapshot.missionComplete, "completion is reflected in the authoritative snapshot")
+	expect(completionSnapshot.sequenceIndex == 6, "completion advances the opening sequence to its final step")
+	expect(completionSnapshot.completionOutcome ~= nil, "completion reports its non-monetary outcome")
+	local completedIds = MissionService.GetCompletedMissionIds(player)
+	expect(#completedIds == 1 and completedIds[1] == "ridgeview_investigation_001", "completion records a stable mission ID for later persistence")
+	table.clear(completedIds)
+	expect(#MissionService.GetCompletedMissionIds(player) == 1, "completed mission IDs are returned as a defensive copy")
+	local duplicateCompletion = MissionService.CompleteRidgeviewInvestigation(player)
+	expect(not duplicateCompletion, "completed mission cannot be submitted twice")
 
 	local privatePlayer = { UserId = 991703 }
 	MissionService.AddPlayer(privatePlayer)
@@ -133,5 +153,8 @@ do
 	MissionService.AdvanceRidgeviewObjective(privatePlayer, "speak_with_wren", "choose_disclosure")
 	local privatePath = MissionService.AdvanceRidgeviewObjective(privatePlayer, "choose_disclosure", "review_findings")
 	expect(privatePath, "keeping Wren's testimony private still allows investigation review")
+	local privateCompletion, privateCompletionSnapshot = MissionService.CompleteRidgeviewInvestigation(privatePlayer)
+	expect(privateCompletion and privateCompletionSnapshot ~= nil, "the private-testimony route can also complete Ridgeview")
+	expect(#MissionService.GetCompletedMissionIds(otherPlayer) == 0, "mission completion remains isolated from other players")
 	print("[BTV tests] Ridgeview branching mission progression passed.")
 end
