@@ -69,7 +69,7 @@ do
 	expect(investigationAdvanced, "first Ridgeview observation can advance the investigation objective")
 	expect(investigation ~= nil and investigation.sequenceIndex == 5, "Ridgeview investigation is sequence five")
 	assert(investigation ~= nil, "Ridgeview investigation snapshot must exist")
-	expect(investigation.objective == "Investigate Ridgeview", "Ridgeview investigation objective is correct")
+	expect(investigation.objective == "Record the remaining verifiable Ridgeview observation", "Ridgeview investigation begins with the remaining observation objective")
 	local repeatedInvestigation = MissionService.Advance(player :: any, "ridgeview_arrival", "ridgeview_investigation")
 	expect(repeatedInvestigation == false, "stale Ridgeview arrival cannot advance twice")
 
