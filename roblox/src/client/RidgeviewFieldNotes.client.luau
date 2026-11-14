@@ -97,7 +97,7 @@ local function makeLabel(name: string, parent: Instance, text: string, height: n
 	return label
 end
 
-local function render(entries: {any})
+local function render(entries: { any })
 	toggle.Text = "FIELD NOTES  " .. tostring(#entries)
 
 	for _, child in scroll:GetChildren() do
