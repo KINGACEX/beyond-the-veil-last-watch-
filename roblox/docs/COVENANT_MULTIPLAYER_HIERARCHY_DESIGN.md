@@ -1,12 +1,13 @@
 # Covenant Multiplayer Hierarchy — Roblox Design v0.1
 
-**Status:** Architecture specification. Not a gameplay implementation or canon change.
+**Status:** Architecture specification. Not a gameplay implementation or canon change.  
+**Identity note:** The player-identity section below follows the sole-Chosen decision recorded in `CANON_ADAPTATION.md`.
 
 ## 1. Player identity
 
-- Every Roblox player is a player-created Chosen character and a member of the Covenant in the Roblox adaptation.
-- The original main game's central protagonist remains Asher Vance.
-- Roblox players retain their own character identity; no player is silently assigned Asher's identity.
+- Asher Vance remains the sole Chosen and the original main game's central protagonist.
+- Every other Roblox player is a player-created Covenant operative with their own individual character identity; they are not additional Chosen and no player is silently assigned Asher's identity.
+- Multiplayer cooperation runs as Covenant operations alongside the established Asher storyline; it does not multiply the Chosen role.
 - Covenant membership and earned rank are persistent player-profile data once a reviewed persistence layer is approved.
 
 ## 2. Separate four concepts

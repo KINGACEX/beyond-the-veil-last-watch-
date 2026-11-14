@@ -4,6 +4,8 @@
 -- remain unapproved; this scene deliberately adds no named residents, clues or story props.
 
 local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CylinderOrientationPolicy = require(ReplicatedStorage:WaitForChild("BTVShared"):WaitForChild("CylinderOrientationPolicy"))
 
 local WORLD_NAME = "BTV_World"
 local SCENE_NAME = "Ridgeview_LandscapeStudy"
@@ -261,13 +263,25 @@ for index, offset in treePositions do
 	local trunk = makePart(
 		tree,
 		"Trunk",
-		Vector3.new(2.1, height, 2.1),
-		-- Roblox cylinder parts use their local Y axis as the long axis; keep the trunk upright.
-		CFrame.new(base + Vector3.new(0, height / 2, 0)),
+		-- Roblox cylinders extrude along their LOCAL X axis, so an upright trunk is
+		-- authored as (length, diameter, diameter) and rotated so local X points up.
+		-- Authoring (2.1, height, 2.1) without that rotation renders a thin fin.
+		Vector3.new(height, 2.1, 2.1),
+		CFrame.new(base + Vector3.new(0, height / 2, 0)) * CFrame.Angles(0, 0, math.rad(90)),
 		bark,
 		Enum.Material.Wood
 	)
 	trunk.Shape = Enum.PartType.Cylinder
+	-- Verify the authored geometry against the shared upright-cylinder rule.
+	local verdict = CylinderOrientationPolicy.IsUpright({
+		sizeX = trunk.Size.X,
+		sizeY = trunk.Size.Y,
+		sizeZ = trunk.Size.Z,
+		upDot = trunk.CFrame.RightVector:Dot(Vector3.new(0, 1, 0)),
+	})
+	if not verdict.ok then
+		warn("[BTV Roblox] Ridgeview tree trunk is not an upright cylinder: " .. verdict.reason)
+	end
 
 	for crown = 1, 3 do
 		local canopy = makePart(

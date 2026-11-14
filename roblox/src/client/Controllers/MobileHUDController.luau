@@ -271,7 +271,6 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	panel.Parent = screenGui
 	makeCorner(panel, 12)
 
-
 	local layout = Instance.new("UIListLayout")
 	layout.Padding = UDim.new(0, 5)
 	layout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -342,7 +341,6 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	companionPanel.Visible = false
 	companionPanel.Parent = screenGui
 	makeCorner(companionPanel, 12)
-
 
 	local function updateInputLayout()
 		local touchLayout = UserInputService.PreferredInput == Enum.PreferredInput.Touch

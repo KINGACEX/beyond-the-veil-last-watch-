@@ -57,7 +57,8 @@ do
 	expect(reportAdvanced, "Scout Report access advances the final opening phase")
 	expect(report ~= nil and report.sequenceIndex == 3, "report phase is sequence three")
 	assert(report ~= nil, "report snapshot must exist")
-	expect(string.find(report.objective, "evidence pending", 1, true) ~= nil, "report does not invent evidence")
+	expect(report.objective == "Travel to Ridgeview", "the report phase directs the player to travel")
+	expect(string.find(report.status, "evidence pending", 1, true) ~= nil, "the report phase does not invent evidence")
 
 	local travelAdvanced, arrival = MissionService.Advance(player :: any, "report_accessed", "ridgeview_arrival")
 	expect(travelAdvanced, "Ridgeview arrival follows Scout Report access")
@@ -1222,8 +1223,58 @@ do
 	print("[BTV tests] Ridgeview field-note policy passed.")
 end
 
+-- Currency amounts are validated by one shared rule, so the currency boundary
+-- and the session state service cannot disagree about what a valid amount is.
+do
+	local CurrencyAmountPolicy = require("../src/shared/CurrencyAmountPolicy")
+
+	expect(CurrencyAmountPolicy.IsValidAmount(1, 1000000).ok, "one Aces is a valid amount")
+	expect(CurrencyAmountPolicy.IsValidAmount(999999, 1000000).ok, "an amount inside the limit is valid")
+	expect(not CurrencyAmountPolicy.IsValidAmount(0, 1000000).ok, "zero is not a valid award")
+	expect(not CurrencyAmountPolicy.IsValidAmount(-5, 1000000).ok, "a negative amount is not a valid award")
+	expect(not CurrencyAmountPolicy.IsValidAmount(1.5, 1000000).ok, "a fractional amount is not a valid award")
+	expect(not CurrencyAmountPolicy.IsValidAmount(0 / 0, 1000000).ok, "a NaN amount is not a valid award")
+	expect(not CurrencyAmountPolicy.IsValidAmount(math.huge, 1000000).ok, "an infinite amount is not a valid award")
+	expect(not CurrencyAmountPolicy.IsValidAmount(1000001, 1000000).ok, "an amount above the limit is not a valid award")
+	expect(string.find(CurrencyAmountPolicy.IsValidAmount(-5, 1000000).reason, "positive whole number", 1, true) ~= nil, "the rejection reason explains the rule")
+	print("[BTV tests] currency amount policy passed.")
+end
+
+-- The Curiosity Archive prompt is shared world state. A per-player hint written
+-- into it leaks one player's progress to every player in the server, so the
+-- locked hint must be published on the player's own attributes instead.
+do
+	local fs = require("@lune/fs")
+
+	local function readSource(path: string): string?
+		if not fs.isFile(path) then
+			return nil
+		end
+		local contents = fs.readFile(path)
+		if type(contents) ~= "string" then
+			return nil
+		end
+		return contents
+	end
+
+	local archiveSource = readSource("src/server/World/CuriosityArchive.server.luau")
+	expect(archiveSource ~= nil, "the Curiosity Archive server script is missing")
+	if archiveSource ~= nil then
+		expect(string.find(archiveSource, "entryPrompt.ObjectText", 1, true) == nil, "the shared archive prompt text is never rewritten per player")
+		expect(string.find(archiveSource, "BTVArchiveHint", 1, true) ~= nil, "the locked archive hint is published on the player's own attributes")
+	end
+
+	local archiveHudSource = readSource("src/client/CuriosityArchiveHUD.client.luau")
+	expect(archiveHudSource ~= nil, "the Curiosity Archive HUD script is missing")
+	if archiveHudSource ~= nil then
+		expect(string.find(archiveHudSource, "BTVArchiveHint", 1, true) ~= nil, "the archive HUD reads the player-local hint")
+	end
+	print("[BTV tests] archive hint isolation passed.")
+end
+
 -- The runtime testing pipeline's own structure checks run inside this suite so
 -- the existing CI command (lune run tests/foundation.spec.luau) covers them
 -- without a workflow change. Once .github/workflows/roblox-validation.yml runs
 -- the suites individually, tests/pipeline.spec.luau can be invoked on its own.
 require("./pipeline.spec")
+require("./geometry.spec")

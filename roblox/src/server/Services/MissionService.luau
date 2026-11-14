@@ -27,7 +27,7 @@ local states: { [number]: MissionState } = {}
 local OBJECTIVES: { [string]: string } = {
 	communion_context = "Enter the sanctuary",
 	covenant_alert = "Review the Scout Report",
-	report_accessed = "Scout Report opened — authored evidence pending",
+	report_accessed = "Travel to Ridgeview",
 	ridgeview_arrival = "Arrive at Ridgeview",
 	ridgeview_investigation = "Investigate Ridgeview",
 }
@@ -35,7 +35,7 @@ local OBJECTIVES: { [string]: string } = {
 local STATUS_TEXT: { [string]: string } = {
 	communion_context = "First Sunday • Communion context",
 	covenant_alert = "Covenant alert received",
-	report_accessed = "Scout Report available. Follow the Ridgeview travel marker.",
+	report_accessed = "Scout Report opened; authored evidence pending. Follow the marked departure point to Ridgeview.",
 	ridgeview_arrival = "Ridgeview reached. Explore the outpost and record one verifiable observation.",
 	ridgeview_investigation = "First observation recorded. Continue exploring and preserve only what you can verify.",
 }

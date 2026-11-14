@@ -46,6 +46,7 @@ local expectedTests = {
 	"temple_structure",
 	"ridgeview_arrival_marker",
 	"ridgeview_tree_trunks_are_upright",
+	"ridgeview_departure_sign_faces_the_player",
 	"archive_prompt_is_shared",
 	"companion_actor_spawns",
 	"mission_service_state",

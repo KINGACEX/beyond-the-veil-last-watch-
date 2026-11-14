@@ -195,7 +195,7 @@ function PlayerProfileSchema.CreateDefault()
 		schemaVersion = CURRENT_SCHEMA_VERSION,
 		revision = 0,
 		identity = {
-			characterId = "roblox_player_chosen",
+			characterId = "covenant_operative",
 			covenantBranch = "Unassigned",
 		},
 		progression = {
