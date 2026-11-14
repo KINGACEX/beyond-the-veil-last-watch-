@@ -157,7 +157,8 @@ local function render(entries: { any })
 		local title = makeLabel("Title", card, tostring(entry.Title), 18, Color3.fromRGB(240, 235, 222), 12, true)
 		title.Size = UDim2.new(1, 0, 0, 18)
 
-		local confidence = makeLabel("Confidence", card, tostring(entry.Category or "Evidence") .. "  •  " .. tostring(entry.Confidence), 15, Color3.fromRGB(202, 177, 124), 10, true)
+		local confidence =
+			makeLabel("Confidence", card, tostring(entry.Category or "Evidence") .. "  •  " .. tostring(entry.Confidence), 15, Color3.fromRGB(202, 177, 124), 10, true)
 		confidence.Position = UDim2.fromOffset(0, 21)
 		confidence.Size = UDim2.new(1, 0, 0, 15)
 
