@@ -316,9 +316,7 @@ local function startConversation(player: Player, npcId: string)
 	state.step = 1
 
 	local mission = MissionService.GetSnapshot(player)
-	if npcId == "Wren" and mission ~= nil
-		and (mission.phase == "ridgeview_arrival" or mission.ridgeviewObjective == "collect_observations")
-	then
+	if npcId == "Wren" and mission ~= nil and (mission.phase == "ridgeview_arrival" or mission.ridgeviewObjective == "collect_observations") then
 		state.phase = "wren_locked"
 		send(player, "Wren", "Please record what you can directly observe around the approach first. Then we can speak about what I saw.", {
 			{ Label = "End conversation", Action = "Close" },
