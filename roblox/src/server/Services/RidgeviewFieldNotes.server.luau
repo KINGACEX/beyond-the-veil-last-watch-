@@ -8,7 +8,7 @@ local Workspace = game:GetService("Workspace")
 
 local shared = ReplicatedStorage:WaitForChild("BTVShared")
 local FieldNoteCatalog = require(shared:WaitForChild("RidgeviewFieldNoteCatalog"))
-local FieldNotePolicy = require(shared:WaitForChild("RidgeviewFieldNotePolicy"))
+local InvestigationService = require(script.Parent:WaitForChild("RidgeviewInvestigationService"))
 local MissionService = require(script.Parent:WaitForChild("MissionService"))
 
 local remoteFolder = ReplicatedStorage:WaitForChild("BTVRemotes")
@@ -30,21 +30,11 @@ local fieldNoteRecorded = getOrCreateRemote("RemoteEvent", "FieldNoteRecorded") 
 local getFieldNotes = getOrCreateRemote("RemoteFunction", "GetFieldNotes") :: RemoteFunction
 local missionStateUpdated = getOrCreateRemote("RemoteEvent", "MissionStateUpdated") :: RemoteEvent
 
-local journals: { [number]: FieldNotePolicy.Journal } = {}
 local lastRecordAt: { [number]: number } = {}
 local RECORD_INTERVAL_SECONDS = 0.35
 
-local function getJournal(player: Player): FieldNotePolicy.Journal
-	local journal = journals[player.UserId]
-	if journal == nil then
-		journal = {}
-		journals[player.UserId] = journal
-	end
-	return journal
-end
-
 getFieldNotes.OnServerInvoke = function(player: Player)
-	return FieldNotePolicy.Snapshot(getJournal(player), FieldNoteCatalog)
+	return InvestigationService.GetJournalSnapshot(player)
 end
 
 local function recordObservation(player: Player, noteId: string, anchor: BasePart)
@@ -68,16 +58,15 @@ local function recordObservation(player: Player, noteId: string, anchor: BasePar
 	end
 	lastRecordAt[player.UserId] = now
 
-	local updated, reason = FieldNotePolicy.TryRecord(getJournal(player), noteId, FieldNoteCatalog)
-	if updated == nil then
+	local recorded, reason = InvestigationService.TryRecordObservation(player, noteId)
+	if not recorded then
 		if reason ~= "Field note already recorded." then
 			warn("[BTV Roblox] Field-note request rejected: " .. tostring(reason))
 		end
 		return
 	end
 
-	journals[player.UserId] = updated
-	fieldNoteRecorded:FireClient(player, FieldNotePolicy.Snapshot(updated, FieldNoteCatalog))
+	fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
 
 	if mission.phase == "ridgeview_arrival" then
 		local advanced, snapshot = MissionService.Advance(player, "ridgeview_arrival", "ridgeview_investigation")
@@ -184,7 +173,7 @@ if existingProps == nil then
 end
 
 Players.PlayerRemoving:Connect(function(player: Player)
-	journals[player.UserId] = nil
+	InvestigationService.RemovePlayer(player)
 	lastRecordAt[player.UserId] = nil
 end)
 
