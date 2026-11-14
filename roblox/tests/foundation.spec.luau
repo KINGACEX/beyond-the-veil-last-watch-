@@ -40,6 +40,7 @@ do
 	assert(initial ~= nil, "mission snapshot must exist")
 	expect(initial.phase == "communion_context", "mission starts in Communion context")
 	expect(initial.sequenceIndex == 1, "initial mission index is one")
+	expect(initial.region == "temple", "initial mission snapshot reports the Temple region")
 	expect(initial.objective == "Enter the sanctuary", "initial objective is correct")
 	expect(MissionService.GetRegion(player :: any) == "temple", "new player starts in the Temple region")
 	expect(not MissionService.SetRegion(player :: any, "ridgeview"), "Ridgeview cannot be entered before the mission unlocks it")
@@ -67,6 +68,7 @@ do
 	expect(arrival ~= nil and arrival.sequenceIndex == 4, "Ridgeview arrival is sequence four")
 	assert(arrival ~= nil, "Ridgeview arrival snapshot must exist")
 	expect(arrival.objective == "Arrive at Ridgeview", "Ridgeview arrival objective is correct")
+	expect(arrival.region == "ridgeview", "Ridgeview arrival snapshot reports the Ridgeview region")
 	expect(MissionService.GetRegion(player :: any) == "ridgeview", "first Ridgeview travel updates the current region")
 
 	local investigationAdvanced, investigation = MissionService.Advance(player :: any, "ridgeview_arrival", "ridgeview_investigation")
@@ -77,6 +79,7 @@ do
 	local repeatedInvestigation = MissionService.Advance(player :: any, "ridgeview_arrival", "ridgeview_investigation")
 	expect(repeatedInvestigation == false, "stale Ridgeview arrival cannot advance twice")
 	expect(MissionService.SetRegion(player :: any, "temple"), "player can return to the Temple without resetting mission progress")
+	expect(MissionService.GetSnapshot(player :: any).region == "temple", "mission snapshot reflects the return to Temple")
 	local savedCheckpoint = MissionService.GetPersistentProgress(player :: any)
 	expect(savedCheckpoint ~= nil and savedCheckpoint.phase == "ridgeview_investigation", "active mission checkpoint captures Ridgeview phase")
 	expect(savedCheckpoint ~= nil and savedCheckpoint.region == "temple", "active mission checkpoint captures the return region")
