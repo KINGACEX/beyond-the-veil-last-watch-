@@ -9,6 +9,7 @@ local CompanionRigContract = require("../src/shared/CompanionRigContract")
 local ArchiveService = require("../src/server/Services/ArchiveService")
 local CovenantRankCatalog = require("../src/shared/CovenantRankCatalog")
 local PlayerProfileSchema = require("../src/shared/PlayerProfileSchema")
+local PlayerIdentityPolicy = require("../src/shared/PlayerIdentityPolicy")
 local ProfileLeasePolicy = require("../src/shared/ProfileLeasePolicy")
 local ProfileRecordPolicy = require("../src/shared/ProfileRecordPolicy")
 local FakeProfileStore = require("./support/FakeProfileStore")
@@ -223,10 +224,10 @@ end
 do
 	-- Versioned profile schema validation is pure and does not enable DataStore writes.
 	local defaultProfile = PlayerProfileSchema.CreateDefault()
-	local validProfile, validProfileReason = PlayerProfileSchema.Validate(defaultProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local validProfile, validProfileReason = PlayerProfileSchema.Validate(defaultProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(validProfile, "new versioned profile passes schema validation")
 	expect(validProfileReason == nil, "valid profile has no validation error")
-	expect(defaultProfile.schemaVersion == 3, "new profile uses the current schema version")
+	expect(defaultProfile.schemaVersion == 4, "new profile uses the current schema version")
 	expect(defaultProfile.progression.covenantRank == "Recruit", "new profile starts at Recruit")
 	expect(defaultProfile.companions.owned.ember == true, "new profile owns Ember")
 	expect(defaultProfile.companions.owned.fox == true, "new profile owns Fox")
@@ -236,50 +237,50 @@ do
 
 	local unsupportedProfile = table.clone(defaultProfile)
 	unsupportedProfile.schemaVersion = 99
-	local unsupportedValid = PlayerProfileSchema.Validate(unsupportedProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local unsupportedValid = PlayerProfileSchema.Validate(unsupportedProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(not unsupportedValid, "unsupported profile schema is rejected")
 
 	local unknownRankProfile = table.clone(defaultProfile)
 	unknownRankProfile.progression = table.clone(defaultProfile.progression)
 	unknownRankProfile.progression.covenantRank = "Supreme Commander"
-	local unknownRankValid = PlayerProfileSchema.Validate(unknownRankProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local unknownRankValid = PlayerProfileSchema.Validate(unknownRankProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(not unknownRankValid, "unknown Covenant rank is rejected")
 
 	local negativeBalanceProfile = table.clone(defaultProfile)
 	negativeBalanceProfile.economy = table.clone(defaultProfile.economy)
 	negativeBalanceProfile.economy.aces = -1
-	local negativeBalanceValid = PlayerProfileSchema.Validate(negativeBalanceProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local negativeBalanceValid = PlayerProfileSchema.Validate(negativeBalanceProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(not negativeBalanceValid, "negative currency balance is rejected")
 
 	local fractionalBalanceProfile = table.clone(defaultProfile)
 	fractionalBalanceProfile.economy = table.clone(defaultProfile.economy)
 	fractionalBalanceProfile.economy.covenantCredits = 1.5
-	local fractionalBalanceValid = PlayerProfileSchema.Validate(fractionalBalanceProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local fractionalBalanceValid = PlayerProfileSchema.Validate(fractionalBalanceProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(not fractionalBalanceValid, "fractional currency balance is rejected")
 
 	local forgedPremiumProfile = table.clone(defaultProfile)
 	forgedPremiumProfile.companions = table.clone(defaultProfile.companions)
 	forgedPremiumProfile.companions.owned = table.clone(defaultProfile.companions.owned)
 	forgedPremiumProfile.companions.owned.eagle = true
-	local forgedPremiumValid = PlayerProfileSchema.Validate(forgedPremiumProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local forgedPremiumValid = PlayerProfileSchema.Validate(forgedPremiumProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(not forgedPremiumValid, "profile cannot forge premium companion ownership")
 
 	local unownedEquippedProfile = table.clone(defaultProfile)
 	unownedEquippedProfile.companions = table.clone(defaultProfile.companions)
 	unownedEquippedProfile.companions.equipped = "eagle"
-	local unownedEquippedValid = PlayerProfileSchema.Validate(unownedEquippedProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local unownedEquippedValid = PlayerProfileSchema.Validate(unownedEquippedProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(not unownedEquippedValid, "profile cannot equip an unowned companion")
 
 	local malformedEventsProfile = table.clone(defaultProfile)
 	malformedEventsProfile.progression = table.clone(defaultProfile.progression)
 	malformedEventsProfile.progression.completedMissionIds = { [1] = "mission_a", [3] = "mission_c" }
-	local malformedEventsValid = PlayerProfileSchema.Validate(malformedEventsProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local malformedEventsValid = PlayerProfileSchema.Validate(malformedEventsProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(not malformedEventsValid, "sparse progression event lists are rejected")
 
 	local duplicateEventsProfile = table.clone(defaultProfile)
 	duplicateEventsProfile.progression = table.clone(defaultProfile.progression)
 	duplicateEventsProfile.progression.completedEvaluations = { "evaluation_001", "evaluation_001" }
-	local duplicateEventsValid = PlayerProfileSchema.Validate(duplicateEventsProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local duplicateEventsValid = PlayerProfileSchema.Validate(duplicateEventsProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(not duplicateEventsValid, "duplicate evaluation IDs are rejected")
 
 	defaultProfile.companions.owned.fox = false
@@ -325,8 +326,19 @@ do
 end
 
 -- Atomic DataStore callback transformations preserve ownership and reject stale writes.
-local acquiredRecord, acquiredRecordError =
-	ProfileRecordPolicy.TryAcquire(nil, "server-A", 100, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
+local acquiredRecord, acquiredRecordError = ProfileRecordPolicy.TryAcquire(
+	nil,
+	"server-A",
+	100,
+	60,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	InventoryPolicy,
+	ItemCatalog,
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
+)
 expect(acquiredRecord ~= nil and acquiredRecordError == nil, "new profile record can be initialized with a lease")
 assert(acquiredRecord ~= nil, "acquired profile record must exist")
 expect(acquiredRecord.profile.progression.covenantRank == "Recruit", "new record starts at Recruit")
@@ -339,10 +351,10 @@ do
 	legacyProfile.inventory = nil
 	legacyProfile.economy.aces = 91
 	legacyProfile.progression.completedMissionIds = { "mission-legacy-001" }
-	local migratedProfile, migrationError = PlayerProfileSchema.Migrate(legacyProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local migratedProfile, migrationError = PlayerProfileSchema.Migrate(legacyProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(migratedProfile ~= nil and migrationError == nil, "valid v1 profile migrates to the current schema")
 	assert(migratedProfile ~= nil, "migrated profile must exist")
-	expect(migratedProfile.schemaVersion == 3, "migration advances profile schema to version three")
+	expect(migratedProfile.schemaVersion == 4, "migration advances profile schema to version four")
 	expect(migratedProfile.economy.aces == 91, "migration preserves existing Aces")
 	expect(migratedProfile.progression.completedMissionIds[1] == "mission-legacy-001", "migration preserves mission progress")
 	expect(migratedProfile.inventory.items ~= nil and next(migratedProfile.inventory.items) == nil, "migration adds an empty inventory")
@@ -352,13 +364,14 @@ do
 	invalidLegacyProfile.schemaVersion = 1
 	invalidLegacyProfile.inventory = nil
 	invalidLegacyProfile.economy.aces = -1
-	local rejectedLegacy, rejectedLegacyError = PlayerProfileSchema.Migrate(invalidLegacyProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local rejectedLegacy, rejectedLegacyError =
+		PlayerProfileSchema.Migrate(invalidLegacyProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(rejectedLegacy == nil and rejectedLegacyError ~= nil, "malformed legacy profiles fail closed")
 
 	local invalidInventoryProfile = PlayerProfileSchema.CreateDefault()
 	invalidInventoryProfile.inventory.items.unknown_item = 1
 	local invalidInventoryProfileValid, invalidInventoryProfileError =
-		PlayerProfileSchema.Validate(invalidInventoryProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+		PlayerProfileSchema.Validate(invalidInventoryProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(invalidInventoryProfileValid == false and invalidInventoryProfileError ~= nil, "current schema rejects unknown inventory item IDs")
 
 	local migratedRecord, migratedRecordError = ProfileRecordPolicy.TryAcquire(
@@ -371,11 +384,12 @@ do
 		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog,
-		ProfileLeasePolicy
+		ProfileLeasePolicy,
+		PlayerIdentityPolicy
 	)
 	expect(migratedRecord ~= nil and migratedRecordError == nil, "atomic record acquisition migrates a valid legacy profile")
 	assert(migratedRecord ~= nil, "migrated record must exist")
-	expect(migratedRecord.profile.schemaVersion == 3, "acquired record contains the current schema")
+	expect(migratedRecord.profile.schemaVersion == 4, "acquired record contains the current schema")
 	expect(migratedRecord.profile.economy.aces == 91, "record migration preserves the legacy balance")
 
 	local legacyV2Profile = PlayerProfileSchema.CreateDefault()
@@ -383,10 +397,11 @@ do
 	legacyV2Profile.economy.recentTransactions = nil
 	legacyV2Profile.economy.aces = 37
 	legacyV2Profile.inventory.items.timber_plank = 4
-	local migratedV2Profile, migratedV2Error = PlayerProfileSchema.Migrate(legacyV2Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	local migratedV2Profile, migratedV2Error =
+		PlayerProfileSchema.Migrate(legacyV2Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, PlayerIdentityPolicy)
 	expect(migratedV2Profile ~= nil and migratedV2Error == nil, "valid v2 profile migrates to v3")
 	assert(migratedV2Profile ~= nil, "migrated v2 profile must exist")
-	expect(migratedV2Profile.schemaVersion == 3, "v2 migration advances the schema version")
+	expect(migratedV2Profile.schemaVersion == 4, "v2 migration advances the schema version")
 	expect(migratedV2Profile.economy.aces == 37, "v2 migration preserves Aces")
 	expect(migratedV2Profile.inventory.items.timber_plank == 4, "v2 migration preserves inventory")
 	expect(#migratedV2Profile.economy.recentTransactions == 0, "v2 migration initializes a bounded transaction journal")
@@ -402,7 +417,8 @@ local occupiedRecord, occupiedError = ProfileRecordPolicy.TryAcquire(
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(occupiedRecord == nil and occupiedError ~= nil, "competing server cannot acquire an active profile record")
 
@@ -420,7 +436,8 @@ local savedRecord, savedError, savedOutcome = ProfileRecordPolicy.TrySave(
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(savedRecord ~= nil and savedError == nil, "current owner can save a valid profile")
 expect(savedOutcome == "Saved", "new save is explicitly classified as saved")
@@ -443,7 +460,8 @@ local replayedRecord, replayError, replayOutcome = ProfileRecordPolicy.TrySave(
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(replayedRecord == savedRecord and replayError == nil, "exact retry returns the already committed record")
 expect(replayOutcome == "AlreadyApplied", "exact retry is classified as already applied")
@@ -463,7 +481,8 @@ local reusedOperation, reusedOperationError = ProfileRecordPolicy.TrySave(
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(reusedOperation == nil and reusedOperationError ~= nil, "same operation ID with a different payload is rejected")
 
@@ -479,12 +498,24 @@ local invalidOperation, invalidOperationError = ProfileRecordPolicy.TrySave(
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(invalidOperation == nil and invalidOperationError ~= nil, "empty save operation ID is rejected")
 
-local reacquiredAfterSave, reacquireAfterSaveError =
-	ProfileRecordPolicy.TryAcquire(savedRecord, "server-B", 200, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
+local reacquiredAfterSave, reacquireAfterSaveError = ProfileRecordPolicy.TryAcquire(
+	savedRecord,
+	"server-B",
+	200,
+	60,
+	PlayerProfileSchema,
+	CovenantRankCatalog,
+	CompanionCatalog,
+	InventoryPolicy,
+	ItemCatalog,
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
+)
 expect(reacquiredAfterSave ~= nil and reacquireAfterSaveError == nil, "expired saved record can be acquired by a later session")
 expect(reacquiredAfterSave ~= nil and reacquiredAfterSave.lastSaveOperation.id == "save-operation-001", "last save operation marker survives acquisition")
 
@@ -502,7 +533,8 @@ local staleSave, staleSaveError = ProfileRecordPolicy.TrySave(
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(staleSave == nil and staleSaveError ~= nil, "stale profile revision cannot overwrite a newer save")
 
@@ -518,7 +550,8 @@ local expiredSave, expiredSaveError = ProfileRecordPolicy.TrySave(
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(expiredSave == nil and expiredSaveError ~= nil, "expired owner cannot save without reacquiring lease")
 
@@ -536,7 +569,8 @@ local invalidSave, invalidSaveError = ProfileRecordPolicy.TrySave(
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(invalidSave == nil and invalidSaveError ~= nil, "invalid candidate profile cannot be saved")
 
@@ -560,7 +594,8 @@ local malformedStored, malformedStoredError = ProfileRecordPolicy.TryAcquire(
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(malformedStored == nil and malformedStoredError ~= nil, "unsupported stored profile cannot be overwritten")
 
@@ -574,7 +609,8 @@ local malformedSaveMarker, malformedSaveMarkerError = ProfileRecordPolicy.TryAcq
 	CompanionCatalog,
 	InventoryPolicy,
 	ItemCatalog,
-	ProfileLeasePolicy
+	ProfileLeasePolicy,
+	PlayerIdentityPolicy
 )
 expect(malformedSaveMarker == nil and malformedSaveMarkerError ~= nil, "malformed save-operation marker fails closed")
 print("[BTV tests] Profile record policy rules passed.")
@@ -584,8 +620,19 @@ local fakeStore = FakeProfileStore.new()
 local profileKey = "player:901001"
 fakeStore:QueueCallbackReplay(profileKey, acquiredRecord)
 local replayedAcquire, replayedAcquireError = fakeStore:UpdateAsync(profileKey, function(existing)
-	local nextRecord, policyError =
-		ProfileRecordPolicy.TryAcquire(existing, "server-B", 120, 60, PlayerProfileSchema, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog, ProfileLeasePolicy)
+	local nextRecord, policyError = ProfileRecordPolicy.TryAcquire(
+		existing,
+		"server-B",
+		120,
+		60,
+		PlayerProfileSchema,
+		CovenantRankCatalog,
+		CompanionCatalog,
+		InventoryPolicy,
+		ItemCatalog,
+		ProfileLeasePolicy,
+		PlayerIdentityPolicy
+	)
 	if policyError ~= nil then
 		return nil
 	end
@@ -613,7 +660,8 @@ local ambiguousResult, ambiguousError = ambiguousStore:UpdateAsync(profileKey, f
 		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog,
-		ProfileLeasePolicy
+		ProfileLeasePolicy,
+		PlayerIdentityPolicy
 	)
 	firstAmbiguousOutcome = outcome
 	if policyError ~= nil then
@@ -640,7 +688,8 @@ local reconciledResult, reconciledError = ambiguousStore:UpdateAsync(profileKey,
 		CompanionCatalog,
 		InventoryPolicy,
 		ItemCatalog,
-		ProfileLeasePolicy
+		ProfileLeasePolicy,
+		PlayerIdentityPolicy
 	)
 	retryOutcome = outcome
 	if policyError ~= nil then
@@ -693,6 +742,7 @@ do
 	local adapter = ProfilePersistenceAdapter.new({
 		Store = adapterStore,
 		ProfileSchema = PlayerProfileSchema,
+		IdentityPolicy = PlayerIdentityPolicy,
 		RankCatalog = CovenantRankCatalog,
 		CompanionCatalog = CompanionCatalog,
 		InventoryPolicy = InventoryPolicy,
@@ -752,6 +802,7 @@ do
 	local competingAdapter = ProfilePersistenceAdapter.new({
 		Store = adapterStore,
 		ProfileSchema = PlayerProfileSchema,
+		IdentityPolicy = PlayerIdentityPolicy,
 		RankCatalog = CovenantRankCatalog,
 		CompanionCatalog = CompanionCatalog,
 		InventoryPolicy = InventoryPolicy,
@@ -846,7 +897,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(purchasedProfile ~= nil and purchaseError == nil and purchaseOutcome == "Applied", "valid NPC merchant purchase is applied")
 	assert(purchasedProfile ~= nil, "purchased profile must exist")
@@ -865,7 +917,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(
 		repeatedPurchase ~= nil and repeatedPurchaseError == nil and repeatedPurchaseOutcome == "AlreadyApplied",
@@ -884,7 +937,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(reusedPurchaseId == nil and reusedPurchaseIdError ~= nil, "transaction ID reuse with a different payload is rejected")
 
@@ -898,7 +952,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(insufficientPurchase == nil and insufficientPurchaseError ~= nil, "purchase rejects insufficient Aces")
 
@@ -912,7 +967,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(invalidPrice == nil and invalidPriceError ~= nil, "purchase rejects zero server prices")
 
@@ -926,7 +982,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(invalidQuantity == nil and invalidQuantityError ~= nil, "purchase rejects fractional quantities")
 
@@ -940,7 +997,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(unknownPurchase == nil and unknownPurchaseError ~= nil, "purchase rejects unknown item IDs")
 
@@ -954,7 +1012,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(soldProfile ~= nil and saleError == nil and saleOutcome == "Applied", "valid NPC merchant sale is applied")
 	assert(soldProfile ~= nil, "sold profile must exist")
@@ -971,7 +1030,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(repeatedSale ~= nil and repeatedSaleError == nil and repeatedSaleOutcome == "AlreadyApplied", "exact duplicate sale is reconciled without paying twice")
 	assert(repeatedSale ~= nil, "reconciled sale profile must exist")
@@ -987,7 +1047,8 @@ do
 		CovenantRankCatalog,
 		CompanionCatalog,
 		InventoryPolicy,
-		ItemCatalog
+		ItemCatalog,
+		PlayerIdentityPolicy
 	)
 	expect(insufficientSale == nil and insufficientSaleError ~= nil, "sale rejects quantities the player does not own")
 
@@ -1001,6 +1062,7 @@ do
 	local serviceAdapter = ProfilePersistenceAdapter.new({
 		Store = merchantStore,
 		ProfileSchema = PlayerProfileSchema,
+		IdentityPolicy = PlayerIdentityPolicy,
 		RankCatalog = CovenantRankCatalog,
 		CompanionCatalog = CompanionCatalog,
 		InventoryPolicy = InventoryPolicy,
@@ -1043,6 +1105,7 @@ do
 		PersistenceAdapter = serviceAdapter,
 		TransactionPolicy = MerchantTransactionPolicy,
 		ProfileSchema = PlayerProfileSchema,
+		IdentityPolicy = PlayerIdentityPolicy,
 		RankCatalog = CovenantRankCatalog,
 		CompanionCatalog = CompanionCatalog,
 		InventoryPolicy = InventoryPolicy,
@@ -1278,3 +1341,4 @@ end
 -- the suites individually, tests/pipeline.spec.luau can be invoked on its own.
 require("./pipeline.spec")
 require("./geometry.spec")
+require("./identity.spec")
