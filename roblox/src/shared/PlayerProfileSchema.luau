@@ -4,13 +4,14 @@
 
 local PlayerProfileSchema = {}
 
-local CURRENT_SCHEMA_VERSION = 6
+local CURRENT_SCHEMA_VERSION = 7
 local LEGACY_SCHEMA_VERSION = 1
 local INVENTORY_SCHEMA_VERSION = 2
 local TRANSACTION_SCHEMA_VERSION = 3
 local INVESTIGATION_SCHEMA_VERSION = 4
 local CONSENT_DECISION_SCHEMA_VERSION = 5
 local ACTIVE_MISSION_SCHEMA_VERSION = 6
+local MISSION_REGION_SCHEMA_VERSION = 7
 local MAX_RECENT_TRANSACTIONS = 50
 local DEFAULT_OWNERSHIP: {[string]: boolean} = table.freeze({
 	ember = true,
@@ -158,6 +159,17 @@ local function validateProfile(
 		if (activeMission.phase == "mission_complete") ~= isCompleted then
 			return false, "Completed mission history and active mission state disagree."
 		end
+		if expectedVersion >= MISSION_REGION_SCHEMA_VERSION then
+			if activeMission.region ~= "temple" and activeMission.region ~= "ridgeview" then
+				return false, "Active mission region is invalid."
+			end
+			local phaseAllowsRidgeview = activeMission.phase == "ridgeview_arrival"
+				or activeMission.phase == "ridgeview_investigation"
+				or activeMission.phase == "mission_complete"
+			if activeMission.region == "ridgeview" and not phaseAllowsRidgeview then
+				return false, "Ridgeview region requires a Ridgeview mission phase."
+			end
+		end
 	end
 
 	local economy = profile.economy
@@ -296,6 +308,7 @@ function PlayerProfileSchema.CreateDefault()
 				phase = "communion_context",
 				sequenceIndex = 1,
 				ridgeviewObjective = nil,
+				region = "temple",
 			},
 		},
 		economy = {
@@ -340,6 +353,7 @@ function PlayerProfileSchema.Migrate(
 		or profile.schemaVersion == TRANSACTION_SCHEMA_VERSION
 		or profile.schemaVersion == INVESTIGATION_SCHEMA_VERSION
 		or profile.schemaVersion == CONSENT_DECISION_SCHEMA_VERSION
+		or profile.schemaVersion == ACTIVE_MISSION_SCHEMA_VERSION
 	then
 		local sourceVersion = profile.schemaVersion
 		local sourceValid, sourceError = validateProfile(
@@ -376,6 +390,12 @@ function PlayerProfileSchema.Migrate(
 				sequenceIndex = if completed then 6 else 1,
 				ridgeviewObjective = nil,
 			}
+		end
+		if sourceVersion < MISSION_REGION_SCHEMA_VERSION then
+			local phase = migrated.progression.activeMission.phase
+			migrated.progression.activeMission.region = if phase == "ridgeview_arrival" or phase == "ridgeview_investigation" or phase == "mission_complete"
+				then "ridgeview"
+				else "temple"
 		end
 		migrated.schemaVersion = CURRENT_SCHEMA_VERSION
 		local migratedValid, migratedError = validateProfile(
