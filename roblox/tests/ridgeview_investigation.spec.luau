@@ -99,6 +99,18 @@ do
 	local retoldAdmission, retoldError = Policy.RecordPikeAdmission(retold)
 	expect(retoldAdmission == nil and retoldError ~= nil, "Pike admission is blocked after permission reset")
 
+	local pendingDecision = Policy.RecordWrenTestimony(secondRecorded)
+	local restoredPendingDecision, pendingDecisionError = Policy.RestoreState(Policy.CloneState(pendingDecision), Catalog)
+	expect(restoredPendingDecision ~= nil and pendingDecisionError == nil, "in-progress testimony state can be restored")
+	expect(
+		restoredPendingDecision ~= nil and not restoredPendingDecision.wrenDisclosureDecisionMade,
+		"restoration does not mistake default-private permission for an explicit privacy decision"
+	)
+	expect(
+		restoredPendingDecision ~= nil and not Policy.CanSubmitFindings(restoredPendingDecision),
+		"restored testimony still requires Wren's explicit disclosure decision"
+	)
+
 	local persistedState = Policy.CloneState(admission)
 	local restoredState, restoreError = Policy.RestoreState(persistedState, Catalog)
 	expect(restoredState ~= nil and restoreError == nil, "valid completed investigation state can be restored")
