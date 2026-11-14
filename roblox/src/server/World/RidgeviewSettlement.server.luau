@@ -7,7 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local shared = ReplicatedStorage:WaitForChild("BTVShared")
-local SettlementPolicy = require(shared:WaitForChild("RidgeviewSettlementPolicy"))
+local InvestigationService = require(script.Parent.Parent.Services:WaitForChild("RidgeviewInvestigationService"))
 local MissionService = require(script.Parent.Parent.Services:WaitForChild("MissionService"))
 
 local remoteFolder = ReplicatedStorage:WaitForChild("BTVRemotes")
@@ -25,6 +25,7 @@ end
 
 local dialogueUpdated = getOrCreateRemote("RidgeviewDialogueUpdated")
 local dialogueAction = getOrCreateRemote("RidgeviewDialogueAction")
+local fieldNoteRecorded = remoteFolder:WaitForChild("FieldNoteRecorded") :: RemoteEvent
 
 local world = Workspace:WaitForChild("BTV_World")
 local scene = world:WaitForChild("Ridgeview_LandscapeStudy")
@@ -148,7 +149,6 @@ type PlayerConversation = {
 	activeNpcId: string?,
 	phase: string?,
 	step: number,
-	policy: SettlementPolicy.State,
 	lastActionAt: number,
 }
 
@@ -254,7 +254,6 @@ local function addPlayer(player: Player)
 		activeNpcId = nil,
 		phase = nil,
 		step = 0,
-		policy = SettlementPolicy.NewState(),
 		lastActionAt = 0,
 	}
 end
@@ -309,7 +308,7 @@ local function startConversation(player: Player, npcId: string)
 	state.step = 1
 
 	if npcId == "Wren" then
-		if state.policy.wrenTestimonyRecorded and not state.policy.wrenTestimonyShareable then
+		if InvestigationService.GetState(player).wrenTestimonyRecorded and not InvestigationService.GetState(player).wrenSharePermission then
 			state.phase = "wren_permission"
 			send(player, "Wren", "You may ask whether I am comfortable with you sharing my recorded account. I can still keep it private.", {
 				{ Label = "Ask for permission to share with Pike", Action = "AskWrenPermission" },
@@ -318,7 +317,7 @@ local function startConversation(player: Player, npcId: string)
 			})
 			return
 		end
-		if state.policy.wrenTestimonyRecorded and state.policy.wrenTestimonyShareable then
+		if InvestigationService.GetState(player).wrenTestimonyRecorded and InvestigationService.GetState(player).wrenSharePermission then
 			state.phase = "wren_recorded"
 			send(player, "Wren", "My account is recorded. I have authorized you to share only that I saw the repairman go toward the camp.", {
 				{ Label = "End conversation", Action = "Close" },
@@ -380,10 +379,10 @@ local pikeIntro: { DialogueLine } = {
 	{ Speaker = "Dorian Pike", Text = "That's sensible. Just don't mistake every rumour for a fact." },
 }
 local pikeWrenChallenge: { DialogueLine } = {
-	{ Speaker = "Dorian Pike", Text = "Wren is frightened. She has had a difficult time." },
-	{ Speaker = "Asher", Text = "That doesn't make everything she says false." },
-	{ Speaker = "Dorian Pike", Text = "I didn't say it did." },
-	{ Speaker = "Asher", Text = "Then answer the part you can answer. Why are people being kept away from the camp?" },
+	{ Speaker = "Asher", Text = "Wren authorized me to share one detail: she saw the repairman go toward the camp." },
+	{ Speaker = "Dorian Pike", Text = "I understand. That is the only detail she agreed you could share?" },
+	{ Speaker = "Asher", Text = "Yes. I will not share anything beyond that." },
+	{ Speaker = "Asher", Text = "Why were people being kept away from the camp?" },
 	{ Speaker = "Dorian Pike", Text = "Because I thought it was safer if fewer people went there." },
 	{ Speaker = "Asher", Text = "Safer for whom?" },
 	{ Speaker = "Dorian Pike", Text = "I don't have a good answer." },
@@ -449,11 +448,13 @@ local function onAction(player: Player, action: unknown)
 	end
 
 	if (state.phase == "wren_consent" or state.phase == "wren_permission" or state.phase == "wren_permission_pending") and action == "KeepPrivate" then
-		state.policy = SettlementPolicy.RecordWrenTestimony(state.policy)
-		local updated = SettlementPolicy.SetWrenSharePermission(state.policy, false)
-		if updated ~= nil then
-			state.policy = updated
+		InvestigationService.RecordWrenTestimony(player)
+		local permissionSet, permissionError = InvestigationService.SetWrenSharePermission(player, false)
+		if not permissionSet then
+			warn("[BTV Roblox] Wren privacy choice could not be recorded: " .. tostring(permissionError))
+			return
 		end
+		fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
 		state.phase = "wren_recorded"
 		send(player, "Journal", "Wren's testimony is recorded for this session and remains private. Pike cannot be told about it.", {
 			{ Label = "End conversation", Action = "Close" },
@@ -471,12 +472,13 @@ local function onAction(player: Player, action: unknown)
 	end
 
 	if state.phase == "wren_permission_pending" and action == "ConfirmShare" then
-		state.policy = SettlementPolicy.RecordWrenTestimony(state.policy)
-		local updated = SettlementPolicy.SetWrenSharePermission(state.policy, true)
-		if updated == nil then
+		InvestigationService.RecordWrenTestimony(player)
+		local permissionSet, permissionError = InvestigationService.SetWrenSharePermission(player, true)
+		if not permissionSet then
+			warn("[BTV Roblox] Wren sharing permission was rejected: " .. tostring(permissionError))
 			return
 		end
-		state.policy = updated
+		fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
 		state.phase = "wren_recorded"
 		send(player, "Journal", "Wren's testimony is recorded. She explicitly authorized sharing only the observation that she saw the repairman go toward the camp.", {
 			{ Label = "End conversation", Action = "Close" },
@@ -495,7 +497,7 @@ local function onAction(player: Player, action: unknown)
 		else
 			state.phase = "pike_after_intro"
 			local choices: { Choice } = {}
-			if SettlementPolicy.CanDiscussWrenWithPike(state.policy) then
+			if InvestigationService.CanDiscussWrenWithPike(player) then
 				table.insert(choices, { Label = "Discuss Wren's authorized account", Action = "DiscussWren" })
 			end
 			table.insert(choices, { Label = "End conversation", Action = "Close" })
@@ -505,7 +507,7 @@ local function onAction(player: Player, action: unknown)
 	end
 
 	if state.phase == "pike_after_intro" and action == "DiscussWren" then
-		if not SettlementPolicy.CanDiscussWrenWithPike(state.policy) then
+		if not InvestigationService.CanDiscussWrenWithPike(player) then
 			return
 		end
 		state.phase = "pike_wren_challenge"
@@ -527,11 +529,12 @@ local function onAction(player: Player, action: unknown)
 				{ Label = "End conversation", Action = "Close" },
 			})
 		else
-			local admittedState = SettlementPolicy.RecordPikeAdmission(state.policy)
-			if admittedState == nil then
+			local admissionRecorded, admissionError = InvestigationService.RecordPikeAdmission(player)
+			if not admissionRecorded then
+				warn("[BTV Roblox] Pike admission was rejected: " .. tostring(admissionError))
 				return
 			end
-			state.policy = admittedState
+			fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
 			state.phase = "pike_admission_recorded"
 			send(player, "Journal", "Pike's limited admission is recorded for this session. It does not establish every accusation or a legal finding.", {
 				{ Label = "End conversation", Action = "Close" },
