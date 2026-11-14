@@ -387,6 +387,17 @@ do
 	local migratedV5Profile, migratedV5Error = PlayerProfileSchema.Migrate(legacyV5Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(migratedV5Profile ~= nil and migratedV5Error == nil, "valid v5 profile migrates to v6")
 	expect(migratedV5Profile ~= nil and migratedV5Profile.progression.activeMission.phase == "communion_context", "v5 migration safely initializes a mission checkpoint")
+	local legacyV5Completed = PlayerProfileSchema.CreateDefault()
+	legacyV5Completed.schemaVersion = 5
+	legacyV5Completed.progression.completedMissionIds = { "ridgeview_investigation_001" }
+	legacyV5Completed.progression.activeMission = nil
+	local migratedV5Completed = PlayerProfileSchema.Migrate(legacyV5Completed, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	expect(
+		migratedV5Completed ~= nil
+			and migratedV5Completed.progression.activeMission.phase == "mission_complete",
+		"v5 migration preserves an already-completed Ridgeview mission"
+	)
+
 
 	local legacyV4Profile = PlayerProfileSchema.CreateDefault()
 	legacyV4Profile.schemaVersion = 4
@@ -511,10 +522,12 @@ expect(savedRecord ~= nil and savedError == nil, "current owner can save a valid
 expect(savedOutcome == "Saved", "new save is explicitly classified as saved")
 assert(savedRecord ~= nil, "saved record must exist")
 expect(savedRecord.profile.economy.aces == 25, "save persists candidate economy values")
+expect(savedRecord.profile.progression.activeMission.ridgeviewObjective == "choose_disclosure", "save persists the exact in-progress Ridgeview objective")
 expect(savedRecord.profile.revision == 1, "successful save increments profile revision")
 expect(savedRecord.lastSaveOperation.id == "save-operation-001", "save records its operation ID")
 expect(savedRecord.lastSaveOperation.baseRevision == 0 and savedRecord.lastSaveOperation.resultRevision == 1, "save records its revision transition")
 expect(acquiredRecord.profile.economy.aces == 0, "save transformation does not mutate stored input")
+expect(acquiredRecord.profile.progression.activeMission.phase == "communion_context", "save transformation does not mutate stored mission checkpoint")
 -- A retried save reconciles an ambiguous UpdateAsync result without applying twice.
 local replayedRecord, replayError, replayOutcome = ProfileRecordPolicy.TrySave(
 	savedRecord,
