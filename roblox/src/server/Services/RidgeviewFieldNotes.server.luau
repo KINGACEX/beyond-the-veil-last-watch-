@@ -30,8 +30,8 @@ local fieldNoteRecorded = getOrCreateRemote("RemoteEvent", "FieldNoteRecorded") 
 local getFieldNotes = getOrCreateRemote("RemoteFunction", "GetFieldNotes") :: RemoteFunction
 local missionStateUpdated = getOrCreateRemote("RemoteEvent", "MissionStateUpdated") :: RemoteEvent
 
-local journals: {[number]: FieldNotePolicy.Journal} = {}
-local lastRecordAt: {[number]: number} = {}
+local journals: { [number]: FieldNotePolicy.Journal } = {}
+local lastRecordAt: { [number]: number } = {}
 local RECORD_INTERVAL_SECONDS = 0.35
 
 local function getJournal(player: Player): FieldNotePolicy.Journal
@@ -101,15 +101,7 @@ if existingProps == nil then
 	local right = arrivalMarker.CFrame.RightVector
 	local origin = arrivalMarker.Position + forward * 22
 
-	local function makePart(
-		parent: Instance,
-		name: string,
-		size: Vector3,
-		cframe: CFrame,
-		color: Color3,
-		material: Enum.Material,
-		canCollide: boolean?
-	): Part
+	local function makePart(parent: Instance, name: string, size: Vector3, cframe: CFrame, color: Color3, material: Enum.Material, canCollide: boolean?): Part
 		local part = Instance.new("Part")
 		part.Name = name
 		part.Size = size
@@ -152,48 +144,18 @@ if existingProps == nil then
 		Enum.Material.Fabric,
 		false
 	)
-	local belongingsStrap = makePart(
-		props,
-		"BelongingsStrap",
-		Vector3.new(0.18, 0.76, 1.55),
-		belongings.CFrame * CFrame.new(0.15, 0, 0),
-		Color3.fromRGB(52, 45, 38),
-		Enum.Material.Fabric,
-		false
-	)
+	local belongingsStrap =
+		makePart(props, "BelongingsStrap", Vector3.new(0.18, 0.76, 1.55), belongings.CFrame * CFrame.new(0.15, 0, 0), Color3.fromRGB(52, 45, 38), Enum.Material.Fabric, false)
 	belongingsStrap.CanQuery = false
 	addExaminePrompt(belongings, "approach_belongings", "Belongings")
 
 	-- A restrained vehicle blockout with a visible toolkit; no owner or cause is implied.
 	local vehiclePosition = origin + right * 9 + forward * 5
 	local vehicleFrame = CFrame.lookAt(vehiclePosition, vehiclePosition + forward)
-	local vehicleBody = makePart(
-		props,
-		"ParkedWorkVehicleBody",
-		Vector3.new(7, 0.5, 11),
-		vehicleFrame * CFrame.new(0, 0.65, 0),
-		Color3.fromRGB(73, 91, 83),
-		Enum.Material.Metal
-	)
-	makePart(
-		props,
-		"ParkedWorkVehicleCab",
-		Vector3.new(5.8, 2.2, 4.2),
-		vehicleFrame * CFrame.new(0, 2.0, -1.4),
-		Color3.fromRGB(91, 112, 106),
-		Enum.Material.Metal,
-		false
-	)
-	makePart(
-		props,
-		"VisibleToolkit",
-		Vector3.new(2.1, 0.65, 1.1),
-		vehicleFrame * CFrame.new(0, 1.25, 3.2),
-		Color3.fromRGB(128, 91, 53),
-		Enum.Material.Metal,
-		false
-	)
-	for _, side in {-1, 1} do
+	local vehicleBody = makePart(props, "ParkedWorkVehicleBody", Vector3.new(7, 0.5, 11), vehicleFrame * CFrame.new(0, 0.65, 0), Color3.fromRGB(73, 91, 83), Enum.Material.Metal)
+	makePart(props, "ParkedWorkVehicleCab", Vector3.new(5.8, 2.2, 4.2), vehicleFrame * CFrame.new(0, 2.0, -1.4), Color3.fromRGB(91, 112, 106), Enum.Material.Metal, false)
+	makePart(props, "VisibleToolkit", Vector3.new(2.1, 0.65, 1.1), vehicleFrame * CFrame.new(0, 1.25, 3.2), Color3.fromRGB(128, 91, 53), Enum.Material.Metal, false)
+	for _, side in { -1, 1 } do
 		makePart(
 			props,
 			"VehicleBedRail_" .. side,
@@ -204,8 +166,8 @@ if existingProps == nil then
 			false
 		)
 	end
-	for _, side in {-1, 1} do
-		for _, z in {-3.4, 3.4} do
+	for _, side in { -1, 1 } do
+		for _, z in { -3.4, 3.4 } do
 			local wheel = makePart(
 				props,
 				"VehicleWheel_" .. side .. "_" .. z,
