@@ -315,6 +315,17 @@ local function startConversation(player: Player, npcId: string)
 	state.activeNpcId = npcId
 	state.step = 1
 
+	local mission = MissionService.GetSnapshot(player)
+	if npcId == "Wren" and mission ~= nil
+		and (mission.phase == "ridgeview_arrival" or mission.ridgeviewObjective == "collect_observations")
+	then
+		state.phase = "wren_locked"
+		send(player, "Wren", "Please record what you can directly observe around the approach first. Then we can speak about what I saw.", {
+			{ Label = "End conversation", Action = "Close" },
+		})
+		return
+	end
+
 	if npcId == "Wren" then
 		if InvestigationService.GetState(player).wrenTestimonyRecorded and not InvestigationService.GetState(player).wrenSharePermission then
 			state.phase = "wren_permission"
@@ -492,10 +503,16 @@ local function onAction(player: Player, action: unknown)
 			return
 		end
 		fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
-		if MissionService.GetRidgeviewObjective(player) == "speak_with_wren" then
+		local currentObjective = MissionService.GetRidgeviewObjective(player)
+		if currentObjective == "speak_with_wren" then
 			advanceInvestigationObjective(player, "speak_with_wren", "choose_disclosure")
+			currentObjective = MissionService.GetRidgeviewObjective(player)
 		end
-		advanceInvestigationObjective(player, "choose_disclosure", "pike_followup")
+		if currentObjective == "review_findings" then
+			advanceInvestigationObjective(player, "review_findings", "pike_followup")
+		else
+			advanceInvestigationObjective(player, "choose_disclosure", "pike_followup")
+		end
 		state.phase = "wren_recorded"
 		send(player, "Journal", "Wren's testimony is recorded. She explicitly authorized sharing only the observation that she saw the repairman go toward the camp.", {
 			{ Label = "End conversation", Action = "Close" },
