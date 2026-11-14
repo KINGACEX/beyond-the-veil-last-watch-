@@ -145,7 +145,10 @@ departureMarker.Parent = scene
 local departureSign = Instance.new("Part")
 departureSign.Name = "RidgeviewDepartureSign"
 departureSign.Size = Vector3.new(5.5, 2.2, 0.35)
-departureSign.CFrame = CFrame.new(departureMarker.Position + Vector3.new(0, 4.1, 0))
+-- The player approaches from positive Z (the temple side), so the sign is turned
+-- to face them. Without this rotation the SurfaceGui text faces away from the
+-- approach and the wayfinding reads as a blank board.
+departureSign.CFrame = CFrame.new(departureMarker.Position + Vector3.new(0, 4.1, 0)) * CFrame.Angles(0, math.pi, 0)
 departureSign.Anchored = true
 departureSign.CanCollide = false
 departureSign.CanTouch = false

@@ -179,6 +179,12 @@ local function test_ridgeview_tree_trunks_are_upright(): (boolean, string)
 	-- therefore authored as Size = (length, diameter, diameter) and rotated so
 	-- that local X points up. A trunk authored as Size = (2.1, height, 2.1)
 	-- without that rotation renders as a thin vertical fin, not a post.
+	--
+	-- The rule lives in the shared policy so the offline suite and this live
+	-- engine test enforce exactly the same definition.
+	-- Required at call time so this module can still be loaded outside the engine.
+	local CylinderOrientationPolicy = require(game:GetService("ReplicatedStorage"):WaitForChild("BTVShared"):WaitForChild("CylinderOrientationPolicy"))
+
 	local up = Vector3.new(0, 1, 0)
 	local inspected = 0
 	local problems = {}
@@ -187,23 +193,14 @@ local function test_ridgeview_tree_trunks_are_upright(): (boolean, string)
 		if trunk ~= nil and trunk:IsA("BasePart") then
 			inspected += 1
 			local size = trunk.Size
-			local axisIsX = size.X >= size.Y - 0.5 and size.X >= size.Z - 0.5
-			local crossSectionIsRound = math.abs(size.Y - size.Z) <= math.max(0.6, 0.25 * math.max(size.Y, size.Z))
-			local pointsUp = math.abs(trunk.CFrame.RightVector:Dot(up)) >= 0.9
-			if not (axisIsX and crossSectionIsRound and pointsUp) then
-				table.insert(
-					problems,
-					string.format(
-						"%s (Size=%.1f,%.1f,%.1f axisX=%s round=%s up=%s)",
-						tree.Name,
-						size.X,
-						size.Y,
-						size.Z,
-						tostring(axisIsX),
-						tostring(crossSectionIsRound),
-						tostring(pointsUp)
-					)
-				)
+			local verdict = CylinderOrientationPolicy.IsUpright({
+				sizeX = size.X,
+				sizeY = size.Y,
+				sizeZ = size.Z,
+				upDot = trunk.CFrame.RightVector:Dot(up),
+			})
+			if not verdict.ok then
+				table.insert(problems, string.format("%s (Size=%.1f,%.1f,%.1f) %s", tree.Name, size.X, size.Y, size.Z, verdict.reason))
 			end
 		end
 	end
@@ -258,12 +255,35 @@ local function test_archive_prompt_is_shared(): (boolean, string)
 	if type(text) ~= "string" or text == "" then
 		return false, "The archive entry prompt has no ObjectText."
 	end
+	-- A per-player count written into this shared instance leaks one player's
+	-- progress to everyone. The locked hint belongs on the player's own
+	-- attributes, so the shared prompt must never carry a count.
+	if string.find(text, "%d/%d") ~= nil then
+		return false, "The shared archive prompt carries a per-player count: " .. string.format("%q", text)
+	end
 	return true, "Archive entry prompt ObjectText is " .. string.format("%q", text) .. " (shared instance)."
 end
 
 --=============================================================================
 -- 5. Companion actor: an Ember actor exists for a player in this place
 --=============================================================================
+
+local function test_ridgeview_departure_sign_faces_the_player(): (boolean, string)
+	local workspaceService = game:GetService("Workspace")
+	local sign = workspaceService:FindFirstChild("RidgeviewDepartureSign", true)
+	if sign == nil or not sign:IsA("BasePart") then
+		return false, "The Ridgeview departure sign was not found."
+	end
+	-- The player walks to the departure marker from positive Z, the temple side.
+	-- A Part's visible front face is its local -Z, so the sign must be turned so
+	-- that its front face points back toward +Z. Facing away leaves the player
+	-- looking at a blank board.
+	local towardPlayer = sign.CFrame.LookVector:Dot(Vector3.new(0, 0, 1))
+	if towardPlayer < 0.9 then
+		return false, string.format("The departure sign faces away from the approach (look-vector Z dot = %.2f).", towardPlayer)
+	end
+	return true, "The Ridgeview departure sign faces the approaching player."
+end
 
 local function test_companion_actor_spawns(): (boolean, string)
 	local workspaceService = game:GetService("Workspace")
@@ -367,6 +387,7 @@ local TESTS: { TestEntry } = {
 	{ name = "temple_structure", run = test_temple_structure },
 	{ name = "ridgeview_arrival_marker", run = test_ridgeview_arrival_marker },
 	{ name = "ridgeview_tree_trunks_are_upright", run = test_ridgeview_tree_trunks_are_upright },
+	{ name = "ridgeview_departure_sign_faces_the_player", run = test_ridgeview_departure_sign_faces_the_player },
 	{ name = "archive_prompt_is_shared", run = test_archive_prompt_is_shared },
 	{ name = "companion_actor_spawns", run = test_companion_actor_spawns },
 	{ name = "mission_service_state", run = test_mission_service_state },
