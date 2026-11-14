@@ -200,7 +200,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 	reportBody.Size = UDim2.new(1, -32, 1, -68)
 	reportBody.Font = Enum.Font.Gotham
 	reportBody.Text =
-		"MISSION INTELLIGENCE NOT LOADED\n\nNo authored evidence is available in this prototype. Situation, evidence, confidence and recommended response remain unassessed. No mission facts have been fabricated."
+		"COVENANT FIELD OPERATIONS  /  RIDGEVIEW\n\nAssignment: travel to the Ridgeview outpost, observe the situation, and record only what can be verified. Keep direct observations, personal testimony, and your own conclusions separate. Respect any person's stated limits on sharing their account.\n\nThis prototype briefing does not establish a culprit or a final assessment."
 	reportBody.TextColor3 = Color3.fromRGB(224, 229, 230)
 	reportBody.TextSize = 13
 	reportBody.TextWrapped = true
@@ -229,18 +229,23 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		if typeof(snapshot) ~= "table" then
 			return
 		end
-		local index = if typeof(snapshot.sequenceIndex) == "number" then math.clamp(math.floor(snapshot.sequenceIndex), 1, 5) else 1
-		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 5"
+		local index = if typeof(snapshot.sequenceIndex) == "number" then math.clamp(math.floor(snapshot.sequenceIndex), 1, 6) else 1
+		local region = if snapshot.region == "ridgeview" then "RIDGEVIEW" else "TEMPLE"
+		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 6  •  " .. region
 		if typeof(snapshot.objective) == "string" then
 			missionObjective.Text = snapshot.objective
 		end
-		if typeof(snapshot.status) == "string" then
+		if snapshot.missionComplete == true then
+			missionStatus.Text = if typeof(snapshot.completionOutcome) == "string" then snapshot.completionOutcome else "Field report submitted for this session."
+			reportTitle.Text = "FIELD REPORT SUBMITTED"
+			reportBody.Text = "RIDGEVIEW INVESTIGATION COMPLETE\n\nYour verified observations and permitted statements have been recorded. No unverified conclusion has been added."
+		elseif typeof(snapshot.status) == "string" then
 			missionStatus.Text = snapshot.status
 		end
 		if snapshot.phase == "report_accessed" then
 			reportPanel.Visible = true
 			reportReopen.Visible = true
-		elseif snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation" then
+		elseif snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation" or snapshot.phase == "mission_complete" then
 			reportPanel.Visible = false
 			reportReopen.Visible = true
 		end

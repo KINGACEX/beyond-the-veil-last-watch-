@@ -21,8 +21,26 @@ local function getState(player: PlayerIdentity): Policy.State
 	return state
 end
 
+function RidgeviewInvestigationService.AddPlayer(player: PlayerIdentity, persistedState: unknown?)
+	if persistedState == nil then
+		states[player.UserId] = Policy.NewState()
+		return
+	end
+	local restored, restoreError = Policy.RestoreState(persistedState, Catalog)
+	if restored == nil then
+		warn("[BTV Roblox] Persisted Ridgeview investigation was rejected for user " .. tostring(player.UserId) .. ": " .. tostring(restoreError))
+		states[player.UserId] = Policy.NewState()
+		return
+	end
+	states[player.UserId] = restored
+end
+
 function RidgeviewInvestigationService.GetState(player: PlayerIdentity): Policy.State
-	return getState(player)
+	return Policy.CloneState(getState(player))
+end
+
+function RidgeviewInvestigationService.GetPersistentState(player: PlayerIdentity): Policy.State
+	return Policy.CloneState(getState(player))
 end
 
 function RidgeviewInvestigationService.TryRecordObservation(player: PlayerIdentity, noteId: unknown): (boolean, string?)
@@ -58,6 +76,10 @@ function RidgeviewInvestigationService.RecordPikeAdmission(player: PlayerIdentit
 	end
 	states[player.UserId] = updated
 	return true, nil
+end
+
+function RidgeviewInvestigationService.CanSubmitFindings(player: PlayerIdentity): boolean
+	return Policy.CanSubmitFindings(getState(player))
 end
 
 function RidgeviewInvestigationService.GetJournalSnapshot(player: PlayerIdentity)

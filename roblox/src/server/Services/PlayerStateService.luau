@@ -1,6 +1,6 @@
 --!strict
--- Server-only, in-memory player session state.
--- Persistence and premium entitlements are intentionally deferred until their schemas are reviewed.
+-- Server-only player session state hydrated from validated profiles when opt-in persistence is enabled.
+-- Premium entitlements remain disabled.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local shared = ReplicatedStorage:WaitForChild("BTVShared")
@@ -41,9 +41,18 @@ local DEFAULT_STATE: PlayerSnapshot = {
 	covenantCredits = 0,
 }
 
-function PlayerStateService.AddPlayer(player: Player)
+function PlayerStateService.AddPlayer(player: Player, profile: any?)
 	local state = table.clone(DEFAULT_STATE)
 	state.ownedCompanions = CompanionOwnershipPolicy.CreateDefaultOwnership()
+	if typeof(profile) == "table" then
+		state.characterId = profile.identity.characterId
+		state.covenantRank = profile.progression.covenantRank
+		state.covenantBranch = profile.identity.covenantBranch
+		state.aces = profile.economy.aces
+		state.covenantCredits = profile.economy.covenantCredits
+		state.ownedCompanions = table.clone(profile.companions.owned)
+		state.equippedCompanion = profile.companions.equipped
+	end
 	sessions[player.UserId] = state
 end
 

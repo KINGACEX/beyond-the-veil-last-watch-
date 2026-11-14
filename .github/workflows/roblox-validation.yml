@@ -8,6 +8,7 @@ on:
       - btv/roblox-playable-prototype-001
       - btv/roblox-settlement-playable-001
       - btv/roblox-ridgeview-journal-002
+      - btv/roblox-opening-loop-003
     paths:
       - "roblox/**"
       - ".github/workflows/roblox-validation.yml"

@@ -9,6 +9,8 @@ local PlayerStateService = require(script.Parent.Services.PlayerStateService)
 local MissionService = require(script.Parent.Services.MissionService)
 local CompanionActorService = require(script.Parent.Services.CompanionActorService)
 local CurrencyService = require(script.Parent.Services.CurrencyService)
+local RidgeviewInvestigationService = require(script.Parent.Services.RidgeviewInvestigationService)
+local ProfileSessionService = require(script.Parent.Services.ProfileSessionService)
 
 local REMOTE_FOLDER_NAME = "BTVRemotes"
 local remoteFolder = ReplicatedStorage:FindFirstChild(REMOTE_FOLDER_NAME)
@@ -47,24 +49,86 @@ local lastCompanionSelectionAt: { [number]: number } = {}
 local REQUEST_INTERVAL_SECONDS = 0.4
 local COMPANION_SELECTION_INTERVAL_SECONDS = 0.5
 
-local function onPlayerAdded(player: Player)
-	PlayerStateService.AddPlayer(player)
-	MissionService.AddPlayer(player)
-	CompanionActorService.BindPlayer(player)
+local persistenceEnabled = GameConfig.EnableProfilePersistence == true
+local persistenceReady = false
+if persistenceEnabled then
+	local initialized, initializeError = ProfileSessionService.Initialize()
+	persistenceReady = initialized
+	if not initialized then
+		warn("[BTV Roblox] Profile persistence initialization failed: " .. tostring(initializeError))
+	else
+		ProfileSessionService.StartAutoSave()
+	end
 end
 
-for _, player in Players:GetPlayers() do
-	onPlayerAdded(player)
+local loadingPlayers: { [number]: boolean } = {}
+
+local function onPlayerAdded(player: Player)
+	if loadingPlayers[player.UserId] then
+		return
+	end
+	loadingPlayers[player.UserId] = true
+
+	local profile = nil
+	if persistenceEnabled then
+		if not persistenceReady then
+			loadingPlayers[player.UserId] = nil
+			if player.Parent == Players then
+				player:Kick("Player data is temporarily unavailable. Please try again later.")
+			end
+			return
+		end
+		local loadedProfile, loadError = ProfileSessionService.Acquire(player)
+		if loadedProfile == nil then
+			loadingPlayers[player.UserId] = nil
+			if player.Parent == Players then
+				warn("[BTV Roblox] Profile load failed for user " .. tostring(player.UserId) .. ": " .. tostring(loadError))
+				player:Kick("Your player data could not be loaded safely. Please try again later.")
+			end
+			return
+		end
+		profile = loadedProfile
+	end
+
+	if player.Parent ~= Players then
+		if persistenceEnabled then
+			ProfileSessionService.ReleaseWithoutSave(player)
+		end
+		loadingPlayers[player.UserId] = nil
+		return
+	end
+
+	PlayerStateService.AddPlayer(player, profile)
+	MissionService.AddPlayer(
+		player,
+		if profile ~= nil then profile.progression.completedMissionIds else nil,
+		if profile ~= nil then profile.progression.activeMission else nil
+	)
+	local restoredInvestigation = if profile ~= nil then profile.investigation.ridgeview else nil
+	RidgeviewInvestigationService.AddPlayer(player, restoredInvestigation)
+	CompanionActorService.BindPlayer(player)
+	loadingPlayers[player.UserId] = nil
 end
 
 Players.PlayerAdded:Connect(onPlayerAdded)
+for _, player in Players:GetPlayers() do
+	task.spawn(onPlayerAdded, player)
+end
 Players.PlayerRemoving:Connect(function(player: Player)
+	if persistenceEnabled then
+		local saved, saveError = ProfileSessionService.SaveAndRelease(player)
+		if not saved then
+			warn("[BTV Roblox] Profile save/release failed for user " .. tostring(player.UserId) .. ": " .. tostring(saveError))
+		end
+	end
+	RidgeviewInvestigationService.RemovePlayer(player)
 	PlayerStateService.RemovePlayer(player)
 	CurrencyService.RemovePlayer(player)
 	MissionService.RemovePlayer(player)
 	CompanionActorService.RemovePlayer(player)
 	lastCommandAt[player.UserId] = nil
 	lastCompanionSelectionAt[player.UserId] = nil
+	loadingPlayers[player.UserId] = nil
 end)
 
 getInitialState.OnServerInvoke = function(player: Player)
@@ -119,4 +183,15 @@ requestCompanionSelection.OnServerEvent:Connect(function(player: Player, compani
 	end
 end)
 
-print("[BTV Roblox] Server foundation ready. Companion selection is session-only; persistence and premium entitlements are not enabled.")
+game:BindToClose(function()
+	if persistenceEnabled then
+		for _, player in Players:GetPlayers() do
+			local saved, saveError = ProfileSessionService.SaveAndRelease(player)
+			if not saved then
+				warn("[BTV Roblox] Shutdown profile save failed for user " .. tostring(player.UserId) .. ": " .. tostring(saveError))
+			end
+		end
+	end
+end)
+
+print("[BTV Roblox] Server foundation ready. Profile persistence is " .. (if persistenceEnabled then "enabled" else "disabled") .. "; premium entitlements remain disabled.")

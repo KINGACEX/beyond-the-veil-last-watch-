@@ -1,7 +1,6 @@
 --!strict
--- First playable opening-slice interaction scaffold.
--- Communion remains contextual. No evidence, dialogue, rewards, or theology-dependent
--- mechanics are fabricated here; the Scout Report content is deliberately pending.
+-- Temple onboarding, Covenant briefing access and Ridgeview travel interactions.
+-- Communion remains contextual; no theology-dependent mechanic or spiritual reward is introduced.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -14,6 +13,7 @@ local missionStateUpdated = remoteFolder:WaitForChild("MissionStateUpdated") :: 
 local world = Workspace:WaitForChild("BTV_World")
 local scene = world:WaitForChild("LogosRhemaTemple_VisualPrototype")
 local interior = scene:WaitForChild("Interior")
+local templeSpawn = scene:WaitForChild("PrototypeFoyerSpawn") :: SpawnLocation
 local ridgeviewScene = world:WaitForChild("Ridgeview_LandscapeStudy")
 local ridgeviewArrivalMarker = ridgeviewScene:WaitForChild("RidgeviewArrivalMarker") :: BasePart
 
@@ -79,20 +79,33 @@ end)
 local characterConnections: { [number]: RBXScriptConnection } = {}
 
 local function restoreRidgeviewPosition(player: Player, character: Model)
-	task.defer(function()
+	task.spawn(function()
 		local root = character:WaitForChild("HumanoidRootPart", 10)
 		if root == nil or player.Parent ~= Players or player.Character ~= character then
 			return
 		end
 
+		-- PlayerAdded handlers may hydrate the profile asynchronously. Wait briefly
+		-- for the server-owned mission snapshot before choosing a spawn region.
 		local snapshot = MissionService.GetSnapshot(player)
-		if snapshot ~= nil and (snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation") then
+		local attempts = 0
+		while snapshot == nil and attempts < 100 and player.Parent == Players and player.Character == character do
+			attempts += 1
+			task.wait(0.1)
+			snapshot = MissionService.GetSnapshot(player)
+		end
+		if snapshot == nil or player.Parent ~= Players or player.Character ~= character then
+			return
+		end
+
+		if MissionService.GetRegion(player) == "ridgeview" then
 			character:PivotTo(getRidgeviewArrivalCFrame())
 		end
 	end)
 end
 
 local function bindPlayer(player: Player)
+	player.RespawnLocation = templeSpawn
 	local previous = characterConnections[player.UserId]
 	if previous ~= nil then
 		previous:Disconnect()
@@ -178,7 +191,17 @@ departurePrompt.Triggered:Connect(function(player: Player)
 		return
 	end
 
-	local accepted = MissionService.Advance(player, "report_accessed", "ridgeview_arrival")
+	local mission = MissionService.GetSnapshot(player)
+	if mission == nil then
+		return
+	end
+
+	local accepted = false
+	if mission.phase == "report_accessed" then
+		accepted = MissionService.Advance(player, "report_accessed", "ridgeview_arrival")
+	elseif MissionService.GetRegion(player) == "temple" then
+		accepted = MissionService.SetRegion(player, "ridgeview")
+	end
 	if not accepted then
 		return
 	end
@@ -194,4 +217,4 @@ departurePrompt.Triggered:Connect(function(player: Player)
 	end
 end)
 
-print("[BTV Roblox] Opening mission interactions ready: sanctuary entry, Scout Report access and gated Ridgeview travel.")
+print("[BTV Roblox] Opening mission interactions ready: foyer spawn, sanctuary onboarding, Covenant briefing and gated Ridgeview travel.")

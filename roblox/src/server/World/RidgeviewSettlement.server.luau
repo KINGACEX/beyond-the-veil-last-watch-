@@ -7,6 +7,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local shared = ReplicatedStorage:WaitForChild("BTVShared")
+local GameConfig = require(shared:WaitForChild("GameConfig"))
+local ProfileSessionService = require(script.Parent.Parent.Services:WaitForChild("ProfileSessionService"))
 local InvestigationService = require(script.Parent.Parent.Services:WaitForChild("RidgeviewInvestigationService"))
 local MissionService = require(script.Parent.Parent.Services:WaitForChild("MissionService"))
 
@@ -31,6 +33,8 @@ local missionStateUpdated = remoteFolder:WaitForChild("MissionStateUpdated") :: 
 local world = Workspace:WaitForChild("BTV_World")
 local scene = world:WaitForChild("Ridgeview_LandscapeStudy")
 local arrivalMarker = scene:WaitForChild("RidgeviewArrivalMarker") :: BasePart
+local templeScene = world:WaitForChild("LogosRhemaTemple_VisualPrototype")
+local templeSpawn = templeScene:WaitForChild("PrototypeFoyerSpawn") :: SpawnLocation
 
 if scene:FindFirstChild("RidgeviewSettlement") ~= nil then
 	warn("[BTV Roblox] Ridgeview settlement already exists; skipping duplicate build.")
@@ -120,7 +124,7 @@ signGui.Parent = sign
 local signText = Instance.new("TextLabel")
 signText.Size = UDim2.fromScale(1, 1)
 signText.BackgroundTransparency = 1
-signText.Text = "RIDGEVIEW OUTPOST"
+signText.Text = "RIDGEVIEW OUTPOST\nTEMPLE RETURN"
 signText.TextColor3 = Color3.fromRGB(238, 230, 207)
 signText.Font = Enum.Font.GothamBold
 signText.TextScaled = true
@@ -288,6 +292,113 @@ local function closeDialogue(player: Player)
 	dialogueUpdated:FireClient(player, { visible = false })
 end
 
+local reportBoardPosition = center + right * -20 + forward * 18 + Vector3.new(0, 2.8, 0)
+local reportBoard = makePart(
+	settlement,
+	"RidgeviewFieldReportBoard",
+	Vector3.new(5.5, 4, 0.45),
+	CFrame.lookAt(reportBoardPosition, reportBoardPosition + forward),
+	Color3.fromRGB(39, 53, 58),
+	Enum.Material.WoodPlanks,
+	false
+)
+reportBoard.CanQuery = true
+
+local reportSurface = Instance.new("SurfaceGui")
+reportSurface.Name = "FieldReportBoardSurface"
+reportSurface.Face = Enum.NormalId.Front
+reportSurface.PixelsPerStud = 42
+reportSurface.LightInfluence = 0
+reportSurface.Parent = reportBoard
+
+local reportTitle = Instance.new("TextLabel")
+reportTitle.Name = "ReportBoardTitle"
+reportTitle.Size = UDim2.fromScale(1, 1)
+reportTitle.BackgroundTransparency = 1
+reportTitle.Text = "COVENANT FIELD NOTES\n\nREVIEW FINDINGS"
+reportTitle.TextColor3 = Color3.fromRGB(240, 230, 207)
+reportTitle.Font = Enum.Font.GothamBold
+reportTitle.TextScaled = true
+reportTitle.TextWrapped = true
+reportTitle.Parent = reportSurface
+
+local submitPrompt = Instance.new("ProximityPrompt")
+submitPrompt.Name = "SubmitRidgeviewFieldReport"
+submitPrompt.ActionText = "Submit"
+submitPrompt.ObjectText = "Field Report"
+submitPrompt.HoldDuration = 0.65
+submitPrompt.MaxActivationDistance = 10
+submitPrompt.RequiresLineOfSight = true
+submitPrompt.KeyboardKeyCode = Enum.KeyCode.E
+submitPrompt.GamepadKeyCode = Enum.KeyCode.ButtonX
+submitPrompt.Parent = reportBoard
+
+submitPrompt.Triggered:Connect(function(player: Player)
+	if player.Parent ~= Players or player.Character == nil or player:DistanceFromCharacter(reportBoard.Position) > 13 then
+		return
+	end
+
+	if MissionService.GetRidgeviewObjective(player) ~= "review_findings" or not InvestigationService.CanSubmitFindings(player) then
+		send(
+			player,
+			"Field Report",
+			"The report is not ready. Record both approach observations and Wren's testimony. If she authorized disclosure, complete the limited follow-up with Pike. Then return here to submit your findings.",
+			{
+				{ Label = "Close", Action = "Close" },
+			}
+		)
+		return
+	end
+
+	local completed, snapshot = MissionService.CompleteRidgeviewInvestigation(player)
+	if not completed or snapshot == nil then
+		return
+	end
+
+	if GameConfig.EnableProfilePersistence then
+		local saved, saveError = ProfileSessionService.Save(player)
+		if not saved then
+			warn("[BTV Roblox] Completed Ridgeview report could not yet be persisted: " .. tostring(saveError))
+		end
+	end
+
+	missionStateUpdated:FireClient(player, snapshot)
+	fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
+	send(player, "Field Report", "Your verified observations and permitted statements have been submitted for this session. No unverified conclusion has been added.", {
+		{ Label = "Close", Action = "Close" },
+	})
+end)
+
+local templeReturnPrompt = Instance.new("ProximityPrompt")
+templeReturnPrompt.Name = "ReturnToTemplePrompt"
+templeReturnPrompt.ActionText = "Return"
+templeReturnPrompt.ObjectText = "Logos Rhema Temple"
+templeReturnPrompt.HoldDuration = 0.35
+templeReturnPrompt.MaxActivationDistance = 11
+templeReturnPrompt.RequiresLineOfSight = false
+templeReturnPrompt.KeyboardKeyCode = Enum.KeyCode.E
+templeReturnPrompt.GamepadKeyCode = Enum.KeyCode.ButtonX
+templeReturnPrompt.Parent = sign
+
+templeReturnPrompt.Triggered:Connect(function(player: Player)
+	local character = player.Character
+	if player.Parent ~= Players or character == nil or player:DistanceFromCharacter(sign.Position) > 14 then
+		return
+	end
+	if MissionService.GetRegion(player) ~= "ridgeview" or not MissionService.SetRegion(player, "temple") then
+		return
+	end
+
+	closeDialogue(player)
+	local returnPosition = templeSpawn.Position + Vector3.new(0, 4, 0)
+	local returnLook = templeSpawn.CFrame.LookVector
+	character:PivotTo(CFrame.lookAt(returnPosition, returnPosition + returnLook))
+	local snapshot = MissionService.GetSnapshot(player)
+	if snapshot ~= nil then
+		missionStateUpdated:FireClient(player, snapshot)
+	end
+end)
+
 local function advanceInvestigationObjective(player: Player, expected: string, nextObjective: string)
 	local advanced, snapshot = MissionService.AdvanceRidgeviewObjective(player, expected, nextObjective)
 	if advanced and snapshot ~= nil then
@@ -304,7 +415,7 @@ local function canInteract(player: Player, npcId: string): boolean
 		return false
 	end
 	local mission = MissionService.GetSnapshot(player)
-	return mission ~= nil and (mission.phase == "ridgeview_arrival" or mission.phase == "ridgeview_investigation")
+	return mission ~= nil and (mission.phase == "ridgeview_arrival" or mission.phase == "ridgeview_investigation" or mission.phase == "mission_complete")
 end
 
 local function startConversation(player: Player, npcId: string)

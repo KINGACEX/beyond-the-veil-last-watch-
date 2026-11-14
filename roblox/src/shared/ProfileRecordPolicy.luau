@@ -14,6 +14,9 @@ local function copyProfile(profile: any)
 	copy.progression = table.clone(profile.progression)
 	copy.progression.completedEvaluations = table.clone(profile.progression.completedEvaluations)
 	copy.progression.completedMissionIds = table.clone(profile.progression.completedMissionIds)
+	if profile.progression.activeMission ~= nil then
+		copy.progression.activeMission = table.clone(profile.progression.activeMission)
+	end
 	copy.economy = table.clone(profile.economy)
 	copy.economy.recentTransactions = table.clone(profile.economy.recentTransactions)
 	for index, transaction in copy.economy.recentTransactions do
@@ -23,6 +26,9 @@ local function copyProfile(profile: any)
 	copy.companions.owned = table.clone(profile.companions.owned)
 	copy.inventory = table.clone(profile.inventory)
 	copy.inventory.items = table.clone(profile.inventory.items)
+	copy.investigation = table.clone(profile.investigation)
+	copy.investigation.ridgeview = table.clone(profile.investigation.ridgeview)
+	copy.investigation.ridgeview.observations = table.clone(profile.investigation.ridgeview.observations)
 	return copy
 end
 

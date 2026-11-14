@@ -1,15 +1,18 @@
 --!strict
--- Server-authoritative opening-slice state. This is a small vertical-slice scaffold,
--- not a complete mission, reward system, or authored Scout Report.
+-- Server-authoritative opening and Ridgeview mission state.
+-- Rewards are limited to a non-monetary verified field-record outcome; no reward table is invented.
 
 local MissionService = {}
 
 export type MissionSnapshot = {
 	phase: string,
+	region: string,
 	sequenceIndex: number,
 	objective: string,
 	status: string,
 	ridgeviewObjective: string?,
+	missionComplete: boolean,
+	completionOutcome: string?,
 }
 
 type PlayerIdentity = {
@@ -18,8 +21,10 @@ type PlayerIdentity = {
 
 type MissionState = {
 	phase: string,
+	region: string,
 	sequenceIndex: number,
 	ridgeviewObjective: string?,
+	completedMissionIds: { string },
 }
 
 local states: { [number]: MissionState } = {}
@@ -30,14 +35,16 @@ local OBJECTIVES: { [string]: string } = {
 	report_accessed = "Travel to Ridgeview",
 	ridgeview_arrival = "Arrive at Ridgeview",
 	ridgeview_investigation = "Investigate Ridgeview",
+	mission_complete = "Ridgeview field report submitted",
 }
 
 local STATUS_TEXT: { [string]: string } = {
 	communion_context = "First Sunday • Communion context",
-	covenant_alert = "Covenant alert received",
-	report_accessed = "Scout Report opened; authored evidence pending. Follow the marked departure point to Ridgeview.",
-	ridgeview_arrival = "Ridgeview reached. Explore the outpost and record one verifiable observation.",
-	ridgeview_investigation = "First observation recorded. Continue exploring and preserve only what you can verify.",
+	covenant_alert = "Covenant field briefing available. Review the Scout Report at the welcome desk.",
+	report_accessed = "Briefing reviewed. Follow the Ridgeview wayfinding sign and use the departure prompt when ready.",
+	ridgeview_arrival = "Explore the settlement, inspect the marked approach evidence, and speak with residents when ready.",
+	ridgeview_investigation = "Record observations, speak with residents, and keep testimony separate from conclusions.",
+	mission_complete = "Your verified observations and any explicitly authorized statements are recorded for this session. No unverified conclusion has been added.",
 }
 
 local RIDGEVIEW_OBJECTIVES: { [string]: { objective: string, status: string } } = {
@@ -79,11 +86,59 @@ local SEQUENCE_INDEX: { [string]: number } = {
 	ridgeview_investigation = 5,
 }
 
-function MissionService.AddPlayer(player: PlayerIdentity)
+function MissionService.AddPlayer(player: PlayerIdentity, completedMissionIds: { string }?, persistedProgress: any?)
+	local restoredIds: { string } = {}
+	local ridgeviewCompleted = false
+	if typeof(completedMissionIds) == "table" then
+		for _, missionId in completedMissionIds do
+			if typeof(missionId) == "string" and missionId ~= "" then
+				table.insert(restoredIds, missionId)
+				if missionId == "ridgeview_investigation_001" then
+					ridgeviewCompleted = true
+				end
+			end
+		end
+	end
+	local restoredPhase = if ridgeviewCompleted then "mission_complete" else "communion_context"
+	local restoredIndex = if ridgeviewCompleted then 6 else 1
+	local restoredObjective = if ridgeviewCompleted then "review_findings" else nil
+	if not ridgeviewCompleted and typeof(persistedProgress) == "table" then
+		local phase = persistedProgress.phase
+		local sequenceIndex = persistedProgress.sequenceIndex
+		local objective = persistedProgress.ridgeviewObjective
+		if
+			typeof(phase) == "string"
+			and SEQUENCE_INDEX[phase] ~= nil
+			and typeof(sequenceIndex) == "number"
+			and sequenceIndex == SEQUENCE_INDEX[phase]
+			and (
+				(phase == "ridgeview_investigation" and typeof(objective) == "string" and RIDGEVIEW_OBJECTIVES[objective] ~= nil)
+				or (phase ~= "ridgeview_investigation" and objective == nil)
+			)
+		then
+			restoredPhase = phase
+			restoredIndex = sequenceIndex
+			restoredObjective = objective
+		end
+	end
+	local restoredRegion = if restoredPhase == "ridgeview_arrival"
+			or restoredPhase == "ridgeview_investigation"
+			or restoredPhase == "mission_complete"
+		then "ridgeview"
+		else "temple"
+	if typeof(persistedProgress) == "table" and (persistedProgress.region == "temple" or persistedProgress.region == "ridgeview") then
+		local requestedRegion = persistedProgress.region
+		local phaseAllowsRidgeview = restoredPhase == "ridgeview_arrival" or restoredPhase == "ridgeview_investigation" or restoredPhase == "mission_complete"
+		if requestedRegion == "temple" or phaseAllowsRidgeview then
+			restoredRegion = requestedRegion
+		end
+	end
 	states[player.UserId] = {
-		phase = "communion_context",
-		sequenceIndex = 1,
-		ridgeviewObjective = nil,
+		phase = restoredPhase,
+		region = restoredRegion,
+		sequenceIndex = restoredIndex,
+		ridgeviewObjective = restoredObjective,
+		completedMissionIds = restoredIds,
 	}
 end
 
@@ -107,10 +162,13 @@ function MissionService.GetSnapshot(player: PlayerIdentity): MissionSnapshot?
 	end
 	return {
 		phase = state.phase,
+		region = state.region,
 		sequenceIndex = state.sequenceIndex,
 		objective = objective,
 		status = status,
-		ridgeviewObjective = state.ridgeviewObjective,
+		ridgeviewObjective = if state.phase == "ridgeview_investigation" then state.ridgeviewObjective else nil,
+		missionComplete = state.phase == "mission_complete",
+		completionOutcome = if state.phase == "mission_complete" then "Non-monetary outcome: a verified field record has been submitted." else nil,
 	}
 end
 
@@ -125,6 +183,9 @@ function MissionService.Advance(player: PlayerIdentity, expectedPhase: string, n
 	end
 	state.phase = nextPhase
 	state.sequenceIndex = nextIndex
+	if nextPhase == "ridgeview_arrival" then
+		state.region = "ridgeview"
+	end
 	if nextPhase == "ridgeview_investigation" then
 		state.ridgeviewObjective = "collect_observations"
 	end
@@ -147,9 +208,61 @@ function MissionService.AdvanceRidgeviewObjective(player: PlayerIdentity, expect
 	return true, MissionService.GetSnapshot(player)
 end
 
+function MissionService.CompleteRidgeviewInvestigation(player: PlayerIdentity): (boolean, MissionSnapshot?)
+	local state = states[player.UserId]
+	if state == nil or state.phase ~= "ridgeview_investigation" or state.ridgeviewObjective ~= "review_findings" then
+		return false, nil
+	end
+	for _, missionId in state.completedMissionIds do
+		if missionId == "ridgeview_investigation_001" then
+			return false, nil
+		end
+	end
+	table.insert(state.completedMissionIds, "ridgeview_investigation_001")
+	state.phase = "mission_complete"
+	state.sequenceIndex = 6
+	return true, MissionService.GetSnapshot(player)
+end
+
+function MissionService.GetCompletedMissionIds(player: PlayerIdentity): { string }
+	local state = states[player.UserId]
+	return if state ~= nil then table.clone(state.completedMissionIds) else {}
+end
+
 function MissionService.GetRidgeviewObjective(player: PlayerIdentity): string?
 	local state = states[player.UserId]
 	return if state ~= nil then state.ridgeviewObjective else nil
+end
+
+function MissionService.GetRegion(player: PlayerIdentity): string?
+	local state = states[player.UserId]
+	return if state ~= nil then state.region else nil
+end
+
+function MissionService.SetRegion(player: PlayerIdentity, region: unknown): boolean
+	local state = states[player.UserId]
+	if state == nil or (region ~= "temple" and region ~= "ridgeview") then
+		return false
+	end
+	local phaseAllowsRidgeview = state.phase == "ridgeview_arrival" or state.phase == "ridgeview_investigation" or state.phase == "mission_complete"
+	if region == "ridgeview" and not phaseAllowsRidgeview then
+		return false
+	end
+	state.region = region
+	return true
+end
+
+function MissionService.GetPersistentProgress(player: PlayerIdentity)
+	local state = states[player.UserId]
+	if state == nil then
+		return nil
+	end
+	return {
+		phase = state.phase,
+		region = state.region,
+		sequenceIndex = state.sequenceIndex,
+		ridgeviewObjective = if state.phase == "ridgeview_investigation" then state.ridgeviewObjective else nil,
+	}
 end
 
 return MissionService

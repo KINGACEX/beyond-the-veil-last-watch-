@@ -4,9 +4,14 @@
 
 local PlayerProfileSchema = {}
 
-local CURRENT_SCHEMA_VERSION = 3
+local CURRENT_SCHEMA_VERSION = 7
 local LEGACY_SCHEMA_VERSION = 1
 local INVENTORY_SCHEMA_VERSION = 2
+local TRANSACTION_SCHEMA_VERSION = 3
+local INVESTIGATION_SCHEMA_VERSION = 4
+local CONSENT_DECISION_SCHEMA_VERSION = 5
+local ACTIVE_MISSION_SCHEMA_VERSION = 6
+local MISSION_REGION_SCHEMA_VERSION = 7
 local MAX_RECENT_TRANSACTIONS = 50
 local DEFAULT_OWNERSHIP: {[string]: boolean} = table.freeze({
 	ember = true,
@@ -55,6 +60,9 @@ local function copyProfile(profile: any)
 	copy.progression = table.clone(profile.progression)
 	copy.progression.completedEvaluations = table.clone(profile.progression.completedEvaluations)
 	copy.progression.completedMissionIds = table.clone(profile.progression.completedMissionIds)
+	if profile.progression.activeMission ~= nil then
+		copy.progression.activeMission = table.clone(profile.progression.activeMission)
+	end
 	copy.economy = table.clone(profile.economy)
 	if profile.economy.recentTransactions ~= nil then
 		copy.economy.recentTransactions = table.clone(profile.economy.recentTransactions)
@@ -67,6 +75,11 @@ local function copyProfile(profile: any)
 	if profile.inventory ~= nil then
 		copy.inventory = table.clone(profile.inventory)
 		copy.inventory.items = table.clone(profile.inventory.items)
+	end
+	if profile.investigation ~= nil then
+		copy.investigation = table.clone(profile.investigation)
+		copy.investigation.ridgeview = table.clone(profile.investigation.ridgeview)
+		copy.investigation.ridgeview.observations = table.clone(profile.investigation.ridgeview.observations)
 	end
 	return copy
 end
@@ -108,6 +121,55 @@ local function validateProfile(
 		or not validateStringArray(progression.completedMissionIds)
 	then
 		return false, "Profile progression event lists are malformed."
+	end
+
+	if expectedVersion >= ACTIVE_MISSION_SCHEMA_VERSION then
+		local activeMission = progression.activeMission
+		if typeof(activeMission) ~= "table" then
+			return false, "Active mission progress is malformed."
+		end
+		local phaseIndices = {
+			communion_context = 1,
+			covenant_alert = 2,
+			report_accessed = 3,
+			ridgeview_arrival = 4,
+			ridgeview_investigation = 5,
+			mission_complete = 6,
+		}
+		if phaseIndices[activeMission.phase] == nil
+			or activeMission.sequenceIndex ~= phaseIndices[activeMission.phase]
+		then
+			return false, "Active mission phase and sequence are inconsistent."
+		end
+		if activeMission.phase == "ridgeview_investigation" then
+			local validObjectives = {
+				collect_observations = true,
+				speak_with_wren = true,
+				choose_disclosure = true,
+				pike_followup = true,
+				review_findings = true,
+			}
+			if typeof(activeMission.ridgeviewObjective) ~= "string" or validObjectives[activeMission.ridgeviewObjective] ~= true then
+				return false, "Active Ridgeview objective is invalid."
+			end
+		elseif activeMission.ridgeviewObjective ~= nil then
+			return false, "A non-investigation phase cannot contain a Ridgeview objective."
+		end
+		local isCompleted = table.find(progression.completedMissionIds, "ridgeview_investigation_001") ~= nil
+		if (activeMission.phase == "mission_complete") ~= isCompleted then
+			return false, "Completed mission history and active mission state disagree."
+		end
+		if expectedVersion >= MISSION_REGION_SCHEMA_VERSION then
+			if activeMission.region ~= "temple" and activeMission.region ~= "ridgeview" then
+				return false, "Active mission region is invalid."
+			end
+			local phaseAllowsRidgeview = activeMission.phase == "ridgeview_arrival"
+				or activeMission.phase == "ridgeview_investigation"
+				or activeMission.phase == "mission_complete"
+			if activeMission.region == "ridgeview" and not phaseAllowsRidgeview then
+				return false, "Ridgeview region requires a Ridgeview mission phase."
+			end
+		end
 	end
 
 	local economy = profile.economy
@@ -156,7 +218,7 @@ local function validateProfile(
 		end
 	end
 
-	if expectedVersion == CURRENT_SCHEMA_VERSION then
+	if expectedVersion >= TRANSACTION_SCHEMA_VERSION then
 		local recentTransactions = economy.recentTransactions
 		if typeof(recentTransactions) ~= "table" or #recentTransactions > MAX_RECENT_TRANSACTIONS then
 			return false, "Recent transaction journal is malformed or exceeds its limit."
@@ -187,7 +249,47 @@ local function validateProfile(
 		end
 	end
 
+	if expectedVersion >= INVESTIGATION_SCHEMA_VERSION then
+		local investigation = profile.investigation
+		local ridgeview = if typeof(investigation) == "table" then investigation.ridgeview else nil
+		if typeof(ridgeview) ~= "table"
+			or typeof(ridgeview.observations) ~= "table"
+			or typeof(ridgeview.wrenTestimonyRecorded) ~= "boolean"
+			or typeof(ridgeview.wrenSharePermission) ~= "boolean"
+			or (expectedVersion >= CONSENT_DECISION_SCHEMA_VERSION and typeof(ridgeview.wrenDisclosureDecisionMade) ~= "boolean")
+			or typeof(ridgeview.pikeAdmissionRecorded) ~= "boolean"
+		then
+			return false, "Ridgeview investigation profile is malformed."
+		end
+		for noteId, recorded in ridgeview.observations do
+			if (noteId ~= "approach_belongings" and noteId ~= "parked_work_vehicle") or recorded ~= true then
+				return false, "Ridgeview profile contains an unknown or invalid observation."
+			end
+		end
+		if expectedVersion >= CONSENT_DECISION_SCHEMA_VERSION and ridgeview.wrenSharePermission and not ridgeview.wrenDisclosureDecisionMade then
+			return false, "Ridgeview sharing permission has no recorded disclosure decision."
+		end
+		if ridgeview.wrenSharePermission and not ridgeview.wrenTestimonyRecorded then
+			return false, "Ridgeview sharing permission cannot exist without recorded testimony."
+		end
+		if ridgeview.pikeAdmissionRecorded and not ridgeview.wrenSharePermission then
+			return false, "Pike's admission cannot exist without Wren's explicit sharing permission."
+		end
+	end
+
 	return true, nil
+end
+
+local function createDefaultInvestigation()
+	return {
+		ridgeview = {
+			observations = {},
+			wrenTestimonyRecorded = false,
+			wrenSharePermission = false,
+			wrenDisclosureDecisionMade = false,
+			pikeAdmissionRecorded = false,
+		},
+	}
 end
 
 function PlayerProfileSchema.CreateDefault()
@@ -202,6 +304,12 @@ function PlayerProfileSchema.CreateDefault()
 			covenantRank = "Recruit",
 			completedEvaluations = {},
 			completedMissionIds = {},
+			activeMission = {
+				phase = "communion_context",
+				sequenceIndex = 1,
+				ridgeviewObjective = nil,
+				region = "temple",
+			},
 		},
 		economy = {
 			aces = 0,
@@ -215,6 +323,7 @@ function PlayerProfileSchema.CreateDefault()
 		inventory = {
 			items = {},
 		},
+		investigation = createDefaultInvestigation(),
 	}
 end
 
@@ -239,7 +348,13 @@ function PlayerProfileSchema.Migrate(
 		return nil, "Profile must be a table."
 	end
 
-	if profile.schemaVersion == LEGACY_SCHEMA_VERSION or profile.schemaVersion == INVENTORY_SCHEMA_VERSION then
+	if profile.schemaVersion == LEGACY_SCHEMA_VERSION
+		or profile.schemaVersion == INVENTORY_SCHEMA_VERSION
+		or profile.schemaVersion == TRANSACTION_SCHEMA_VERSION
+		or profile.schemaVersion == INVESTIGATION_SCHEMA_VERSION
+		or profile.schemaVersion == CONSENT_DECISION_SCHEMA_VERSION
+		or profile.schemaVersion == ACTIVE_MISSION_SCHEMA_VERSION
+	then
 		local sourceVersion = profile.schemaVersion
 		local sourceValid, sourceError = validateProfile(
 			profile,
@@ -257,7 +372,31 @@ function PlayerProfileSchema.Migrate(
 		if sourceVersion == LEGACY_SCHEMA_VERSION then
 			migrated.inventory = inventoryPolicy.CreateDefault()
 		end
-		migrated.economy.recentTransactions = {}
+		if sourceVersion < TRANSACTION_SCHEMA_VERSION then
+			migrated.economy.recentTransactions = {}
+		end
+		if sourceVersion < INVESTIGATION_SCHEMA_VERSION then
+			migrated.investigation = createDefaultInvestigation()
+		elseif sourceVersion < CONSENT_DECISION_SCHEMA_VERSION then
+			local ridgeview = migrated.investigation.ridgeview
+			-- Older saves cannot prove that a false permission was explicitly chosen.
+			-- Keep the account private and require Wren's decision to be reconfirmed.
+			ridgeview.wrenDisclosureDecisionMade = ridgeview.wrenSharePermission == true
+		end
+		if sourceVersion < ACTIVE_MISSION_SCHEMA_VERSION then
+			local completed = table.find(migrated.progression.completedMissionIds, "ridgeview_investigation_001") ~= nil
+			migrated.progression.activeMission = {
+				phase = if completed then "mission_complete" else "communion_context",
+				sequenceIndex = if completed then 6 else 1,
+				ridgeviewObjective = nil,
+			}
+		end
+		if sourceVersion < MISSION_REGION_SCHEMA_VERSION then
+			local phase = migrated.progression.activeMission.phase
+			migrated.progression.activeMission.region = if phase == "ridgeview_arrival" or phase == "ridgeview_investigation" or phase == "mission_complete"
+				then "ridgeview"
+				else "temple"
+		end
 		migrated.schemaVersion = CURRENT_SCHEMA_VERSION
 		local migratedValid, migratedError = validateProfile(
 			migrated,

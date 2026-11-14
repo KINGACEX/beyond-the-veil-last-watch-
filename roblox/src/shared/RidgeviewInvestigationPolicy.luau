@@ -8,6 +8,7 @@ export type State = {
 	observations: { [string]: boolean },
 	wrenTestimonyRecorded: boolean,
 	wrenSharePermission: boolean,
+	wrenDisclosureDecisionMade: boolean,
 	pikeAdmissionRecorded: boolean,
 }
 
@@ -25,6 +26,7 @@ function RidgeviewInvestigationPolicy.NewState(): State
 		observations = {},
 		wrenTestimonyRecorded = false,
 		wrenSharePermission = false,
+		wrenDisclosureDecisionMade = false,
 		pikeAdmissionRecorded = false,
 	}
 end
@@ -51,6 +53,7 @@ function RidgeviewInvestigationPolicy.RecordWrenTestimony(current: State): State
 	updated.wrenTestimonyRecorded = true
 	-- A newly recorded account never inherits an earlier disclosure permission.
 	updated.wrenSharePermission = false
+	updated.wrenDisclosureDecisionMade = false
 	updated.pikeAdmissionRecorded = false
 	return updated
 end
@@ -68,6 +71,7 @@ function RidgeviewInvestigationPolicy.SetWrenSharePermission(current: State, per
 
 	local updated = table.clone(current)
 	updated.wrenSharePermission = permission
+	updated.wrenDisclosureDecisionMade = true
 	return updated, nil
 end
 
@@ -82,6 +86,57 @@ function RidgeviewInvestigationPolicy.RecordPikeAdmission(current: State): (Stat
 	local updated = table.clone(current)
 	updated.pikeAdmissionRecorded = true
 	return updated, nil
+end
+
+function RidgeviewInvestigationPolicy.CloneState(current: State): State
+	local updated = table.clone(current)
+	updated.observations = table.clone(current.observations)
+	return updated
+end
+
+function RidgeviewInvestigationPolicy.RestoreState(candidate: unknown, catalog: { [string]: any }): (State?, string?)
+	if typeof(candidate) ~= "table" then
+		return nil, "Persisted Ridgeview investigation state is malformed."
+	end
+	local source = candidate :: any
+	if
+		typeof(source.observations) ~= "table"
+		or typeof(source.wrenTestimonyRecorded) ~= "boolean"
+		or typeof(source.wrenSharePermission) ~= "boolean"
+		or (source.wrenDisclosureDecisionMade ~= nil and typeof(source.wrenDisclosureDecisionMade) ~= "boolean")
+		or typeof(source.pikeAdmissionRecorded) ~= "boolean"
+	then
+		return nil, "Persisted Ridgeview investigation fields are malformed."
+	end
+	local observations: { [string]: boolean } = {}
+	for noteId, recorded in source.observations do
+		if typeof(noteId) ~= "string" or catalog[noteId] == nil or recorded ~= true then
+			return nil, "Persisted Ridgeview observation is unknown or invalid."
+		end
+		observations[noteId] = true
+	end
+	if source.wrenSharePermission and not source.wrenTestimonyRecorded then
+		return nil, "Persisted Wren permission has no recorded testimony."
+	end
+	if source.pikeAdmissionRecorded and not source.wrenSharePermission then
+		return nil, "Persisted Pike admission has no explicit Wren permission."
+	end
+	return {
+		observations = observations,
+		wrenTestimonyRecorded = source.wrenTestimonyRecorded,
+		wrenSharePermission = source.wrenSharePermission,
+		wrenDisclosureDecisionMade = if typeof(source.wrenDisclosureDecisionMade) == "boolean" then source.wrenDisclosureDecisionMade else source.wrenSharePermission,
+		pikeAdmissionRecorded = source.pikeAdmissionRecorded,
+	},
+		nil
+end
+
+function RidgeviewInvestigationPolicy.CanSubmitFindings(state: State): boolean
+	local observationsComplete = state.observations.approach_belongings == true and state.observations.parked_work_vehicle == true
+	local testimonyRecorded = state.wrenTestimonyRecorded
+	local consentDecisionComplete = state.wrenDisclosureDecisionMade
+	local consentPathComplete = if state.wrenSharePermission then state.pikeAdmissionRecorded else not state.pikeAdmissionRecorded
+	return observationsComplete and testimonyRecorded and consentDecisionComplete and consentPathComplete
 end
 
 function RidgeviewInvestigationPolicy.Snapshot(state: State, catalog: { [string]: any }): { JournalEntry }
