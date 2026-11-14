@@ -131,11 +131,7 @@ function MissionService.Advance(player: PlayerIdentity, expectedPhase: string, n
 	return true, MissionService.GetSnapshot(player)
 end
 
-function MissionService.AdvanceRidgeviewObjective(
-	player: PlayerIdentity,
-	expectedObjective: string,
-	nextObjective: string
-): (boolean, MissionSnapshot?)
+function MissionService.AdvanceRidgeviewObjective(player: PlayerIdentity, expectedObjective: string, nextObjective: string): (boolean, MissionSnapshot?)
 	local state = states[player.UserId]
 	if state == nil or state.phase ~= "ridgeview_investigation" then
 		return false, nil
