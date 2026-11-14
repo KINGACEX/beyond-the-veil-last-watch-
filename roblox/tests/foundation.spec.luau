@@ -393,8 +393,7 @@ do
 	legacyV5Completed.progression.activeMission = nil
 	local migratedV5Completed = PlayerProfileSchema.Migrate(legacyV5Completed, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(
-		migratedV5Completed ~= nil
-			and migratedV5Completed.progression.activeMission.phase == "mission_complete",
+		migratedV5Completed ~= nil and migratedV5Completed.progression.activeMission.phase == "mission_complete",
 		"v5 migration preserves an already-completed Ridgeview mission"
 	)
 
