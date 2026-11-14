@@ -6,8 +6,6 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
-local shared = ReplicatedStorage:WaitForChild("BTVShared")
-local FieldNoteCatalog = require(shared:WaitForChild("RidgeviewFieldNoteCatalog"))
 local InvestigationService = require(script.Parent:WaitForChild("RidgeviewInvestigationService"))
 local MissionService = require(script.Parent:WaitForChild("MissionService"))
 
