@@ -7,6 +7,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local shared = ReplicatedStorage:WaitForChild("BTVShared")
+local GameConfig = require(shared:WaitForChild("GameConfig"))
+local ProfileSessionService = require(script.Parent.Parent.Services:WaitForChild("ProfileSessionService"))
 local InvestigationService = require(script.Parent.Parent.Services:WaitForChild("RidgeviewInvestigationService"))
 local MissionService = require(script.Parent.Parent.Services:WaitForChild("MissionService"))
 
@@ -348,6 +350,13 @@ submitPrompt.Triggered:Connect(function(player: Player)
 	local completed, snapshot = MissionService.CompleteRidgeviewInvestigation(player)
 	if not completed or snapshot == nil then
 		return
+	end
+
+	if GameConfig.EnableProfilePersistence then
+		local saved, saveError = ProfileSessionService.Save(player)
+		if not saved then
+			warn("[BTV Roblox] Completed Ridgeview report could not yet be persisted: " .. tostring(saveError))
+		end
 	end
 
 	missionStateUpdated:FireClient(player, snapshot)
