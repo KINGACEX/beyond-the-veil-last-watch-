@@ -226,7 +226,7 @@ do
 	local validProfile, validProfileReason = PlayerProfileSchema.Validate(defaultProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(validProfile, "new versioned profile passes schema validation")
 	expect(validProfileReason == nil, "valid profile has no validation error")
-	expect(defaultProfile.schemaVersion == 4, "new profile uses the current schema version")
+	expect(defaultProfile.schemaVersion == 5, "new profile uses the current schema version")
 	expect(defaultProfile.progression.covenantRank == "Recruit", "new profile starts at Recruit")
 	expect(defaultProfile.companions.owned.ember == true, "new profile owns Ember")
 	expect(defaultProfile.companions.owned.fox == true, "new profile owns Fox")
@@ -358,12 +358,34 @@ do
 	local migratedProfile, migrationError = PlayerProfileSchema.Migrate(legacyProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(migratedProfile ~= nil and migrationError == nil, "valid v1 profile migrates to the current schema")
 	assert(migratedProfile ~= nil, "migrated profile must exist")
-	expect(migratedProfile.schemaVersion == 4, "migration advances profile schema to version four")
+	expect(migratedProfile.schemaVersion == 5, "legacy migration advances profile schema to version five")
 	expect(next(migratedProfile.investigation.ridgeview.observations) == nil, "legacy migration initializes a safe empty Ridgeview record")
 	expect(migratedProfile.economy.aces == 91, "migration preserves existing Aces")
 	expect(migratedProfile.progression.completedMissionIds[1] == "mission-legacy-001", "migration preserves mission progress")
 	expect(migratedProfile.inventory.items ~= nil and next(migratedProfile.inventory.items) == nil, "migration adds an empty inventory")
 	expect(legacyProfile.schemaVersion == 1 and legacyProfile.inventory == nil, "migration does not mutate the stored legacy profile")
+
+	local legacyV4Profile = PlayerProfileSchema.CreateDefault()
+	legacyV4Profile.schemaVersion = 4
+	legacyV4Profile.investigation.ridgeview.wrenTestimonyRecorded = true
+	legacyV4Profile.investigation.ridgeview.wrenSharePermission = false
+	legacyV4Profile.investigation.ridgeview.pikeAdmissionRecorded = false
+	legacyV4Profile.investigation.ridgeview.wrenDisclosureDecisionMade = nil
+	local migratedV4Profile, migratedV4Error = PlayerProfileSchema.Migrate(legacyV4Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	expect(migratedV4Profile ~= nil and migratedV4Error == nil, "valid v4 profile migrates to v5")
+	assert(migratedV4Profile ~= nil, "migrated v4 profile must exist")
+	expect(migratedV4Profile.schemaVersion == 5, "v4 migration advances the schema version")
+	expect(migratedV4Profile.investigation.ridgeview.wrenDisclosureDecisionMade == false, "v4 private testimony requires Wren's disclosure decision to be reconfirmed")
+	expect(legacyV4Profile.schemaVersion == 4 and legacyV4Profile.investigation.ridgeview.wrenDisclosureDecisionMade == nil, "v4 migration does not mutate the stored profile")
+
+	local legacyV4Authorized = PlayerProfileSchema.CreateDefault()
+	legacyV4Authorized.schemaVersion = 4
+	legacyV4Authorized.investigation.ridgeview.wrenTestimonyRecorded = true
+	legacyV4Authorized.investigation.ridgeview.wrenSharePermission = true
+	legacyV4Authorized.investigation.ridgeview.pikeAdmissionRecorded = true
+	legacyV4Authorized.investigation.ridgeview.wrenDisclosureDecisionMade = nil
+	local migratedV4Authorized = PlayerProfileSchema.Migrate(legacyV4Authorized, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	expect(migratedV4Authorized ~= nil and migratedV4Authorized.investigation.ridgeview.wrenDisclosureDecisionMade == true, "v4 authorized disclosure migrates without losing its explicit permission evidence")
 
 	local invalidLegacyProfile = PlayerProfileSchema.CreateDefault()
 	invalidLegacyProfile.schemaVersion = 1
@@ -392,7 +414,7 @@ do
 	)
 	expect(migratedRecord ~= nil and migratedRecordError == nil, "atomic record acquisition migrates a valid legacy profile")
 	assert(migratedRecord ~= nil, "migrated record must exist")
-	expect(migratedRecord.profile.schemaVersion == 4, "acquired record contains the current schema")
+	expect(migratedRecord.profile.schemaVersion == 5, "acquired record contains the current schema")
 	expect(migratedRecord.profile.economy.aces == 91, "record migration preserves the legacy balance")
 
 	local legacyV2Profile = PlayerProfileSchema.CreateDefault()
@@ -401,9 +423,9 @@ do
 	legacyV2Profile.economy.aces = 37
 	legacyV2Profile.inventory.items.timber_plank = 4
 	local migratedV2Profile, migratedV2Error = PlayerProfileSchema.Migrate(legacyV2Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
-	expect(migratedV2Profile ~= nil and migratedV2Error == nil, "valid v2 profile migrates to v4")
+	expect(migratedV2Profile ~= nil and migratedV2Error == nil, "valid v2 profile migrates to v5")
 	assert(migratedV2Profile ~= nil, "migrated v2 profile must exist")
-	expect(migratedV2Profile.schemaVersion == 4, "v2 migration advances the schema version")
+	expect(migratedV2Profile.schemaVersion == 5, "v2 migration advances the schema version")
 	expect(migratedV2Profile.economy.aces == 37, "v2 migration preserves Aces")
 	expect(migratedV2Profile.inventory.items.timber_plank == 4, "v2 migration preserves inventory")
 	expect(#migratedV2Profile.economy.recentTransactions == 0, "v2 migration initializes a bounded transaction journal")
@@ -422,9 +444,9 @@ do
 		},
 	}
 	local migratedV3Profile, migratedV3Error = PlayerProfileSchema.Migrate(legacyV3Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
-	expect(migratedV3Profile ~= nil and migratedV3Error == nil, "valid v3 profile migrates to v4")
+	expect(migratedV3Profile ~= nil and migratedV3Error == nil, "valid v3 profile migrates to v5")
 	assert(migratedV3Profile ~= nil, "migrated v3 profile must exist")
-	expect(migratedV3Profile.schemaVersion == 4, "v3 migration advances the schema version")
+	expect(migratedV3Profile.schemaVersion == 5, "v3 migration advances the schema version")
 	expect(#migratedV3Profile.economy.recentTransactions == 1, "v3 migration preserves its existing transaction history")
 	expect(migratedV3Profile.investigation.ridgeview.wrenTestimonyRecorded == false, "v3 migration initializes the new investigation state safely")
 end
