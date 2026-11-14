@@ -31,6 +31,7 @@ type Session = {
 
 local adapter: any = nil
 local sessions: { [number]: Session } = {}
+local saveLocks: { [number]: boolean } = {}
 local autoSaveStarted = false
 local AUTO_SAVE_INTERVAL_SECONDS = 60
 local LEASE_DURATION_SECONDS = 180
@@ -109,13 +110,24 @@ function ProfileSessionService.ReleaseWithoutSave(player: Player): (boolean, str
 end
 
 function ProfileSessionService.Save(player: Player): (boolean, string?)
-	local session = sessions[player.UserId]
+	local userId = player.UserId
+	while saveLocks[userId] do
+		task.wait(0.05)
+	end
+	saveLocks[userId] = true
+
+	local function finish(saved: boolean, reason: string?): (boolean, string?)
+		saveLocks[userId] = nil
+		return saved, reason
+	end
+
+	local session = sessions[userId]
 	if session == nil or adapter == nil then
-		return false, "No acquired profile session exists."
+		return finish(false, "No acquired profile session exists.")
 	end
 	local playerState = PlayerStateService.GetSnapshot(player)
 	if playerState == nil then
-		return false, "Player state is not ready."
+		return finish(false, "Player state is not ready.")
 	end
 
 	local candidate = cloneValue(session.profile)
@@ -144,20 +156,24 @@ function ProfileSessionService.Save(player: Player): (boolean, string?)
 	candidate.companions.owned = cloneValue(playerState.ownedCompanions)
 	candidate.companions.equipped = playerState.equippedCompanion
 
-	local saved, saveError = adapter:Save(
-		player.UserId,
-		session.ownerToken,
-		candidate,
-		HttpService:GenerateGUID(false)
-	)
+	local callOk, saved, saveError = pcall(function()
+		return adapter:Save(
+			userId,
+			session.ownerToken,
+			candidate,
+			HttpService:GenerateGUID(false)
+		)
+	end)
+	if not callOk then
+		return finish(false, tostring(saved))
+	end
 	if saved == nil then
-		return false, saveError
+		return finish(false, saveError)
 	end
 	session.profile = cloneValue(saved.profile)
 	session.revision = saved.revision
-	return true, nil
+	return finish(true, nil)
 end
-
 function ProfileSessionService.SaveAndRelease(player: Player): (boolean, string?)
 	local session = sessions[player.UserId]
 	if session == nil or adapter == nil then
