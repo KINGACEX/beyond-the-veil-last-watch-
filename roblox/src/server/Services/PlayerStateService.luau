@@ -1,6 +1,6 @@
 --!strict
--- Server-only, in-memory player session state.
--- Persistence and premium entitlements are intentionally deferred until their schemas are reviewed.
+-- Server-only player session state hydrated from validated profiles when opt-in persistence is enabled.
+-- Premium entitlements remain disabled.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local shared = ReplicatedStorage:WaitForChild("BTVShared")
