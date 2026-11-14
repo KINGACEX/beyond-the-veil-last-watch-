@@ -410,10 +410,7 @@ do
 		migratedV5Completed ~= nil and migratedV5Completed.progression.activeMission.phase == "mission_complete",
 		"v5 migration preserves an already-completed Ridgeview mission"
 	)
-	expect(
-		migratedV5Completed ~= nil and migratedV5Completed.progression.activeMission.region == "ridgeview",
-		"v5 migration restores completed players to Ridgeview"
-	)
+	expect(migratedV5Completed ~= nil and migratedV5Completed.progression.activeMission.region == "ridgeview", "v5 migration restores completed players to Ridgeview")
 
 	local legacyV4Profile = PlayerProfileSchema.CreateDefault()
 	legacyV4Profile.schemaVersion = 4
