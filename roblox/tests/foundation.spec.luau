@@ -385,7 +385,10 @@ do
 	legacyV4Authorized.investigation.ridgeview.pikeAdmissionRecorded = true
 	legacyV4Authorized.investigation.ridgeview.wrenDisclosureDecisionMade = nil
 	local migratedV4Authorized = PlayerProfileSchema.Migrate(legacyV4Authorized, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
-	expect(migratedV4Authorized ~= nil and migratedV4Authorized.investigation.ridgeview.wrenDisclosureDecisionMade == true, "v4 authorized disclosure migrates without losing its explicit permission evidence")
+	expect(
+		migratedV4Authorized ~= nil and migratedV4Authorized.investigation.ridgeview.wrenDisclosureDecisionMade == true,
+		"v4 authorized disclosure migrates without losing its explicit permission evidence"
+	)
 
 	local invalidLegacyProfile = PlayerProfileSchema.CreateDefault()
 	invalidLegacyProfile.schemaVersion = 1
