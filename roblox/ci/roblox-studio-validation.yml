@@ -1,0 +1,109 @@
+name: BTV Roblox Studio Runtime Validation
+
+# Real Roblox Studio runtime tests.
+#
+# This workflow installs Roblox Studio on a GitHub-hosted Windows runner, builds
+# the test place with Rojo and executes the engine test harness inside a live
+# Studio instance. It is the layer that Lune and Selene cannot reach: it runs
+# the real server scripts, the real world builders and the real DataModel.
+#
+# Why Windows: Roblox Studio has no Linux build. `run-in-roblox` installs the
+# pinned Studio build automatically, so no manual Studio installation is needed.
+#
+# GitHub-hosted runners are free for public repositories, so this job costs
+# nothing.
+
+on:
+  push:
+    branches:
+      - btv/roblox-foundation-001
+      - btv/roblox-*
+    paths:
+      - "roblox/**"
+      - ".github/workflows/roblox-studio-validation.yml"
+  pull_request:
+    paths:
+      - "roblox/**"
+      - ".github/workflows/roblox-studio-validation.yml"
+  workflow_dispatch:
+    inputs:
+      num_clients:
+        description: "Number of Studio clients to launch (1 = solo, 2 = multiplayer check)"
+        required: false
+        default: "1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: btv-roblox-studio-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  studio-runtime:
+    name: Roblox Studio runtime tests
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: roblox
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Node toolchain
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Rojo
+        shell: pwsh
+        run: |
+          $version = "7.7.0"
+          $url = "https://github.com/rojo-rbx/rojo/releases/download/v$version/rojo-$version-windows-x86_64.zip"
+          Invoke-WebRequest -Uri $url -OutFile rojo.zip
+          Expand-Archive -Path rojo.zip -DestinationPath .
+          $env:PATH = "$PWD;$env:PATH"
+          rojo --version
+
+      - name: Install run-in-roblox
+        shell: pwsh
+        run: |
+          npm install -g run-in-roblox
+          run-in-roblox --version
+
+      - name: Build the test place
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path build | Out-Null
+          rojo build test.project.json --output build/BTVRobloxTest.rbxlx
+          Get-Item build/BTVRobloxTest.rbxlx | Select-Object Name, Length
+
+      - name: Run the engine test harness in Roblox Studio
+        shell: pwsh
+        run: |
+          $clients = "1"
+          if ("${{ inputs.num_clients }}" -ne "") { $clients = "${{ inputs.num_clients }}" }
+          $output = & run-in-roblox run `
+            --script tools/engine-task.luau `
+            --place-file build/BTVRobloxTest.rbxlx `
+            --universe-id 0 `
+            --place-id 0 `
+            --creator-id 0 `
+            --creator-type 0 `
+            --num-clients $clients 2>&1
+          $output | Tee-Object -FilePath build/studio-run.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($output -match "FAIL ") {
+            Write-Error "Engine tests reported a failure."
+            exit 1
+          }
+
+      - name: Upload the Studio run log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: btv-roblox-studio-log
+          path: roblox/build/studio-run.log
+          if-no-files-found: warn
+          retention-days: 7

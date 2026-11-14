@@ -1221,3 +1221,9 @@ do
 	expect(string.find(snapshot[2].Text, "not established", 1, true) ~= nil, "field notes do not invent ownership or cause")
 	print("[BTV tests] Ridgeview field-note policy passed.")
 end
+
+-- The runtime testing pipeline's own structure checks run inside this suite so
+-- the existing CI command (lune run tests/foundation.spec.luau) covers them
+-- without a workflow change. Once .github/workflows/roblox-validation.yml runs
+-- the suites individually, tests/pipeline.spec.luau can be invoked on its own.
+require("./pipeline.spec")
