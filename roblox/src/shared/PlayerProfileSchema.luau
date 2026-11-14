@@ -4,12 +4,13 @@
 
 local PlayerProfileSchema = {}
 
-local CURRENT_SCHEMA_VERSION = 5
+local CURRENT_SCHEMA_VERSION = 6
 local LEGACY_SCHEMA_VERSION = 1
 local INVENTORY_SCHEMA_VERSION = 2
 local TRANSACTION_SCHEMA_VERSION = 3
 local INVESTIGATION_SCHEMA_VERSION = 4
 local CONSENT_DECISION_SCHEMA_VERSION = 5
+local ACTIVE_MISSION_SCHEMA_VERSION = 6
 local MAX_RECENT_TRANSACTIONS = 50
 local DEFAULT_OWNERSHIP: {[string]: boolean} = table.freeze({
 	ember = true,
@@ -58,6 +59,9 @@ local function copyProfile(profile: any)
 	copy.progression = table.clone(profile.progression)
 	copy.progression.completedEvaluations = table.clone(profile.progression.completedEvaluations)
 	copy.progression.completedMissionIds = table.clone(profile.progression.completedMissionIds)
+	if profile.progression.activeMission ~= nil then
+		copy.progression.activeMission = table.clone(profile.progression.activeMission)
+	end
 	copy.economy = table.clone(profile.economy)
 	if profile.economy.recentTransactions ~= nil then
 		copy.economy.recentTransactions = table.clone(profile.economy.recentTransactions)
@@ -116,6 +120,44 @@ local function validateProfile(
 		or not validateStringArray(progression.completedMissionIds)
 	then
 		return false, "Profile progression event lists are malformed."
+	end
+
+	if expectedVersion >= ACTIVE_MISSION_SCHEMA_VERSION then
+		local activeMission = progression.activeMission
+		if typeof(activeMission) ~= "table" then
+			return false, "Active mission progress is malformed."
+		end
+		local phaseIndices = {
+			communion_context = 1,
+			covenant_alert = 2,
+			report_accessed = 3,
+			ridgeview_arrival = 4,
+			ridgeview_investigation = 5,
+			mission_complete = 6,
+		}
+		if phaseIndices[activeMission.phase] == nil
+			or activeMission.sequenceIndex ~= phaseIndices[activeMission.phase]
+		then
+			return false, "Active mission phase and sequence are inconsistent."
+		end
+		if activeMission.phase == "ridgeview_investigation" then
+			local validObjectives = {
+				collect_observations = true,
+				speak_with_wren = true,
+				choose_disclosure = true,
+				pike_followup = true,
+				review_findings = true,
+			}
+			if typeof(activeMission.ridgeviewObjective) ~= "string" or validObjectives[activeMission.ridgeviewObjective] ~= true then
+				return false, "Active Ridgeview objective is invalid."
+			end
+		elseif activeMission.ridgeviewObjective ~= nil then
+			return false, "A non-investigation phase cannot contain a Ridgeview objective."
+		end
+		local isCompleted = table.find(progression.completedMissionIds, "ridgeview_investigation_001") ~= nil
+		if (activeMission.phase == "mission_complete") ~= isCompleted then
+			return false, "Completed mission history and active mission state disagree."
+		end
 	end
 
 	local economy = profile.economy
@@ -250,6 +292,11 @@ function PlayerProfileSchema.CreateDefault()
 			covenantRank = "Recruit",
 			completedEvaluations = {},
 			completedMissionIds = {},
+			activeMission = {
+				phase = "communion_context",
+				sequenceIndex = 1,
+				ridgeviewObjective = nil,
+			},
 		},
 		economy = {
 			aces = 0,
@@ -292,6 +339,7 @@ function PlayerProfileSchema.Migrate(
 		or profile.schemaVersion == INVENTORY_SCHEMA_VERSION
 		or profile.schemaVersion == TRANSACTION_SCHEMA_VERSION
 		or profile.schemaVersion == INVESTIGATION_SCHEMA_VERSION
+		or profile.schemaVersion == CONSENT_DECISION_SCHEMA_VERSION
 	then
 		local sourceVersion = profile.schemaVersion
 		local sourceValid, sourceError = validateProfile(
@@ -320,6 +368,14 @@ function PlayerProfileSchema.Migrate(
 			-- Older saves cannot prove that a false permission was explicitly chosen.
 			-- Keep the account private and require Wren's decision to be reconfirmed.
 			ridgeview.wrenDisclosureDecisionMade = ridgeview.wrenSharePermission == true
+		end
+		if sourceVersion < ACTIVE_MISSION_SCHEMA_VERSION then
+			local completed = table.find(migrated.progression.completedMissionIds, "ridgeview_investigation_001") ~= nil
+			migrated.progression.activeMission = {
+				phase = if completed then "mission_complete" else "communion_context",
+				sequenceIndex = if completed then 6 else 1,
+				ridgeviewObjective = if completed then "review_findings" else nil,
+			}
 		end
 		migrated.schemaVersion = CURRENT_SCHEMA_VERSION
 		local migratedValid, migratedError = validateProfile(
