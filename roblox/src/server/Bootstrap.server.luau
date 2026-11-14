@@ -61,20 +61,41 @@ if persistenceEnabled then
 	end
 end
 
+local loadingPlayers: { [number]: boolean } = {}
+
 local function onPlayerAdded(player: Player)
+	if loadingPlayers[player.UserId] then
+		return
+	end
+	loadingPlayers[player.UserId] = true
+
 	local profile = nil
 	if persistenceEnabled then
 		if not persistenceReady then
-			player:Kick("Player data is temporarily unavailable. Please try again later.")
+			loadingPlayers[player.UserId] = nil
+			if player.Parent == Players then
+				player:Kick("Player data is temporarily unavailable. Please try again later.")
+			end
 			return
 		end
 		local loadedProfile, loadError = ProfileSessionService.Acquire(player)
 		if loadedProfile == nil then
-			warn("[BTV Roblox] Profile load failed for user " .. tostring(player.UserId) .. ": " .. tostring(loadError))
-			player:Kick("Your player data could not be loaded safely. Please try again later.")
+			loadingPlayers[player.UserId] = nil
+			if player.Parent == Players then
+				warn("[BTV Roblox] Profile load failed for user " .. tostring(player.UserId) .. ": " .. tostring(loadError))
+				player:Kick("Your player data could not be loaded safely. Please try again later.")
+			end
 			return
 		end
 		profile = loadedProfile
+	end
+
+	if player.Parent ~= Players then
+		if persistenceEnabled then
+			ProfileSessionService.ReleaseWithoutSave(player)
+		end
+		loadingPlayers[player.UserId] = nil
+		return
 	end
 
 	PlayerStateService.AddPlayer(player, profile)
@@ -85,13 +106,13 @@ local function onPlayerAdded(player: Player)
 		else nil
 	RidgeviewInvestigationService.AddPlayer(player, restoredInvestigation)
 	CompanionActorService.BindPlayer(player)
-end
-
-for _, player in Players:GetPlayers() do
-	onPlayerAdded(player)
+	loadingPlayers[player.UserId] = nil
 end
 
 Players.PlayerAdded:Connect(onPlayerAdded)
+for _, player in Players:GetPlayers() do
+	task.spawn(onPlayerAdded, player)
+end
 Players.PlayerRemoving:Connect(function(player: Player)
 	if persistenceEnabled then
 		local saved, saveError = ProfileSessionService.SaveAndRelease(player)
@@ -106,6 +127,7 @@ Players.PlayerRemoving:Connect(function(player: Player)
 	CompanionActorService.RemovePlayer(player)
 	lastCommandAt[player.UserId] = nil
 	lastCompanionSelectionAt[player.UserId] = nil
+	loadingPlayers[player.UserId] = nil
 end)
 
 getInitialState.OnServerInvoke = function(player: Player)
