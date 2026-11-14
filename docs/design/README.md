@@ -16,6 +16,7 @@ This directory preserves the approved design and quality-assurance specification
 6. [Mission and Progression Contract](mission-progression-contract.md)
 7. [Multiplayer Interaction and Security Test Catalogue](../qa/multiplayer-interaction-security-test-catalogue.md)
 8. [Agent Workstream and Integration Contract](../engineering/agent-workstream-integration-contract.md)
+9. [Implementation Backlog and Acceptance Traceability](../engineering/implementation-backlog-and-traceability.md)
 
 ## Governance and status vocabulary
 
