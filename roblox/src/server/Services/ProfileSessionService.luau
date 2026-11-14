@@ -98,6 +98,16 @@ function ProfileSessionService.Acquire(player: Player): (any?, string?)
 	return cloneValue(acquired.profile), nil
 end
 
+function ProfileSessionService.ReleaseWithoutSave(player: Player): (boolean, string?)
+	local session = sessions[player.UserId]
+	if session == nil or adapter == nil then
+		return true, nil
+	end
+	local released, releaseError = adapter:Release(player.UserId, session.ownerToken)
+	sessions[player.UserId] = nil
+	return released, releaseError
+end
+
 function ProfileSessionService.Save(player: Player): (boolean, string?)
 	local session = sessions[player.UserId]
 	if session == nil or adapter == nil then
