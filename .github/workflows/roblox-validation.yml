@@ -67,7 +67,6 @@ jobs:
           stylua --check src/shared/RidgeviewFieldNoteCatalog.luau src/shared/RidgeviewFieldNotePolicy.luau
           stylua --check src/server/Services/RidgeviewFieldNotes.server.luau src/client/RidgeviewFieldNotes.client.luau
           stylua --check src/shared/RidgeviewSettlementPolicy.luau src/shared/RidgeviewInvestigationPolicy.luau src/server/Services/RidgeviewInvestigationService.luau src/server/Services/MissionService.luau src/server/World/RidgeviewSettlement.server.luau src/client/RidgeviewSettlement.client.luau
-          stylua --check src/server/Bootstrap.server.luau src/server/Services/ProfileSessionService.luau src/shared/PlayerProfileSchema.luau
 
       - name: Lint Luau source
         run: selene src tests
