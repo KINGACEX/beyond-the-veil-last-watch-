@@ -33,6 +33,8 @@ local missionStateUpdated = remoteFolder:WaitForChild("MissionStateUpdated") :: 
 local world = Workspace:WaitForChild("BTV_World")
 local scene = world:WaitForChild("Ridgeview_LandscapeStudy")
 local arrivalMarker = scene:WaitForChild("RidgeviewArrivalMarker") :: BasePart
+local templeScene = world:WaitForChild("LogosRhemaTemple_VisualPrototype")
+local templeSpawn = templeScene:WaitForChild("PrototypeFoyerSpawn") :: SpawnLocation
 
 if scene:FindFirstChild("RidgeviewSettlement") ~= nil then
 	warn("[BTV Roblox] Ridgeview settlement already exists; skipping duplicate build.")
@@ -122,7 +124,7 @@ signGui.Parent = sign
 local signText = Instance.new("TextLabel")
 signText.Size = UDim2.fromScale(1, 1)
 signText.BackgroundTransparency = 1
-signText.Text = "RIDGEVIEW OUTPOST"
+signText.Text = "RIDGEVIEW OUTPOST\nTEMPLE RETURN"
 signText.TextColor3 = Color3.fromRGB(238, 230, 207)
 signText.Font = Enum.Font.GothamBold
 signText.TextScaled = true
@@ -365,6 +367,32 @@ submitPrompt.Triggered:Connect(function(player: Player)
 	send(player, "Field Report", "Your verified observations and permitted statements have been submitted for this session. No unverified conclusion has been added.", {
 		{ Label = "Close", Action = "Close" },
 	})
+end)
+
+local templeReturnPrompt = Instance.new("ProximityPrompt")
+templeReturnPrompt.Name = "ReturnToTemplePrompt"
+templeReturnPrompt.ActionText = "Return"
+templeReturnPrompt.ObjectText = "Logos Rhema Temple"
+templeReturnPrompt.HoldDuration = 0.35
+templeReturnPrompt.MaxActivationDistance = 11
+templeReturnPrompt.RequiresLineOfSight = false
+templeReturnPrompt.KeyboardKeyCode = Enum.KeyCode.E
+templeReturnPrompt.GamepadKeyCode = Enum.KeyCode.ButtonX
+templeReturnPrompt.Parent = sign
+
+templeReturnPrompt.Triggered:Connect(function(player: Player)
+	local character = player.Character
+	if player.Parent ~= Players or character == nil or player:DistanceFromCharacter(sign.Position) > 14 then
+		return
+	end
+	if MissionService.GetRegion(player) ~= "ridgeview" or not MissionService.SetRegion(player, "temple") then
+		return
+	end
+
+	closeDialogue(player)
+	local returnPosition = templeSpawn.Position + Vector3.new(0, 4, 0)
+	local returnLook = templeSpawn.CFrame.LookVector
+	character:PivotTo(CFrame.lookAt(returnPosition, returnPosition + returnLook))
 end)
 
 local function advanceInvestigationObjective(player: Player, expected: string, nextObjective: string)
