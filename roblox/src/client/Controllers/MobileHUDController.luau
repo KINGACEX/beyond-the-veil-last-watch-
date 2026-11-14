@@ -230,7 +230,8 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 			return
 		end
 		local index = if typeof(snapshot.sequenceIndex) == "number" then math.clamp(math.floor(snapshot.sequenceIndex), 1, 6) else 1
-		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 6"
+		local region = if snapshot.region == "ridgeview" then "RIDGEVIEW" else "TEMPLE"
+		missionTitle.Text = "OPENING SEQUENCE  •  " .. tostring(index) .. " / 6  •  " .. region
 		if typeof(snapshot.objective) == "string" then
 			missionObjective.Text = snapshot.objective
 		end
