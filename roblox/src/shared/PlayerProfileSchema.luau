@@ -374,7 +374,7 @@ function PlayerProfileSchema.Migrate(
 			migrated.progression.activeMission = {
 				phase = if completed then "mission_complete" else "communion_context",
 				sequenceIndex = if completed then 6 else 1,
-				ridgeviewObjective = if completed then "review_findings" else nil,
+				ridgeviewObjective = nil,
 			}
 		end
 		migrated.schemaVersion = CURRENT_SCHEMA_VERSION
