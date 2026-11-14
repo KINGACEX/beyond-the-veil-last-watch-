@@ -89,7 +89,8 @@ function ProfileRecordPolicy.TryAcquire(
 	companionCatalog: any,
 	inventoryPolicy: any,
 	itemCatalog: any,
-	leasePolicy: any
+	leasePolicy: any,
+	identityPolicy: any
 ): (any?, string?)
 	local profile
 	local existingLease = nil
@@ -107,13 +108,7 @@ function ProfileRecordPolicy.TryAcquire(
 		if not isValidSaveOperation(record.lastSaveOperation) then
 			return nil, "Stored save-operation marker is malformed."
 		end
-		local migratedProfile, migrationError = profileSchema.Migrate(
-			record.profile,
-			rankCatalog,
-			companionCatalog,
-			inventoryPolicy,
-			itemCatalog
-		)
+		local migratedProfile, migrationError = profileSchema.Migrate(record.profile, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 		if migratedProfile == nil then
 			return nil, migrationError or "Stored profile failed validation or migration."
 		end
@@ -146,7 +141,8 @@ function ProfileRecordPolicy.TrySave(
 	companionCatalog: any,
 	inventoryPolicy: any,
 	itemCatalog: any,
-	leasePolicy: any
+	leasePolicy: any,
+	identityPolicy: any
 ): (any?, string?, string?)
 	if not isRecord(existingRecord) then
 		return nil, "Stored profile record is missing or malformed.", nil
@@ -163,11 +159,11 @@ function ProfileRecordPolicy.TrySave(
 		return nil, "Save operation ID must be a non-empty string of at most 128 characters.", nil
 	end
 
-	local candidateValid, candidateError = profileSchema.Validate(candidateProfile, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog)
+	local candidateValid, candidateError = profileSchema.Validate(candidateProfile, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 	if not candidateValid then
 		return nil, candidateError or "Candidate profile failed validation.", nil
 	end
-	local storedValid = profileSchema.Validate(record.profile, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog)
+	local storedValid = profileSchema.Validate(record.profile, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 	if not storedValid then
 		return nil, "Stored profile failed validation; refusing to overwrite it.", nil
 	end
@@ -215,14 +211,12 @@ function ProfileRecordPolicy.TrySave(
 			baseRevision = candidate.revision,
 			resultRevision = savedProfile.revision,
 		},
-	}, nil, "Saved"
+	},
+		nil,
+		"Saved"
 end
 
-function ProfileRecordPolicy.TryRelease(
-	existingRecord: unknown,
-	ownerToken: string,
-	leasePolicy: any
-): (any?, string?)
+function ProfileRecordPolicy.TryRelease(existingRecord: unknown, ownerToken: string, leasePolicy: any): (any?, string?)
 	if not isRecord(existingRecord) then
 		return nil, "Stored profile record is missing or malformed."
 	end

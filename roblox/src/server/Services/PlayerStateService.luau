@@ -8,6 +8,7 @@ local CompanionCatalog = require(shared:WaitForChild("CompanionCatalog"))
 local CovenantRankCatalog = require(shared:WaitForChild("CovenantRankCatalog"))
 local CompanionOwnershipPolicy = require(script.Parent.CompanionOwnershipPolicy)
 local CurrencyAmountPolicy = require(shared:WaitForChild("CurrencyAmountPolicy"))
+local PlayerIdentityPolicy = require(shared:WaitForChild("PlayerIdentityPolicy"))
 
 local PlayerStateService = {}
 
@@ -42,6 +43,12 @@ local DEFAULT_STATE: PlayerSnapshot = {
 }
 
 function PlayerStateService.AddPlayer(player: Player)
+	-- The session identity must be a valid operative identity. Asher Vance is the
+	-- sole Chosen, so no session may start with the protagonist's identity.
+	local identityVerdict = PlayerIdentityPolicy.IsPlayerIdentity(DEFAULT_STATE.characterId)
+	if not identityVerdict.ok then
+		error("The default session identity is invalid: " .. identityVerdict.reason)
+	end
 	local state = table.clone(DEFAULT_STATE)
 	state.ownedCompanions = CompanionOwnershipPolicy.CreateDefaultOwnership()
 	sessions[player.UserId] = state

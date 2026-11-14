@@ -9,12 +9,7 @@ local MAX_TRANSACTION_ID_LENGTH = 128
 local MAX_RECENT_TRANSACTIONS = 50
 
 local function isPositiveInteger(value: unknown): boolean
-	return typeof(value) == "number"
-		and value == value
-		and value ~= math.huge
-		and value ~= -math.huge
-		and value > 0
-		and value % 1 == 0
+	return typeof(value) == "number" and value == value and value ~= math.huge and value ~= -math.huge and value > 0 and value % 1 == 0
 end
 
 local function copyProfile(profile: any)
@@ -44,13 +39,7 @@ local function findPriorTransaction(profile: any, transactionId: string): any?
 	return nil
 end
 
-local function transactionMatches(
-	transaction: any,
-	kind: string,
-	itemId: string,
-	quantity: number,
-	unitPrice: number
-): boolean
+local function transactionMatches(transaction: any, kind: string, itemId: string, quantity: number, unitPrice: number): boolean
 	local expectedDelta = if kind == "MerchantPurchase" then -(quantity * unitPrice) else quantity * unitPrice
 	return transaction.kind == kind
 		and transaction.itemId == itemId
@@ -69,10 +58,10 @@ local function validateRequest(
 	rankCatalog: any,
 	companionCatalog: any,
 	inventoryPolicy: any,
-	itemCatalog: any
+	itemCatalog: any,
+	identityPolicy: any
 ): (any?, string?)
-	local validProfile, profileError =
-		profileSchema.Validate(profile, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog)
+	local validProfile, profileError = profileSchema.Validate(profile, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 	if not validProfile then
 		return nil, profileError or "Player profile is invalid."
 	end
@@ -119,7 +108,8 @@ local function applyTransaction(
 	rankCatalog: any,
 	companionCatalog: any,
 	inventoryPolicy: any,
-	itemCatalog: any
+	itemCatalog: any,
+	identityPolicy: any
 ): (any?, string?, string?)
 	local prior = findPriorTransaction(profile, transactionId)
 	if prior ~= nil then
@@ -152,8 +142,7 @@ local function applyTransaction(
 		table.remove(updated.economy.recentTransactions, 1)
 	end
 
-	local validUpdated, updatedError =
-		profileSchema.Validate(updated, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog)
+	local validUpdated, updatedError = profileSchema.Validate(updated, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 	if not validUpdated then
 		return nil, updatedError or "Transaction produced an invalid profile.", nil
 	end
@@ -170,20 +159,11 @@ function MerchantTransactionPolicy.TryPurchase(
 	rankCatalog: any,
 	companionCatalog: any,
 	inventoryPolicy: any,
-	itemCatalog: any
+	itemCatalog: any,
+	identityPolicy: any
 ): (any?, string?, string?)
-	local request, requestError = validateRequest(
-		profile,
-		itemId,
-		quantity,
-		serverUnitPrice,
-		transactionId,
-		profileSchema,
-		rankCatalog,
-		companionCatalog,
-		inventoryPolicy,
-		itemCatalog
-	)
+	local request, requestError =
+		validateRequest(profile, itemId, quantity, serverUnitPrice, transactionId, profileSchema, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 	if request == nil then
 		return nil, requestError, nil
 	end
@@ -198,8 +178,7 @@ function MerchantTransactionPolicy.TryPurchase(
 		return nil, "Transaction ID was reused with a different payload.", nil
 	end
 
-	local newInventory, inventoryError =
-		inventoryPolicy.TryAdd(currentProfile.inventory, value.itemId, value.quantity, itemCatalog)
+	local newInventory, inventoryError = inventoryPolicy.TryAdd(currentProfile.inventory, value.itemId, value.quantity, itemCatalog)
 	if newInventory == nil then
 		return nil, inventoryError or "Inventory cannot accept this purchase.", nil
 	end
@@ -216,7 +195,8 @@ function MerchantTransactionPolicy.TryPurchase(
 		rankCatalog,
 		companionCatalog,
 		inventoryPolicy,
-		itemCatalog
+		itemCatalog,
+		identityPolicy
 	)
 end
 
@@ -230,20 +210,11 @@ function MerchantTransactionPolicy.TrySell(
 	rankCatalog: any,
 	companionCatalog: any,
 	inventoryPolicy: any,
-	itemCatalog: any
+	itemCatalog: any,
+	identityPolicy: any
 ): (any?, string?, string?)
-	local request, requestError = validateRequest(
-		profile,
-		itemId,
-		quantity,
-		serverUnitPrice,
-		transactionId,
-		profileSchema,
-		rankCatalog,
-		companionCatalog,
-		inventoryPolicy,
-		itemCatalog
-	)
+	local request, requestError =
+		validateRequest(profile, itemId, quantity, serverUnitPrice, transactionId, profileSchema, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 	if request == nil then
 		return nil, requestError, nil
 	end
@@ -258,8 +229,7 @@ function MerchantTransactionPolicy.TrySell(
 		return nil, "Transaction ID was reused with a different payload.", nil
 	end
 
-	local newInventory, inventoryError =
-		inventoryPolicy.TryRemove(currentProfile.inventory, value.itemId, value.quantity, itemCatalog)
+	local newInventory, inventoryError = inventoryPolicy.TryRemove(currentProfile.inventory, value.itemId, value.quantity, itemCatalog)
 	if newInventory == nil then
 		return nil, inventoryError or "Inventory does not contain the requested items.", nil
 	end
@@ -276,7 +246,8 @@ function MerchantTransactionPolicy.TrySell(
 		rankCatalog,
 		companionCatalog,
 		inventoryPolicy,
-		itemCatalog
+		itemCatalog,
+		identityPolicy
 	)
 end
 

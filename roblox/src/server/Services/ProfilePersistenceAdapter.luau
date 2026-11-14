@@ -13,6 +13,7 @@ type Options = {
 	CompanionCatalog: any,
 	InventoryPolicy: any,
 	ItemCatalog: any,
+	IdentityPolicy: any,
 	LeasePolicy: any,
 	RecordPolicy: any,
 	Clock: () -> number,
@@ -67,6 +68,7 @@ function ProfilePersistenceAdapter.new(options: Options)
 	assert(typeof(options) == "table", "Adapter options are required.")
 	assert(options.Store ~= nil, "A DataStore-like Store is required.")
 	assert(options.ProfileSchema ~= nil and options.RankCatalog ~= nil and options.CompanionCatalog ~= nil, "Profile validation dependencies are required.")
+	assert(options.IdentityPolicy ~= nil, "Player identity validation dependency is required.")
 	assert(options.InventoryPolicy ~= nil and options.ItemCatalog ~= nil, "Inventory validation dependencies are required.")
 	assert(options.LeasePolicy ~= nil and options.RecordPolicy ~= nil, "Profile record policy dependencies are required.")
 	assert(typeof(options.Clock) == "function", "Clock dependency is required.")
@@ -79,7 +81,10 @@ function ProfilePersistenceAdapter.new(options: Options)
 	local leaseDuration = options.LeaseDurationSeconds or 120
 	assert(isPositiveInteger(maxAttempts) and maxAttempts <= 5, "MaxAttempts must be an integer from 1 to 5.")
 	assert(typeof(baseDelay) == "number" and baseDelay == baseDelay and baseDelay ~= math.huge and baseDelay >= 0, "BaseDelaySeconds must be finite and non-negative.")
-	assert(typeof(leaseDuration) == "number" and leaseDuration == leaseDuration and leaseDuration ~= math.huge and leaseDuration >= 30, "LeaseDurationSeconds must be finite and at least 30.")
+	assert(
+		typeof(leaseDuration) == "number" and leaseDuration == leaseDuration and leaseDuration ~= math.huge and leaseDuration >= 30,
+		"LeaseDurationSeconds must be finite and at least 30."
+	)
 
 	return setmetatable({
 		store = options.Store,
@@ -88,6 +93,7 @@ function ProfilePersistenceAdapter.new(options: Options)
 		companionCatalog = options.CompanionCatalog,
 		inventoryPolicy = options.InventoryPolicy,
 		itemCatalog = options.ItemCatalog,
+		identityPolicy = options.IdentityPolicy,
 		leasePolicy = options.LeasePolicy,
 		recordPolicy = options.RecordPolicy,
 		clock = options.Clock,
@@ -107,7 +113,7 @@ function ProfilePersistenceAdapter.GetKeyForUser(userId: unknown): string?
 	return "player:" .. tostring(userId)
 end
 
-function ProfilePersistenceAdapter:_UpdateWithRetry(key: string, buildTransform: (number, (string?, string?) -> ()) -> ((any) -> any)): (any?, string?, string?)
+function ProfilePersistenceAdapter:_UpdateWithRetry(key: string, buildTransform: (number, (string?, string?) -> ()) -> (any) -> any): (any?, string?, string?)
 	for attempt = 1, self.maxAttempts do
 		local now = self.clock()
 		local callbackError: string? = nil
@@ -173,7 +179,8 @@ function ProfilePersistenceAdapter:Acquire(userId: unknown): (any?, string?)
 				self.companionCatalog,
 				self.inventoryPolicy,
 				self.itemCatalog,
-				self.leasePolicy
+				self.leasePolicy,
+				self.identityPolicy
 			)
 			setCallbackResult(policyError, nil)
 			return nextRecord
@@ -189,7 +196,8 @@ function ProfilePersistenceAdapter:Acquire(userId: unknown): (any?, string?)
 		ownerToken = ownerToken,
 		revision = updatedRecord.profile.revision,
 		leaseExpiresAt = updatedRecord.lease.expiresAt,
-	}, nil
+	},
+		nil
 end
 
 function ProfilePersistenceAdapter:Save(userId: unknown, ownerToken: unknown, candidateProfile: unknown, operationId: unknown): (any?, string?)
@@ -218,7 +226,8 @@ function ProfilePersistenceAdapter:Save(userId: unknown, ownerToken: unknown, ca
 				self.companionCatalog,
 				self.inventoryPolicy,
 				self.itemCatalog,
-				self.leasePolicy
+				self.leasePolicy,
+				self.identityPolicy
 			)
 			setCallbackResult(policyError, policyOutcome)
 			return nextRecord

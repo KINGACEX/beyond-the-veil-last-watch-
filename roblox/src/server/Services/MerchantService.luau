@@ -16,24 +16,17 @@ type Options = {
 	CompanionCatalog: any,
 	InventoryPolicy: any,
 	ItemCatalog: any,
+	IdentityPolicy: any,
 	Clock: () -> number,
 	MinimumRequestIntervalSeconds: number?,
 }
 
 local function isPositiveInteger(value: unknown): boolean
-	return typeof(value) == "number"
-		and value == value
-		and value ~= math.huge
-		and value ~= -math.huge
-		and value > 0
-		and value % 1 == 0
+	return typeof(value) == "number" and value == value and value ~= math.huge and value ~= -math.huge and value > 0 and value % 1 == 0
 end
 
 local function isValidRequestId(value: unknown): boolean
-	return typeof(value) == "string"
-		and #value >= 8
-		and #value <= 64
-		and string.match(value, "^[%w_%-]+$") ~= nil
+	return typeof(value) == "string" and #value >= 8 and #value <= 64 and string.match(value, "^[%w_%-]+$") ~= nil
 end
 
 function MerchantService.new(options: Options)
@@ -46,10 +39,7 @@ function MerchantService.new(options: Options)
 
 	local minimumInterval = options.MinimumRequestIntervalSeconds or 0.25
 	assert(
-		typeof(minimumInterval) == "number"
-			and minimumInterval == minimumInterval
-			and minimumInterval ~= math.huge
-			and minimumInterval >= 0,
+		typeof(minimumInterval) == "number" and minimumInterval == minimumInterval and minimumInterval ~= math.huge and minimumInterval >= 0,
 		"Minimum request interval must be finite and non-negative."
 	)
 
@@ -63,6 +53,7 @@ function MerchantService.new(options: Options)
 		companionCatalog = options.CompanionCatalog,
 		inventoryPolicy = options.InventoryPolicy,
 		itemCatalog = options.ItemCatalog,
+		identityPolicy = options.IdentityPolicy,
 		clock = options.Clock,
 		minimumRequestIntervalSeconds = minimumInterval,
 		lastRequestAt = {},
@@ -70,14 +61,7 @@ function MerchantService.new(options: Options)
 	}, MerchantService)
 end
 
-function MerchantService:_Transact(
-	player: any,
-	kind: string,
-	merchantId: unknown,
-	itemId: unknown,
-	quantity: unknown,
-	requestId: unknown
-): (any?, string?)
+function MerchantService:_Transact(player: any, kind: string, merchantId: unknown, itemId: unknown, quantity: unknown, requestId: unknown): (any?, string?)
 	if typeof(player) ~= "table" and typeof(player) ~= "Instance" then
 		return nil, "A valid player is required."
 	end
@@ -122,11 +106,7 @@ function MerchantService:_Transact(
 	self.busy[userId] = true
 	local ok, result, transactionError = pcall(function()
 		local session = self.getSession(player)
-		if typeof(session) ~= "table"
-			or typeof(session.ownerToken) ~= "string"
-			or session.ownerToken == ""
-			or typeof(session.profile) ~= "table"
-		then
+		if typeof(session) ~= "table" or typeof(session.ownerToken) ~= "string" or session.ownerToken == "" or typeof(session.profile) ~= "table" then
 			return nil, "Player profile session is unavailable."
 		end
 
@@ -144,7 +124,8 @@ function MerchantService:_Transact(
 				self.rankCatalog,
 				self.companionCatalog,
 				self.inventoryPolicy,
-				self.itemCatalog
+				self.itemCatalog,
+				self.identityPolicy
 			)
 		else
 			updatedProfile, policyError, policyOutcome = self.transactionPolicy.TrySell(
@@ -157,7 +138,8 @@ function MerchantService:_Transact(
 				self.rankCatalog,
 				self.companionCatalog,
 				self.inventoryPolicy,
-				self.itemCatalog
+				self.itemCatalog,
+				self.identityPolicy
 			)
 		end
 
@@ -174,12 +156,7 @@ function MerchantService:_Transact(
 			}
 		else
 			local saveError
-			saveResult, saveError = self.persistenceAdapter:Save(
-				userId,
-				session.ownerToken,
-				updatedProfile,
-				saveOperationId
-			)
+			saveResult, saveError = self.persistenceAdapter:Save(userId, session.ownerToken, updatedProfile, saveOperationId)
 			if saveResult == nil then
 				return nil, saveError or "Merchant transaction could not be committed."
 			end
@@ -209,7 +186,8 @@ function MerchantService:_Transact(
 			balance = saveResult.profile.economy.aces,
 			revision = saveResult.revision,
 			outcome = if saveResult.outcome == "AlreadyApplied" then "AlreadyApplied" else policyOutcome,
-		}, nil
+		},
+			nil
 	end)
 	self.busy[userId] = nil
 
@@ -219,23 +197,11 @@ function MerchantService:_Transact(
 	return result, transactionError
 end
 
-function MerchantService:Purchase(
-	player: any,
-	merchantId: unknown,
-	itemId: unknown,
-	quantity: unknown,
-	requestId: unknown
-): (any?, string?)
+function MerchantService:Purchase(player: any, merchantId: unknown, itemId: unknown, quantity: unknown, requestId: unknown): (any?, string?)
 	return self:_Transact(player, "MerchantPurchase", merchantId, itemId, quantity, requestId)
 end
 
-function MerchantService:Sell(
-	player: any,
-	merchantId: unknown,
-	itemId: unknown,
-	quantity: unknown,
-	requestId: unknown
-): (any?, string?)
+function MerchantService:Sell(player: any, merchantId: unknown, itemId: unknown, quantity: unknown, requestId: unknown): (any?, string?)
 	return self:_Transact(player, "MerchantSale", merchantId, itemId, quantity, requestId)
 end
 

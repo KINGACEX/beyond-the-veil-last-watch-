@@ -4,11 +4,16 @@
 
 local PlayerProfileSchema = {}
 
-local CURRENT_SCHEMA_VERSION = 3
+local CURRENT_SCHEMA_VERSION = 4
 local LEGACY_SCHEMA_VERSION = 1
 local INVENTORY_SCHEMA_VERSION = 2
+local PRE_OPERATIVE_IDENTITY_VERSION = 3
+-- Version 4 is the first version that enforces the operative identity rule:
+-- Asher Vance remains the sole Chosen, and a stored player profile may not
+-- claim the protagonist's identity or the Chosen role.
+local OPERATIVE_IDENTITY_VERSION = 4
 local MAX_RECENT_TRANSACTIONS = 50
-local DEFAULT_OWNERSHIP: {[string]: boolean} = table.freeze({
+local DEFAULT_OWNERSHIP: { [string]: boolean } = table.freeze({
 	ember = true,
 	fox = true,
 	owl = true,
@@ -20,12 +25,7 @@ local function isNonEmptyString(value: unknown): boolean
 end
 
 local function isNonNegativeInteger(value: unknown): boolean
-	return typeof(value) == "number"
-		and value == value
-		and value ~= math.huge
-		and value ~= -math.huge
-		and value >= 0
-		and value % 1 == 0
+	return typeof(value) == "number" and value == value and value ~= math.huge and value ~= -math.huge and value >= 0 and value % 1 == 0
 end
 
 local function validateStringArray(value: unknown): boolean
@@ -34,7 +34,7 @@ local function validateStringArray(value: unknown): boolean
 	end
 
 	local count = 0
-	local seen: {[string]: boolean} = {}
+	local seen: { [string]: boolean } = {}
 	for key, item in value do
 		if typeof(key) ~= "number" or key < 1 or key % 1 ~= 0 or not isNonEmptyString(item) then
 			return false
@@ -77,7 +77,8 @@ local function validateProfile(
 	rankCatalog: any,
 	companionCatalog: any,
 	inventoryPolicy: any?,
-	itemCatalog: any?
+	itemCatalog: any?,
+	identityPolicy: any?
 ): (boolean, string?)
 	if typeof(profile) ~= "table" then
 		return false, "Profile must be a table."
@@ -90,11 +91,18 @@ local function validateProfile(
 	end
 
 	local identity = profile.identity
-	if typeof(identity) ~= "table"
-		or not isNonEmptyString(identity.characterId)
-		or not isNonEmptyString(identity.covenantBranch)
-	then
+	if typeof(identity) ~= "table" or not isNonEmptyString(identity.characterId) or not isNonEmptyString(identity.covenantBranch) then
 		return false, "Profile identity is malformed."
+	end
+
+	if expectedVersion >= OPERATIVE_IDENTITY_VERSION then
+		if identityPolicy == nil then
+			return false, "Profile identity validation dependency is missing."
+		end
+		local identityVerdict = identityPolicy.IsPlayerIdentity(identity.characterId)
+		if not identityVerdict.ok then
+			return false, identityVerdict.reason
+		end
 	end
 
 	local progression = profile.progression
@@ -104,17 +112,12 @@ local function validateProfile(
 	if rankCatalog.GetRankIndex(progression.covenantRank) == nil then
 		return false, "Profile contains an unknown Covenant rank."
 	end
-	if not validateStringArray(progression.completedEvaluations)
-		or not validateStringArray(progression.completedMissionIds)
-	then
+	if not validateStringArray(progression.completedEvaluations) or not validateStringArray(progression.completedMissionIds) then
 		return false, "Profile progression event lists are malformed."
 	end
 
 	local economy = profile.economy
-	if typeof(economy) ~= "table"
-		or not isNonNegativeInteger(economy.aces)
-		or not isNonNegativeInteger(economy.covenantCredits)
-	then
+	if typeof(economy) ~= "table" or not isNonNegativeInteger(economy.aces) or not isNonNegativeInteger(economy.covenantCredits) then
 		return false, "Profile currency balances are malformed."
 	end
 
@@ -123,7 +126,7 @@ local function validateProfile(
 		return false, "Profile companion ownership is malformed."
 	end
 
-	local definitionsById: {[string]: any} = {}
+	local definitionsById: { [string]: any } = {}
 	for _, definition in companionCatalog do
 		definitionsById[definition.Id] = definition
 	end
@@ -161,7 +164,7 @@ local function validateProfile(
 		if typeof(recentTransactions) ~= "table" or #recentTransactions > MAX_RECENT_TRANSACTIONS then
 			return false, "Recent transaction journal is malformed or exceeds its limit."
 		end
-		local seenTransactionIds: {[string]: boolean} = {}
+		local seenTransactionIds: { [string]: boolean } = {}
 		for index, transaction in recentTransactions do
 			if typeof(index) ~= "number" or index < 1 or index % 1 ~= 0 or typeof(transaction) ~= "table" then
 				return false, "Recent transaction journal contains a malformed entry."
@@ -169,7 +172,8 @@ local function validateProfile(
 			if not isNonEmptyString(transaction.id) or #transaction.id > 128 or seenTransactionIds[transaction.id] then
 				return false, "Recent transaction journal contains an invalid or duplicate ID."
 			end
-			if (transaction.kind ~= "MerchantPurchase" and transaction.kind ~= "MerchantSale")
+			if
+				(transaction.kind ~= "MerchantPurchase" and transaction.kind ~= "MerchantSale")
 				or not isNonEmptyString(transaction.itemId)
 				or not isNonNegativeInteger(transaction.quantity)
 				or transaction.quantity == 0
@@ -195,6 +199,7 @@ function PlayerProfileSchema.CreateDefault()
 		schemaVersion = CURRENT_SCHEMA_VERSION,
 		revision = 0,
 		identity = {
+			-- Must stay equal to PlayerIdentityPolicy.GetDefaultOperativeId().
 			characterId = "covenant_operative",
 			covenantBranch = "Unassigned",
 		},
@@ -218,28 +223,16 @@ function PlayerProfileSchema.CreateDefault()
 	}
 end
 
-function PlayerProfileSchema.Validate(
-	profile: unknown,
-	rankCatalog: any,
-	companionCatalog: any,
-	inventoryPolicy: any,
-	itemCatalog: any
-): (boolean, string?)
-	return validateProfile(profile, CURRENT_SCHEMA_VERSION, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog)
+function PlayerProfileSchema.Validate(profile: unknown, rankCatalog: any, companionCatalog: any, inventoryPolicy: any, itemCatalog: any, identityPolicy: any): (boolean, string?)
+	return validateProfile(profile, CURRENT_SCHEMA_VERSION, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 end
 
-function PlayerProfileSchema.Migrate(
-	profile: unknown,
-	rankCatalog: any,
-	companionCatalog: any,
-	inventoryPolicy: any,
-	itemCatalog: any
-): (any?, string?)
+function PlayerProfileSchema.Migrate(profile: unknown, rankCatalog: any, companionCatalog: any, inventoryPolicy: any, itemCatalog: any, identityPolicy: any): (any?, string?)
 	if typeof(profile) ~= "table" then
 		return nil, "Profile must be a table."
 	end
 
-	if profile.schemaVersion == LEGACY_SCHEMA_VERSION or profile.schemaVersion == INVENTORY_SCHEMA_VERSION then
+	if profile.schemaVersion == LEGACY_SCHEMA_VERSION or profile.schemaVersion == INVENTORY_SCHEMA_VERSION or profile.schemaVersion == PRE_OPERATIVE_IDENTITY_VERSION then
 		local sourceVersion = profile.schemaVersion
 		local sourceValid, sourceError = validateProfile(
 			profile,
@@ -258,15 +251,15 @@ function PlayerProfileSchema.Migrate(
 			migrated.inventory = inventoryPolicy.CreateDefault()
 		end
 		migrated.economy.recentTransactions = {}
+		-- A profile stored before the operative identity rule may still carry the
+		-- earlier player identity. It is replaced by the default operative
+		-- identity rather than migrated forward, so no stored profile can carry
+		-- the protagonist's identity or the Chosen role into the current version.
+		if identityPolicy ~= nil then
+			migrated.identity.characterId = identityPolicy.NormalizeForPlayer(migrated.identity.characterId)
+		end
 		migrated.schemaVersion = CURRENT_SCHEMA_VERSION
-		local migratedValid, migratedError = validateProfile(
-			migrated,
-			CURRENT_SCHEMA_VERSION,
-			rankCatalog,
-			companionCatalog,
-			inventoryPolicy,
-			itemCatalog
-		)
+		local migratedValid, migratedError = validateProfile(migrated, CURRENT_SCHEMA_VERSION, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 		if not migratedValid then
 			return nil, migratedError or "Migrated profile failed validation."
 		end
@@ -274,14 +267,7 @@ function PlayerProfileSchema.Migrate(
 	end
 
 	if profile.schemaVersion == CURRENT_SCHEMA_VERSION then
-		local valid, validationError = validateProfile(
-			profile,
-			CURRENT_SCHEMA_VERSION,
-			rankCatalog,
-			companionCatalog,
-			inventoryPolicy,
-			itemCatalog
-		)
+		local valid, validationError = validateProfile(profile, CURRENT_SCHEMA_VERSION, rankCatalog, companionCatalog, inventoryPolicy, itemCatalog, identityPolicy)
 		if not valid then
 			return nil, validationError or "Profile failed validation."
 		end
