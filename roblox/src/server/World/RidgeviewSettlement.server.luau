@@ -39,15 +39,7 @@ local settlement = Instance.new("Model")
 settlement.Name = "RidgeviewSettlement"
 settlement.Parent = scene
 
-local function makePart(
-	parent: Instance,
-	name: string,
-	size: Vector3,
-	cframe: CFrame,
-	color: Color3,
-	material: Enum.Material,
-	canCollide: boolean?
-): Part
+local function makePart(parent: Instance, name: string, size: Vector3, cframe: CFrame, color: Color3, material: Enum.Material, canCollide: boolean?): Part
 	local part = Instance.new("Part")
 	part.Name = name
 	part.Size = size
@@ -64,34 +56,17 @@ local function makePart(
 	return part
 end
 
-local center = arrivalMarker.Position
-	+ arrivalMarker.CFrame.RightVector * 90
-	+ arrivalMarker.CFrame.LookVector * 30
+local center = arrivalMarker.Position + arrivalMarker.CFrame.RightVector * 90 + arrivalMarker.CFrame.LookVector * 30
 local right = arrivalMarker.CFrame.RightVector
 local forward = arrivalMarker.CFrame.LookVector
 
-local ground = makePart(
-	settlement,
-	"SettlementGround",
-	Vector3.new(150, 1, 118),
-	CFrame.new(center + Vector3.new(0, -0.15, 0)),
-	Color3.fromRGB(91, 111, 78),
-	Enum.Material.Grass
-)
+local ground = makePart(settlement, "SettlementGround", Vector3.new(150, 1, 118), CFrame.new(center + Vector3.new(0, -0.15, 0)), Color3.fromRGB(91, 111, 78), Enum.Material.Grass)
 ground.CanCollide = true
 
 local function makePath(name: string, startPoint: Vector3, endPoint: Vector3, width: number)
 	local midpoint = (startPoint + endPoint) / 2 + Vector3.new(0, 0.38, 0)
 	local length = (endPoint - startPoint).Magnitude
-	makePart(
-		settlement,
-		name,
-		Vector3.new(width, 0.32, length),
-		CFrame.lookAt(midpoint, endPoint),
-		Color3.fromRGB(148, 137, 112),
-		Enum.Material.Ground,
-		false
-	)
+	makePart(settlement, name, Vector3.new(width, 0.32, length), CFrame.lookAt(midpoint, endPoint), Color3.fromRGB(148, 137, 112), Enum.Material.Ground, false)
 end
 
 makePath("ApproachPath", arrivalMarker.Position + forward * 8, center - forward * 45, 7)
@@ -116,7 +91,7 @@ local function buildHouse(name: string, position: Vector3, yaw: number)
 	makePart(house, "DoorHeader", Vector3.new(8, 2, 1), baseFrame * CFrame.new(0, 11.5, -9), timber, Enum.Material.Wood)
 	makePart(house, "Door", Vector3.new(5, 9, 0.5), baseFrame * CFrame.new(0, 4.5, -9.3), timber, Enum.Material.Wood, false)
 	makePart(house, "Roof", Vector3.new(27, 2, 22), baseFrame * CFrame.new(0, 13.5, 0), roof, Enum.Material.Slate)
-	for _, side in {-1, 1} do
+	for _, side in { -1, 1 } do
 		makePart(house, "Window_" .. side, Vector3.new(0.35, 3.2, 4.5), baseFrame * CFrame.new(side * 11.1, 7.5, -1), window, Enum.Material.Glass, false)
 	end
 	return house
@@ -127,7 +102,15 @@ buildHouse("SettlementHouse_B", center + right * 47 + forward * 34, math.rad(-8)
 buildHouse("SettlementHouse_C", center + right * -47 - forward * 34, math.rad(178))
 buildHouse("SettlementHouse_D", center + right * 47 - forward * 34, math.rad(188))
 
-local sign = makePart(settlement, "RidgeviewOutpostSign", Vector3.new(20, 5, 0.7), CFrame.lookAt(center + forward * 59 + Vector3.new(0, 4, 0), center + forward * 59 + forward), Color3.fromRGB(35, 48, 52), Enum.Material.Slate, false)
+local sign = makePart(
+	settlement,
+	"RidgeviewOutpostSign",
+	Vector3.new(20, 5, 0.7),
+	CFrame.lookAt(center + forward * 59 + Vector3.new(0, 4, 0), center + forward * 59 + forward),
+	Color3.fromRGB(35, 48, 52),
+	Enum.Material.Slate,
+	false
+)
 local signGui = Instance.new("SurfaceGui")
 signGui.Face = Enum.NormalId.Front
 signGui.PixelsPerStud = 36
@@ -141,13 +124,16 @@ signText.Font = Enum.Font.GothamBold
 signText.TextScaled = true
 signText.Parent = signGui
 
-for index, offset in {
-	center + right * -24 + forward * 10,
-	center + right * 24 + forward * 10,
-	center + right * -24 - forward * 10,
-	center + right * 24 - forward * 10,
-} do
-	local lamp = makePart(settlement, "SettlementLamp_" .. tostring(index), Vector3.new(0.5, 7, 0.5), CFrame.new(offset + Vector3.new(0, 3.5, 0)), timber, Enum.Material.Wood, false)
+for index, offset in
+	{
+		center + right * -24 + forward * 10,
+		center + right * 24 + forward * 10,
+		center + right * -24 - forward * 10,
+		center + right * 24 - forward * 10,
+	}
+do
+	local lamp =
+		makePart(settlement, "SettlementLamp_" .. tostring(index), Vector3.new(0.5, 7, 0.5), CFrame.new(offset + Vector3.new(0, 3.5, 0)), timber, Enum.Material.Wood, false)
 	local light = Instance.new("PointLight")
 	light.Color = Color3.fromRGB(255, 207, 137)
 	light.Range = 18
@@ -216,16 +202,24 @@ local function createNpc(npcId: string, displayName: string, position: Vector3, 
 end
 
 local wren = createNpc("Wren", "Wren", center + right * -12 + forward * -7, {
-	Color3.fromRGB(87, 109, 116), Color3.fromRGB(178, 145, 116), Color3.fromRGB(53, 57, 58),
+	Color3.fromRGB(87, 109, 116),
+	Color3.fromRGB(178, 145, 116),
+	Color3.fromRGB(53, 57, 58),
 })
 local pike = createNpc("DorianPike", "Dorian Pike", center + right * 10 + forward * 6, {
-	Color3.fromRGB(76, 85, 73), Color3.fromRGB(166, 132, 103), Color3.fromRGB(62, 60, 54),
+	Color3.fromRGB(76, 85, 73),
+	Color3.fromRGB(166, 132, 103),
+	Color3.fromRGB(62, 60, 54),
 })
 local residentA = createNpc("ResidentA", "Resident", center + right * -35 + forward * 2, {
-	Color3.fromRGB(103, 92, 77), Color3.fromRGB(179, 145, 112), Color3.fromRGB(58, 59, 55),
+	Color3.fromRGB(103, 92, 77),
+	Color3.fromRGB(179, 145, 112),
+	Color3.fromRGB(58, 59, 55),
 })
 local residentB = createNpc("ResidentB", "Resident", center + right * 34 + forward * -3, {
-	Color3.fromRGB(70, 91, 103), Color3.fromRGB(170, 136, 109), Color3.fromRGB(63, 59, 52),
+	Color3.fromRGB(70, 91, 103),
+	Color3.fromRGB(170, 136, 109),
+	Color3.fromRGB(63, 59, 52),
 })
 
 local function moveBetween(model: Model, first: Vector3, second: Vector3, pause: number)
