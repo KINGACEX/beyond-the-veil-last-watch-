@@ -393,6 +393,10 @@ templeReturnPrompt.Triggered:Connect(function(player: Player)
 	local returnPosition = templeSpawn.Position + Vector3.new(0, 4, 0)
 	local returnLook = templeSpawn.CFrame.LookVector
 	character:PivotTo(CFrame.lookAt(returnPosition, returnPosition + returnLook))
+	local snapshot = MissionService.GetSnapshot(player)
+	if snapshot ~= nil then
+		missionStateUpdated:FireClient(player, snapshot)
+	end
 end)
 
 local function advanceInvestigationObjective(player: Player, expected: string, nextObjective: string)
