@@ -7,6 +7,10 @@ local GameConfig = {
 	EditionName = "Roblox Edition",
 	FoundationVersion = "0.1",
 
+	-- Persistence remains opt-in until private Studio DataStore validation is approved.
+	EnableProfilePersistence = false,
+	ProfileDataStoreName = "BTVPlayerProfiles_DEV_001",
+
 	Protagonist = {
 		Id = "asher_vance",
 		DisplayName = "Asher Vance",
