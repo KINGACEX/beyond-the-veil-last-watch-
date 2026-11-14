@@ -1,6 +1,6 @@
 --!strict
--- Server-authoritative opening-slice state. This is a small vertical-slice scaffold,
--- not a complete mission, reward system, or authored Scout Report.
+-- Server-authoritative opening and Ridgeview mission state.
+-- Rewards are limited to a non-monetary verified field-record outcome; no reward table is invented.
 
 local MissionService = {}
 
