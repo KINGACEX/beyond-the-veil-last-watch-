@@ -74,7 +74,8 @@ local function recordObservation(player: Player, noteId: string, anchor: BasePar
 	end
 
 	local investigation = InvestigationService.GetState(player)
-	if investigation.observations.approach_belongings == true
+	if
+		investigation.observations.approach_belongings == true
 		and investigation.observations.parked_work_vehicle == true
 		and MissionService.GetRidgeviewObjective(player) == "collect_observations"
 	then
