@@ -60,6 +60,10 @@ function RidgeviewInvestigationService.RecordPikeAdmission(player: PlayerIdentit
 	return true, nil
 end
 
+function RidgeviewInvestigationService.CanSubmitFindings(player: PlayerIdentity): boolean
+	return Policy.CanSubmitFindings(getState(player))
+end
+
 function RidgeviewInvestigationService.GetJournalSnapshot(player: PlayerIdentity)
 	return Policy.Snapshot(getState(player), Catalog)
 end
