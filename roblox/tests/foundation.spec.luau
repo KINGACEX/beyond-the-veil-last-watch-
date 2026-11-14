@@ -226,7 +226,7 @@ do
 	local validProfile, validProfileReason = PlayerProfileSchema.Validate(defaultProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(validProfile, "new versioned profile passes schema validation")
 	expect(validProfileReason == nil, "valid profile has no validation error")
-	expect(defaultProfile.schemaVersion == 5, "new profile uses the current schema version")
+	expect(defaultProfile.schemaVersion == 6, "new profile uses the current schema version")
 	expect(defaultProfile.progression.covenantRank == "Recruit", "new profile starts at Recruit")
 	expect(defaultProfile.companions.owned.ember == true, "new profile owns Ember")
 	expect(defaultProfile.companions.owned.fox == true, "new profile owns Fox")
@@ -234,6 +234,8 @@ do
 	expect(defaultProfile.companions.owned.horse == true, "new profile owns Horse")
 	expect(defaultProfile.companions.owned.eagle ~= true, "new profile does not grant premium candidates")
 	expect(defaultProfile.investigation.ridgeview.wrenSharePermission == false, "new profile starts with private Wren testimony state")
+	expect(defaultProfile.progression.activeMission.phase == "communion_context", "new profile starts with an initial active mission checkpoint")
+	expect(defaultProfile.progression.activeMission.sequenceIndex == 1, "new profile checkpoint has a matching sequence index")
 	expect(next(defaultProfile.investigation.ridgeview.observations) == nil, "new profile starts without recorded Ridgeview observations")
 
 	local unsupportedProfile = table.clone(defaultProfile)
