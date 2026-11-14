@@ -104,12 +104,15 @@ function MissionService.AddPlayer(player: PlayerIdentity, completedMissionIds: {
 		local phase = persistedProgress.phase
 		local sequenceIndex = persistedProgress.sequenceIndex
 		local objective = persistedProgress.ridgeviewObjective
-		if typeof(phase) == "string"
+		if
+			typeof(phase) == "string"
 			and SEQUENCE_INDEX[phase] ~= nil
 			and typeof(sequenceIndex) == "number"
 			and sequenceIndex == SEQUENCE_INDEX[phase]
-			and ((phase == "ridgeview_investigation" and typeof(objective) == "string" and RIDGEVIEW_OBJECTIVES[objective] ~= nil)
-				or (phase ~= "ridgeview_investigation" and objective == nil))
+			and (
+				(phase == "ridgeview_investigation" and typeof(objective) == "string" and RIDGEVIEW_OBJECTIVES[objective] ~= nil)
+				or (phase ~= "ridgeview_investigation" and objective == nil)
+			)
 		then
 			restoredPhase = phase
 			restoredIndex = sequenceIndex
