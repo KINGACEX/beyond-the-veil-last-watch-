@@ -38,9 +38,9 @@ local OBJECTIVES: { [string]: string } = {
 
 local STATUS_TEXT: { [string]: string } = {
 	communion_context = "First Sunday • Communion context",
-	covenant_alert = "Covenant alert received",
-	report_accessed = "Scout Report opened; authored evidence pending. Follow the marked departure point to Ridgeview.",
-	ridgeview_arrival = "Ridgeview reached. Explore the outpost and record one verifiable observation.",
+	covenant_alert = "Covenant field briefing available. Review the Scout Report at the welcome desk.",
+	report_accessed = "Briefing reviewed. Follow the Ridgeview wayfinding sign and use the departure prompt when ready.",
+	ridgeview_arrival = "Explore the settlement, inspect the marked approach evidence, and speak with residents when ready.",
 	ridgeview_investigation = "Record observations, speak with residents, and keep testimony separate from conclusions.",
 	mission_complete = "Your verified observations and any explicitly authorized statements are recorded for this session. No unverified conclusion has been added.",
 }
