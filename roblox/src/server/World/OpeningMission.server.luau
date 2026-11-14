@@ -79,14 +79,26 @@ end)
 local characterConnections: { [number]: RBXScriptConnection } = {}
 
 local function restoreRidgeviewPosition(player: Player, character: Model)
-	task.defer(function()
+	task.spawn(function()
 		local root = character:WaitForChild("HumanoidRootPart", 10)
 		if root == nil or player.Parent ~= Players or player.Character ~= character then
 			return
 		end
 
+		-- PlayerAdded handlers may hydrate the profile asynchronously. Wait briefly
+		-- for the server-owned mission snapshot before choosing a spawn region.
 		local snapshot = MissionService.GetSnapshot(player)
-		if snapshot ~= nil and (snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation" or snapshot.phase == "mission_complete") then
+		local attempts = 0
+		while snapshot == nil and attempts < 100 and player.Parent == Players and player.Character == character do
+			attempts += 1
+			task.wait(0.1)
+			snapshot = MissionService.GetSnapshot(player)
+		end
+		if snapshot == nil or player.Parent ~= Players or player.Character ~= character then
+			return
+		end
+
+		if MissionService.GetRegion(player) == "ridgeview" then
 			character:PivotTo(getRidgeviewArrivalCFrame())
 		end
 	end)
