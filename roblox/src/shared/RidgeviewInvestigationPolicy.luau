@@ -99,7 +99,8 @@ function RidgeviewInvestigationPolicy.RestoreState(candidate: unknown, catalog: 
 		return nil, "Persisted Ridgeview investigation state is malformed."
 	end
 	local source = candidate :: any
-	if typeof(source.observations) ~= "table"
+	if
+		typeof(source.observations) ~= "table"
 		or typeof(source.wrenTestimonyRecorded) ~= "boolean"
 		or typeof(source.wrenSharePermission) ~= "boolean"
 		or (source.wrenDisclosureDecisionMade ~= nil and typeof(source.wrenDisclosureDecisionMade) ~= "boolean")
@@ -126,12 +127,12 @@ function RidgeviewInvestigationPolicy.RestoreState(candidate: unknown, catalog: 
 		wrenSharePermission = source.wrenSharePermission,
 		wrenDisclosureDecisionMade = if typeof(source.wrenDisclosureDecisionMade) == "boolean" then source.wrenDisclosureDecisionMade else source.wrenSharePermission,
 		pikeAdmissionRecorded = source.pikeAdmissionRecorded,
-	}, nil
+	},
+		nil
 end
 
 function RidgeviewInvestigationPolicy.CanSubmitFindings(state: State): boolean
-	local observationsComplete = state.observations.approach_belongings == true
-		and state.observations.parked_work_vehicle == true
+	local observationsComplete = state.observations.approach_belongings == true and state.observations.parked_work_vehicle == true
 	local testimonyRecorded = state.wrenTestimonyRecorded
 	local consentDecisionComplete = state.wrenDisclosureDecisionMade
 	local consentPathComplete = if state.wrenSharePermission then state.pikeAdmissionRecorded else not state.pikeAdmissionRecorded
