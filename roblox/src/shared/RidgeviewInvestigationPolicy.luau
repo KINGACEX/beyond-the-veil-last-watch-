@@ -84,6 +84,14 @@ function RidgeviewInvestigationPolicy.RecordPikeAdmission(current: State): (Stat
 	return updated, nil
 end
 
+function RidgeviewInvestigationPolicy.CanSubmitFindings(state: State): boolean
+	local observationsComplete = state.observations.approach_belongings == true
+		and state.observations.parked_work_vehicle == true
+	local testimonyRecorded = state.wrenTestimonyRecorded
+	local consentPathComplete = if state.wrenSharePermission then state.pikeAdmissionRecorded else not state.pikeAdmissionRecorded
+	return observationsComplete and testimonyRecorded and consentPathComplete
+end
+
 function RidgeviewInvestigationPolicy.Snapshot(state: State, catalog: { [string]: any }): { JournalEntry }
 	local entries: { JournalEntry } = {}
 	for noteId, recorded in state.observations do
