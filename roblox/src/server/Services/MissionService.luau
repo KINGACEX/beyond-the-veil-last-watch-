@@ -84,7 +84,7 @@ local SEQUENCE_INDEX: { [string]: number } = {
 	ridgeview_investigation = 5,
 }
 
-function MissionService.AddPlayer(player: PlayerIdentity, completedMissionIds: { string }?)
+function MissionService.AddPlayer(player: PlayerIdentity, completedMissionIds: { string }?, persistedProgress: any?)
 	local restoredIds: { string } = {}
 	local ridgeviewCompleted = false
 	if typeof(completedMissionIds) == "table" then
@@ -97,10 +97,29 @@ function MissionService.AddPlayer(player: PlayerIdentity, completedMissionIds: {
 			end
 		end
 	end
+	local restoredPhase = if ridgeviewCompleted then "mission_complete" else "communion_context"
+	local restoredIndex = if ridgeviewCompleted then 6 else 1
+	local restoredObjective = if ridgeviewCompleted then "review_findings" else nil
+	if not ridgeviewCompleted and typeof(persistedProgress) == "table" then
+		local phase = persistedProgress.phase
+		local sequenceIndex = persistedProgress.sequenceIndex
+		local objective = persistedProgress.ridgeviewObjective
+		if typeof(phase) == "string"
+			and SEQUENCE_INDEX[phase] ~= nil
+			and typeof(sequenceIndex) == "number"
+			and sequenceIndex == SEQUENCE_INDEX[phase]
+			and ((phase == "ridgeview_investigation" and typeof(objective) == "string" and RIDGEVIEW_OBJECTIVES[objective] ~= nil)
+				or (phase ~= "ridgeview_investigation" and objective == nil))
+		then
+			restoredPhase = phase
+			restoredIndex = sequenceIndex
+			restoredObjective = objective
+		end
+	end
 	states[player.UserId] = {
-		phase = if ridgeviewCompleted then "mission_complete" else "communion_context",
-		sequenceIndex = if ridgeviewCompleted then 6 else 1,
-		ridgeviewObjective = if ridgeviewCompleted then "review_findings" else nil,
+		phase = restoredPhase,
+		sequenceIndex = restoredIndex,
+		ridgeviewObjective = restoredObjective,
 		completedMissionIds = restoredIds,
 	}
 end
@@ -191,6 +210,18 @@ end
 function MissionService.GetRidgeviewObjective(player: PlayerIdentity): string?
 	local state = states[player.UserId]
 	return if state ~= nil then state.ridgeviewObjective else nil
+end
+
+function MissionService.GetPersistentProgress(player: PlayerIdentity)
+	local state = states[player.UserId]
+	if state == nil then
+		return nil
+	end
+	return {
+		phase = state.phase,
+		sequenceIndex = state.sequenceIndex,
+		ridgeviewObjective = state.ridgeviewObjective,
+	}
 end
 
 return MissionService
