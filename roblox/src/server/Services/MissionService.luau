@@ -120,7 +120,11 @@ function MissionService.AddPlayer(player: PlayerIdentity, completedMissionIds: {
 			restoredObjective = objective
 		end
 	end
-	local restoredRegion = if restoredPhase == "ridgeview_arrival" or restoredPhase == "ridgeview_investigation" or restoredPhase == "mission_complete" then "ridgeview" else "temple"
+	local restoredRegion = if restoredPhase == "ridgeview_arrival"
+			or restoredPhase == "ridgeview_investigation"
+			or restoredPhase == "mission_complete"
+		then "ridgeview"
+		else "temple"
 	if typeof(persistedProgress) == "table" and (persistedProgress.region == "temple" or persistedProgress.region == "ridgeview") then
 		local requestedRegion = persistedProgress.region
 		local phaseAllowsRidgeview = restoredPhase == "ridgeview_arrival" or restoredPhase == "ridgeview_investigation" or restoredPhase == "mission_complete"
