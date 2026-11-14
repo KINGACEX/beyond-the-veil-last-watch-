@@ -99,11 +99,12 @@ local function onPlayerAdded(player: Player)
 	end
 
 	PlayerStateService.AddPlayer(player, profile)
-	MissionService.AddPlayer(player, if profile ~= nil then profile.progression.completedMissionIds else nil)
-	local restoredInvestigation = if profile ~= nil
-		and table.find(profile.progression.completedMissionIds, "ridgeview_investigation_001") ~= nil
-		then profile.investigation.ridgeview
-		else nil
+	MissionService.AddPlayer(
+		player,
+		if profile ~= nil then profile.progression.completedMissionIds else nil,
+		if profile ~= nil then profile.progression.activeMission else nil
+	)
+	local restoredInvestigation = if profile ~= nil then profile.investigation.ridgeview else nil
 	RidgeviewInvestigationService.AddPlayer(player, restoredInvestigation)
 	CompanionActorService.BindPlayer(player)
 	loadingPlayers[player.UserId] = nil
