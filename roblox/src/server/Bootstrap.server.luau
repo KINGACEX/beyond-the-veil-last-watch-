@@ -83,7 +83,7 @@ local function onPlayerAdded(player: Player)
 		and table.find(profile.progression.completedMissionIds, "ridgeview_investigation_001") ~= nil
 		then profile.investigation.ridgeview
 		else nil
-	InvestigationService.AddPlayer(player, restoredInvestigation)
+	RidgeviewInvestigationService.AddPlayer(player, restoredInvestigation)
 	CompanionActorService.BindPlayer(player)
 end
 
@@ -99,7 +99,7 @@ Players.PlayerRemoving:Connect(function(player: Player)
 			warn("[BTV Roblox] Profile save/release failed for user " .. tostring(player.UserId) .. ": " .. tostring(saveError))
 		end
 	end
-	InvestigationService.RemovePlayer(player)
+	RidgeviewInvestigationService.RemovePlayer(player)
 	PlayerStateService.RemovePlayer(player)
 	CurrencyService.RemovePlayer(player)
 	MissionService.RemovePlayer(player)
