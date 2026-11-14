@@ -9,6 +9,7 @@ export type MissionSnapshot = {
 	sequenceIndex: number,
 	objective: string,
 	status: string,
+	ridgeviewObjective: string?,
 }
 
 type PlayerIdentity = {
@@ -67,6 +68,7 @@ local RIDGEVIEW_TRANSITIONS: { [string]: { [string]: boolean } } = {
 	speak_with_wren = { choose_disclosure = true },
 	choose_disclosure = { pike_followup = true, review_findings = true },
 	pike_followup = { review_findings = true },
+	review_findings = { pike_followup = true },
 }
 
 local SEQUENCE_INDEX: { [string]: number } = {
