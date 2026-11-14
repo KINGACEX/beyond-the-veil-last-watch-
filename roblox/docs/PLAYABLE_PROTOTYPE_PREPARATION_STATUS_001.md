@@ -83,7 +83,7 @@ Artifact:
 - Name: `btv-roblox-place`
 - Artifact ID: `14112816470`
 - Generated from: `de73fe8793e90e9e00aaf6c70c435116dff68b51`
-- Expires: **2026-11-21 11:24 UTC**
+- Expires: **2026-11-21 11:45 UTC**
 - [Open run and download artifact](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43591493016)
 
 ### Validation scope caveat
@@ -94,15 +94,26 @@ The existing StyLua job uses an explicit file allowlist, not a whole-tree check.
 
 | Run | Result | Finding / response |
 |---|---|---|
-| 43589697346 | Failed | A new test asserted that the briefing still said evidence was pending after the HUD/briefing had been authored. The stale assertion was updated to test the actual briefing instruction. |
-| 43589732928 | Failed | Headless tests passed; StyLua found two new test-format differences. Both were formatted. |
-| 43589765502 | Failed | Headless tests passed; the temporary formatting check exposed pre-existing formatting debt in Bootstrap, ProfileSessionService and PlayerProfileSchema. Those files were removed from the narrow allowlist rather than silently broadening it. |
-| 43589808990 | Failed | Headless tests passed; StyLua found formatting differences in the Ridgeview policy and settlement files. Those were corrected. |
-| 43589854994 | Passed | Previous successful baseline before the active-mission persistence increment. |
-| 43590360144 | Failed | Headless suites passed; StyLua flagged a blank-line formatting difference in the new schema test. Corrected. |
-| 43590388382 | Failed | Headless suites passed; StyLua flagged mission-checkpoint formatting. Corrected. |
-| 43590425918 | Failed | Headless suites passed; StyLua flagged mission-checkpoint formatting. Corrected. |
-| 43591493016 | **Passed** | Updated active-mission persistence increment passed the configured pipeline and produced the place artifact. |
+| 43589697346 | Failed | Stale Scout Report wording assertion was updated to match the authored briefing. |
+| 43589732928 | Failed | Two new test-format differences were corrected. |
+| 43589765502 | Failed | A temporary whole-file formatting check exposed pre-existing debt; the configured allowlist was kept narrow rather than silently widened. |
+| 43589808990 | Failed | Ridgeview policy and settlement formatting differences were corrected. |
+| 43589854994 | Passed | Successful baseline before active-mission persistence. |
+| 43590360144 | Failed | StyLua flagged a blank-line difference in the new schema test; corrected. |
+| 43590388382 | Failed | StyLua flagged mission-checkpoint formatting; corrected. |
+| 43590425918 | Failed | StyLua flagged mission-checkpoint formatting; corrected. |
+| 43590657401 | Failed | Regression test exposed a completed-v5 migration checkpoint mismatch; migration was corrected. |
+| 43590694949 | Failed | Regression test exposed an incomplete migration fixture; corrected. |
+| 43590779836 | Failed | A new checkpoint assertion was missing its intended fixture data; corrected. |
+| 43590833842 | Failed | StyLua flagged test formatting; corrected. |
+| 43590890943 | Passed | Active mission save/restore, completed-profile migration and pending-consent restoration passed. |
+| 43591167325 | Failed | Schema-version assertions were updated for schema v7. |
+| 43591189433 | Failed | Same stale schema-version assertion; corrected in the next test commit. |
+| 43591225894 | Failed | StyLua flagged formatting in the region migration tests; corrected. |
+| 43591252095 | Failed | Schema-version assertions still needed updating to v7; corrected. |
+| 43591288078 | Failed | StyLua flagged the completed-region migration assertion; corrected. |
+| 43591337583 | Failed | StyLua flagged the mission-region restoration predicate; corrected. |
+| 43591379923 | Passed | Region persistence, Temple return/revisit logic, mission checkpoint migration and the configured pipeline passed. |
 | 43591493016 | **Passed** | Final documentation-aligned branch head passed the configured pipeline and produced the current place artifact. |
 
 An earlier policy defect was corrected: a default false permission could be confused with an explicit private decision. A separate decision flag and schema v5 migration now prevent that. Schema v6 added validated active-mission checkpoints; schema v7 adds validated current-region state and migration. Regression coverage verifies mid-mission restoration, return/revisit region continuity, schema migration, private and consented paths, and the existing persistence adapter.
