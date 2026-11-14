@@ -7,6 +7,7 @@ local shared = ReplicatedStorage:WaitForChild("BTVShared")
 local CompanionCatalog = require(shared:WaitForChild("CompanionCatalog"))
 local CovenantRankCatalog = require(shared:WaitForChild("CovenantRankCatalog"))
 local CompanionOwnershipPolicy = require(script.Parent.CompanionOwnershipPolicy)
+local CurrencyAmountPolicy = require(shared:WaitForChild("CurrencyAmountPolicy"))
 
 local PlayerStateService = {}
 
@@ -16,12 +17,16 @@ export type PlayerSnapshot = {
 	covenantBranch: string,
 	emberCommand: string,
 	equippedCompanion: string,
-	ownedCompanions: {[string]: boolean},
+	ownedCompanions: { [string]: boolean },
 	aces: number,
 	covenantCredits: number,
 }
 
-local sessions: {[number]: PlayerSnapshot} = {}
+local sessions: { [number]: PlayerSnapshot } = {}
+
+-- Upper bound for a single session adjustment. Economy values are still unset;
+-- this only stops an unbounded single award.
+local MAX_SESSION_ADJUSTMENT = 1000000
 
 -- Initial access is limited to core/free companions. Premium candidates have no entitlement path yet.
 
@@ -87,6 +92,12 @@ function PlayerStateService.AdjustCurrency(player: Player, currency: string, amo
 	local state = sessions[player.UserId]
 	if state == nil then
 		return false, "Session is not ready."
+	end
+	-- Validate here as well as at the currency boundary: this is the function that
+	-- actually mutates a balance, so it must not trust its caller.
+	local amountVerdict = CurrencyAmountPolicy.IsValidAmount(amount, MAX_SESSION_ADJUSTMENT)
+	if not amountVerdict.ok then
+		return false, amountVerdict.reason
 	end
 	if currency == "Aces" then
 		state.aces += amount

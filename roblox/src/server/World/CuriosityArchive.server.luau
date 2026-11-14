@@ -85,6 +85,7 @@ for _, definition in marks do
 		end
 		local accepted, snapshot = ArchiveService.Collect(player, definition.id)
 		if accepted and snapshot ~= nil then
+			player:SetAttribute("BTVArchiveHint", nil)
 			player:SetAttribute("BTVCurioMarks", snapshot.collectedCount)
 			player:SetAttribute("BTVArchiveUnlocked", snapshot.unlocked)
 		end
@@ -103,11 +104,13 @@ local entryWall = makePart(archive, "LockedArchiveWall", Vector3.new(34, 12, 1),
 addSign(archive, "ArchiveTitle", archiveCenter + Vector3.new(0, 9, 14.35), "THE CURIOSITY ARCHIVE", 18, 3)
 addSign(archive, "ArchiveNotice", archiveCenter + Vector3.new(0, 5, 14.35), "Find all 3 Curio Marks to enter. Free for everyone.", 17, 2)
 
-local entryTrigger = makePart(archive, "ArchiveEntryPromptAnchor", Vector3.new(3, 3, 1), archiveCenter + Vector3.new(0, 2, 18), Color3.new(1, 1, 1), Enum.Material.SmoothPlastic, false)
+local entryTrigger =
+	makePart(archive, "ArchiveEntryPromptAnchor", Vector3.new(3, 3, 1), archiveCenter + Vector3.new(0, 2, 18), Color3.new(1, 1, 1), Enum.Material.SmoothPlastic, false)
 entryTrigger.Transparency = 1
 local entryPrompt = addPrompt(entryTrigger, "EnterArchivePrompt", "Enter", "Curiosity Archive", 9)
 
-local exitAnchor = makePart(archive, "ArchiveExitPromptAnchor", Vector3.new(3, 3, 1), archiveCenter + Vector3.new(0, 2, -12), Color3.new(1, 1, 1), Enum.Material.SmoothPlastic, false)
+local exitAnchor =
+	makePart(archive, "ArchiveExitPromptAnchor", Vector3.new(3, 3, 1), archiveCenter + Vector3.new(0, 2, -12), Color3.new(1, 1, 1), Enum.Material.SmoothPlastic, false)
 exitAnchor.Transparency = 1
 local exitPrompt = addPrompt(exitAnchor, "ExitArchivePrompt", "Leave", "Return to Ridgeview", 9)
 
@@ -154,8 +157,13 @@ entryPrompt.Triggered:Connect(function(player: Player)
 	end
 	local snapshot = ArchiveService.GetSnapshot(player)
 	if snapshot == nil or not snapshot.unlocked then
+		-- A ProximityPrompt is shared world state, so the locked hint is kept on the
+		-- player's own attributes. Writing to the prompt would change the text for
+		-- every player in the server.
+		player:SetAttribute("BTVArchiveHint", "Find all 3 Curio Marks to enter.")
 		return
 	end
+	player:SetAttribute("BTVArchiveHint", nil)
 	player.Character:PivotTo(CFrame.new(archiveCenter + Vector3.new(0, 3, 7)))
 end)
 
