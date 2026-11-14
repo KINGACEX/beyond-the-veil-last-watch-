@@ -7,7 +7,7 @@
 
 | Domain | Canon / approved fact | Roblox implementation boundary |
 |---|---|---|
-| Main-game protagonist | Asher Vance, central protagonist, age 18 | Preserve Asher as the original main-game protagonist; Roblox players use their own Chosen identities |
+| Protagonist | Asher Vance, sole Chosen, age 18 | Asher remains the sole Chosen; multiplayer users are individual Covenant operatives, not alternate Ashers or additional Chosen |
 | Role | Agent/Specialist, Watcher branch at start | Display role only where story context permits |
 | Covenant | Hidden service/protection organisation | Do not present as government agency or Church replacement |
 | Roblox rank | Recruit → Field Agent → Senior Agent → Elite Agent → Specialist → Senior Specialist → Principal Specialist → Team Leader → Senior Team Leader → Unit Leader → Field Commander → Senior Commander → Regional Commander → Senior General → High General | Rank is earned responsibility/trust, not spiritual worth; player rank is profile-owned and server leadership is separate |
@@ -22,6 +22,15 @@
 | HCI | Real-world inspiration/reference only | Do not use HCI real name, leaders, building likeness or imply endorsement in-game |
 | Communion | First Sunday; Communion Set only in CommunionContextZone | No health, XP, stat, combat, currency or equipment buffs |
 | Opening slice | Communion → alert → Scout Report/evidence → Ridgeview → response → final report | Preserve authored sequence; no generic combat-first rewrite |
+
+## Multiplayer identity boundary
+
+- Asher Vance remains the sole Chosen and established central protagonist.
+- Each connected player is represented as their own individual Covenant operative, with an individual player identity and session state.
+- Multiplayer cooperation occurs as Covenant operations alongside the established Asher storyline; it does not multiply the Chosen role.
+- Do not assign every player the same Asher character identity.
+- Do not spawn duplicate Asher protagonists in shared scenes. If Asher appears as a story character, players remain separate operatives.
+- An Asher Signature Appearance is not an approved player identity system; any future cosmetic presentation requires a separate review.
 
 ## Non-negotiable theological and narrative constraints
 

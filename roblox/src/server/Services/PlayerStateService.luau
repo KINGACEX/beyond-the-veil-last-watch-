@@ -31,7 +31,7 @@ local MAX_SESSION_ADJUSTMENT = 1000000
 -- Initial access is limited to core/free companions. Premium candidates have no entitlement path yet.
 
 local DEFAULT_STATE: PlayerSnapshot = {
-	characterId = "roblox_player_chosen",
+	characterId = "covenant_operative",
 	covenantRank = CovenantRankCatalog.Ranks[1],
 	covenantBranch = "Unassigned",
 	emberCommand = "Regroup",

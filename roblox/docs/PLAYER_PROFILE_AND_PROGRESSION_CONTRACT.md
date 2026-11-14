@@ -21,7 +21,7 @@ Suggested profile envelope:
     schemaVersion = 1,
     revision = 0,
     identity = {
-        characterId = "roblox_player_chosen",
+        characterId = "covenant_operative",
         covenantBranch = "Unassigned",
     },
     progression = {
