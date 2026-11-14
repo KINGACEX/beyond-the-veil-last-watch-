@@ -20,6 +20,7 @@ type PlayerIdentity = {
 
 type MissionState = {
 	phase: string,
+	region: string,
 	sequenceIndex: number,
 	ridgeviewObjective: string?,
 	completedMissionIds: { string },
@@ -119,8 +120,17 @@ function MissionService.AddPlayer(player: PlayerIdentity, completedMissionIds: {
 			restoredObjective = objective
 		end
 	end
+	local restoredRegion = if restoredPhase == "ridgeview_arrival" or restoredPhase == "ridgeview_investigation" or restoredPhase == "mission_complete" then "ridgeview" else "temple"
+	if typeof(persistedProgress) == "table" and (persistedProgress.region == "temple" or persistedProgress.region == "ridgeview") then
+		local requestedRegion = persistedProgress.region
+		local phaseAllowsRidgeview = restoredPhase == "ridgeview_arrival" or restoredPhase == "ridgeview_investigation" or restoredPhase == "mission_complete"
+		if requestedRegion == "temple" or phaseAllowsRidgeview then
+			restoredRegion = requestedRegion
+		end
+	end
 	states[player.UserId] = {
 		phase = restoredPhase,
+		region = restoredRegion,
 		sequenceIndex = restoredIndex,
 		ridgeviewObjective = restoredObjective,
 		completedMissionIds = restoredIds,
@@ -167,6 +177,9 @@ function MissionService.Advance(player: PlayerIdentity, expectedPhase: string, n
 	end
 	state.phase = nextPhase
 	state.sequenceIndex = nextIndex
+	if nextPhase == "ridgeview_arrival" then
+		state.region = "ridgeview"
+	end
 	if nextPhase == "ridgeview_investigation" then
 		state.ridgeviewObjective = "collect_observations"
 	end
@@ -215,6 +228,24 @@ function MissionService.GetRidgeviewObjective(player: PlayerIdentity): string?
 	return if state ~= nil then state.ridgeviewObjective else nil
 end
 
+function MissionService.GetRegion(player: PlayerIdentity): string?
+	local state = states[player.UserId]
+	return if state ~= nil then state.region else nil
+end
+
+function MissionService.SetRegion(player: PlayerIdentity, region: unknown): boolean
+	local state = states[player.UserId]
+	if state == nil or (region ~= "temple" and region ~= "ridgeview") then
+		return false
+	end
+	local phaseAllowsRidgeview = state.phase == "ridgeview_arrival" or state.phase == "ridgeview_investigation" or state.phase == "mission_complete"
+	if region == "ridgeview" and not phaseAllowsRidgeview then
+		return false
+	end
+	state.region = region
+	return true
+end
+
 function MissionService.GetPersistentProgress(player: PlayerIdentity)
 	local state = states[player.UserId]
 	if state == nil then
@@ -222,6 +253,7 @@ function MissionService.GetPersistentProgress(player: PlayerIdentity)
 	end
 	return {
 		phase = state.phase,
+		region = state.region,
 		sequenceIndex = state.sequenceIndex,
 		ridgeviewObjective = if state.phase == "ridgeview_investigation" then state.ridgeviewObjective else nil,
 	}
