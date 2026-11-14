@@ -3,7 +3,7 @@
 **Audit date:** 2026-11-14  
 **Branch:** `btv/roblox-opening-loop-003`  
 **Audited base:** PR #12 head `btv/roblox-ridgeview-corrections-001` @ `938462cf`  
-**Current implementation head:** `7e32af61c6f56070ad669ebbac7b669b85d4d3d7`  
+**Current implementation head:** `de73fe8793e90e9e00aaf6c70c435116dff68b51`  
 **Status:** Source increment implemented; headless CI PASS; genuine Roblox Studio runtime remains pending.  
 **Authority:** This document records the Roblox prototype implementation only. The BTV Master Canon, Mission Bible, Character Bible, Church Bible and Visual/UI/HUD Bible remain authoritative.
 
@@ -66,8 +66,8 @@
 
 ## 2. Latest automated test evidence
 
-**GitHub Actions run 43591379923 — PASS**  
-[Open successful validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43591379923)
+**GitHub Actions run 43591493016 — PASS**  
+[Open successful validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43591493016)
 
 | Check | Result |
 |---|---|
@@ -81,10 +81,10 @@
 
 Artifact:
 - Name: `btv-roblox-place`
-- Artifact ID: `14112188273`
-- Generated from: `7e32af61c6f56070ad669ebbac7b669b85d4d3d7`
+- Artifact ID: `14112816470`
+- Generated from: `de73fe8793e90e9e00aaf6c70c435116dff68b51`
 - Expires: **2026-11-21 11:24 UTC**
-- [Open run and download artifact](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43591379923)
+- [Open run and download artifact](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43591493016)
 
 ### Validation scope caveat
 
@@ -102,9 +102,10 @@ The existing StyLua job uses an explicit file allowlist, not a whole-tree check.
 | 43590360144 | Failed | Headless suites passed; StyLua flagged a blank-line formatting difference in the new schema test. Corrected. |
 | 43590388382 | Failed | Headless suites passed; StyLua flagged mission-checkpoint formatting. Corrected. |
 | 43590425918 | Failed | Headless suites passed; StyLua flagged mission-checkpoint formatting. Corrected. |
-| 43591379923 | **Passed** | Updated active-mission persistence increment passed the configured pipeline and produced the place artifact. |
+| 43591493016 | **Passed** | Updated active-mission persistence increment passed the configured pipeline and produced the place artifact. |
+| 43591493016 | **Passed** | Final documentation-aligned branch head passed the configured pipeline and produced the current place artifact. |
 
-An earlier policy defect was corrected: a default false permission could be confused with an explicit private decision. A separate decision flag and schema v5 migration now prevent that. Schema v6 added validated active-mission checkpoints; schema v7 adds validated current-region state and migration. Regression coverage verifies mid-mission restoration, return/revisit region continuity, schema migration, private and consented paths, and the existing persistence adapter. Regression coverage verifies mid-mission restoration, schema migration, private and consented paths, and the existing persistence adapter.
+An earlier policy defect was corrected: a default false permission could be confused with an explicit private decision. A separate decision flag and schema v5 migration now prevent that. Schema v6 added validated active-mission checkpoints; schema v7 adds validated current-region state and migration. Regression coverage verifies mid-mission restoration, return/revisit region continuity, schema migration, private and consented paths, and the existing persistence adapter.
 
 ## 4. Remaining work before a genuinely playable release candidate
 
