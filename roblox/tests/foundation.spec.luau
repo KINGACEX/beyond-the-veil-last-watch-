@@ -504,6 +504,11 @@ expect(occupiedRecord == nil and occupiedError ~= nil, "competing server cannot 
 
 local candidateProfile = PlayerProfileSchema.CreateDefault()
 candidateProfile.economy.aces = 25
+candidateProfile.progression.activeMission = {
+	phase = "ridgeview_investigation",
+	sequenceIndex = 5,
+	ridgeviewObjective = "choose_disclosure",
+}
 local savedRecord, savedError, savedOutcome = ProfileRecordPolicy.TrySave(
 	acquiredRecord,
 	"server-A",
