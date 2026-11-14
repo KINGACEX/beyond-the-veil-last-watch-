@@ -74,6 +74,17 @@ local function recordObservation(player: Player, noteId: string, anchor: BasePar
 			missionStateUpdated:FireClient(player, snapshot)
 		end
 	end
+
+	local investigation = InvestigationService.GetState(player)
+	if investigation.observations.approach_belongings == true
+		and investigation.observations.parked_work_vehicle == true
+		and MissionService.GetRidgeviewObjective(player) == "collect_observations"
+	then
+		local advanced, snapshot = MissionService.AdvanceRidgeviewObjective(player, "collect_observations", "speak_with_wren")
+		if advanced and snapshot ~= nil then
+			missionStateUpdated:FireClient(player, snapshot)
+		end
+	end
 end
 
 local world = Workspace:WaitForChild("BTV_World")
