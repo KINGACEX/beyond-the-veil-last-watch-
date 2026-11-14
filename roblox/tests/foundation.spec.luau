@@ -419,7 +419,6 @@ do
 	local migratedV6Ridgeview = PlayerProfileSchema.Migrate(legacyV6Ridgeview, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(migratedV6Ridgeview ~= nil and migratedV6Ridgeview.progression.activeMission.region == "ridgeview", "v6 migration restores active Ridgeview missions to Ridgeview")
 
-
 	local legacyV5Completed = PlayerProfileSchema.CreateDefault()
 	legacyV5Completed.schemaVersion = 5
 	legacyV5Completed.progression.completedMissionIds = { "ridgeview_investigation_001" }
