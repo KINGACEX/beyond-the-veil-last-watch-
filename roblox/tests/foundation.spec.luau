@@ -410,6 +410,10 @@ do
 		migratedV5Completed ~= nil and migratedV5Completed.progression.activeMission.phase == "mission_complete",
 		"v5 migration preserves an already-completed Ridgeview mission"
 	)
+	expect(
+		migratedV5Completed ~= nil and migratedV5Completed.progression.activeMission.region == "ridgeview",
+		"v5 migration restores completed players to Ridgeview"
+	)
 
 	local legacyV4Profile = PlayerProfileSchema.CreateDefault()
 	legacyV4Profile.schemaVersion = 4
@@ -520,6 +524,7 @@ candidateProfile.progression.activeMission = {
 	phase = "ridgeview_investigation",
 	sequenceIndex = 5,
 	ridgeviewObjective = "choose_disclosure",
+	region = "ridgeview",
 }
 local savedRecord, savedError, savedOutcome = ProfileRecordPolicy.TrySave(
 	acquiredRecord,
