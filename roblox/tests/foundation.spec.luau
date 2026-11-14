@@ -58,7 +58,7 @@ do
 	expect(report ~= nil and report.sequenceIndex == 3, "report phase is sequence three")
 	assert(report ~= nil, "report snapshot must exist")
 	expect(report.objective == "Travel to Ridgeview", "the report phase directs the player to travel")
-	expect(string.find(report.status, "evidence pending", 1, true) ~= nil, "the report phase does not invent evidence")
+	expect(string.find(report.status, "Briefing reviewed", 1, true) ~= nil, "the Covenant briefing gives the Ridgeview travel instruction")
 
 	local travelAdvanced, arrival = MissionService.Advance(player :: any, "report_accessed", "ridgeview_arrival")
 	expect(travelAdvanced, "Ridgeview arrival follows Scout Report access")
