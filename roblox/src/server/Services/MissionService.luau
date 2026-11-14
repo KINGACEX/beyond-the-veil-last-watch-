@@ -147,7 +147,7 @@ function MissionService.GetSnapshot(player: PlayerIdentity): MissionSnapshot?
 		sequenceIndex = state.sequenceIndex,
 		objective = objective,
 		status = status,
-		ridgeviewObjective = state.ridgeviewObjective,
+		ridgeviewObjective = if state.phase == "ridgeview_investigation" then state.ridgeviewObjective else nil,
 		missionComplete = state.phase == "mission_complete",
 		completionOutcome = if state.phase == "mission_complete" then "Non-monetary outcome: a verified field record has been submitted." else nil,
 	}
