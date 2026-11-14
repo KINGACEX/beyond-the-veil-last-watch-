@@ -92,6 +92,18 @@ do
 	local retoldAdmission, retoldError = Policy.RecordPikeAdmission(retold)
 	expect(retoldAdmission == nil and retoldError ~= nil, "Pike admission is blocked after permission reset")
 
+	local persistedState = Policy.CloneState(admission)
+	local restoredState, restoreError = Policy.RestoreState(persistedState, Catalog)
+	expect(restoredState ~= nil and restoreError == nil, "valid completed investigation state can be restored")
+	assert(restoredState ~= nil, "restored investigation state exists")
+	expect(restoredState.wrenSharePermission and restoredState.pikeAdmissionRecorded, "restoration preserves the explicit consent chain")
+	expect(#Policy.Snapshot(restoredState, Catalog) == 5, "restored investigation retains its complete journal")
+
+	local malformedPersistedState = Policy.CloneState(admission)
+	malformedPersistedState.wrenSharePermission = false
+	local rejectedPersistedState, rejectedPersistedError = Policy.RestoreState(malformedPersistedState, Catalog)
+	expect(rejectedPersistedState == nil and rejectedPersistedError ~= nil, "restoration rejects Pike admission without Wren permission")
+
 	local secondPlayerEntries = Policy.Snapshot(secondPlayer, Catalog)
 	expect(#secondPlayerEntries == 0, "another player's journal contains no observations or testimony")
 	print("[BTV tests] Ridgeview unified journal and narrow consent policy passed.")
@@ -120,6 +132,12 @@ do
 	expect(not skipped, "investigation objectives cannot be skipped")
 	local otherSnapshot = MissionService.GetSnapshot(otherPlayer)
 	expect(otherSnapshot ~= nil and otherSnapshot.phase == "communion_context", "one player's mission progression does not affect another")
+
+	local restoredPlayer = { UserId = 991704 }
+	MissionService.AddPlayer(restoredPlayer, { "ridgeview_investigation_001" })
+	local restoredMission = MissionService.GetSnapshot(restoredPlayer)
+	expect(restoredMission ~= nil and restoredMission.phase == "mission_complete", "completed mission IDs restore the completed Ridgeview state")
+	expect(#MissionService.GetCompletedMissionIds(restoredPlayer) == 1, "restored completion remains available for profile saving")
 
 	local observationsDone = MissionService.AdvanceRidgeviewObjective(player, "collect_observations", "speak_with_wren")
 	expect(observationsDone, "completed observations unlock Wren conversation")
