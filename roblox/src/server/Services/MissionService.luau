@@ -84,12 +84,24 @@ local SEQUENCE_INDEX: { [string]: number } = {
 	ridgeview_investigation = 5,
 }
 
-function MissionService.AddPlayer(player: PlayerIdentity)
+function MissionService.AddPlayer(player: PlayerIdentity, completedMissionIds: { string }?)
+	local restoredIds: { string } = {}
+	local ridgeviewCompleted = false
+	if typeof(completedMissionIds) == "table" then
+		for _, missionId in completedMissionIds do
+			if typeof(missionId) == "string" and missionId ~= "" then
+				table.insert(restoredIds, missionId)
+				if missionId == "ridgeview_investigation_001" then
+					ridgeviewCompleted = true
+				end
+			end
+		end
+	end
 	states[player.UserId] = {
-		phase = "communion_context",
-		sequenceIndex = 1,
-		ridgeviewObjective = nil,
-		completedMissionIds = {},
+		phase = if ridgeviewCompleted then "mission_complete" else "communion_context",
+		sequenceIndex = if ridgeviewCompleted then 6 else 1,
+		ridgeviewObjective = if ridgeviewCompleted then "review_findings" else nil,
+		completedMissionIds = restoredIds,
 	}
 end
 
