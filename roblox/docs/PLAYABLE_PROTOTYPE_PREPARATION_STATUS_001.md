@@ -82,7 +82,7 @@
 Artifact:
 - Name: `btv-roblox-place`
 - Artifact ID: `14113040839`
-- Generated from: `de73fe8793e90e9e00aaf6c70c435116dff68b51`
+- Generated from: `d2d170f9521701ca1dec8023f2566eb342fa8f81`
 - Expires: **2026-11-21 11:51 UTC**
 - [Open run and download artifact](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43592007713)
 
@@ -116,11 +116,11 @@ The existing StyLua job uses an explicit file allowlist, not a whole-tree check.
 | 43591680842 | Failed | Headless suites passed; StyLua flagged formatting in the additional v6 region migration test. Corrected. |
 | 43591718109 | Failed | Headless suites passed; one excess blank line remained in the region migration test. Corrected. |
 | 43591379923 | Passed | Region persistence, Temple return/revisit logic, mission checkpoint migration and the configured pipeline passed. |
-| 43592007713 | **Passed** | Region fallback and v6 Ridgeview migration tests passed with the full configured pipeline; current place artifact produced. |
+| 43591751341 | Passed | Region fallback and v6 Ridgeview migration tests passed with the full configured pipeline. |
 | 43591811183 | Passed | Documentation and validation-history updates passed the configured pipeline. |
 | 43591930448 | Cancelled | Superseded by a newer branch push; no test failure was recorded. |
 | 43591936637 | Cancelled | Superseded by a newer branch push; no test failure was recorded. |
-| 43592007713 | **Passed** | Mission snapshots and the mobile HUD expose the current region; all configured checks passed. |
+| 43591956203 | Passed | Mission snapshots and the mobile HUD expose the current region; all configured checks passed. |
 | 43592007713 | **Passed** | Final documentation-aligned head passed the configured pipeline and produced the current place artifact. |
 
 An earlier policy defect was corrected: a default false permission could be confused with an explicit private decision. A separate decision flag and schema v5 migration now prevent that. Schema v6 added validated active-mission checkpoints; schema v7 adds validated current-region state and migration. Regression coverage verifies mid-mission restoration, return/revisit region continuity, schema migration, private and consented paths, and the existing persistence adapter.
