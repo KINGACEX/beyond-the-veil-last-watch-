@@ -14,6 +14,9 @@ local function copyProfile(profile: any)
 	copy.progression = table.clone(profile.progression)
 	copy.progression.completedEvaluations = table.clone(profile.progression.completedEvaluations)
 	copy.progression.completedMissionIds = table.clone(profile.progression.completedMissionIds)
+	if profile.progression.activeMission ~= nil then
+		copy.progression.activeMission = table.clone(profile.progression.activeMission)
+	end
 	copy.economy = table.clone(profile.economy)
 	copy.economy.recentTransactions = table.clone(profile.economy.recentTransactions)
 	for index, transaction in copy.economy.recentTransactions do
