@@ -26,6 +26,7 @@ end
 local dialogueUpdated = getOrCreateRemote("RidgeviewDialogueUpdated")
 local dialogueAction = getOrCreateRemote("RidgeviewDialogueAction")
 local fieldNoteRecorded = remoteFolder:WaitForChild("FieldNoteRecorded") :: RemoteEvent
+local missionStateUpdated = remoteFolder:WaitForChild("MissionStateUpdated") :: RemoteEvent
 
 local world = Workspace:WaitForChild("BTV_World")
 local scene = world:WaitForChild("Ridgeview_LandscapeStudy")
@@ -287,6 +288,13 @@ local function closeDialogue(player: Player)
 	dialogueUpdated:FireClient(player, { visible = false })
 end
 
+local function advanceInvestigationObjective(player: Player, expected: string, nextObjective: string)
+	local advanced, snapshot = MissionService.AdvanceRidgeviewObjective(player, expected, nextObjective)
+	if advanced and snapshot ~= nil then
+		missionStateUpdated:FireClient(player, snapshot)
+	end
+end
+
 local function canInteract(player: Player, npcId: string): boolean
 	local model = npcModels[npcId]
 	if model == nil or model.PrimaryPart == nil or player.Character == nil then
@@ -439,6 +447,7 @@ local function onAction(player: Player, action: unknown)
 			})
 		else
 			state.phase = "wren_consent"
+			advanceInvestigationObjective(player, "speak_with_wren", "choose_disclosure")
 			send(player, "Wren", "Would you like to ask my permission to share this specific observation with Pike, or keep it private?", {
 				{ Label = "Ask Wren for permission", Action = "AskWrenPermission" },
 				{ Label = "Keep this testimony private", Action = "KeepPrivate" },
@@ -455,6 +464,10 @@ local function onAction(player: Player, action: unknown)
 			return
 		end
 		fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
+		if MissionService.GetRidgeviewObjective(player) == "speak_with_wren" then
+			advanceInvestigationObjective(player, "speak_with_wren", "choose_disclosure")
+		end
+		advanceInvestigationObjective(player, "choose_disclosure", "review_findings")
 		state.phase = "wren_recorded"
 		send(player, "Journal", "Wren's testimony is recorded for this session and remains private. Pike cannot be told about it.", {
 			{ Label = "End conversation", Action = "Close" },
@@ -479,6 +492,10 @@ local function onAction(player: Player, action: unknown)
 			return
 		end
 		fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
+		if MissionService.GetRidgeviewObjective(player) == "speak_with_wren" then
+			advanceInvestigationObjective(player, "speak_with_wren", "choose_disclosure")
+		end
+		advanceInvestigationObjective(player, "choose_disclosure", "pike_followup")
 		state.phase = "wren_recorded"
 		send(player, "Journal", "Wren's testimony is recorded. She explicitly authorized sharing only the observation that she saw the repairman go toward the camp.", {
 			{ Label = "End conversation", Action = "Close" },
@@ -535,6 +552,7 @@ local function onAction(player: Player, action: unknown)
 				return
 			end
 			fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
+			advanceInvestigationObjective(player, "pike_followup", "review_findings")
 			state.phase = "pike_admission_recorded"
 			send(player, "Journal", "Pike's limited admission is recorded for this session. It does not establish every accusation or a legal finding.", {
 				{ Label = "End conversation", Action = "Close" },
