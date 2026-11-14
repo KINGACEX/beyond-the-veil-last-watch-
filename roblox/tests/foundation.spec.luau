@@ -252,7 +252,6 @@ do
 	local invalidActiveMissionValid = PlayerProfileSchema.Validate(invalidActiveMission, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(not invalidActiveMissionValid, "profile rejects inconsistent active mission phase and sequence")
 
-
 	local unsupportedProfile = table.clone(defaultProfile)
 	unsupportedProfile.schemaVersion = 99
 	local unsupportedValid = PlayerProfileSchema.Validate(unsupportedProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
