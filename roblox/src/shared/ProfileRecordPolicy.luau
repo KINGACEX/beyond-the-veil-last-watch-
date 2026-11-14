@@ -23,6 +23,9 @@ local function copyProfile(profile: any)
 	copy.companions.owned = table.clone(profile.companions.owned)
 	copy.inventory = table.clone(profile.inventory)
 	copy.inventory.items = table.clone(profile.inventory.items)
+	copy.investigation = table.clone(profile.investigation)
+	copy.investigation.ridgeview = table.clone(profile.investigation.ridgeview)
+	copy.investigation.ridgeview.observations = table.clone(profile.investigation.ridgeview.observations)
 	return copy
 end
 
