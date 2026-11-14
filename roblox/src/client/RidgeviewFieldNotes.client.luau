@@ -173,7 +173,7 @@ toggle.Activated:Connect(function()
 end)
 
 local function updateMissionAccess(snapshot: any)
-	local unlocked = typeof(snapshot) == "table" and (snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation")
+	local unlocked = typeof(snapshot) == "table" and (snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation" or snapshot.phase == "mission_complete")
 	toggle.Visible = unlocked
 	if unlocked then
 		local objective = if typeof(snapshot.objective) == "string" then snapshot.objective else "Investigate Ridgeview"
