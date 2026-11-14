@@ -3,7 +3,7 @@
 **Audit date:** 2026-11-14  
 **Branch:** `btv/roblox-opening-loop-003`  
 **Audited base:** PR #12 head `btv/roblox-ridgeview-corrections-001` @ `938462cf`  
-**Current implementation head at audit:** `34ce89c2c33ad8749c22f1666bfee61adbcddb75`  
+**Current implementation head:** `4ccd9a842137590ea921dbb47efd7d5ebc455767`  
 **Status:** Source increment implemented; headless CI PASS; genuine Roblox Studio runtime remains pending.  
 **Authority:** This document records the Roblox prototype implementation only. The BTV Master Canon, Mission Bible, Character Bible, Church Bible and Visual/UI/HUD Bible remain authoritative.
 
@@ -27,7 +27,7 @@
 | Report submission | Implemented | Server-side readiness checks and report-board interaction |
 | Completion reward | Not implemented | No approved reward amount or reward table was invented |
 | Persistent completed progress | Implemented behind opt-in persistence | Completed mission ID and investigation record are saved when persistence is enabled |
-| Persistent in-progress progress | Not implemented | In-progress mission phase/objective is not yet restored after reconnect |
+| Persistent in-progress progress | Implemented behind opt-in persistence | Mission phase, sequence index, Ridgeview objective and investigation record are saved/restored through the existing profile adapter; Studio DataStore validation remains pending |
 
 ### Ridgeview investigation and privacy
 
@@ -39,7 +39,7 @@
 - Pike's limited admission is recorded as an NPC statement, not proof of every accusation or a legal finding.
 - Mission, journal and consent state are keyed per player on the server; journal updates use player-targeted remotes.
 - Re-recording Wren's testimony resets the previous disclosure decision and dependent Pike admission.
-- Profile schema v5 adds the explicit disclosure-decision field. v4 migration treats an old false permission as unconfirmed and requires Wren's decision to be reconfirmed.
+- Profile schema v5 added the explicit disclosure-decision field. v4 migration treats an old false permission as unconfirmed and requires Wren's decision to be reconfirmed. Schema v6 adds a validated active-mission checkpoint; v5 and earlier profiles migrate to a safe opening checkpoint unless Ridgeview is already recorded complete.
 
 ### Ember companion
 
@@ -60,13 +60,13 @@
 - Client receives its own journal and mission snapshots; no global broadcast is used for private testimony.
 - Profile persistence orchestration uses the existing adapter, session leases and serialized save path.
 - `GameConfig.EnableProfilePersistence` remains **false by default** until private Studio DataStore validation is authorized.
-- When persistence is enabled, completed Ridgeview mission state and its investigation record can be saved/restored.
-- **Unfinished progress is not yet durable:** observations or objectives made before completion can be lost on disconnect, and the mission restarts at the opening phase. This must be resolved before claiming full revisit/reconnect progression.
+- When persistence is enabled, mission phase, sequence index, current Ridgeview objective, completed mission IDs and the per-player investigation record are saved/restored through the existing profile adapter.
+- The save remains opt-in and is **not yet runtime-validated** against Roblox DataStore; the default configuration remains disabled.
 
 ## 2. Latest automated test evidence
 
-**GitHub Actions run 43589854994 — PASS**  
-[Open successful validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43589854994)
+**GitHub Actions run 43590459856 — PASS**  
+[Open successful validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43590459856)
 
 | Check | Result |
 |---|---|
@@ -80,10 +80,10 @@
 
 Artifact:
 - Name: `btv-roblox-place`
-- Artifact ID: `14112245032`
-- Generated from: `34ce89c2c33ad8749c22f1666bfee61adbcddb75`
+- Artifact ID: `14111804772`
+- Generated from: `4ccd9a842137590ea921dbb47efd7d5ebc455767`
 - Expires: **2026-11-21 11:24 UTC**
-- [Open run and download artifact](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43589854994)
+- [Open run and download artifact](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43590459856)
 
 ### Validation scope caveat
 
@@ -97,15 +97,18 @@ The existing StyLua job uses an explicit file allowlist, not a whole-tree check.
 | 43589732928 | Failed | Headless tests passed; StyLua found two new test-format differences. Both were formatted. |
 | 43589765502 | Failed | Headless tests passed; the temporary formatting check exposed pre-existing formatting debt in Bootstrap, ProfileSessionService and PlayerProfileSchema. Those files were removed from the narrow allowlist rather than silently broadening it. |
 | 43589808990 | Failed | Headless tests passed; StyLua found formatting differences in the Ridgeview policy and settlement files. Those were corrected. |
-| 43589854994 | **Passed** | Full configured pipeline completed successfully. |
+| 43589854994 | Passed | Previous successful baseline before the active-mission persistence increment. |
+| 43590360144 | Failed | Headless suites passed; StyLua flagged a blank-line formatting difference in the new schema test. Corrected. |
+| 43590388382 | Failed | Headless suites passed; StyLua flagged mission-checkpoint formatting. Corrected. |
+| 43590425918 | Failed | Headless suites passed; StyLua flagged mission-checkpoint formatting. Corrected. |
+| 43590459856 | **Passed** | Updated active-mission persistence increment passed the configured pipeline and produced the place artifact. |
 
-An earlier policy defect was also corrected: a default false permission could be confused with an explicit private decision. A separate decision flag and schema v5 migration now prevent that. The regression suite verifies both the private and consented paths.
+An earlier policy defect was corrected: a default false permission could be confused with an explicit private decision. A separate decision flag and schema v5 migration now prevent that. Schema v6 adds validated active-mission checkpoints and migrates older profiles without assuming that unfinished progress occurred. Regression coverage verifies mid-mission restoration, schema migration, private and consented paths, and the existing persistence adapter.
 
 ## 4. Remaining work before a genuinely playable release candidate
 
 ### P0 — Required before calling the prototype complete
-1. Preserve in-progress mission phase, Ridgeview objective and investigation state across reconnects; add schema migration and tests.
-2. Validate that the Temple foyer spawn, prompt flow, Ridgeview geometry, NPC dialogue, report board and completed mission state actually run in Roblox Studio.
+1. Validate the Temple foyer spawn, prompt flow, Ridgeview geometry, NPC dialogue, report board and completed mission state actually run in Roblox Studio.
 3. Run two-client tests for player-specific journal, consent, mission state, NPC dialogue and companion ownership.
 4. Validate character respawn and reconnect behaviour.
 5. Test mobile HUD, touch prompts and camera on an actual Android device or authorized Studio device emulator.
