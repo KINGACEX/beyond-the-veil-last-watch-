@@ -4,9 +4,11 @@
 
 local PlayerProfileSchema = {}
 
-local CURRENT_SCHEMA_VERSION = 3
+local CURRENT_SCHEMA_VERSION = 4
 local LEGACY_SCHEMA_VERSION = 1
 local INVENTORY_SCHEMA_VERSION = 2
+local TRANSACTION_SCHEMA_VERSION = 3
+local INVESTIGATION_SCHEMA_VERSION = 4
 local MAX_RECENT_TRANSACTIONS = 50
 local DEFAULT_OWNERSHIP: {[string]: boolean} = table.freeze({
 	ember = true,
@@ -67,6 +69,11 @@ local function copyProfile(profile: any)
 	if profile.inventory ~= nil then
 		copy.inventory = table.clone(profile.inventory)
 		copy.inventory.items = table.clone(profile.inventory.items)
+	end
+	if profile.investigation ~= nil then
+		copy.investigation = table.clone(profile.investigation)
+		copy.investigation.ridgeview = table.clone(profile.investigation.ridgeview)
+		copy.investigation.ridgeview.observations = table.clone(profile.investigation.ridgeview.observations)
 	end
 	return copy
 end
@@ -156,7 +163,7 @@ local function validateProfile(
 		end
 	end
 
-	if expectedVersion == CURRENT_SCHEMA_VERSION then
+	if expectedVersion >= TRANSACTION_SCHEMA_VERSION then
 		local recentTransactions = economy.recentTransactions
 		if typeof(recentTransactions) ~= "table" or #recentTransactions > MAX_RECENT_TRANSACTIONS then
 			return false, "Recent transaction journal is malformed or exceeds its limit."
@@ -187,7 +194,42 @@ local function validateProfile(
 		end
 	end
 
+	if expectedVersion >= INVESTIGATION_SCHEMA_VERSION then
+		local investigation = profile.investigation
+		local ridgeview = if typeof(investigation) == "table" then investigation.ridgeview else nil
+		if typeof(ridgeview) ~= "table"
+			or typeof(ridgeview.observations) ~= "table"
+			or typeof(ridgeview.wrenTestimonyRecorded) ~= "boolean"
+			or typeof(ridgeview.wrenSharePermission) ~= "boolean"
+			or typeof(ridgeview.pikeAdmissionRecorded) ~= "boolean"
+		then
+			return false, "Ridgeview investigation profile is malformed."
+		end
+		for noteId, recorded in ridgeview.observations do
+			if (noteId ~= "approach_belongings" and noteId ~= "parked_work_vehicle") or recorded ~= true then
+				return false, "Ridgeview profile contains an unknown or invalid observation."
+			end
+		end
+		if ridgeview.wrenSharePermission and not ridgeview.wrenTestimonyRecorded then
+			return false, "Ridgeview sharing permission cannot exist without recorded testimony."
+		end
+		if ridgeview.pikeAdmissionRecorded and not ridgeview.wrenSharePermission then
+			return false, "Pike's admission cannot exist without Wren's explicit sharing permission."
+		end
+	end
+
 	return true, nil
+end
+
+local function createDefaultInvestigation()
+	return {
+		ridgeview = {
+			observations = {},
+			wrenTestimonyRecorded = false,
+			wrenSharePermission = false,
+			pikeAdmissionRecorded = false,
+		},
+	}
 end
 
 function PlayerProfileSchema.CreateDefault()
@@ -215,6 +257,7 @@ function PlayerProfileSchema.CreateDefault()
 		inventory = {
 			items = {},
 		},
+		investigation = createDefaultInvestigation(),
 	}
 end
 
@@ -239,7 +282,10 @@ function PlayerProfileSchema.Migrate(
 		return nil, "Profile must be a table."
 	end
 
-	if profile.schemaVersion == LEGACY_SCHEMA_VERSION or profile.schemaVersion == INVENTORY_SCHEMA_VERSION then
+	if profile.schemaVersion == LEGACY_SCHEMA_VERSION
+		or profile.schemaVersion == INVENTORY_SCHEMA_VERSION
+		or profile.schemaVersion == TRANSACTION_SCHEMA_VERSION
+	then
 		local sourceVersion = profile.schemaVersion
 		local sourceValid, sourceError = validateProfile(
 			profile,
@@ -257,7 +303,12 @@ function PlayerProfileSchema.Migrate(
 		if sourceVersion == LEGACY_SCHEMA_VERSION then
 			migrated.inventory = inventoryPolicy.CreateDefault()
 		end
-		migrated.economy.recentTransactions = {}
+		if sourceVersion < TRANSACTION_SCHEMA_VERSION then
+			migrated.economy.recentTransactions = {}
+		end
+		if sourceVersion < INVESTIGATION_SCHEMA_VERSION then
+			migrated.investigation = createDefaultInvestigation()
+		end
 		migrated.schemaVersion = CURRENT_SCHEMA_VERSION
 		local migratedValid, migratedError = validateProfile(
 			migrated,
