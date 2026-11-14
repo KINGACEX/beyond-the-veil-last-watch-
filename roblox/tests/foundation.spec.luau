@@ -41,6 +41,8 @@ do
 	expect(initial.phase == "communion_context", "mission starts in Communion context")
 	expect(initial.sequenceIndex == 1, "initial mission index is one")
 	expect(initial.objective == "Enter the sanctuary", "initial objective is correct")
+	expect(MissionService.GetRegion(player :: any) == "temple", "new player starts in the Temple region")
+	expect(not MissionService.SetRegion(player :: any, "ridgeview"), "Ridgeview cannot be entered before the mission unlocks it")
 
 	local skipped = MissionService.Advance(player :: any, "communion_context", "report_accessed")
 	expect(skipped == false, "mission cannot skip the Covenant alert phase")
@@ -65,6 +67,7 @@ do
 	expect(arrival ~= nil and arrival.sequenceIndex == 4, "Ridgeview arrival is sequence four")
 	assert(arrival ~= nil, "Ridgeview arrival snapshot must exist")
 	expect(arrival.objective == "Arrive at Ridgeview", "Ridgeview arrival objective is correct")
+	expect(MissionService.GetRegion(player :: any) == "ridgeview", "first Ridgeview travel updates the current region")
 
 	local investigationAdvanced, investigation = MissionService.Advance(player :: any, "ridgeview_arrival", "ridgeview_investigation")
 	expect(investigationAdvanced, "first Ridgeview observation can advance the investigation objective")
@@ -73,14 +76,17 @@ do
 	expect(investigation.objective == "Record the remaining verifiable Ridgeview observation", "Ridgeview investigation begins with the remaining observation objective")
 	local repeatedInvestigation = MissionService.Advance(player :: any, "ridgeview_arrival", "ridgeview_investigation")
 	expect(repeatedInvestigation == false, "stale Ridgeview arrival cannot advance twice")
+	expect(MissionService.SetRegion(player :: any, "temple"), "player can return to the Temple without resetting mission progress")
 	local savedCheckpoint = MissionService.GetPersistentProgress(player :: any)
 	expect(savedCheckpoint ~= nil and savedCheckpoint.phase == "ridgeview_investigation", "active mission checkpoint captures Ridgeview phase")
+	expect(savedCheckpoint ~= nil and savedCheckpoint.region == "temple", "active mission checkpoint captures the return region")
 	expect(savedCheckpoint ~= nil and savedCheckpoint.ridgeviewObjective == "collect_observations", "active mission checkpoint captures the current Ridgeview objective")
 	local resumedPlayer = { UserId = 901002 }
 	MissionService.AddPlayer(resumedPlayer :: any, nil, savedCheckpoint)
 	local resumedSnapshot = MissionService.GetSnapshot(resumedPlayer :: any)
 	expect(resumedSnapshot ~= nil and resumedSnapshot.phase == "ridgeview_investigation", "mid-mission checkpoint restores the Ridgeview phase")
 	expect(resumedSnapshot ~= nil and resumedSnapshot.ridgeviewObjective == "collect_observations", "mid-mission checkpoint restores the exact objective")
+	expect(MissionService.GetRegion(resumedPlayer :: any) == "temple", "mid-mission checkpoint restores the Temple return region")
 	MissionService.RemovePlayer(resumedPlayer :: any)
 
 	local skippedFinal = MissionService.Advance(player :: any, "communion_context", "ridgeview_arrival")
@@ -235,7 +241,7 @@ do
 	local validProfile, validProfileReason = PlayerProfileSchema.Validate(defaultProfile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(validProfile, "new versioned profile passes schema validation")
 	expect(validProfileReason == nil, "valid profile has no validation error")
-	expect(defaultProfile.schemaVersion == 6, "new profile uses the current schema version")
+	expect(defaultProfile.schemaVersion == 7, "new profile uses the current schema version")
 	expect(defaultProfile.progression.covenantRank == "Recruit", "new profile starts at Recruit")
 	expect(defaultProfile.companions.owned.ember == true, "new profile owns Ember")
 	expect(defaultProfile.companions.owned.fox == true, "new profile owns Fox")
@@ -245,6 +251,7 @@ do
 	expect(defaultProfile.investigation.ridgeview.wrenSharePermission == false, "new profile starts with private Wren testimony state")
 	expect(defaultProfile.progression.activeMission.phase == "communion_context", "new profile starts with an initial active mission checkpoint")
 	expect(defaultProfile.progression.activeMission.sequenceIndex == 1, "new profile checkpoint has a matching sequence index")
+	expect(defaultProfile.progression.activeMission.region == "temple", "new profile checkpoint starts in the Temple region")
 	expect(next(defaultProfile.investigation.ridgeview.observations) == nil, "new profile starts without recorded Ridgeview observations")
 	local invalidActiveMission = table.clone(defaultProfile)
 	invalidActiveMission.progression = table.clone(defaultProfile.progression)
@@ -385,8 +392,15 @@ do
 	legacyV5Profile.schemaVersion = 5
 	legacyV5Profile.progression.activeMission = nil
 	local migratedV5Profile, migratedV5Error = PlayerProfileSchema.Migrate(legacyV5Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
-	expect(migratedV5Profile ~= nil and migratedV5Error == nil, "valid v5 profile migrates to v6")
+	expect(migratedV5Profile ~= nil and migratedV5Error == nil, "valid v5 profile migrates to v7")
 	expect(migratedV5Profile ~= nil and migratedV5Profile.progression.activeMission.phase == "communion_context", "v5 migration safely initializes a mission checkpoint")
+	local legacyV6Profile = PlayerProfileSchema.CreateDefault()
+	legacyV6Profile.schemaVersion = 6
+	legacyV6Profile.progression.activeMission.region = nil
+	local migratedV6Profile, migratedV6Error = PlayerProfileSchema.Migrate(legacyV6Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	expect(migratedV6Profile ~= nil and migratedV6Error == nil, "valid v6 profile migrates to v7")
+	expect(migratedV6Profile ~= nil and migratedV6Profile.progression.activeMission.region == "temple", "v6 migration adds the safe Temple region")
+
 	local legacyV5Completed = PlayerProfileSchema.CreateDefault()
 	legacyV5Completed.schemaVersion = 5
 	legacyV5Completed.progression.completedMissionIds = { "ridgeview_investigation_001" }
@@ -404,9 +418,9 @@ do
 	legacyV4Profile.investigation.ridgeview.pikeAdmissionRecorded = false
 	legacyV4Profile.investigation.ridgeview.wrenDisclosureDecisionMade = nil
 	local migratedV4Profile, migratedV4Error = PlayerProfileSchema.Migrate(legacyV4Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
-	expect(migratedV4Profile ~= nil and migratedV4Error == nil, "valid v4 profile migrates to v6")
+	expect(migratedV4Profile ~= nil and migratedV4Error == nil, "valid v4 profile migrates to v7")
 	assert(migratedV4Profile ~= nil, "migrated v4 profile must exist")
-	expect(migratedV4Profile.schemaVersion == 6, "v4 migration advances the schema version")
+	expect(migratedV4Profile.schemaVersion == 7, "v4 migration advances the schema version")
 	expect(migratedV4Profile.investigation.ridgeview.wrenDisclosureDecisionMade == false, "v4 private testimony requires Wren's disclosure decision to be reconfirmed")
 	expect(legacyV4Profile.schemaVersion == 4 and legacyV4Profile.investigation.ridgeview.wrenDisclosureDecisionMade == nil, "v4 migration does not mutate the stored profile")
 
@@ -458,7 +472,7 @@ do
 	legacyV2Profile.economy.aces = 37
 	legacyV2Profile.inventory.items.timber_plank = 4
 	local migratedV2Profile, migratedV2Error = PlayerProfileSchema.Migrate(legacyV2Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
-	expect(migratedV2Profile ~= nil and migratedV2Error == nil, "valid v2 profile migrates to v6")
+	expect(migratedV2Profile ~= nil and migratedV2Error == nil, "valid v2 profile migrates to v7")
 	assert(migratedV2Profile ~= nil, "migrated v2 profile must exist")
 	expect(migratedV2Profile.schemaVersion == 6, "v2 migration advances the schema version")
 	expect(migratedV2Profile.economy.aces == 37, "v2 migration preserves Aces")
@@ -479,7 +493,7 @@ do
 		},
 	}
 	local migratedV3Profile, migratedV3Error = PlayerProfileSchema.Migrate(legacyV3Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
-	expect(migratedV3Profile ~= nil and migratedV3Error == nil, "valid v3 profile migrates to v6")
+	expect(migratedV3Profile ~= nil and migratedV3Error == nil, "valid v3 profile migrates to v7")
 	assert(migratedV3Profile ~= nil, "migrated v3 profile must exist")
 	expect(migratedV3Profile.schemaVersion == 6, "v3 migration advances the schema version")
 	expect(#migratedV3Profile.economy.recentTransactions == 1, "v3 migration preserves its existing transaction history")
