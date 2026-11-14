@@ -8,7 +8,7 @@ The current `PlayerStateService` stores player state in server memory and clears
 
 The current `CovenantRankCatalog` defines the approved 15-rank order. It is a catalogue, not a promotion system.
 
-A pure shared schema module now exists at `src/shared/PlayerProfileSchema.luau`. A deterministic lease decision module now exists at `src/shared/ProfileLeasePolicy.luau`. A pure record-transformation module now exists at `src/shared/ProfileRecordPolicy.luau`; it defines `UpdateAsync`-callback-safe acquisition, save and release transformations, validates stored and candidate profiles, rejects active competing leases and stale revisions, increments revisions on save, and returns new records without mutating callback inputs. Headless regression cases cover these rules. None of these modules calls DataStoreService or enables persistence. The schema creates the proposed version-1 default profile and validates schema version, revision, identity, rank membership, event-list shape, non-negative integer balances, companion IDs, premium-candidate restrictions and equipped-companion ownership. Persistence remains disabled.
+A pure shared schema module now exists at `src/shared/PlayerProfileSchema.luau`. A deterministic lease decision module now exists at `src/shared/ProfileLeasePolicy.luau`. A pure record-transformation module now exists at `src/shared/ProfileRecordPolicy.luau`; it defines `UpdateAsync`-callback-safe acquisition, save and release transformations, validates stored and candidate profiles, rejects active competing leases and stale revisions, increments revisions on save, and returns new records without mutating callback inputs. Headless regression cases cover these rules. None of these modules calls DataStoreService or enables persistence. The schema currently creates version-6 default profiles and validates schema version, revision, identity, rank membership, event-list shape, active mission phase/objective consistency, non-negative integer balances, companion IDs, premium-candidate restrictions, equipped-companion ownership and Ridgeview consent/investigation state. Persistence remains disabled by default.
 
 ## 2. Profile ownership
 
@@ -18,7 +18,7 @@ Suggested profile envelope:
 
 ```luau
 {
-    schemaVersion = 1,
+    schemaVersion = 6,
     revision = 0,
     identity = {
         characterId = "covenant_operative",
@@ -28,6 +28,7 @@ Suggested profile envelope:
         covenantRank = "Recruit",
         completedEvaluations = {},
         completedMissionIds = {},
+        activeMission = { phase = "communion_context", sequenceIndex = 1 },
     },
     economy = {
         aces = 0,
@@ -122,7 +123,7 @@ Do not enable purchases until product catalogue, price presentation, server-side
 
 ## 9. DataStore adapter implementation gate
 
-The current profile schema is version 2 and includes a bounded inventory map. A pure migration path upgrades valid version-1 records by preserving existing progression and balances and adding an empty inventory. An injectable adapter exists at `src/server/Services/ProfilePersistenceAdapter.luau`; it accepts a DataStore-like object and explicit dependencies so acquisition, save, release, retry and recovery behavior can be tested without Roblox services. It is deliberately not connected to `PlayerStateService`; the following production gates still apply:
+The current profile schema is version 6 and includes a bounded inventory map, Ridgeview investigation/consent state and a validated active-mission checkpoint. Migration paths upgrade valid v1–v5 records while preserving established progression and balances; older profiles receive a safe initial checkpoint unless Ridgeview is already recorded complete. An injectable adapter exists at `src/server/Services/ProfilePersistenceAdapter.luau`; it accepts a DataStore-like object and explicit dependencies so acquisition, save, release, retry and recovery behavior can be tested without Roblox services. It is deliberately not connected to `PlayerStateService`; the following production gates still apply:
 
 - Use one namespaced key per Roblox user and a unique owner token per player session. The caller supplies the token generator; production integration must guarantee that a token is not reused by another server or a later session.
 - Perform acquisition, save and release through atomic `UpdateAsync` transformations. The transformation callback must remain deterministic, non-yielding and free of external side effects because Roblox may invoke it more than once.
@@ -132,7 +133,7 @@ The current profile schema is version 2 and includes a bounded inventory map. A 
 - The adapter renews the lease during successful saves. Production integration still needs a proactive renewal schedule comfortably before expiry. A server that cannot renew must stop accepting new authoritative profile mutations and must not overwrite a newer owner's record.
 - Do not create a fresh default profile after a load/acquisition failure. A player must not enter a writable session unless the profile was acquired successfully.
 - On departure, save the latest valid snapshot before releasing the lease. If saving fails, do not claim the profile was saved; release behavior must not erase or replace the stored profile. Shutdown handling must use bounded work and must not depend on an unbounded wait.
-- Use an injectable fake DataStore for deterministic tests of callback retries, contention, service errors, ambiguous outcomes and release ownership. The test-only `tests/support/FakeProfileStore.luau` simulates competing writes between callback executions, pre-callback service failure and response loss after a committed write. Regression cases now exercise adapter acquisition, successful saves, bounded retry of classified transient failures, exact idempotent reconciliation after an ambiguous save, non-retry of lease contention, owner-only release, version-1 to version-2 migration and inventory validation. Save serialization, pending-save lifecycle handling, lease-heartbeat integration, player departure/shutdown orchestration and Studio multi-server tests remain unimplemented.
+- Use an injectable fake DataStore for deterministic tests of callback retries, contention, service errors, ambiguous outcomes and release ownership. The test-only `tests/support/FakeProfileStore.luau` simulates competing writes between callback executions, pre-callback service failure and response loss after a committed write. Regression cases exercise adapter acquisition, successful saves, bounded retry of classified transient failures, exact idempotent reconciliation after an ambiguous save, non-retry of lease contention, owner-only release, schema migrations, active mission checkpoint validation/restoration and inventory validation. The session orchestration now serializes saves, autosaves, saves on departure/shutdown and restores mission plus investigation state. Roblox Studio multi-client/DataStore validation remains uncompleted.
 - Keep the adapter disconnected from live player joins until the above checks pass. The current in-memory service remains the active implementation.
 
 **Current status:** profile schema v2 now includes inventory and migrates valid v1 profiles without losing rank, mission progress or balances. The pure record policy includes save-operation idempotency/reconciliation metadata and exact-payload matching. An injectable DataStore adapter implements acquisition, save and release transformations, bounded retry of a narrow set of transient errors, exponential backoff with jitter, and ambiguous-save reconciliation. Headless tests, formatting, lint and Rojo build pass on the current feature branch. The adapter is not wired into live player sessions; save serialization, pending-save lifecycle handling, proactive lease renewal and shutdown orchestration remain unimplemented. Production persistence remains blocked pending those items and Roblox Studio multi-server tests.
