@@ -191,7 +191,17 @@ departurePrompt.Triggered:Connect(function(player: Player)
 		return
 	end
 
-	local accepted = MissionService.Advance(player, "report_accessed", "ridgeview_arrival")
+	local mission = MissionService.GetSnapshot(player)
+	if mission == nil then
+		return
+	end
+
+	local accepted = false
+	if mission.phase == "report_accessed" then
+		accepted = MissionService.Advance(player, "report_accessed", "ridgeview_arrival")
+	elseif MissionService.GetRegion(player) == "temple" then
+		accepted = MissionService.SetRegion(player, "ridgeview")
+	end
 	if not accepted then
 		return
 	end
