@@ -332,18 +332,19 @@ submitPrompt.GamepadKeyCode = Enum.KeyCode.ButtonX
 submitPrompt.Parent = reportBoard
 
 submitPrompt.Triggered:Connect(function(player: Player)
-	if player.Parent ~= Players or player.Character == nil
-		or player:DistanceFromCharacter(reportBoard.Position) > 13
-	then
+	if player.Parent ~= Players or player.Character == nil or player:DistanceFromCharacter(reportBoard.Position) > 13 then
 		return
 	end
 
-	if MissionService.GetRidgeviewObjective(player) ~= "review_findings"
-		or not InvestigationService.CanSubmitFindings(player)
-	then
-		send(player, "Field Report", "The report is not ready. Record both approach observations and Wren's testimony. If she authorized disclosure, complete the limited follow-up with Pike. Then return here to submit your findings.", {
-			{ Label = "Close", Action = "Close" },
-		})
+	if MissionService.GetRidgeviewObjective(player) ~= "review_findings" or not InvestigationService.CanSubmitFindings(player) then
+		send(
+			player,
+			"Field Report",
+			"The report is not ready. Record both approach observations and Wren's testimony. If she authorized disclosure, complete the limited follow-up with Pike. Then return here to submit your findings.",
+			{
+				{ Label = "Close", Action = "Close" },
+			}
+		)
 		return
 	end
 
