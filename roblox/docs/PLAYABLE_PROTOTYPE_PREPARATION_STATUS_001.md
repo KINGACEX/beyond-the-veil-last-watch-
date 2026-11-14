@@ -104,7 +104,7 @@ The existing StyLua job uses an explicit file allowlist, not a whole-tree check.
 | 43590425918 | Failed | Headless suites passed; StyLua flagged mission-checkpoint formatting. Corrected. |
 | 43591379923 | **Passed** | Updated active-mission persistence increment passed the configured pipeline and produced the place artifact. |
 
-An earlier policy defect was corrected: a default false permission could be confused with an explicit private decision. A separate decision flag and schema v5 migration now prevent that. Schema v6 adds validated active-mission checkpoints and migrates older profiles without assuming that unfinished progress occurred. Regression coverage verifies mid-mission restoration, schema migration, private and consented paths, and the existing persistence adapter.
+An earlier policy defect was corrected: a default false permission could be confused with an explicit private decision. A separate decision flag and schema v5 migration now prevent that. Schema v6 added validated active-mission checkpoints; schema v7 adds validated current-region state and migration. Regression coverage verifies mid-mission restoration, return/revisit region continuity, schema migration, private and consented paths, and the existing persistence adapter. Regression coverage verifies mid-mission restoration, schema migration, private and consented paths, and the existing persistence adapter.
 
 ## 4. Remaining work before a genuinely playable release candidate
 
