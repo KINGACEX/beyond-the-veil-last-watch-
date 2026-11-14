@@ -397,7 +397,6 @@ do
 		"v5 migration preserves an already-completed Ridgeview mission"
 	)
 
-
 	local legacyV4Profile = PlayerProfileSchema.CreateDefault()
 	legacyV4Profile.schemaVersion = 4
 	legacyV4Profile.investigation.ridgeview.wrenTestimonyRecorded = true
