@@ -148,21 +148,8 @@ function ProfileSessionService.Save(player: Player, allowClosing: boolean?): (bo
 	candidate.progression.covenantRank = playerState.covenantRank
 	local completedMissionIds = MissionService.GetCompletedMissionIds(player)
 	candidate.progression.completedMissionIds = completedMissionIds
-	local ridgeviewCompleted = false
-	for _, missionId in completedMissionIds do
-		if missionId == "ridgeview_investigation_001" then
-			ridgeviewCompleted = true
-			break
-		end
-	end
-	candidate.investigation.ridgeview = if ridgeviewCompleted
-		then RidgeviewInvestigationService.GetPersistentState(player)
-		else {
-			observations = {},
-			wrenTestimonyRecorded = false,
-			wrenSharePermission = false,
-			pikeAdmissionRecorded = false,
-		}
+	candidate.progression.activeMission = MissionService.GetPersistentProgress(player)
+	candidate.investigation.ridgeview = RidgeviewInvestigationService.GetPersistentState(player)
 	candidate.economy.aces = playerState.aces
 	candidate.economy.covenantCredits = playerState.covenantCredits
 	candidate.companions.owned = cloneValue(playerState.ownedCompanions)
