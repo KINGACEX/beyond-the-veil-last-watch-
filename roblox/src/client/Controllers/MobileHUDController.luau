@@ -237,7 +237,7 @@ function MobileHUDController.Init(remotes: RemoteBundle, initialState: any, init
 		if snapshot.missionComplete == true then
 			missionStatus.Text = if typeof(snapshot.completionOutcome) == "string" then snapshot.completionOutcome else "Field report submitted for this session."
 			reportTitle.Text = "FIELD REPORT SUBMITTED"
-			reportBody.Text = "RIDGEVIEW INVESTIGATION COMPLETE\n\nYour verified observations and permitted statements have been recorded for this session. No unverified conclusion has been added. This completion record is not yet saved across sessions."
+			reportBody.Text = "RIDGEVIEW INVESTIGATION COMPLETE\n\nYour verified observations and permitted statements have been recorded. No unverified conclusion has been added."
 		elseif typeof(snapshot.status) == "string" then
 			missionStatus.Text = snapshot.status
 		end
