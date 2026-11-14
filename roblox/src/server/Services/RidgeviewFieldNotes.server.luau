@@ -6,9 +6,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
-local shared = ReplicatedStorage:WaitForChild("BTVShared")
-local FieldNoteCatalog = require(shared:WaitForChild("RidgeviewFieldNoteCatalog"))
-local FieldNotePolicy = require(shared:WaitForChild("RidgeviewFieldNotePolicy"))
+local InvestigationService = require(script.Parent:WaitForChild("RidgeviewInvestigationService"))
 local MissionService = require(script.Parent:WaitForChild("MissionService"))
 
 local remoteFolder = ReplicatedStorage:WaitForChild("BTVRemotes")
@@ -30,21 +28,11 @@ local fieldNoteRecorded = getOrCreateRemote("RemoteEvent", "FieldNoteRecorded") 
 local getFieldNotes = getOrCreateRemote("RemoteFunction", "GetFieldNotes") :: RemoteFunction
 local missionStateUpdated = getOrCreateRemote("RemoteEvent", "MissionStateUpdated") :: RemoteEvent
 
-local journals: {[number]: FieldNotePolicy.Journal} = {}
-local lastRecordAt: {[number]: number} = {}
+local lastRecordAt: { [number]: number } = {}
 local RECORD_INTERVAL_SECONDS = 0.35
 
-local function getJournal(player: Player): FieldNotePolicy.Journal
-	local journal = journals[player.UserId]
-	if journal == nil then
-		journal = {}
-		journals[player.UserId] = journal
-	end
-	return journal
-end
-
 getFieldNotes.OnServerInvoke = function(player: Player)
-	return FieldNotePolicy.Snapshot(getJournal(player), FieldNoteCatalog)
+	return InvestigationService.GetJournalSnapshot(player)
 end
 
 local function recordObservation(player: Player, noteId: string, anchor: BasePart)
@@ -68,19 +56,30 @@ local function recordObservation(player: Player, noteId: string, anchor: BasePar
 	end
 	lastRecordAt[player.UserId] = now
 
-	local updated, reason = FieldNotePolicy.TryRecord(getJournal(player), noteId, FieldNoteCatalog)
-	if updated == nil then
+	local recorded, reason = InvestigationService.TryRecordObservation(player, noteId)
+	if not recorded then
 		if reason ~= "Field note already recorded." then
 			warn("[BTV Roblox] Field-note request rejected: " .. tostring(reason))
 		end
 		return
 	end
 
-	journals[player.UserId] = updated
-	fieldNoteRecorded:FireClient(player, FieldNotePolicy.Snapshot(updated, FieldNoteCatalog))
+	fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
 
 	if mission.phase == "ridgeview_arrival" then
 		local advanced, snapshot = MissionService.Advance(player, "ridgeview_arrival", "ridgeview_investigation")
+		if advanced and snapshot ~= nil then
+			missionStateUpdated:FireClient(player, snapshot)
+		end
+	end
+
+	local investigation = InvestigationService.GetState(player)
+	if
+		investigation.observations.approach_belongings == true
+		and investigation.observations.parked_work_vehicle == true
+		and MissionService.GetRidgeviewObjective(player) == "collect_observations"
+	then
+		local advanced, snapshot = MissionService.AdvanceRidgeviewObjective(player, "collect_observations", "speak_with_wren")
 		if advanced and snapshot ~= nil then
 			missionStateUpdated:FireClient(player, snapshot)
 		end
@@ -101,15 +100,7 @@ if existingProps == nil then
 	local right = arrivalMarker.CFrame.RightVector
 	local origin = arrivalMarker.Position + forward * 22
 
-	local function makePart(
-		parent: Instance,
-		name: string,
-		size: Vector3,
-		cframe: CFrame,
-		color: Color3,
-		material: Enum.Material,
-		canCollide: boolean?
-	): Part
+	local function makePart(parent: Instance, name: string, size: Vector3, cframe: CFrame, color: Color3, material: Enum.Material, canCollide: boolean?): Part
 		local part = Instance.new("Part")
 		part.Name = name
 		part.Size = size
@@ -152,48 +143,18 @@ if existingProps == nil then
 		Enum.Material.Fabric,
 		false
 	)
-	local belongingsStrap = makePart(
-		props,
-		"BelongingsStrap",
-		Vector3.new(0.18, 0.76, 1.55),
-		belongings.CFrame * CFrame.new(0.15, 0, 0),
-		Color3.fromRGB(52, 45, 38),
-		Enum.Material.Fabric,
-		false
-	)
+	local belongingsStrap =
+		makePart(props, "BelongingsStrap", Vector3.new(0.18, 0.76, 1.55), belongings.CFrame * CFrame.new(0.15, 0, 0), Color3.fromRGB(52, 45, 38), Enum.Material.Fabric, false)
 	belongingsStrap.CanQuery = false
 	addExaminePrompt(belongings, "approach_belongings", "Belongings")
 
 	-- A restrained vehicle blockout with a visible toolkit; no owner or cause is implied.
 	local vehiclePosition = origin + right * 9 + forward * 5
 	local vehicleFrame = CFrame.lookAt(vehiclePosition, vehiclePosition + forward)
-	local vehicleBody = makePart(
-		props,
-		"ParkedWorkVehicleBody",
-		Vector3.new(7, 0.5, 11),
-		vehicleFrame * CFrame.new(0, 0.65, 0),
-		Color3.fromRGB(73, 91, 83),
-		Enum.Material.Metal
-	)
-	makePart(
-		props,
-		"ParkedWorkVehicleCab",
-		Vector3.new(5.8, 2.2, 4.2),
-		vehicleFrame * CFrame.new(0, 2.0, -1.4),
-		Color3.fromRGB(91, 112, 106),
-		Enum.Material.Metal,
-		false
-	)
-	makePart(
-		props,
-		"VisibleToolkit",
-		Vector3.new(2.1, 0.65, 1.1),
-		vehicleFrame * CFrame.new(0, 1.25, 3.2),
-		Color3.fromRGB(128, 91, 53),
-		Enum.Material.Metal,
-		false
-	)
-	for _, side in {-1, 1} do
+	local vehicleBody = makePart(props, "ParkedWorkVehicleBody", Vector3.new(7, 0.5, 11), vehicleFrame * CFrame.new(0, 0.65, 0), Color3.fromRGB(73, 91, 83), Enum.Material.Metal)
+	makePart(props, "ParkedWorkVehicleCab", Vector3.new(5.8, 2.2, 4.2), vehicleFrame * CFrame.new(0, 2.0, -1.4), Color3.fromRGB(91, 112, 106), Enum.Material.Metal, false)
+	makePart(props, "VisibleToolkit", Vector3.new(2.1, 0.65, 1.1), vehicleFrame * CFrame.new(0, 1.25, 3.2), Color3.fromRGB(128, 91, 53), Enum.Material.Metal, false)
+	for _, side in { -1, 1 } do
 		makePart(
 			props,
 			"VehicleBedRail_" .. side,
@@ -204,8 +165,8 @@ if existingProps == nil then
 			false
 		)
 	end
-	for _, side in {-1, 1} do
-		for _, z in {-3.4, 3.4} do
+	for _, side in { -1, 1 } do
+		for _, z in { -3.4, 3.4 } do
 			local wheel = makePart(
 				props,
 				"VehicleWheel_" .. side .. "_" .. z,
@@ -222,7 +183,7 @@ if existingProps == nil then
 end
 
 Players.PlayerRemoving:Connect(function(player: Player)
-	journals[player.UserId] = nil
+	InvestigationService.RemovePlayer(player)
 	lastRecordAt[player.UserId] = nil
 end)
 

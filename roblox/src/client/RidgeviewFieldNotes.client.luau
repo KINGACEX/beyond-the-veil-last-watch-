@@ -55,7 +55,7 @@ panelCorner.Parent = panel
 local heading = Instance.new("TextLabel")
 heading.Name = "Heading"
 heading.Position = UDim2.fromOffset(14, 10)
-heading.Size = UDim2.new(1, -28, 0, 25)
+heading.Size = UDim2.new(1, -28, 0, 22)
 heading.BackgroundTransparency = 1
 heading.Text = "RIDGEVIEW  /  FIELD NOTES"
 heading.TextColor3 = Color3.fromRGB(204, 177, 119)
@@ -64,10 +64,24 @@ heading.TextSize = 13
 heading.TextXAlignment = Enum.TextXAlignment.Left
 heading.Parent = panel
 
+local objectiveLabel = Instance.new("TextLabel")
+objectiveLabel.Name = "CurrentObjective"
+objectiveLabel.Position = UDim2.fromOffset(14, 33)
+objectiveLabel.Size = UDim2.new(1, -28, 0, 34)
+objectiveLabel.BackgroundTransparency = 1
+objectiveLabel.Text = "Current objective: Investigate Ridgeview"
+objectiveLabel.TextColor3 = Color3.fromRGB(224, 226, 217)
+objectiveLabel.Font = Enum.Font.GothamMedium
+objectiveLabel.TextSize = 10
+objectiveLabel.TextWrapped = true
+objectiveLabel.TextXAlignment = Enum.TextXAlignment.Left
+objectiveLabel.TextYAlignment = Enum.TextYAlignment.Top
+objectiveLabel.Parent = panel
+
 local scroll = Instance.new("ScrollingFrame")
 scroll.Name = "Entries"
-scroll.Position = UDim2.fromOffset(10, 42)
-scroll.Size = UDim2.new(1, -20, 1, -52)
+scroll.Position = UDim2.fromOffset(10, 72)
+scroll.Size = UDim2.new(1, -20, 1, -82)
 scroll.BackgroundTransparency = 1
 scroll.BorderSizePixel = 0
 scroll.ScrollBarThickness = 4
@@ -97,7 +111,7 @@ local function makeLabel(name: string, parent: Instance, text: string, height: n
 	return label
 end
 
-local function render(entries: {any})
+local function render(entries: { any })
 	toggle.Text = "FIELD NOTES  " .. tostring(#entries)
 
 	for _, child in scroll:GetChildren() do
@@ -143,7 +157,8 @@ local function render(entries: {any})
 		local title = makeLabel("Title", card, tostring(entry.Title), 18, Color3.fromRGB(240, 235, 222), 12, true)
 		title.Size = UDim2.new(1, 0, 0, 18)
 
-		local confidence = makeLabel("Confidence", card, tostring(entry.Confidence), 15, Color3.fromRGB(202, 177, 124), 10, true)
+		local confidence =
+			makeLabel("Confidence", card, tostring(entry.Category or "Evidence") .. "  •  " .. tostring(entry.Confidence), 15, Color3.fromRGB(202, 177, 124), 10, true)
 		confidence.Position = UDim2.fromOffset(0, 21)
 		confidence.Size = UDim2.new(1, 0, 0, 15)
 
@@ -160,6 +175,11 @@ end)
 local function updateMissionAccess(snapshot: any)
 	local unlocked = typeof(snapshot) == "table" and (snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation")
 	toggle.Visible = unlocked
+	if unlocked then
+		local objective = if typeof(snapshot.objective) == "string" then snapshot.objective else "Investigate Ridgeview"
+		local status = if typeof(snapshot.status) == "string" then snapshot.status else ""
+		objectiveLabel.Text = objective .. (if status ~= "" then "\n" .. status else "")
+	end
 	if not unlocked then
 		panel.Visible = false
 	end

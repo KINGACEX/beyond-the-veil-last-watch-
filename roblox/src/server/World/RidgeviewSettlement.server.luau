@@ -7,7 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
 local shared = ReplicatedStorage:WaitForChild("BTVShared")
-local SettlementPolicy = require(shared:WaitForChild("RidgeviewSettlementPolicy"))
+local InvestigationService = require(script.Parent.Parent.Services:WaitForChild("RidgeviewInvestigationService"))
 local MissionService = require(script.Parent.Parent.Services:WaitForChild("MissionService"))
 
 local remoteFolder = ReplicatedStorage:WaitForChild("BTVRemotes")
@@ -25,6 +25,8 @@ end
 
 local dialogueUpdated = getOrCreateRemote("RidgeviewDialogueUpdated")
 local dialogueAction = getOrCreateRemote("RidgeviewDialogueAction")
+local fieldNoteRecorded = remoteFolder:WaitForChild("FieldNoteRecorded") :: RemoteEvent
+local missionStateUpdated = remoteFolder:WaitForChild("MissionStateUpdated") :: RemoteEvent
 
 local world = Workspace:WaitForChild("BTV_World")
 local scene = world:WaitForChild("Ridgeview_LandscapeStudy")
@@ -39,15 +41,7 @@ local settlement = Instance.new("Model")
 settlement.Name = "RidgeviewSettlement"
 settlement.Parent = scene
 
-local function makePart(
-	parent: Instance,
-	name: string,
-	size: Vector3,
-	cframe: CFrame,
-	color: Color3,
-	material: Enum.Material,
-	canCollide: boolean?
-): Part
+local function makePart(parent: Instance, name: string, size: Vector3, cframe: CFrame, color: Color3, material: Enum.Material, canCollide: boolean?): Part
 	local part = Instance.new("Part")
 	part.Name = name
 	part.Size = size
@@ -64,34 +58,17 @@ local function makePart(
 	return part
 end
 
-local center = arrivalMarker.Position
-	+ arrivalMarker.CFrame.RightVector * 90
-	+ arrivalMarker.CFrame.LookVector * 30
+local center = arrivalMarker.Position + arrivalMarker.CFrame.RightVector * 90 + arrivalMarker.CFrame.LookVector * 30
 local right = arrivalMarker.CFrame.RightVector
 local forward = arrivalMarker.CFrame.LookVector
 
-local ground = makePart(
-	settlement,
-	"SettlementGround",
-	Vector3.new(150, 1, 118),
-	CFrame.new(center + Vector3.new(0, -0.15, 0)),
-	Color3.fromRGB(91, 111, 78),
-	Enum.Material.Grass
-)
+local ground = makePart(settlement, "SettlementGround", Vector3.new(150, 1, 118), CFrame.new(center + Vector3.new(0, -0.15, 0)), Color3.fromRGB(91, 111, 78), Enum.Material.Grass)
 ground.CanCollide = true
 
 local function makePath(name: string, startPoint: Vector3, endPoint: Vector3, width: number)
 	local midpoint = (startPoint + endPoint) / 2 + Vector3.new(0, 0.38, 0)
 	local length = (endPoint - startPoint).Magnitude
-	makePart(
-		settlement,
-		name,
-		Vector3.new(width, 0.32, length),
-		CFrame.lookAt(midpoint, endPoint),
-		Color3.fromRGB(148, 137, 112),
-		Enum.Material.Ground,
-		false
-	)
+	makePart(settlement, name, Vector3.new(width, 0.32, length), CFrame.lookAt(midpoint, endPoint), Color3.fromRGB(148, 137, 112), Enum.Material.Ground, false)
 end
 
 makePath("ApproachPath", arrivalMarker.Position + forward * 8, center - forward * 45, 7)
@@ -116,7 +93,7 @@ local function buildHouse(name: string, position: Vector3, yaw: number)
 	makePart(house, "DoorHeader", Vector3.new(8, 2, 1), baseFrame * CFrame.new(0, 11.5, -9), timber, Enum.Material.Wood)
 	makePart(house, "Door", Vector3.new(5, 9, 0.5), baseFrame * CFrame.new(0, 4.5, -9.3), timber, Enum.Material.Wood, false)
 	makePart(house, "Roof", Vector3.new(27, 2, 22), baseFrame * CFrame.new(0, 13.5, 0), roof, Enum.Material.Slate)
-	for _, side in {-1, 1} do
+	for _, side in { -1, 1 } do
 		makePart(house, "Window_" .. side, Vector3.new(0.35, 3.2, 4.5), baseFrame * CFrame.new(side * 11.1, 7.5, -1), window, Enum.Material.Glass, false)
 	end
 	return house
@@ -127,7 +104,15 @@ buildHouse("SettlementHouse_B", center + right * 47 + forward * 34, math.rad(-8)
 buildHouse("SettlementHouse_C", center + right * -47 - forward * 34, math.rad(178))
 buildHouse("SettlementHouse_D", center + right * 47 - forward * 34, math.rad(188))
 
-local sign = makePart(settlement, "RidgeviewOutpostSign", Vector3.new(20, 5, 0.7), CFrame.lookAt(center + forward * 59 + Vector3.new(0, 4, 0), center + forward * 59 + forward), Color3.fromRGB(35, 48, 52), Enum.Material.Slate, false)
+local sign = makePart(
+	settlement,
+	"RidgeviewOutpostSign",
+	Vector3.new(20, 5, 0.7),
+	CFrame.lookAt(center + forward * 59 + Vector3.new(0, 4, 0), center + forward * 59 + forward),
+	Color3.fromRGB(35, 48, 52),
+	Enum.Material.Slate,
+	false
+)
 local signGui = Instance.new("SurfaceGui")
 signGui.Face = Enum.NormalId.Front
 signGui.PixelsPerStud = 36
@@ -141,13 +126,16 @@ signText.Font = Enum.Font.GothamBold
 signText.TextScaled = true
 signText.Parent = signGui
 
-for index, offset in {
-	center + right * -24 + forward * 10,
-	center + right * 24 + forward * 10,
-	center + right * -24 - forward * 10,
-	center + right * 24 - forward * 10,
-} do
-	local lamp = makePart(settlement, "SettlementLamp_" .. tostring(index), Vector3.new(0.5, 7, 0.5), CFrame.new(offset + Vector3.new(0, 3.5, 0)), timber, Enum.Material.Wood, false)
+for index, offset in
+	{
+		center + right * -24 + forward * 10,
+		center + right * 24 + forward * 10,
+		center + right * -24 - forward * 10,
+		center + right * 24 - forward * 10,
+	}
+do
+	local lamp =
+		makePart(settlement, "SettlementLamp_" .. tostring(index), Vector3.new(0.5, 7, 0.5), CFrame.new(offset + Vector3.new(0, 3.5, 0)), timber, Enum.Material.Wood, false)
 	local light = Instance.new("PointLight")
 	light.Color = Color3.fromRGB(255, 207, 137)
 	light.Range = 18
@@ -162,7 +150,6 @@ type PlayerConversation = {
 	activeNpcId: string?,
 	phase: string?,
 	step: number,
-	policy: SettlementPolicy.State,
 	lastActionAt: number,
 }
 
@@ -216,16 +203,24 @@ local function createNpc(npcId: string, displayName: string, position: Vector3, 
 end
 
 local wren = createNpc("Wren", "Wren", center + right * -12 + forward * -7, {
-	Color3.fromRGB(87, 109, 116), Color3.fromRGB(178, 145, 116), Color3.fromRGB(53, 57, 58),
+	Color3.fromRGB(87, 109, 116),
+	Color3.fromRGB(178, 145, 116),
+	Color3.fromRGB(53, 57, 58),
 })
 local pike = createNpc("DorianPike", "Dorian Pike", center + right * 10 + forward * 6, {
-	Color3.fromRGB(76, 85, 73), Color3.fromRGB(166, 132, 103), Color3.fromRGB(62, 60, 54),
+	Color3.fromRGB(76, 85, 73),
+	Color3.fromRGB(166, 132, 103),
+	Color3.fromRGB(62, 60, 54),
 })
 local residentA = createNpc("ResidentA", "Resident", center + right * -35 + forward * 2, {
-	Color3.fromRGB(103, 92, 77), Color3.fromRGB(179, 145, 112), Color3.fromRGB(58, 59, 55),
+	Color3.fromRGB(103, 92, 77),
+	Color3.fromRGB(179, 145, 112),
+	Color3.fromRGB(58, 59, 55),
 })
 local residentB = createNpc("ResidentB", "Resident", center + right * 34 + forward * -3, {
-	Color3.fromRGB(70, 91, 103), Color3.fromRGB(170, 136, 109), Color3.fromRGB(63, 59, 52),
+	Color3.fromRGB(70, 91, 103),
+	Color3.fromRGB(170, 136, 109),
+	Color3.fromRGB(63, 59, 52),
 })
 
 local function moveBetween(model: Model, first: Vector3, second: Vector3, pause: number)
@@ -260,7 +255,6 @@ local function addPlayer(player: Player)
 		activeNpcId = nil,
 		phase = nil,
 		step = 0,
-		policy = SettlementPolicy.NewState(),
 		lastActionAt = 0,
 	}
 end
@@ -294,6 +288,13 @@ local function closeDialogue(player: Player)
 	dialogueUpdated:FireClient(player, { visible = false })
 end
 
+local function advanceInvestigationObjective(player: Player, expected: string, nextObjective: string)
+	local advanced, snapshot = MissionService.AdvanceRidgeviewObjective(player, expected, nextObjective)
+	if advanced and snapshot ~= nil then
+		missionStateUpdated:FireClient(player, snapshot)
+	end
+end
+
 local function canInteract(player: Player, npcId: string): boolean
 	local model = npcModels[npcId]
 	if model == nil or model.PrimaryPart == nil or player.Character == nil then
@@ -314,8 +315,17 @@ local function startConversation(player: Player, npcId: string)
 	state.activeNpcId = npcId
 	state.step = 1
 
+	local mission = MissionService.GetSnapshot(player)
+	if npcId == "Wren" and mission ~= nil and (mission.phase == "ridgeview_arrival" or mission.ridgeviewObjective == "collect_observations") then
+		state.phase = "wren_locked"
+		send(player, "Wren", "Please record what you can directly observe around the approach first. Then we can speak about what I saw.", {
+			{ Label = "End conversation", Action = "Close" },
+		})
+		return
+	end
+
 	if npcId == "Wren" then
-		if state.policy.wrenTestimonyRecorded and not state.policy.wrenTestimonyShareable then
+		if InvestigationService.GetState(player).wrenTestimonyRecorded and not InvestigationService.GetState(player).wrenSharePermission then
 			state.phase = "wren_permission"
 			send(player, "Wren", "You may ask whether I am comfortable with you sharing my recorded account. I can still keep it private.", {
 				{ Label = "Ask for permission to share with Pike", Action = "AskWrenPermission" },
@@ -324,7 +334,7 @@ local function startConversation(player: Player, npcId: string)
 			})
 			return
 		end
-		if state.policy.wrenTestimonyRecorded and state.policy.wrenTestimonyShareable then
+		if InvestigationService.GetState(player).wrenTestimonyRecorded and InvestigationService.GetState(player).wrenSharePermission then
 			state.phase = "wren_recorded"
 			send(player, "Wren", "My account is recorded. I have authorized you to share only that I saw the repairman go toward the camp.", {
 				{ Label = "End conversation", Action = "Close" },
@@ -386,10 +396,10 @@ local pikeIntro: { DialogueLine } = {
 	{ Speaker = "Dorian Pike", Text = "That's sensible. Just don't mistake every rumour for a fact." },
 }
 local pikeWrenChallenge: { DialogueLine } = {
-	{ Speaker = "Dorian Pike", Text = "Wren is frightened. She has had a difficult time." },
-	{ Speaker = "Asher", Text = "That doesn't make everything she says false." },
-	{ Speaker = "Dorian Pike", Text = "I didn't say it did." },
-	{ Speaker = "Asher", Text = "Then answer the part you can answer. Why are people being kept away from the camp?" },
+	{ Speaker = "Asher", Text = "Wren authorized me to share one detail: she saw the repairman go toward the camp." },
+	{ Speaker = "Dorian Pike", Text = "I understand. That is the only detail she agreed you could share?" },
+	{ Speaker = "Asher", Text = "Yes. I will not share anything beyond that." },
+	{ Speaker = "Asher", Text = "Why were people being kept away from the camp?" },
 	{ Speaker = "Dorian Pike", Text = "Because I thought it was safer if fewer people went there." },
 	{ Speaker = "Asher", Text = "Safer for whom?" },
 	{ Speaker = "Dorian Pike", Text = "I don't have a good answer." },
@@ -446,6 +456,7 @@ local function onAction(player: Player, action: unknown)
 			})
 		else
 			state.phase = "wren_consent"
+			advanceInvestigationObjective(player, "speak_with_wren", "choose_disclosure")
 			send(player, "Wren", "Would you like to ask my permission to share this specific observation with Pike, or keep it private?", {
 				{ Label = "Ask Wren for permission", Action = "AskWrenPermission" },
 				{ Label = "Keep this testimony private", Action = "KeepPrivate" },
@@ -455,11 +466,17 @@ local function onAction(player: Player, action: unknown)
 	end
 
 	if (state.phase == "wren_consent" or state.phase == "wren_permission" or state.phase == "wren_permission_pending") and action == "KeepPrivate" then
-		state.policy = SettlementPolicy.RecordWrenTestimony(state.policy)
-		local updated = SettlementPolicy.SetWrenSharePermission(state.policy, false)
-		if updated ~= nil then
-			state.policy = updated
+		InvestigationService.RecordWrenTestimony(player)
+		local permissionSet, permissionError = InvestigationService.SetWrenSharePermission(player, false)
+		if not permissionSet then
+			warn("[BTV Roblox] Wren privacy choice could not be recorded: " .. tostring(permissionError))
+			return
 		end
+		fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
+		if MissionService.GetRidgeviewObjective(player) == "speak_with_wren" then
+			advanceInvestigationObjective(player, "speak_with_wren", "choose_disclosure")
+		end
+		advanceInvestigationObjective(player, "choose_disclosure", "review_findings")
 		state.phase = "wren_recorded"
 		send(player, "Journal", "Wren's testimony is recorded for this session and remains private. Pike cannot be told about it.", {
 			{ Label = "End conversation", Action = "Close" },
@@ -477,12 +494,23 @@ local function onAction(player: Player, action: unknown)
 	end
 
 	if state.phase == "wren_permission_pending" and action == "ConfirmShare" then
-		state.policy = SettlementPolicy.RecordWrenTestimony(state.policy)
-		local updated = SettlementPolicy.SetWrenSharePermission(state.policy, true)
-		if updated == nil then
+		InvestigationService.RecordWrenTestimony(player)
+		local permissionSet, permissionError = InvestigationService.SetWrenSharePermission(player, true)
+		if not permissionSet then
+			warn("[BTV Roblox] Wren sharing permission was rejected: " .. tostring(permissionError))
 			return
 		end
-		state.policy = updated
+		fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
+		local currentObjective = MissionService.GetRidgeviewObjective(player)
+		if currentObjective == "speak_with_wren" then
+			advanceInvestigationObjective(player, "speak_with_wren", "choose_disclosure")
+			currentObjective = MissionService.GetRidgeviewObjective(player)
+		end
+		if currentObjective == "review_findings" then
+			advanceInvestigationObjective(player, "review_findings", "pike_followup")
+		else
+			advanceInvestigationObjective(player, "choose_disclosure", "pike_followup")
+		end
 		state.phase = "wren_recorded"
 		send(player, "Journal", "Wren's testimony is recorded. She explicitly authorized sharing only the observation that she saw the repairman go toward the camp.", {
 			{ Label = "End conversation", Action = "Close" },
@@ -501,7 +529,7 @@ local function onAction(player: Player, action: unknown)
 		else
 			state.phase = "pike_after_intro"
 			local choices: { Choice } = {}
-			if SettlementPolicy.CanDiscussWrenWithPike(state.policy) then
+			if InvestigationService.CanDiscussWrenWithPike(player) then
 				table.insert(choices, { Label = "Discuss Wren's authorized account", Action = "DiscussWren" })
 			end
 			table.insert(choices, { Label = "End conversation", Action = "Close" })
@@ -511,7 +539,7 @@ local function onAction(player: Player, action: unknown)
 	end
 
 	if state.phase == "pike_after_intro" and action == "DiscussWren" then
-		if not SettlementPolicy.CanDiscussWrenWithPike(state.policy) then
+		if not InvestigationService.CanDiscussWrenWithPike(player) then
 			return
 		end
 		state.phase = "pike_wren_challenge"
@@ -533,11 +561,13 @@ local function onAction(player: Player, action: unknown)
 				{ Label = "End conversation", Action = "Close" },
 			})
 		else
-			local admittedState = SettlementPolicy.RecordPikeAdmission(state.policy)
-			if admittedState == nil then
+			local admissionRecorded, admissionError = InvestigationService.RecordPikeAdmission(player)
+			if not admissionRecorded then
+				warn("[BTV Roblox] Pike admission was rejected: " .. tostring(admissionError))
 				return
 			end
-			state.policy = admittedState
+			fieldNoteRecorded:FireClient(player, InvestigationService.GetJournalSnapshot(player))
+			advanceInvestigationObjective(player, "pike_followup", "review_findings")
 			state.phase = "pike_admission_recorded"
 			send(player, "Journal", "Pike's limited admission is recorded for this session. It does not establish every accusation or a legal finding.", {
 				{ Label = "End conversation", Action = "Close" },

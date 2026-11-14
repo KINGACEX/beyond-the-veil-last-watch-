@@ -3,7 +3,7 @@
 
 local RidgeviewFieldNotePolicy = {}
 
-export type Journal = {[string]: boolean}
+export type Journal = { [string]: boolean }
 
 export type NoteSnapshot = {
 	Id: string,
@@ -13,11 +13,7 @@ export type NoteSnapshot = {
 	SortOrder: number,
 }
 
-function RidgeviewFieldNotePolicy.TryRecord(
-	current: Journal,
-	noteId: unknown,
-	catalog: {[string]: any}
-): (Journal?, string?)
+function RidgeviewFieldNotePolicy.TryRecord(current: Journal, noteId: unknown, catalog: { [string]: any }): (Journal?, string?)
 	if typeof(noteId) ~= "string" then
 		return nil, "Invalid field-note identifier."
 	end
@@ -35,11 +31,8 @@ function RidgeviewFieldNotePolicy.TryRecord(
 	return updated, nil
 end
 
-function RidgeviewFieldNotePolicy.Snapshot(
-	journal: Journal,
-	catalog: {[string]: any}
-): {NoteSnapshot}
-	local entries: {NoteSnapshot} = {}
+function RidgeviewFieldNotePolicy.Snapshot(journal: Journal, catalog: { [string]: any }): { NoteSnapshot }
+	local entries: { NoteSnapshot } = {}
 
 	for noteId, recorded in journal do
 		local definition = catalog[noteId]

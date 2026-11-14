@@ -1,0 +1,137 @@
+--!strict
+-- Ridgeview investigation regression tests: journal integration, consent scope and mission branching.
+
+local Policy = require("../src/shared/RidgeviewInvestigationPolicy")
+local Catalog = require("../src/shared/RidgeviewFieldNoteCatalog")
+local MissionService = require("../src/server/Services/MissionService")
+
+local function expect(condition: boolean, message: string)
+	if not condition then
+		error("[Ridgeview investigation test failed] " .. message)
+	end
+end
+
+do
+	local firstPlayer = Policy.NewState()
+	local secondPlayer = Policy.NewState()
+
+	local invalidType, invalidTypeError = Policy.TryRecordObservation(firstPlayer, 42, Catalog)
+	expect(invalidType == nil and invalidTypeError ~= nil, "observation IDs must be strings")
+
+	local unknown, unknownError = Policy.TryRecordObservation(firstPlayer, "invented_clue", Catalog)
+	expect(unknown == nil and unknownError ~= nil, "unknown observations are rejected")
+
+	local firstRecorded, firstError = Policy.TryRecordObservation(firstPlayer, "approach_belongings", Catalog)
+	expect(firstRecorded ~= nil and firstError == nil, "approved observation can be recorded")
+	assert(firstRecorded ~= nil, "first journal state exists")
+	expect(firstPlayer.observations.approach_belongings == nil, "observation recording does not mutate the source state")
+
+	local duplicate, duplicateError = Policy.TryRecordObservation(firstRecorded, "approach_belongings", Catalog)
+	expect(duplicate == nil and duplicateError ~= nil, "duplicate observation is rejected")
+
+	local secondRecorded, secondError = Policy.TryRecordObservation(firstRecorded, "parked_work_vehicle", Catalog)
+	expect(secondRecorded ~= nil and secondError == nil, "second approved observation can be recorded")
+	assert(secondRecorded ~= nil, "second journal state exists")
+	expect(secondPlayer.observations.approach_belongings == nil, "another player's journal remains isolated")
+
+	local prematurePermission, prematurePermissionError = Policy.SetWrenSharePermission(firstPlayer, true)
+	expect(prematurePermission == nil and prematurePermissionError ~= nil, "permission cannot exist before testimony is recorded")
+
+	local withTestimony = Policy.RecordWrenTestimony(secondRecorded)
+	expect(withTestimony.wrenTestimonyRecorded, "Wren testimony is recorded separately from observations")
+	expect(not withTestimony.wrenSharePermission, "recording testimony does not imply sharing permission")
+	expect(not withTestimony.pikeAdmissionRecorded, "Pike admission cannot pre-exist testimony disclosure")
+
+	local malformedPermission, malformedPermissionError = Policy.SetWrenSharePermission(withTestimony, "yes")
+	expect(malformedPermission == nil and malformedPermissionError ~= nil, "permission requires an explicit boolean")
+
+	local privatePermission, privatePermissionError = Policy.SetWrenSharePermission(withTestimony, false)
+	expect(privatePermission ~= nil and privatePermissionError == nil, "Wren can keep testimony private")
+	assert(privatePermission ~= nil, "private permission state exists")
+	expect(not Policy.CanDiscussWrenWithPike(privatePermission), "private testimony cannot be discussed with Pike")
+	local blockedAdmission, blockedAdmissionError = Policy.RecordPikeAdmission(privatePermission)
+	expect(blockedAdmission == nil and blockedAdmissionError ~= nil, "Pike admission is blocked without permission")
+
+	local authorized, authorizationError = Policy.SetWrenSharePermission(withTestimony, true)
+	expect(authorized ~= nil and authorizationError == nil, "explicit permission can be granted after testimony")
+	assert(authorized ~= nil, "authorized state exists")
+	expect(Policy.CanDiscussWrenWithPike(authorized), "authorized detail can be discussed with Pike")
+
+	local authorizedEntries = Policy.Snapshot(authorized, Catalog)
+	local disclosureEntry = nil
+	local privateEntry = nil
+	for _, entry in authorizedEntries do
+		if entry.Id == "wren_authorized_disclosure" then
+			disclosureEntry = entry
+		elseif entry.Id == "wren_testimony_private" then
+			privateEntry = entry
+		end
+	end
+	expect(disclosureEntry ~= nil, "journal records the authorized disclosure")
+	expect(privateEntry ~= nil, "journal retains the private source testimony for its owner")
+	assert(disclosureEntry ~= nil, "authorized disclosure exists")
+	expect(string.find(disclosureEntry.Text, "only this detail", 1, true) ~= nil, "disclosure explicitly records the narrow permission scope")
+	expect(string.find(disclosureEntry.Text, "does not know what happened", 1, true) == nil, "private details are not copied into the disclosure entry")
+
+	local admission, admissionError = Policy.RecordPikeAdmission(authorized)
+	expect(admission ~= nil and admissionError == nil, "Pike admission is recordable after authorized discussion")
+	assert(admission ~= nil, "Pike admission state exists")
+	expect(admission.pikeAdmissionRecorded, "Pike admission flag is set")
+	local completeEntries = Policy.Snapshot(admission, Catalog)
+	expect(#completeEntries == 5, "journal combines two observations, testimony, permission and Pike's admission")
+
+	local retold = Policy.RecordWrenTestimony(admission)
+	expect(not retold.wrenSharePermission, "a newly recorded testimony never inherits previous permission")
+	expect(not retold.pikeAdmissionRecorded, "a newly recorded testimony resets dependent Pike admission")
+	local retoldAdmission, retoldError = Policy.RecordPikeAdmission(retold)
+	expect(retoldAdmission == nil and retoldError ~= nil, "Pike admission is blocked after permission reset")
+
+	local secondPlayerEntries = Policy.Snapshot(secondPlayer, Catalog)
+	expect(#secondPlayerEntries == 0, "another player's journal contains no observations or testimony")
+	print("[BTV tests] Ridgeview unified journal and narrow consent policy passed.")
+end
+
+do
+	local player = { UserId = 991701 }
+	local otherPlayer = { UserId = 991702 }
+	MissionService.AddPlayer(player)
+	MissionService.AddPlayer(otherPlayer)
+
+	local phases = {
+		{ "communion_context", "covenant_alert" },
+		{ "covenant_alert", "report_accessed" },
+		{ "report_accessed", "ridgeview_arrival" },
+		{ "ridgeview_arrival", "ridgeview_investigation" },
+	}
+	for _, pair in phases do
+		local advanced = MissionService.Advance(player, pair[1], pair[2])
+		expect(advanced, "opening mission reaches Ridgeview through sequential phases")
+	end
+
+	local initial = MissionService.GetSnapshot(player)
+	expect(initial ~= nil and initial.ridgeviewObjective == "collect_observations", "Ridgeview starts by collecting observations")
+	local skipped = MissionService.AdvanceRidgeviewObjective(player, "collect_observations", "pike_followup")
+	expect(not skipped, "investigation objectives cannot be skipped")
+	local otherSnapshot = MissionService.GetSnapshot(otherPlayer)
+	expect(otherSnapshot ~= nil and otherSnapshot.phase == "communion_context", "one player's mission progression does not affect another")
+
+	local observationsDone = MissionService.AdvanceRidgeviewObjective(player, "collect_observations", "speak_with_wren")
+	expect(observationsDone, "completed observations unlock Wren conversation")
+	local testimonyDone = MissionService.AdvanceRidgeviewObjective(player, "speak_with_wren", "choose_disclosure")
+	expect(testimonyDone, "Wren testimony unlocks the explicit disclosure decision")
+	local consentedPath = MissionService.AdvanceRidgeviewObjective(player, "choose_disclosure", "pike_followup")
+	expect(consentedPath, "authorized disclosure unlocks Pike follow-up")
+	local review = MissionService.AdvanceRidgeviewObjective(player, "pike_followup", "review_findings")
+	expect(review, "Pike's limited admission advances to review")
+
+	local privatePlayer = { UserId = 991703 }
+	MissionService.AddPlayer(privatePlayer)
+	for _, pair in phases do
+		MissionService.Advance(privatePlayer, pair[1], pair[2])
+	end
+	MissionService.AdvanceRidgeviewObjective(privatePlayer, "collect_observations", "speak_with_wren")
+	MissionService.AdvanceRidgeviewObjective(privatePlayer, "speak_with_wren", "choose_disclosure")
+	local privatePath = MissionService.AdvanceRidgeviewObjective(privatePlayer, "choose_disclosure", "review_findings")
+	expect(privatePath, "keeping Wren's testimony private still allows investigation review")
+	print("[BTV tests] Ridgeview branching mission progression passed.")
+end

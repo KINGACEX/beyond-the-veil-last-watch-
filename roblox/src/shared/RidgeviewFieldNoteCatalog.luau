@@ -10,7 +10,7 @@ export type FieldNoteDefinition = {
 	SortOrder: number,
 }
 
-local definitions: {[string]: FieldNoteDefinition} = {
+local definitions: { [string]: FieldNoteDefinition } = {
 	approach_belongings = {
 		Id = "approach_belongings",
 		Title = "Belongings near the approach",
