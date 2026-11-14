@@ -103,7 +103,10 @@ do
 	local restoredState, restoreError = Policy.RestoreState(persistedState, Catalog)
 	expect(restoredState ~= nil and restoreError == nil, "valid completed investigation state can be restored")
 	assert(restoredState ~= nil, "restored investigation state exists")
-	expect(restoredState.wrenSharePermission and restoredState.wrenDisclosureDecisionMade and restoredState.pikeAdmissionRecorded, "restoration preserves the explicit consent chain")
+	expect(
+		restoredState.wrenSharePermission and restoredState.wrenDisclosureDecisionMade and restoredState.pikeAdmissionRecorded,
+		"restoration preserves the explicit consent chain"
+	)
 	expect(#Policy.Snapshot(restoredState, Catalog) == 5, "restored investigation retains its complete journal")
 
 	local malformedPersistedState = Policy.CloneState(admission)
