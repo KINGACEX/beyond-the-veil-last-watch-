@@ -220,7 +220,7 @@ function MissionService.GetPersistentProgress(player: PlayerIdentity)
 	return {
 		phase = state.phase,
 		sequenceIndex = state.sequenceIndex,
-		ridgeviewObjective = state.ridgeviewObjective,
+		ridgeviewObjective = if state.phase == "ridgeview_investigation" then state.ridgeviewObjective else nil,
 	}
 end
 
