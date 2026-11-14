@@ -4,11 +4,12 @@
 
 local PlayerProfileSchema = {}
 
-local CURRENT_SCHEMA_VERSION = 4
+local CURRENT_SCHEMA_VERSION = 5
 local LEGACY_SCHEMA_VERSION = 1
 local INVENTORY_SCHEMA_VERSION = 2
 local TRANSACTION_SCHEMA_VERSION = 3
 local INVESTIGATION_SCHEMA_VERSION = 4
+local CONSENT_DECISION_SCHEMA_VERSION = 5
 local MAX_RECENT_TRANSACTIONS = 50
 local DEFAULT_OWNERSHIP: {[string]: boolean} = table.freeze({
 	ember = true,
@@ -201,6 +202,7 @@ local function validateProfile(
 			or typeof(ridgeview.observations) ~= "table"
 			or typeof(ridgeview.wrenTestimonyRecorded) ~= "boolean"
 			or typeof(ridgeview.wrenSharePermission) ~= "boolean"
+			or (expectedVersion >= CONSENT_DECISION_SCHEMA_VERSION and typeof(ridgeview.wrenDisclosureDecisionMade) ~= "boolean")
 			or typeof(ridgeview.pikeAdmissionRecorded) ~= "boolean"
 		then
 			return false, "Ridgeview investigation profile is malformed."
@@ -209,6 +211,9 @@ local function validateProfile(
 			if (noteId ~= "approach_belongings" and noteId ~= "parked_work_vehicle") or recorded ~= true then
 				return false, "Ridgeview profile contains an unknown or invalid observation."
 			end
+		end
+		if expectedVersion >= CONSENT_DECISION_SCHEMA_VERSION and ridgeview.wrenSharePermission and not ridgeview.wrenDisclosureDecisionMade then
+			return false, "Ridgeview sharing permission has no recorded disclosure decision."
 		end
 		if ridgeview.wrenSharePermission and not ridgeview.wrenTestimonyRecorded then
 			return false, "Ridgeview sharing permission cannot exist without recorded testimony."
@@ -227,6 +232,7 @@ local function createDefaultInvestigation()
 			observations = {},
 			wrenTestimonyRecorded = false,
 			wrenSharePermission = false,
+			wrenDisclosureDecisionMade = false,
 			pikeAdmissionRecorded = false,
 		},
 	}
@@ -285,6 +291,7 @@ function PlayerProfileSchema.Migrate(
 	if profile.schemaVersion == LEGACY_SCHEMA_VERSION
 		or profile.schemaVersion == INVENTORY_SCHEMA_VERSION
 		or profile.schemaVersion == TRANSACTION_SCHEMA_VERSION
+		or profile.schemaVersion == INVESTIGATION_SCHEMA_VERSION
 	then
 		local sourceVersion = profile.schemaVersion
 		local sourceValid, sourceError = validateProfile(
@@ -308,6 +315,11 @@ function PlayerProfileSchema.Migrate(
 		end
 		if sourceVersion < INVESTIGATION_SCHEMA_VERSION then
 			migrated.investigation = createDefaultInvestigation()
+		elseif sourceVersion < CONSENT_DECISION_SCHEMA_VERSION then
+			local ridgeview = migrated.investigation.ridgeview
+			-- Older saves cannot prove that a false permission was explicitly chosen.
+			-- Keep the account private and require Wren's decision to be reconfirmed.
+			ridgeview.wrenDisclosureDecisionMade = ridgeview.wrenSharePermission == true
 		end
 		migrated.schemaVersion = CURRENT_SCHEMA_VERSION
 		local migratedValid, migratedError = validateProfile(
