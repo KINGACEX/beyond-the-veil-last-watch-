@@ -89,6 +89,15 @@ do
 	expect(MissionService.GetRegion(resumedPlayer :: any) == "temple", "mid-mission checkpoint restores the Temple return region")
 	MissionService.RemovePlayer(resumedPlayer :: any)
 
+	local invalidRegionPlayer = { UserId = 901005 }
+	MissionService.AddPlayer(invalidRegionPlayer :: any, nil, {
+		phase = "communion_context",
+		sequenceIndex = 1,
+		region = "ridgeview",
+	})
+	expect(MissionService.GetRegion(invalidRegionPlayer :: any) == "temple", "invalid early-game Ridgeview region restores safely to Temple")
+	MissionService.RemovePlayer(invalidRegionPlayer :: any)
+
 	local skippedFinal = MissionService.Advance(player :: any, "communion_context", "ridgeview_arrival")
 	expect(skippedFinal == false, "mission cannot jump directly to Ridgeview")
 
@@ -400,6 +409,19 @@ do
 	local migratedV6Profile, migratedV6Error = PlayerProfileSchema.Migrate(legacyV6Profile, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
 	expect(migratedV6Profile ~= nil and migratedV6Error == nil, "valid v6 profile migrates to v7")
 	expect(migratedV6Profile ~= nil and migratedV6Profile.progression.activeMission.region == "temple", "v6 migration adds the safe Temple region")
+	local legacyV6Ridgeview = PlayerProfileSchema.CreateDefault()
+	legacyV6Ridgeview.schemaVersion = 6
+	legacyV6Ridgeview.progression.activeMission = {
+		phase = "ridgeview_investigation",
+		sequenceIndex = 5,
+		ridgeviewObjective = "choose_disclosure",
+	}
+	local migratedV6Ridgeview = PlayerProfileSchema.Migrate(legacyV6Ridgeview, CovenantRankCatalog, CompanionCatalog, InventoryPolicy, ItemCatalog)
+	expect(
+		migratedV6Ridgeview ~= nil and migratedV6Ridgeview.progression.activeMission.region == "ridgeview",
+		"v6 migration restores active Ridgeview missions to Ridgeview"
+	)
+
 
 	local legacyV5Completed = PlayerProfileSchema.CreateDefault()
 	legacyV5Completed.schemaVersion = 5
