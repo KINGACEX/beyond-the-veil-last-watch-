@@ -29,11 +29,7 @@ function RidgeviewInvestigationPolicy.NewState(): State
 	}
 end
 
-function RidgeviewInvestigationPolicy.TryRecordObservation(
-	current: State,
-	noteId: unknown,
-	catalog: { [string]: any }
-): (State?, string?)
+function RidgeviewInvestigationPolicy.TryRecordObservation(current: State, noteId: unknown, catalog: { [string]: any }): (State?, string?)
 	if typeof(noteId) ~= "string" then
 		return nil, "Invalid field-note identifier."
 	end
@@ -59,10 +55,7 @@ function RidgeviewInvestigationPolicy.RecordWrenTestimony(current: State): State
 	return updated
 end
 
-function RidgeviewInvestigationPolicy.SetWrenSharePermission(
-	current: State,
-	permission: unknown
-): (State?, string?)
+function RidgeviewInvestigationPolicy.SetWrenSharePermission(current: State, permission: unknown): (State?, string?)
 	if not current.wrenTestimonyRecorded then
 		return nil, "Wren testimony must be recorded before permission can be set."
 	end
@@ -91,10 +84,7 @@ function RidgeviewInvestigationPolicy.RecordPikeAdmission(current: State): (Stat
 	return updated, nil
 end
 
-function RidgeviewInvestigationPolicy.Snapshot(
-	state: State,
-	catalog: { [string]: any }
-): { JournalEntry }
+function RidgeviewInvestigationPolicy.Snapshot(state: State, catalog: { [string]: any }): { JournalEntry }
 	local entries: { JournalEntry } = {}
 	for noteId, recorded in state.observations do
 		local definition = catalog[noteId]
