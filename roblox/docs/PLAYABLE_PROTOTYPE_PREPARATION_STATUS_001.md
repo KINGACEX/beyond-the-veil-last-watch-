@@ -3,7 +3,7 @@
 **Audit date:** 2026-11-14  
 **Branch:** `btv/roblox-opening-loop-003`  
 **Audited base:** PR #12 head `btv/roblox-ridgeview-corrections-001` @ `938462cf`  
-**Current implementation head:** `de73fe8793e90e9e00aaf6c70c435116dff68b51`  
+**Current implementation head:** `dde6936bf935bc9a7bb84b6242be747f0cf89865`  
 **Status:** Source increment implemented; headless CI PASS; genuine Roblox Studio runtime remains pending.  
 **Authority:** This document records the Roblox prototype implementation only. The BTV Master Canon, Mission Bible, Character Bible, Church Bible and Visual/UI/HUD Bible remain authoritative.
 
@@ -66,8 +66,8 @@
 
 ## 2. Latest automated test evidence
 
-**GitHub Actions run 43591493016 — PASS**  
-[Open successful validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43591493016)
+**GitHub Actions run 43591751341 — PASS**  
+[Open successful validation run](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43591751341)
 
 | Check | Result |
 |---|---|
@@ -81,10 +81,10 @@
 
 Artifact:
 - Name: `btv-roblox-place`
-- Artifact ID: `14112816470`
+- Artifact ID: `14112238631`
 - Generated from: `de73fe8793e90e9e00aaf6c70c435116dff68b51`
-- Expires: **2026-11-21 11:45 UTC**
-- [Open run and download artifact](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43591493016)
+- Expires: **2026-11-21 11:48 UTC**
+- [Open run and download artifact](https://github.com/KINGACEX/beyond-the-veil-last-watch-/actions/runs/43591751341)
 
 ### Validation scope caveat
 
@@ -113,8 +113,10 @@ The existing StyLua job uses an explicit file allowlist, not a whole-tree check.
 | 43591252095 | Failed | Schema-version assertions still needed updating to v7; corrected. |
 | 43591288078 | Failed | StyLua flagged the completed-region migration assertion; corrected. |
 | 43591337583 | Failed | StyLua flagged the mission-region restoration predicate; corrected. |
+| 43591680842 | Failed | Headless suites passed; StyLua flagged formatting in the additional v6 region migration test. Corrected. |
+| 43591718109 | Failed | Headless suites passed; one excess blank line remained in the region migration test. Corrected. |
 | 43591379923 | Passed | Region persistence, Temple return/revisit logic, mission checkpoint migration and the configured pipeline passed. |
-| 43591493016 | **Passed** | Final documentation-aligned branch head passed the configured pipeline and produced the current place artifact. |
+| 43591751341 | **Passed** | Region fallback and v6 Ridgeview migration tests passed with the full configured pipeline; current place artifact produced. |
 
 An earlier policy defect was corrected: a default false permission could be confused with an explicit private decision. A separate decision flag and schema v5 migration now prevent that. Schema v6 added validated active-mission checkpoints; schema v7 adds validated current-region state and migration. Regression coverage verifies mid-mission restoration, return/revisit region continuity, schema migration, private and consented paths, and the existing persistence adapter.
 
