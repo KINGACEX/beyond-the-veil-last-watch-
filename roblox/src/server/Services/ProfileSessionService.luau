@@ -32,6 +32,7 @@ type Session = {
 local adapter: any = nil
 local sessions: { [number]: Session } = {}
 local saveLocks: { [number]: boolean } = {}
+local closingPlayers: { [number]: boolean } = {}
 local autoSaveStarted = false
 local AUTO_SAVE_INTERVAL_SECONDS = 60
 local LEASE_DURATION_SECONDS = 180
@@ -96,21 +97,32 @@ function ProfileSessionService.Acquire(player: Player): (any?, string?)
 		ownerToken = acquired.ownerToken,
 		revision = acquired.revision,
 	}
+	closingPlayers[player.UserId] = nil
 	return cloneValue(acquired.profile), nil
 end
 
 function ProfileSessionService.ReleaseWithoutSave(player: Player): (boolean, string?)
-	local session = sessions[player.UserId]
+	local userId = player.UserId
+	closingPlayers[userId] = true
+	while saveLocks[userId] do
+		task.wait(0.05)
+	end
+	local session = sessions[userId]
 	if session == nil or adapter == nil then
+		closingPlayers[userId] = nil
 		return true, nil
 	end
-	local released, releaseError = adapter:Release(player.UserId, session.ownerToken)
-	sessions[player.UserId] = nil
+	local released, releaseError = adapter:Release(userId, session.ownerToken)
+	sessions[userId] = nil
+	closingPlayers[userId] = nil
 	return released, releaseError
 end
 
-function ProfileSessionService.Save(player: Player): (boolean, string?)
+function ProfileSessionService.Save(player: Player, allowClosing: boolean?): (boolean, string?)
 	local userId = player.UserId
+	if closingPlayers[userId] and allowClosing ~= true then
+		return false, "Profile session is closing."
+	end
 	while saveLocks[userId] do
 		task.wait(0.05)
 	end
@@ -175,21 +187,25 @@ function ProfileSessionService.Save(player: Player): (boolean, string?)
 	return finish(true, nil)
 end
 function ProfileSessionService.SaveAndRelease(player: Player): (boolean, string?)
-	local session = sessions[player.UserId]
+	local userId = player.UserId
+	local session = sessions[userId]
 	if session == nil or adapter == nil then
 		return true, nil
 	end
+	closingPlayers[userId] = true
 
-	local saved, saveError = ProfileSessionService.Save(player)
+	local saved, saveError = ProfileSessionService.Save(player, true)
 	if not saved then
 		-- Do not release a lease after a failed save; let it expire rather than
 		-- inviting another server to load a potentially stale profile immediately.
-		sessions[player.UserId] = nil
+		sessions[userId] = nil
+		closingPlayers[userId] = nil
 		return false, saveError
 	end
 
-	local released, releaseError = adapter:Release(player.UserId, session.ownerToken)
-	sessions[player.UserId] = nil
+	local released, releaseError = adapter:Release(userId, session.ownerToken)
+	sessions[userId] = nil
+	closingPlayers[userId] = nil
 	if not released then
 		return false, releaseError
 	end
