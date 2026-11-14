@@ -1,7 +1,6 @@
 --!strict
--- First playable opening-slice interaction scaffold.
--- Communion remains contextual. No evidence, dialogue, rewards, or theology-dependent
--- mechanics are fabricated here; the Scout Report content is deliberately pending.
+-- Temple onboarding, Covenant briefing access and Ridgeview travel interactions.
+-- Communion remains contextual; no theology-dependent mechanic or spiritual reward is introduced.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
