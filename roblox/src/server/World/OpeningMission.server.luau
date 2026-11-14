@@ -14,6 +14,7 @@ local missionStateUpdated = remoteFolder:WaitForChild("MissionStateUpdated") :: 
 local world = Workspace:WaitForChild("BTV_World")
 local scene = world:WaitForChild("LogosRhemaTemple_VisualPrototype")
 local interior = scene:WaitForChild("Interior")
+local templeSpawn = scene:WaitForChild("PrototypeFoyerSpawn") :: SpawnLocation
 local ridgeviewScene = world:WaitForChild("Ridgeview_LandscapeStudy")
 local ridgeviewArrivalMarker = ridgeviewScene:WaitForChild("RidgeviewArrivalMarker") :: BasePart
 
@@ -86,13 +87,14 @@ local function restoreRidgeviewPosition(player: Player, character: Model)
 		end
 
 		local snapshot = MissionService.GetSnapshot(player)
-		if snapshot ~= nil and (snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation") then
+		if snapshot ~= nil and (snapshot.phase == "ridgeview_arrival" or snapshot.phase == "ridgeview_investigation" or snapshot.phase == "mission_complete") then
 			character:PivotTo(getRidgeviewArrivalCFrame())
 		end
 	end)
 end
 
 local function bindPlayer(player: Player)
+	player.RespawnLocation = templeSpawn
 	local previous = characterConnections[player.UserId]
 	if previous ~= nil then
 		previous:Disconnect()
@@ -194,4 +196,4 @@ departurePrompt.Triggered:Connect(function(player: Player)
 	end
 end)
 
-print("[BTV Roblox] Opening mission interactions ready: sanctuary entry, Scout Report access and gated Ridgeview travel.")
+print("[BTV Roblox] Opening mission interactions ready: foyer spawn, sanctuary onboarding, Covenant briefing and gated Ridgeview travel.")
