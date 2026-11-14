@@ -6,6 +6,7 @@ local MissionService = {}
 
 export type MissionSnapshot = {
 	phase: string,
+	region: string,
 	sequenceIndex: number,
 	objective: string,
 	status: string,
@@ -161,6 +162,7 @@ function MissionService.GetSnapshot(player: PlayerIdentity): MissionSnapshot?
 	end
 	return {
 		phase = state.phase,
+		region = state.region,
 		sequenceIndex = state.sequenceIndex,
 		objective = objective,
 		status = status,
