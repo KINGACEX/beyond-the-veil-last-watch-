@@ -191,3 +191,12 @@ One Ember SVG creation call omitted the feature-branch argument and briefly crea
 - The cutaway is explicitly an inspection aid; a complete room shell must be restored or reworked before final runtime implementation.
 - No GLB has been imported into Godot. No Android test has been run.
 
+
+
+## 16. Latest 3D revision state — 2026-11-18
+
+- v0.2 has advanced to RUNNING / DELIVERY.
+- A provisional preview is available; the final saved version and inspection artifacts are not yet committed.
+- The v0.2 job remains capped at zero USD, with no charge reported.
+- The next verification is to inspect the revised camera view and confirm the interior is visible before marking the blockout acceptable.
+
