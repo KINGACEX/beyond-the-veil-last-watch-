@@ -59,3 +59,6 @@ The SVG now contains six drawn panels covering the establishing view, fellowship
 - Creator approval: PENDING.
 
 **End — BTV-STB-001 Storyboard Exploration 01.**
+
+
+**Version note:** This v0.1 six-frame composition board is retained for history. The current full service storyboard is [BTV-STB-001 v0.2](BTV-STB-001_Opening_Sunday_Storyboard_v0.2.md), with a corresponding SVG at `assets/concepts/storyboards/BTV-STB-001_opening-sunday_storyboard-v02.svg`.
