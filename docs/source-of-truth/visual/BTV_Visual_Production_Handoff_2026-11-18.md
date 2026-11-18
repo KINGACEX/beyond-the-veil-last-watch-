@@ -85,3 +85,33 @@ These are source reconciliation corrections, not new canon decisions.
 8. Seek explicit approval before paid generation, publishing, merging, or changing canon.
 
 **Handoff principle:** Preserve the source of truth, keep proposals visibly separate, and report only work supported by repository evidence.
+
+
+## 7. Visual production update — 2026-11-18
+
+### Completed
+
+- Inspected the Library's `chapel_actual_render.png` as a possible Logos Rhema Temple greybox reference.
+- Created and saved an original vector environment concept at `assets/concepts/environments/BTV-ENV-001_logos-rhema-temple-interior_concept-v01.svg`.
+- Added [BTV-ENV-001 Concept Study 01](BTV-ENV-001_Logos_Rhema_Temple_Interior_Concept_Study_01.md), documenting source basis, design intent, unknowns, and review gates.
+- Updated the Visual Asset Registry to track the concept and its proposed status.
+- Confirmed the controlling slice says Asher is aged 16–19, presented as 18; the Character Bible leaves exact appearance unknown.
+- Inspected two existing Asher images. They depict materially different identities and equipment; neither is selected as final.
+- Inspected the fox companion preview; it is not evidence of Ember's final BTV appearance.
+
+### Not completed
+
+- No final Asher model sheet or Ember model sheet has been created. Their exact appearances are not sufficiently established by the controlling sources.
+- No final chapel environment has been approved.
+- No game scene, model, material, texture, rig, animation, lighting, navigation, or Android build has been implemented or tested.
+- A separate raster concept preview was generated but could not be committed using the available GitHub text-file write action. The SVG is the repository-stored visual deliverable.
+
+### Next production sequence
+
+1. Review/approve or reject the Logos Rhema interior concept.
+2. Retrieve the exact Asher/Ember controlling reference materials and resolve provenance conflicts.
+3. Produce source-grounded character visual briefs before any character generation.
+4. Prepare Ridgeview environmental concept work only from the approved slice geography and current reference inventory.
+5. Build storyboard/animatic for the first Sunday sequence, respecting service order, Ember's Hold state, and the non-interruption rules.
+6. Convert accepted concept art into modular Godot environment assets only after the engineering branch and project structure are verified.
+
