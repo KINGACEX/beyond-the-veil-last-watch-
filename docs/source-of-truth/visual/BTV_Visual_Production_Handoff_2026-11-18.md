@@ -170,3 +170,13 @@ One Ember SVG creation call omitted the feature-branch argument and briefly crea
 - Job remains QUEUED at this handoff update; no saved model, GLB export, Godot import, or device test is yet verified.
 - One extra empty private Blendstra project was created before the model submission used its own project. It contains no model and no charge; it was not deleted because project deletion is restricted to explicit user requests.
 
+
+
+## 14. 3D blockout job progress — 2026-11-18
+
+- The private Blendstra CPU job advanced from QUEUED to RUNNING / DELIVERY.
+- The source checkpoint has been saved (1.54 MB); a provisional preview is available (0.69 MB).
+- The final saved version, poster, and requested inspection views are not yet verified.
+- The job's maximum charge is explicitly zero USD; reported charged amount remains zero.
+- The model has not been accepted, exported to the repository, imported into Godot, or tested on Android.
+
