@@ -126,3 +126,12 @@ These are source reconciliation corrections, not new canon decisions.
 - It preserves the slice rule that Ember remains at the designated Hold spot and does not interrupt worship or Communion.
 - The board is a visual composition exploration, not an approved shot list, animatic, final script, or implemented scene.
 
+
+## 9. Ridgeview environment visual study — 2026-11-18
+
+- Added the proposed three-zone environment SVG at `assets/concepts/environments/BTV-ENV-003_ridgeview_environment_concept-v01.svg`.
+- Added [Ridgeview Environment Concept Study 01](BTV-ENV-003_Ridgeview_Environment_Concept_Study_01.md).
+- The board covers the late-afternoon approach, inhabited settlement, and outlying work camp.
+- It preserves slice constraints: no children at Ridgeview, no graphic content, no visible/named Devourers, and no explicit Veil explanation.
+- Exact geography, architecture, evidence placement, and navigation remain proposed pending comparison with the existing greybox and investigation design.
+
