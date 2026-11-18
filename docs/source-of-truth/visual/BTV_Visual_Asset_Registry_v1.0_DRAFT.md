@@ -61,7 +61,7 @@ Primary references:
 | Asset ID | Character | Canon/source status | Visual reference status | Production state | Notes |
 |---|---|---|---|---|---|
 | BTV-CHR-001 | Asher Vance | CONFIRMED / LOCK; sole playable protagonist and Chosen; age 18 in controlling slice; Agent/Specialist, Watcher branch | Approved gameplay references establish baseline; exact reference manifest still incomplete. Showcase sheet is REFERENCE CANDIDATE and has printed age conflict (“Early 20s”) | BLOCKED for final model-sheet approval | Do not use showcase sheet's age, height, build, or accessories as canon. See provenance audit. |
-| BTV-PET-001 | Ember | CONFIRMED / LOCK; rare naturally occurring canid lineage; Asher's companion/field partner | Exact appearance/breed characteristics OPEN; Afterfall profile is NOT CONFIRMED as BTV Ember | BLOCKED for final model-sheet approval | No wings, demonic anatomy, cybernetics, angelic transformation, or human speech. |
+| BTV-PET-001 | Ember | CONFIRMED / LOCK; rare original wild-dog/canid lineage; natural origin; Asher's companion/field partner | Exact visual breed characteristics OPEN; fox preview is not an approved BTV reference; three silhouette options now documented | PROPOSED / REVIEW | See [Ember Silhouette Study 01](BTV-PET-001_Ember_Visual_Silhouette_Study_01.md). No wings, demonic anatomy, cybernetics, angelic transformation, or human speech. |
 | BTV-CHR-002 | Pastor Elias Warrick | CONFIRMED slice character | No approved visual reference established in reviewed repository sources | PROPOSED reference package; appearance not to be invented as canon | Senior Pastor, 61; use slice Character Bible for approved characterization. |
 | BTV-CHR-003 | Pastor Maribel Santos | CONFIRMED slice character | No approved visual reference established in reviewed repository sources | PROPOSED reference package; appearance not to be invented as canon | Associate Pastor, 38; former hospital nurse per slice inventory. |
 | BTV-CHR-004 | Tobias Reed | CONFIRMED slice character | No approved visual reference established in reviewed repository sources | PROPOSED reference package; appearance not to be invented as canon | Worship Leader, 29; former session musician per slice inventory. |
@@ -248,3 +248,19 @@ The `btv_fox_companion_v03_preview.png` is a stylized fox model preview. It does
 - **Zones:** approach, settlement, outlying work camp.
 - **Slice safeguards:** no children at Ridgeview; no graphic content; no visible or named Devourers; no Veil explanation; ordinary explanations remain plausible.
 - **Implementation:** not started; no Godot scene or Android test.
+
+## 17. Character visual production update — 2026-11-18
+
+### Asher Vance
+- **Brief:** [Asher Vance Visual Reference Brief](BTV-CHR-001_Asher_Vance_Visual_Reference_Brief.md)
+- **Status:** BLOCKED for final model sheet because exact appearance is UNKNOWN and existing references conflict.
+- **Source review:** Character Bible v1.0 and Vertical Slice Specification v1.0 confirm age 16–19, presented as 18, sole playable protagonist/Chosen, Agent/Specialist, Watcher branch.
+- **References inspected:** two materially different Asher character images and one older HUD visual-bible image. All remain REFERENCE CANDIDATES; none is selected as master.
+
+### Ember
+- **Source reviewed:** Foundation #11 — Ember Companion Bible v1.0 (Library PDF).
+- **Locked identity:** rare original wild-dog/canid lineage; natural origin; athletic, agile, resilient, expressive and believable; companion/field partner; exact visual breed characteristics remain OPEN.
+- **Asset:** `assets/concepts/characters/BTV-PET-001_ember_canid_silhouette_study-v01.svg`
+- **Brief:** [Ember Visual Silhouette Study 01](BTV-PET-001_Ember_Visual_Silhouette_Study_01.md)
+- **Status:** three PROPOSED silhouette directions; no option selected; no final model sheet or 3D model.
+- **Reference exclusion:** the Library's stylized fox companion preview does not establish BTV Ember and must not override Foundation #11.
