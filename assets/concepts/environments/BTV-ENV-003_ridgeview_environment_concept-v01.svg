@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1050" viewBox="0 0 1800 1050" role="img" aria-labelledby="t d">
+<title id="t">BTV Ridgeview environmental concept study 01</title>
+<desc id="d">Three quiet rural settlement environment views: late-afternoon approach road, wary settlement center, and an outlying work camp. No enemies, children, gore, or explicit Veil manifestations.</desc>
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#607b8b"/><stop offset=".55" stop-color="#d5a16d"/><stop offset="1" stop-color="#4d4545"/></linearGradient>
+ <linearGradient id="ground" x2="0" y2="1"><stop stop-color="#85795e"/><stop offset="1" stop-color="#363d39"/></linearGradient>
+ <linearGradient id="house" x2="0" y2="1"><stop stop-color="#b6a58b"/><stop offset="1" stop-color="#675c50"/></linearGradient>
+ <linearGradient id="window" x2="0" y2="1"><stop stop-color="#d6b17b"/><stop offset="1" stop-color="#574d42"/></linearGradient>
+</defs>
+<rect width="1800" height="1050" fill="#151a1f"/>
+<text x="60" y="68" fill="#f2eee6" font-family="Arial,sans-serif" font-size="28" letter-spacing="6">BEYOND THE VEIL: THE LAST WATCH</text>
+<text x="60" y="112" fill="#d4b57d" font-family="Arial,sans-serif" font-size="18" letter-spacing="4">RIDGEVIEW · ENVIRONMENT STUDY 01</text>
+<text x="1740" y="76" text-anchor="end" fill="#e4c78e" font-family="Arial,sans-serif" font-size="15" letter-spacing="2">PROPOSED · NO THREAT REVEAL</text>
+
+<!-- panel 1 road -->
+<g transform="translate(60 155)">
+<rect width="540" height="700" rx="14" fill="#252a2f" stroke="#8e795a" stroke-width="2"/>
+<text x="22" y="38" fill="#e4c78e" font-family="Arial,sans-serif" font-size="16" letter-spacing="2">A · APPROACH / LATE AFTERNOON</text>
+<rect x="18" y="58" width="504" height="610" fill="url(#sky)"/>
+<path d="M18 360L130 220L250 355L360 205L522 365V668H18Z" fill="#3e4a42"/>
+<path d="M18 420L115 335L190 410L310 300L420 420L522 350V668H18Z" fill="#59604e"/>
+<path d="M18 668L220 380H310L522 668Z" fill="url(#ground)"/>
+<path d="M220 668L265 420H285L345 668Z" fill="#b4a184" opacity=".55"/>
+<path d="M22 555L150 490M520 555L390 490" stroke="#d1b184" stroke-opacity=".5" stroke-width="4"/>
+<g fill="#29372e"><path d="M75 390Q40 300 90 250Q140 300 110 390Z"/><path d="M420 390Q385 290 435 240Q485 290 455 390Z"/><path d="M155 390Q130 330 170 295Q210 335 190 390Z"/></g>
+<g stroke="#b4a184" stroke-width="3" opacity=".5"><path d="M55 450L90 415M445 450L480 415"/></g>
+<text x="22" y="693" fill="#cfc7ba" font-family="Arial,sans-serif" font-size="13">Quiet approach; muted wildlife and distant settlement.</text>
+</g>
+
+<!-- panel 2 settlement -->
+<g transform="translate(630 155)">
+<rect width="540" height="700" rx="14" fill="#252a2f" stroke="#8e795a" stroke-width="2"/>
+<text x="22" y="38" fill="#e4c78e" font-family="Arial,sans-serif" font-size="16" letter-spacing="2">B · SETTLEMENT / PEOPLE PRESENT</text>
+<rect x="18" y="58" width="504" height="610" fill="url(#sky)"/>
+<path d="M18 360L130 250L235 360L355 230L522 370V668H18Z" fill="#4d5948"/>
+<path d="M18 440H522V668H18Z" fill="#665e4e"/>
+<!-- houses -->
+<g fill="url(#house)" stroke="#493d32" stroke-width="5">
+<path d="M55 330L150 255L245 330V445H55Z"/><path d="M280 340L365 270L455 340V455H280Z"/>
+<path d="M72 325L150 265L228 325Z" fill="#514238"/><path d="M295 335L365 280L440 335Z" fill="#514238"/>
+</g>
+<g fill="url(#window)" stroke="#4a3d31" stroke-width="4"><rect x="88" y="355" width="36" height="48"/><rect x="175" y="355" width="36" height="48"/><rect x="315" y="365" width="36" height="48"/><rect x="390" y="365" width="36" height="48"/></g>
+<path d="M18 520L522 520" stroke="#b7a184" stroke-width="8" opacity=".6"/>
+<!-- adults only, distant non-identifiable silhouettes -->
+<g fill="#252d30">
+<circle cx="245" cy="445" r="12"/><path d="M231 460H259L268 525H222Z"/>
+<circle cx="285" cy="450" r="12"/><path d="M271 465H299L308 530H262Z"/>
+<circle cx="465" cy="460" r="11"/><path d="M452 474H478L485 530H445Z"/>
+</g>
+<text x="22" y="693" fill="#cfc7ba" font-family="Arial,sans-serif" font-size="13">Wary residents; no children, enemy silhouettes, or labels.</text>
+</g>
+
+<!-- panel 3 camp -->
+<g transform="translate(1200 155)">
+<rect width="540" height="700" rx="14" fill="#252a2f" stroke="#8e795a" stroke-width="2"/>
+<text x="22" y="38" fill="#e4c78e" font-family="Arial,sans-serif" font-size="16" letter-spacing="2">C · OUTLYING WORK CAMP / DUSK</text>
+<rect x="18" y="58" width="504" height="610" fill="url(#sky)"/>
+<path d="M18 370L140 260L240 380L360 255L522 380V668H18Z" fill="#38443d"/>
+<path d="M18 445L522 405V668H18Z" fill="url(#ground)"/>
+<!-- small work shelter -->
+<path d="M165 365L275 280L390 365V505H165Z" fill="#5d5143" stroke="#302c28" stroke-width="6"/>
+<path d="M145 370L275 265L410 370" fill="none" stroke="#332b25" stroke-width="16"/>
+<rect x="220" y="405" width="65" height="100" fill="#342d27"/>
+<rect x="310" y="400" width="45" height="40" fill="#9b7852"/>
+<!-- workbench and tools -->
+<path d="M80 520H170V538H80Z" fill="#4c3828"/><path d="M92 538V585M158 538V585" stroke="#3c3026" stroke-width="7"/>
+<rect x="105" y="490" width="42" height="28" fill="#7a6a52"/>
+<path d="M435 510V600M420 535H450" stroke="#40382e" stroke-width="7"/>
+<path d="M18 625Q170 595 270 630T522 625" stroke="#c1a078" stroke-opacity=".25" stroke-width="4" fill="none"/>
+<text x="22" y="693" fill="#cfc7ba" font-family="Arial,sans-serif" font-size="13">Evidence-bearing worksite; no graphic content or threat reveal.</text>
+</g>
+
+<rect x="60" y="885" width="1680" height="95" rx="12" fill="#20262c" stroke="#8e795a"/>
+<text x="88" y="925" fill="#f2eee6" font-family="Arial,sans-serif" font-size="17" letter-spacing="1">SLICE GUARDRAILS</text>
+<text x="88" y="956" fill="#cfc7ba" font-family="Arial,sans-serif" font-size="15">No children at Ridgeview · no visible remains or gore · no Devourer naming or identification · Veil influence remains quiet, environmental, and unexplained.</text>
+<text x="1740" y="1020" text-anchor="end" fill="#d4b57d" font-family="Arial,sans-serif" font-size="13" letter-spacing="2">BTV-ENV-003 · CONCEPT STUDY 01 · NOT APPROVED</text>
+</svg>
