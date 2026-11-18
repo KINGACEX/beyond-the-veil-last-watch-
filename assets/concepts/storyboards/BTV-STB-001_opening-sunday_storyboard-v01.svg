@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-labelledby="t d">
+<title id="t">BTV opening Sunday sequence — storyboard exploration 01</title>
+<desc id="d">Six-frame storyboard for the first Sunday sequence at the fictional Logos Rhema Temple, based on the approved slice service phases. No character likenesses or final staging are established.</desc>
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#2d3339"/><stop offset="1" stop-color="#13181d"/></linearGradient>
+ <linearGradient id="warm" x2="0" y2="1"><stop stop-color="#d6ad72"/><stop offset="1" stop-color="#72503b"/></linearGradient>
+ <linearGradient id="day" x2="1" y2="1"><stop stop-color="#d7e5e7"/><stop offset="1" stop-color="#809a9b"/></linearGradient>
+</defs>
+<rect width="1800" height="1200" fill="url(#bg)"/>
+<text x="70" y="72" fill="#f5efe3" font-family="Arial,sans-serif" font-size="30" letter-spacing="6">BEYOND THE VEIL: THE LAST WATCH</text>
+<text x="70" y="118" fill="#d5b57d" font-family="Arial,sans-serif" font-size="19" letter-spacing="4">OPENING SUNDAY · STORYBOARD EXPLORATION 01</text>
+<text x="1730" y="78" text-anchor="end" fill="#e4c78e" font-family="Arial,sans-serif" font-size="16" letter-spacing="2">PROPOSED · SLICE-GROUNDED · NOT FINAL</text>
+<g font-family="Arial,sans-serif">
+<!-- frame 1 -->
+<g transform="translate(60 165)">
+<rect width="820" height="430" rx="12" fill="#20262c" stroke="#8e795a" stroke-width="2"/>
+<text x="24" y="38" fill="#e4c78e" font-size="18" letter-spacing="2">01 · ESTABLISH / BEFORE SERVICE</text>
+<rect x="24" y="60" width="772" height="340" fill="#d5d0c7"/>
+<path d="M24 60H796V160H24Z" fill="#77573e"/>
+<path d="M24 60L410 150L796 60" fill="none" stroke="#3f3027" stroke-width="18"/>
+<path d="M90 155H250V340H90Z M570 155H730V340H570Z" fill="url(#day)" stroke="#f3ead8" stroke-width="10"/>
+<path d="M410 165V270M370 205H450" stroke="#624a36" stroke-width="10"/>
+<path d="M24 400L330 285H490L796 400Z" fill="#76604c"/>
+<path d="M330 285H490V315H330Z" fill="#9b7858"/>
+<text x="24" y="423" fill="#cfc7ba" font-size="14">Wide, calm geography. No UI marker or urgency.</text>
+</g>
+<!-- frame 2 -->
+<g transform="translate(920 165)">
+<rect width="820" height="430" rx="12" fill="#20262c" stroke="#8e795a" stroke-width="2"/>
+<text x="24" y="38" fill="#e4c78e" font-size="18" letter-spacing="2">02 · ARRIVAL / FELLOWSHIP</text>
+<rect x="24" y="60" width="772" height="340" fill="#d8d1c5"/>
+<path d="M24 60H796V130H24Z" fill="#72523b"/>
+<path d="M24 400L300 260H500L796 400Z" fill="#85705a"/>
+<g fill="#303941">
+<circle cx="170" cy="235" r="22"/><path d="M142 260Q170 240 198 260L210 350H130Z"/>
+<circle cx="280" cy="250" r="20"/><path d="M255 275Q280 255 305 275L315 350H245Z"/>
+<circle cx="545" cy="235" r="22"/><path d="M517 260Q545 240 573 260L585 350H505Z"/>
+<circle cx="650" cy="250" r="20"/><path d="M625 275Q650 255 675 275L685 350H615Z"/>
+</g>
+<path d="M380 345V290" stroke="#c39b68" stroke-width="4" stroke-dasharray="8 8"/>
+<text x="24" y="423" fill="#cfc7ba" font-size="14">Civilians and worshippers lead the frame; natural greetings.</text>
+</g>
+<!-- frame 3 -->
+<g transform="translate(60 635)">
+<rect width="820" height="430" rx="12" fill="#20262c" stroke="#8e795a" stroke-width="2"/>
+<text x="24" y="38" fill="#e4c78e" font-size="18" letter-spacing="2">03 · PRAISE & WORSHIP</text>
+<rect x="24" y="60" width="772" height="340" fill="#51483f"/>
+<path d="M24 60H796V145H24Z" fill="#342a24"/>
+<path d="M340 190H480V290H340Z" fill="#9a7856"/>
+<path d="M410 100V185M380 140H440" stroke="#d7c7a7" stroke-width="8"/>
+<g fill="#1d252b">
+<circle cx="150" cy="255" r="18"/><path d="M128 278H172L184 380H116Z"/>
+<circle cx="245" cy="265" r="18"/><path d="M223 288H267L279 380H211Z"/>
+<circle cx="570" cy="255" r="18"/><path d="M548 278H592L604 380H536Z"/>
+<circle cx="665" cy="265" r="18"/><path d="M643 288H687L699 380H631Z"/>
+</g>
+<path d="M150 235L130 180M245 245L225 190M570 235L550 180M665 245L645 190" stroke="#d4b57b" stroke-width="5" stroke-linecap="round"/>
+<text x="24" y="423" fill="#cfc7ba" font-size="14">Respectful medium-wide coverage; no lyrics or spectacle.</text>
+</g>
+<!-- frame 4 -->
+<g transform="translate(920 635)">
+<rect width="820" height="430" rx="12" fill="#20262c" stroke="#8e795a" stroke-width="2"/>
+<text x="24" y="38" fill="#e4c78e" font-size="18" letter-spacing="2">04 · SCRIPTURE / KITFIT / TEACHING</text>
+<rect x="24" y="60" width="772" height="340" fill="#d5d0c7"/>
+<path d="M24 60H796V145H24Z" fill="#77573e"/>
+<path d="M360 175H460V340H360Z" fill="#725039"/>
+<path d="M330 175H490L470 155H350Z" fill="#b28a60"/>
+<circle cx="410" cy="120" r="24" fill="#303941"/>
+<path d="M375 148H445L460 270H360Z" fill="#303941"/>
+<path d="M390 170L410 190L430 170" fill="none" stroke="#e6d6b9" stroke-width="4"/>
+<rect x="510" y="220" width="100" height="65" rx="5" fill="#e9e0cf" stroke="#8a7458" stroke-width="4"/>
+<path d="M560 220V285" stroke="#8a7458" stroke-width="2"/>
+<text x="24" y="423" fill="#cfc7ba" font-size="14">Teaching stays contextual; no invented Scripture text on screen.</text>
+</g>
+</g>
+<rect x="60" y="1090" width="1680" height="62" rx="10" fill="#20262c" stroke="#8e795a"/>
+<text x="85" y="1128" fill="#f2eee6" font-size="16" letter-spacing="1">CONTINUITY: Ember remains under HOLD at the designated spot; he does not enter or interrupt worship or Communion.</text>
+<text x="1730" y="1180" text-anchor="end" fill="#d5b57d" font-size="14" letter-spacing="2">BTV-STB-001 · EXPLORATION 01 · NO FINAL CAST LIKENESSES</text>
+</svg>
