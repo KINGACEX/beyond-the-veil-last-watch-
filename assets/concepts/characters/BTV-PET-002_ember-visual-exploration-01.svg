@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000">
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#30363f"/><stop offset="1" stop-color="#151a20"/></linearGradient>
+ <linearGradient id="gold" x2="0" y2="1"><stop stop-color="#e9bd72"/><stop offset="1" stop-color="#98652e"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter>
+</defs>
+<rect width="1800" height="1000" fill="url(#bg)"/>
+<text x="72" y="78" fill="#f3eee5" font-family="Georgia,serif" font-size="44" letter-spacing="4">BEYOND THE VEIL</text>
+<text x="74" y="116" fill="#c8a36d" font-family="Arial,sans-serif" font-size="17" letter-spacing="6">THE LAST WATCH · COMPANION VISUAL DEVELOPMENT</text>
+<path d="M70 145H1730" stroke="url(#gold)" stroke-width="2"/>
+<g font-family="Arial,sans-serif" text-anchor="middle">
+ <g transform="translate(80 190)">
+  <rect width="500" height="690" rx="18" fill="#252c34" stroke="#9d7948" stroke-width="2"/>
+  <text x="250" y="58" fill="#e6c18a" font-size="22" letter-spacing="4">DIRECTION A</text>
+  <text x="250" y="92" fill="#c8c4bd" font-size="15">LEAN / ALERT / SHORTER COAT</text>
+  <ellipse cx="250" cy="560" rx="180" ry="20" fill="#000" opacity=".25" filter="url(#shadow)"/>
+  <g transform="translate(55 170)">
+   <path d="M90 310 Q55 280 30 230 Q72 248 112 275" fill="none" stroke="#17191c" stroke-width="31" stroke-linecap="round"/>
+   <path d="M95 270 Q145 190 275 205 Q345 210 375 270 L410 330 Q370 390 275 380 L180 380 Q115 360 95 270Z" fill="#272a2c"/>
+   <path d="M140 255 Q205 205 300 230 L330 280 Q250 300 165 305Z" fill="#bd864a"/>
+   <path d="M165 300 Q215 290 250 325 L230 385 L155 385Z" fill="#c58d50"/>
+   <path d="M335 260 Q375 240 405 270 L390 320 L345 320Z" fill="#bd864a"/>
+   <path d="M380 270 Q420 240 430 275 L410 305 L382 300Z" fill="#c58d50"/>
+   <path d="M355 315 L380 460 L350 460 L320 345Z M180 345 L170 465 L140 465 L145 330Z M270 355 L290 465 L260 465 L235 350Z M395 325 L420 460 L390 460 L365 335Z" fill="#272a2c"/>
+   <path d="M145 465 H185 M255 465 H295 M345 460 H385 M385 460 H425" stroke="#b98245" stroke-width="9" stroke-linecap="round"/>
+   <path d="M365 255 Q390 205 410 160 L430 235 L420 270Z" fill="#25282b" stroke="#16191c" stroke-width="6"/>
+   <path d="M385 250 Q420 205 445 190 L440 260Z" fill="#bd864a"/>
+   <path d="M340 260 Q350 205 385 185 L420 250 Q410 290 365 300Z" fill="#bd864a"/>
+   <path d="M388 202 L402 248" stroke="#e1b66f" stroke-width="5"/>
+   <path d="M412 268 Q450 270 460 292 Q430 315 395 300Z" fill="#1d2022"/>
+   <circle cx="407" cy="264" r="6" fill="#e8c17f"/>
+   <path d="M180 300 Q220 335 260 340" stroke="#e4d2b6" stroke-width="14" opacity=".55" fill="none"/>
+  </g>
+  <text x="250" y="625" fill="#eee8de" font-size="18">Agile field tracker</text>
+  <text x="250" y="655" fill="#aaa69e" font-size="14">Compact, restrained silhouette</text>
+ </g>
+ <g transform="translate(650 190)">
+  <rect width="500" height="690" rx="18" fill="#252c34" stroke="#9d7948" stroke-width="2"/>
+  <text x="250" y="58" fill="#e6c18a" font-size="22" letter-spacing="4">DIRECTION B</text>
+  <text x="250" y="92" fill="#c8c4bd" font-size="15">ATHLETIC / DISTINCTIVE / MEDIUM COAT</text>
+  <ellipse cx="250" cy="560" rx="180" ry="20" fill="#000" opacity=".25" filter="url(#shadow)"/>
+  <g transform="translate(45 170)">
+   <path d="M90 310 Q55 280 30 230 Q72 248 112 275" fill="none" stroke="#e2d4bb" stroke-width="34" stroke-linecap="round"/>
+   <path d="M95 270 Q145 190 275 205 Q345 210 375 270 L410 330 Q370 390 275 380 L180 380 Q115 360 95 270Z" fill="#e7dfce"/>
+   <path d="M130 250 Q195 190 290 230 L330 280 Q250 300 165 305Z" fill="#4b3930"/>
+   <path d="M145 295 Q205 290 250 325 L230 385 L155 385Z" fill="#d5c6ad"/>
+   <path d="M335 260 Q375 240 405 270 L390 320 L345 320Z" fill="#4b3930"/>
+   <path d="M355 315 L380 460 L350 460 L320 345Z M180 345 L170 465 L140 465 L145 330Z M270 355 L290 465 L260 465 L235 350Z M395 325 L420 460 L390 460 L365 335Z" fill="#e7dfce"/>
+   <path d="M145 465 H185 M255 465 H295 M345 460 H385 M385 460 H425" stroke="#8c7356" stroke-width="9" stroke-linecap="round"/>
+   <path d="M365 255 Q390 205 410 160 L430 235 L420 270Z" fill="#4b3930" stroke="#30251f" stroke-width="6"/>
+   <path d="M385 250 Q420 205 445 190 L440 260Z" fill="#e7dfce"/>
+   <path d="M340 260 Q350 205 385 185 L420 250 Q410 290 365 300Z" fill="#d7c6a9"/>
+   <path d="M388 202 L402 248" stroke="#f4e7d0" stroke-width="5"/>
+   <path d="M412 268 Q450 270 460 292 Q430 315 395 300Z" fill="#3a302b"/>
+   <circle cx="407" cy="264" r="6" fill="#3a302b"/>
+   <path d="M180 300 Q220 335 260 340" stroke="#fff8eb" stroke-width="15" opacity=".85" fill="none"/>
+   <path d="M110 240 Q150 180 220 190" stroke="#4b3930" stroke-width="20" fill="none" opacity=".7"/>
+  </g>
+  <text x="250" y="625" fill="#eee8de" font-size="18">Balanced companion build</text>
+  <text x="250" y="655" fill="#aaa69e" font-size="14">Clear coat pattern, expressive face</text>
+ </g>
+ <g transform="translate(1220 190)">
+  <rect width="500" height="690" rx="18" fill="#252c34" stroke="#9d7948" stroke-width="2"/>
+  <text x="250" y="58" fill="#e6c18a" font-size="22" letter-spacing="4">DIRECTION C</text>
+  <text x="250" y="92" fill="#c8c4bd" font-size="15">STURDIER / WARM COAT / THICKER NECK</text>
+  <ellipse cx="250" cy="560" rx="180" ry="20" fill="#000" opacity=".25" filter="url(#shadow)"/>
+  <g transform="translate(45 170)">
+   <path d="M90 310 Q55 280 30 230 Q72 248 112 275" fill="none" stroke="#9a542c" stroke-width="38" stroke-linecap="round"/>
+   <path d="M95 270 Q135 175 275 195 Q350 200 390 275 L420 330 Q380 400 270 390 L175 390 Q105 365 95 270Z" fill="#a9562e"/>
+   <path d="M140 250 Q200 195 295 220 L350 280 Q250 305 160 310Z" fill="#422b24"/>
+   <path d="M145 295 Q210 290 255 330 L230 395 L150 390Z" fill="#e5d1b3"/>
+   <path d="M340 260 Q385 240 415 275 L395 325 L345 325Z" fill="#e5d1b3"/>
+   <path d="M355 320 L390 465 L355 465 L320 345Z M180 350 L175 470 L140 470 L145 335Z M270 360 L295 470 L260 470 L235 350Z M400 330 L430 465 L395 465 L370 340Z" fill="#a9562e"/>
+   <path d="M140 470 H185 M255 470 H300 M350 465 H395 M395 465 H435" stroke="#e5d1b3" stroke-width="9" stroke-linecap="round"/>
+   <path d="M370 255 Q390 200 415 150 L435 235 L425 275Z" fill="#422b24" stroke="#281d18" stroke-width="6"/>
+   <path d="M390 250 Q425 200 450 190 L445 265Z" fill="#e5d1b3"/>
+   <path d="M345 260 Q355 200 390 180 L425 250 Q415 300 370 305Z" fill="#b96a3b"/>
+   <path d="M392 200 L407 250" stroke="#e9bd72" stroke-width="5"/>
+   <path d="M415 270 Q455 270 465 295 Q435 320 400 305Z" fill="#33251f"/>
+   <circle cx="412" cy="265" r="6" fill="#e9bd72"/>
+   <path d="M170 300 Q220 345 275 350" stroke="#eadbc5" stroke-width="20" opacity=".8" fill="none"/>
+  </g>
+  <text x="250" y="625" fill="#eee8de" font-size="18">Resilient wilderness partner</text>
+  <text x="250" y="655" fill="#aaa69e" font-size="14">Heavier frame, strong neck profile</text>
+ </g>
+</g>
+<path d="M70 910H1730" stroke="url(#gold)" stroke-width="2"/>
+<text x="75" y="955" fill="#e7bd79" font-family="Arial,sans-serif" font-size="17" letter-spacing="4">BTV · EMBER VISUAL EXPLORATION 01</text>
+<text x="1725" y="955" fill="#c9c3b9" text-anchor="end" font-family="Arial,sans-serif" font-size="16" letter-spacing="3">PROPOSED — NOT CANON</text>
+</svg>
