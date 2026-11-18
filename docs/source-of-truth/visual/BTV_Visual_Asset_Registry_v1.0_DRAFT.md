@@ -286,3 +286,10 @@ The `btv_fox_companion_v03_preview.png` is a stylized fox model preview. It does
 - **Not confirmed:** Godot import, collision/navmesh, runtime scale, Android performance, final lighting, source preservation and acceptance.
 - **Cost:** $0 charged; job had a zero-dollar maximum cap.
 - **Disposition:** PROPOSED / PRIVATE REVIEW. Do not deploy or call canon-locked.
+
+## 21. Ember visual exploration 01
+
+- **Asset:** `assets/concepts/characters/BTV-PET-002_ember-visual-exploration-01.svg`
+- **Brief:** [BTV-PET-002 Ember Visual Exploration 01](BTV-PET-002_Ember_Visual_Exploration_01.md)
+- Three alternative silhouettes: lean/short coat, balanced/medium coat, sturdier/warm coat.
+- **Status:** PROPOSED / NOT CANON. Exact appearance remains open; do not rig or publish until selected and reviewed.
