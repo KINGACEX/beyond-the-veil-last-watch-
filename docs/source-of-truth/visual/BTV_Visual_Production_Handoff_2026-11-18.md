@@ -149,3 +149,13 @@ These are source reconciliation corrections, not new canon decisions.
 
 One Ember SVG creation call omitted the feature-branch argument and briefly created the file on `main`. This was detected immediately. The exact file was deleted from `main`, verified absent there, and recreated on `docs/btv-visual-production-001`. No existing project file was overwritten or modified. The add/delete commits remain in `main` history; no history rewrite was attempted. The final asset is present and verified on the feature branch.
 
+
+
+## 12. Full opening Sunday storyboard — 2026-11-18
+
+- Added storyboard v0.2 with 12 visual frames covering the approved service phases in order.
+- The board includes the Covenant alert only after service ends and preserves the congregation's ignorance of Asher's Covenant identity.
+- Ember's designated Hold location remains outside the worship flow; he does not interrupt worship or Communion.
+- The storyboard uses generic silhouettes and objects. It is not a final character design, timed animatic, dialogue script, or approved cinematic.
+- v0.1 remains available as an earlier six-frame study.
+
