@@ -220,3 +220,12 @@ One Ember SVG creation call omitted the feature-branch argument and briefly crea
 - The art remains PROPOSED / NOT CANON. Foundation #11 leaves exact visual breed characteristics open.
 - No model sheet, rig, animation, marketing asset, or runtime game asset has been approved or created.
 
+
+
+## 17. Opening Sunday timed animatic plan — 2026-11-18
+
+- Added a 12-shot timing and camera plan targeting 90 seconds.
+- It preserves the service sequence and delays the Covenant alert until after service ends.
+- The plan intentionally excludes dialogue, lyrics, Scripture quotation, and unapproved character visuals.
+- It is a previsualization document only; no animatic or final video has been rendered.
+
