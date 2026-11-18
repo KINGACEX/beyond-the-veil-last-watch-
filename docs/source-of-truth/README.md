@@ -45,6 +45,9 @@ The controlling reconciliation document is [BTV Canon Reconciliation & Story/Vei
 - [Economy, Progression & Production Readiness v1.0](production/BTV_Economy_Progression_and_Production_Readiness_v1.0.md)
 - [Foundation #12 Visual / UI / HUD Bible v1.0](visual/BTV_Foundation_12_Visual_UI_HUD_Bible_v1.0.md)
 - [Foundation #12 Visual / UI / HUD Bible v1.1 Consistency Lock](visual/BTV_Foundation_12_Visual_UI_HUD_Bible_v1.1_Consistency_Lock.md)
+- [Visual Production Bible v1.0 — Draft](visual/BTV_Visual_Production_Bible_v1.0_DRAFT.md) — supplementary production workflow; does not replace Foundation #12.
+- [Visual Asset Registry v1.0 — Draft](visual/BTV_Visual_Asset_Registry_v1.0_DRAFT.md) — asset provenance, status and approval register.
+- [Visual Production Handoff — 2026-11-18](visual/BTV_Visual_Production_Handoff_2026-11-18.md) — work completed, corrections and next gates.
 - [Work Session Handoff — 2026-11-01](handoffs/BTV_Work_Session_Handoff_2026-11-01.md)
 
 ## Import record
@@ -74,7 +77,6 @@ The following earlier Part 1 and Part 2 DOCX text extracts were recovered on 202
 ## Visual-reference provenance and character inventory
 
 - The Library contains multiple Asher Vance images, including a character turnaround and older gameplay/UI mockups. Their approval status is not established by filenames. The turnaround's printed age conflicts with current age-18 presentation; the infiltration mockup contains legacy command/UI mechanics. Ember's rare original canid lineage is LOCKED by Foundation #11; exact appearance remains OPEN. See [Visual Reference Provenance Audit](../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md) and [Character & Visual Reference Inventory Audit](../audits/BTV_CHARACTER_AND_VISUAL_REFERENCE_INVENTORY_2026-11-05.md) before using these assets.
-
 
 ## Project coordination and verification audits
 
