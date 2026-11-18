@@ -64,6 +64,6 @@ Create a modular, meter-scaled 3D blockout of the fictional Logos Rhema Temple i
 6. Exportable GLB with scale verified.
 7. Later Godot import and Android test pass.
 
-**Current result:** NOT VERIFIED. Do not use in the runtime game until all acceptance gates pass.
+**Current result:** VISUAL GREYBOX GENERATED; PARTIAL REVIEW ONLY. The poster clearly shows the central aisle, split seating, front platform, lectern and cross. The source contact sheet has blown highlights and is not acceptable as a final lighting review. Source inspection does not verify engineering fit, collision, full preservation, modifier configuration or dependencies. Do not use in the runtime game until those gates pass.
 
 **End — BTV-MOD-001.**
