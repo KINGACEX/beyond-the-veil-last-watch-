@@ -1,6 +1,6 @@
 # BTV-MOD-001 — Logos Rhema Temple 3D Interior Blockout
 
-**Status:** IN PRODUCTION — CPU job running in delivery; source checkpoint saved, final version not yet verified  
+**Status:** v0.1 SAVED / INSPECTED; v0.2 REVISION QUEUED  
 **Target:** Godot 4.x environment prototype (future import; not yet imported)  
 **Design authority:** Proposed BTV-ENV-001 concept only; controlling canon and slice remain authoritative.
 
@@ -47,9 +47,11 @@ Create a modular, meter-scaled 3D blockout of the fictional Logos Rhema Temple i
 ## 6. Current job state
 
 - Model project title: `BTV — Logos Rhema Temple Interior Blockout v0.1`.
-- Latest job state: RUNNING / DELIVERY.
-- A 1.54 MB source checkpoint is saved; a provisional 0.69 MB preview exists.
-- Final version ID, final poster/inspection outputs, and terminal completion are not yet confirmed.
+- v0.1 completed and saved as a private Blendstra model version.
+- Geometry inspection confirms 141 mesh objects and 14,684 triangles; no animation.
+- The first poster/inspection views were too obstructed by the closed shell to assess the interior reliably.
+- v0.2 revision has been submitted to remove the rear wall/door leaves for inspection, add an interior camera and soft area lighting, and create a clearer poster plus reference/top inspection views.
+- v0.2 state at this update: QUEUED.
 - The project identifier and private workspace URL are deliberately not embedded in this repository document.
 
 ## 7. Acceptance criteria
