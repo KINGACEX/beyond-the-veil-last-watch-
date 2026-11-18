@@ -25,7 +25,7 @@ The controlling Vertical Slice Specification v1.0 sets the service phases in thi
 12. Closing Prayer
 13. Fellowship and Service
 
-The Covenant alert is available only after the service ends. It does not interrupt worship, prayer, Scripture, KITFIT, offering, sermon, Communion, or closing prayer. Asher may choose when to open it. It is a quiet vibration only he notices, and no HUD marker appears until he opens it.
+The Covenant alert is available only after the service ends. It does not interrupt worship, prayer, Scripture, KITFIT, offering, sermon, Communion, or closing prayer. Asher may choose when to open it. It is a quiet vibration only he notices, and no HUD marker appears until he opens it. The storyboard's small rectangular cue is an abstract placeholder for the vibration/alert, not a locked smartphone or device design.
 
 ## 2. Twelve-frame board coverage
 
