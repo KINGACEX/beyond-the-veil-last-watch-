@@ -159,3 +159,14 @@ One Ember SVG creation call omitted the feature-branch argument and briefly crea
 - The storyboard uses generic silhouettes and objects. It is not a final character design, timed animatic, dialogue script, or approved cinematic.
 - v0.1 remains available as an earlier six-frame study.
 
+
+
+## 13. Foundation #11 source import and 3D environment blockout — 2026-11-18
+
+- Imported the five-page Library PDF `BTV_Foundation_11_Ember_Companion_Bible_v1.0.pdf` into `docs/source-of-truth/characters/BTV_Foundation_11_Ember_Companion_Bible_v1.0.md`. This preserves the original document's status: established canon-candidate / recommended canon lock; it does not silently promote it.
+- Foundation #11 confirms Ember's rare original wild-dog/canid lineage, natural origin, believable animal anatomy, and open exact visual breed characteristics.
+- Created a private Blendstra project for a Logos Rhema Temple interior blockout and submitted one CPU modeling job.
+- The modeling workspace reports zero-USD CPU rates; the job request enforced `maxChargeMicros: 0`. No GPU was requested.
+- Job remains QUEUED at this handoff update; no saved model, GLB export, Godot import, or device test is yet verified.
+- One extra empty private Blendstra project was created before the model submission used its own project. It contains no model and no charge; it was not deleted because project deletion is restricted to explicit user requests.
+
