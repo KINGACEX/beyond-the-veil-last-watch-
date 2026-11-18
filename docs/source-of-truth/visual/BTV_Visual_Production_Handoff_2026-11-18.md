@@ -115,3 +115,14 @@ These are source reconciliation corrections, not new canon decisions.
 5. Build storyboard/animatic for the first Sunday sequence, respecting service order, Ember's Hold state, and the non-interruption rules.
 6. Convert accepted concept art into modular Godot environment assets only after the engineering branch and project structure are verified.
 
+
+
+## 8. Storyboard visual production — 2026-11-18
+
+- Added the six-frame editable SVG storyboard at `assets/concepts/storyboards/BTV-STB-001_opening-sunday_storyboard-v01.svg`.
+- Added [BTV-STB-001 storyboard brief](BTV-STB-001_Opening_Sunday_Storyboard_Exploration_01.md).
+- The six frames cover establishing, fellowship, worship, Scripture/KITFIT teaching, voluntary offering, and Communion.
+- The board uses generic silhouettes and objects only; no definitive Asher or Ember likeness is depicted.
+- It preserves the slice rule that Ember remains at the designated Hold spot and does not interrupt worship or Communion.
+- The board is a visual composition exploration, not an approved shot list, animatic, final script, or implemented scene.
+
