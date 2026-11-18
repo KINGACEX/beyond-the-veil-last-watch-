@@ -53,8 +53,8 @@ Primary references:
 - [Canon Reconciliation v1.1](../canon/BTV_Canon_Reconciliation_and_Story_Veil_Decisions_v1.1.md)
 - [Character Bible v1.0](../characters/BTV_Character_Bible_v1.0.md)
 - [Foundation #12 Visual/UI/HUD Bible v1.1](BTV_Foundation_12_Visual_UI_HUD_Bible_v1.1_Consistency_Lock.md)
-- [Character & Visual Reference Inventory Audit](../../../audits/BTV_CHARACTER_AND_VISUAL_REFERENCE_INVENTORY_2026-11-05.md)
-- [Visual Reference Provenance Audit](../../../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md)
+- [Character & Visual Reference Inventory Audit](../../audits/BTV_CHARACTER_AND_VISUAL_REFERENCE_INVENTORY_2026-11-05.md)
+- [Visual Reference Provenance Audit](../../audits/BTV_VISUAL_REFERENCE_PROVENANCE_AUDIT_2026-11-05.md)
 
 ## 4. Character asset register
 
