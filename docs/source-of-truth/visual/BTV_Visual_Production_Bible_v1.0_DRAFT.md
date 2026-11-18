@@ -59,7 +59,7 @@ Every visual and narrative production decision must preserve the controlling can
 
 - God is the ultimate authority and is not a playable character or controllable game mechanic.
 - Christ remains above the Covenant and Asher.
-- Asher is human, the sole playable protagonist and the Chosen; he is presented as age 18 in the controlling slice.
+- Asher is human, the sole playable protagonist and the Chosen; he is aged 16–19 and presented as 18 in the controlling slice.
 - The Holy Spirit is never a controllable combat ability, resource, scanner, or certainty engine.
 - Prayer is meaningful and non-transactional.
 - Faith, salvation, grace, divine favour, holiness, worship, and spiritual worth are never currencies, purchasable upgrades, loot, or morality scores.
@@ -75,9 +75,11 @@ If a shot, line, visual effect, or sound cue risks violating these boundaries, s
 ### 4.1 Asher Vance — CONFIRMED / LOCK
 
 - Sole playable protagonist and Chosen.
-- Human; presented as age 18 in the controlling vertical slice.
+- Human; aged 16–19 and presented as 18 in the controlling vertical slice.
 - Begins as an Agent/Specialist in the Watcher branch.
-- The visual baseline is a young field-operative presentation with consistent face, hairstyle, proportions, and practical equipment.
+- The proposed visual direction is a grounded young field-operative presentation with practical equipment.
+- Exact face, skin tone, hair, height, build, clothing details, and equipment remain UNKNOWN unless established by an approved reference.
+- Existing Asher images in the Library are conflicting REFERENCE CANDIDATES; do not merge them or treat any one as the master model sheet without creator approval.
 - Do not age him up, redesign him as a generic fantasy warrior, superhero, medieval knight, or futuristic sci-fi soldier.
 - Exact biography and some visual details remain open unless established by an approved reference or creator decision.
 
