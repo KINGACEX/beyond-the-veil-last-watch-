@@ -104,7 +104,7 @@ The following are environment work packages, not claims that final artwork exist
 | BTV-UI-002 | Ember companion UI | LOCK / DIRECTION | Exact component implementation OPEN | Must reflect current Ember canon and official commands. |
 | BTV-LOG-002 | BTV game/channel logo | UNKNOWN unless a separately approved master asset is identified | BLOCKED for final branding | Do not assume an old mockup is official. |
 | BTV-THM-001 | BTV colour tokens | Direction exists; exact values OPEN | PROPOSED specification | Do not publish exact colour values as canon before approval. |
-| BTV-AUD-001 | Audio identity / score | UNKNOWN | PROPOSED | Original or appropriately licensed audio only. |
+| BTV-AUD-001 | Audio identity / score | UNKNOWN | PROPOSED | Original or appropriately licensed audio only. |\n| BTV-STB-001 | Opening Sunday storyboard | Slice service phases LOCKED; exact shot staging PROPOSED | Six-frame SVG storyboard exploration saved; no character likenesses | PROPOSED / PARTIAL | Frames cover establishing, fellowship, worship, teaching, offering, and Communion. See storyboard brief. |
 
 ## 7. Existing reference asset register
 
@@ -230,3 +230,12 @@ Two existing Asher images in the Library depict materially different facial iden
 
 The `btv_fox_companion_v03_preview.png` is a stylized fox model preview. It does not establish Ember's exact BTV appearance or lineage and remains a REFERENCE CANDIDATE only.
 
+
+## 15. Storyboard production update — 2026-11-18
+
+- **Asset:** `assets/concepts/storyboards/BTV-STB-001_opening-sunday_storyboard-v01.svg`
+- **Brief:** [Opening Sunday Storyboard Exploration 01](BTV-STB-001_Opening_Sunday_Storyboard_Exploration_01.md)
+- **Status:** PROPOSED / PARTIAL — six drawn frames, no approved character likenesses, no animatic.
+- **Source:** controlling Vertical Slice Specification v1.0, service phases and Ember Hold boundary.
+- **Not represented:** final Asher/Ember appearance, exact room layout, approved audio, final dialogue, or a final camera schedule.
+- **Implementation:** not started.
