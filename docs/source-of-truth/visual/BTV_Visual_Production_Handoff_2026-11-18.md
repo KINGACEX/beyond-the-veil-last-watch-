@@ -64,11 +64,11 @@ These are source reconciliation corrections, not new canon decisions.
 
 ## 5. Safety and scope record
 
-- Work is documentation-only.
+- Work includes documentation and proposed, editable SVG concept assets; no runtime game implementation.
 - No existing prototype branch files were edited.
 - No source-of-truth canon documents were rewritten.
 - No game code, scenes, runtime assets, or binary reference files were changed.
-- No image/video generations were run.
+- One raster environment concept preview was generated during the session but was not committed because the available GitHub write action supports UTF-8 text files only. The durable repository deliverables are editable SVG concept assets.
 - No credits were spent and no trial/subscription was activated.
 - No public post, schedule, release, deployment, or merge was performed.
 - No Godot runtime, Android export, or physical-device verification was performed.
@@ -142,4 +142,10 @@ These are source reconciliation corrections, not new canon decisions.
 - Retrieved and reviewed Foundation #11 — Ember Companion Bible v1.0 from the Library. It confirms the rare original wild-dog/canid lineage, natural origin, believable athletic anatomy, and open exact visual breed characteristics.
 - Added [Ember Silhouette Study 01](BTV-PET-001_Ember_Visual_Silhouette_Study_01.md) and its three-option SVG asset. The options are proposals only; no option is selected.
 - Explicitly excluded the stylized fox companion preview as an authoritative BTV Ember reference.
+
+
+
+## 11. Repository write-safety correction — 2026-11-18
+
+One Ember SVG creation call omitted the feature-branch argument and briefly created the file on `main`. This was detected immediately. The exact file was deleted from `main`, verified absent there, and recreated on `docs/btv-visual-production-001`. No existing project file was overwritten or modified. The add/delete commits remain in `main` history; no history rewrite was attempted. The final asset is present and verified on the feature branch.
 
