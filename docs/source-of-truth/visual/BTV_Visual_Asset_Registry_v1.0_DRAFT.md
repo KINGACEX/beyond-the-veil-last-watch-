@@ -278,3 +278,11 @@ The `btv_fox_companion_v03_preview.png` is a stylized fox model preview. It does
 - Imported the Library's Foundation #11 — Ember Companion Bible v1.0 into the source-of-truth directory as Markdown, preserving its status labels and content.
 - **3D work item:** BTV-MOD-001, Logos Rhema Temple Interior Blockout v0.1. Private Blendstra CPU modeling job is queued with an explicit zero-USD maximum charge. No final model or export is confirmed yet.
 - The private model project link is provided in the conversation, not embedded in the repository.
+
+## 20. Logos Rhema Temple 3D blockout — generated
+
+- **Private project:** [Open Logos Rhema Temple blockout v0.1](https://blendstra.com/studio?workspace=wsp_eb50fef55b992e1938b3c1c3483498a40f6f06c8&project=376c072b-78dd-47d4-9c6e-fbbd1edac0e2&version=version_931b7f8c670a35fb85c6b8738bdbb51a4ee85d8e7a917313bbd6f71ec1e389de)
+- **Confirmed:** static source saved; 138 objects; poster; two-view source inspection; optimized GLB preview (655,388 bytes).
+- **Not confirmed:** Godot import, collision/navmesh, runtime scale, Android performance, final lighting, source preservation and acceptance.
+- **Cost:** $0 charged; job had a zero-dollar maximum cap.
+- **Disposition:** PROPOSED / PRIVATE REVIEW. Do not deploy or call canon-locked.
