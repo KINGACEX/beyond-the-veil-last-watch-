@@ -104,7 +104,7 @@ The following are environment work packages, not claims that final artwork exist
 | BTV-UI-002 | Ember companion UI | LOCK / DIRECTION | Exact component implementation OPEN | Must reflect current Ember canon and official commands. |
 | BTV-LOG-002 | BTV game/channel logo | UNKNOWN unless a separately approved master asset is identified | BLOCKED for final branding | Do not assume an old mockup is official. |
 | BTV-THM-001 | BTV colour tokens | Direction exists; exact values OPEN | PROPOSED specification | Do not publish exact colour values as canon before approval. |
-| BTV-AUD-001 | Audio identity / score | UNKNOWN | PROPOSED | Original or appropriately licensed audio only. |\n| BTV-STB-001 | Opening Sunday storyboard | Slice service phases LOCKED; exact shot staging PROPOSED | Six-frame SVG storyboard exploration saved; no character likenesses | PROPOSED / PARTIAL | Frames cover establishing, fellowship, worship, teaching, offering, and Communion. See storyboard brief. |
+| BTV-AUD-001 | Audio identity / score | UNKNOWN | PROPOSED | Original or appropriately licensed audio only. |\n| BTV-STB-001 | Opening Sunday storyboard | Slice service phases LOCKED; exact shot staging PROPOSED | Full 12-phase storyboard v0.2 saved; no character likenesses | PROPOSED / PARTIAL | Frames cover establishing, fellowship, worship, teaching, offering, and Communion. See storyboard brief. |
 
 ## 7. Existing reference asset register
 
@@ -264,3 +264,11 @@ The `btv_fox_companion_v03_preview.png` is a stylized fox model preview. It does
 - **Brief:** [Ember Visual Silhouette Study 01](BTV-PET-001_Ember_Visual_Silhouette_Study_01.md)
 - **Status:** three PROPOSED silhouette directions; no option selected; no final model sheet or 3D model.
 - **Reference exclusion:** the Library's stylized fox companion preview does not establish BTV Ember and must not override Foundation #11.
+
+## 18. Full service storyboard v0.2
+
+- **Current asset:** `assets/concepts/storyboards/BTV-STB-001_opening-sunday_storyboard-v02.svg`
+- **Brief:** [Opening Sunday Storyboard v0.2](BTV-STB-001_Opening_Sunday_Storyboard_v0.2.md)
+- **Coverage:** all approved service phases are represented in order; the post-service Covenant alert is shown only after service ends.
+- **Status:** PROPOSED / REVIEW — composition board only; not a timed animatic.
+- **v0.1:** retained as the earlier six-frame exploration.
