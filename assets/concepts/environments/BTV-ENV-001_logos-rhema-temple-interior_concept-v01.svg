@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+<title id="title">BTV Logos Rhema Temple interior — concept exploration 01</title>
+<desc id="desc">Three-panel architectural visual exploration of a contemporary community church interior: central aisle, pews, simple cross and lectern, daylight windows and warm timber. Not an approved canon asset.</desc>
+<defs>
+  <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#e9e3d8"/><stop offset="1" stop-color="#b8b1a6"/></linearGradient>
+  <linearGradient id="wood" x2="0" y2="1"><stop stop-color="#8a5c39"/><stop offset="1" stop-color="#3d291e"/></linearGradient>
+  <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#a68c72"/><stop offset="1" stop-color="#3d342e"/></linearGradient>
+  <linearGradient id="glass" x2="1" y2="1"><stop stop-color="#c8e1e8"/><stop offset="1" stop-color="#728d90"/></linearGradient>
+  <linearGradient id="light" x2="0" y2="1"><stop stop-color="#fff6d7" stop-opacity=".7"/><stop offset="1" stop-color="#f5c77c" stop-opacity="0"/></linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="12"/></filter>
+  <pattern id="grain" width="90" height="12" patternUnits="userSpaceOnUse"><path d="M0 4H90 M12 9H70" stroke="#d4b18b" stroke-opacity=".18" stroke-width="1"/></pattern>
+</defs>
+<rect width="1600" height="1000" fill="#171a1e"/>
+<text x="70" y="62" fill="#f2eee6" font-family="Arial,sans-serif" font-size="27" letter-spacing="5">BEYOND THE VEIL: THE LAST WATCH</text>
+<text x="70" y="104" fill="#d4bd91" font-family="Arial,sans-serif" font-size="18" letter-spacing="3">LOGOS RHEMA TEMPLE · INTERIOR STUDY 01</text>
+<text x="1530" y="72" text-anchor="end" fill="#e7c98d" font-family="Arial,sans-serif" font-size="16" letter-spacing="2">PROPOSED / NOT CANON-LOCKED</text>
+
+<!-- PANEL ONE: central nave -->
+<g transform="translate(55 145)">
+<rect width="920" height="650" rx="14" fill="#282b2e" stroke="#88795e" stroke-width="2"/>
+<text x="28" y="42" fill="#e9d7b2" font-family="Arial,sans-serif" font-size="17" letter-spacing="3">A · CENTRAL AISLE / ESTABLISHING VIEW</text>
+<g transform="translate(25 65)">
+<rect width="870" height="555" fill="url(#wall)"/>
+<path d="M0 0L435 120L870 0V555H0Z" fill="#d9d3c8"/>
+<path d="M0 0L435 120L870 0" fill="none" stroke="#49382c" stroke-width="18"/>
+<path d="M35 0L435 100L835 0" fill="none" stroke="#745139" stroke-width="12"/>
+<path d="M435 0V555" stroke="#9a8e7c" stroke-opacity=".25"/>
+<!-- side windows -->
+<g fill="url(#glass)" stroke="#f0e8d8" stroke-width="8">
+<path d="M35 105L170 135V310L35 292Z"/><path d="M700 135L835 105V292L700 310Z"/>
+<path d="M35 330L170 344V440L35 430Z"/><path d="M700 344L835 330V430L700 440Z"/>
+</g>
+<g stroke="#d9e3df" stroke-width="4" opacity=".8">
+<path d="M102 120V300M35 205H170M767 120V300M700 205H835"/>
+</g>
+<path d="M35 110L170 310L170 450L35 430Z" fill="url(#light)"/>
+<path d="M835 110L700 310L700 450L835 430Z" fill="url(#light)"/>
+<!-- platform and wall -->
+<path d="M310 285H560V375H310Z" fill="#b9b0a2"/>
+<path d="M295 375H575V392H295Z" fill="#75614f"/>
+<path d="M330 180H540V290H330Z" fill="#c8c0b4"/>
+<path d="M435 198V272M403 223H467" stroke="#674c34" stroke-width="10" stroke-linecap="square"/>
+<rect x="413" y="318" width="44" height="57" fill="url(#wood)"/>
+<path d="M395 318H475L465 305H405Z" fill="#a97b50"/>
+<!-- floor -->
+<path d="M0 555L310 392H560L870 555Z" fill="url(#floor)"/>
+<path d="M0 555L310 392H560L870 555Z" fill="url(#grain)"/>
+<path d="M435 395L435 555" stroke="#d8c2a0" stroke-opacity=".3" stroke-width="3"/>
+<!-- pews -->
+<g fill="url(#wood)" stroke="#3d291e" stroke-width="3">
+<path d="M28 470L330 430V449L28 496Z"/><path d="M0 520L300 468V491L0 555Z"/>
+<path d="M842 470L540 430V449L842 496Z"/><path d="M870 520L570 468V491L870 555Z"/>
+<path d="M75 414L325 390V405L75 440Z"/><path d="M795 414L545 390V405L795 440Z"/>
+<path d="M135 365L340 350V362L135 386Z"/><path d="M735 365L530 350V362L735 386Z"/>
+</g>
+<g stroke="#c79b6d" stroke-opacity=".35" stroke-width="2">
+<path d="M28 480L330 440M0 532L300 480M842 480L540 440M870 532L570 480"/>
+</g>
+<!-- beams and pendants -->
+<g stroke="#513c2b" stroke-width="14"><path d="M0 32L435 122L870 32"/><path d="M75 0L435 92L795 0"/></g>
+<g fill="#fff0c9"><path d="M210 65V118" stroke="#4b3c2d" stroke-width="4"/><ellipse cx="210" cy="120" rx="15" ry="8"/><path d="M660 65V118" stroke="#4b3c2d" stroke-width="4"/><ellipse cx="660" cy="120" rx="15" ry="8"/></g>
+</g>
+</g>
+
+<!-- PANEL TWO: side view -->
+<g transform="translate(1000 145)">
+<rect width="545" height="310" rx="14" fill="#282b2e" stroke="#88795e" stroke-width="2"/>
+<text x="24" y="40" fill="#e9d7b2" font-family="Arial,sans-serif" font-size="15" letter-spacing="2">B · SIDE SEATING / DAYLIGHT</text>
+<rect x="22" y="62" width="501" height="225" fill="#d9d1c4"/>
+<path d="M22 62L523 62V125H22Z" fill="#72513a"/>
+<g fill="url(#glass)" stroke="#f2e8d6" stroke-width="5">
+<rect x="45" y="100" width="75" height="110"/><rect x="155" y="100" width="75" height="110"/>
+</g>
+<path d="M22 287L230 220H523V287Z" fill="url(#floor)"/>
+<g fill="url(#wood)" stroke="#402c20" stroke-width="3">
+<path d="M255 210H510V226H255Z"/><path d="M285 230H510V247H285Z"/><path d="M320 251H510V268H320Z"/>
+</g>
+<path d="M122 62L255 287M230 62L355 287" stroke="#fff3d5" stroke-opacity=".25" stroke-width="34"/>
+</g>
+
+<!-- PANEL THREE: platform detail -->
+<g transform="translate(1000 485)">
+<rect width="545" height="310" rx="14" fill="#282b2e" stroke="#88795e" stroke-width="2"/>
+<text x="24" y="40" fill="#e9d7b2" font-family="Arial,sans-serif" font-size="15" letter-spacing="2">C · PLATFORM / SIMPLE FOCAL POINT</text>
+<rect x="22" y="62" width="501" height="225" fill="url(#wall)"/>
+<path d="M150 62V287M395 62V287" stroke="#72513a" stroke-width="16"/>
+<path d="M272 95V180M238 128H306" stroke="#674c34" stroke-width="10"/>
+<rect x="220" y="206" width="105" height="62" fill="url(#wood)"/>
+<path d="M205 205H340L327 190H218Z" fill="#a97b50"/>
+<path d="M22 287L160 258H385L523 287Z" fill="#7a6957"/>
+<g fill="#47715c"><ellipse cx="105" cy="245" rx="17" ry="38"/><ellipse cx="420" cy="245" rx="17" ry="38"/></g>
+<g fill="#6d966f"><path d="M105 208Q65 195 82 165Q112 177 105 208Q120 171 143 176Q142 204 105 208Z"/><path d="M420 208Q380 195 397 165Q427 177 420 208Q435 171 458 176Q457 204 420 208Z"/></g>
+</g>
+
+<rect x="55" y="825" width="1490" height="105" rx="12" fill="#202428" stroke="#88795e"/>
+<text x="82" y="865" fill="#f2eee6" font-family="Arial,sans-serif" font-size="20" letter-spacing="2">DESIGN INTENT</text>
+<text x="82" y="898" fill="#c9c2b7" font-family="Arial,sans-serif" font-size="16">A welcoming, practical community worship space. Keep the layout legible, lived-in and contemporary; avoid luxury-cathedral scale or military-base styling.</text>
+<text x="1515" y="965" text-anchor="end" fill="#d4bd91" font-family="Arial,sans-serif" font-size="15" letter-spacing="2">BTV-ENV-001 · CONCEPT STUDY 01 · NOT APPROVED FOR CANON</text>
+</svg>
