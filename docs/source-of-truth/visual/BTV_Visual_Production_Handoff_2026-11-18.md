@@ -211,3 +211,12 @@ One Ember SVG creation call omitted the feature-branch argument and briefly crea
 - This is a proposed, non-canonical blockout. No Godot import, collision, navmesh, Android test, or final engineering acceptance has occurred.
 - Binary output remains in the private modeling workspace. GitHub currently stores the source briefs, storyboard and registry, not the binary GLB.
 
+
+
+## 16. Ember visual exploration 01 — 2026-11-18
+
+- Generated a three-direction exploratory concept sheet for Ember and committed an editable SVG silhouette study.
+- The options explore lean/short-coated, balanced/medium-coated, and sturdier/warm-coated canid directions.
+- The art remains PROPOSED / NOT CANON. Foundation #11 leaves exact visual breed characteristics open.
+- No model sheet, rig, animation, marketing asset, or runtime game asset has been approved or created.
+
