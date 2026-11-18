@@ -30,7 +30,7 @@ This sequence is grounded in the controlling Vertical Slice Specification v1.0:
 | 05 Offering | Show voluntary giving | Detail shot of a simple collection moment | No amounts, leaderboard, pressure, or visible comparative wealth |
 | 06 Communion | Quiet contextual moment | Restrained close details of bread/cup and congregation | No buff, reward, XP, healing, or supernatural transaction |
 
-The SVG contains four drawn panels and a written continuity strip for the final two phases; it is a composition board, not a frame-accurate animatic. The remaining phases are specified in the shot plan and must be added before a full animatic.
+The SVG now contains six drawn panels covering the establishing view, fellowship, worship, teaching, voluntary offering, and Communion. It is a composition board, not a frame-accurate animatic; shot durations, transitions, dialogue, and audio remain to be developed.
 
 ## Asher and Ember
 
