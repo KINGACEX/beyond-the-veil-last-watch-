@@ -135,3 +135,11 @@ These are source reconciliation corrections, not new canon decisions.
 - It preserves slice constraints: no children at Ridgeview, no graphic content, no visible/named Devourers, and no explicit Veil explanation.
 - Exact geography, architecture, evidence placement, and navigation remain proposed pending comparison with the existing greybox and investigation design.
 
+
+## 10. Character reference work — 2026-11-18
+
+- Added [Asher Vance Visual Reference Brief](BTV-CHR-001_Asher_Vance_Visual_Reference_Brief.md). It records the locked role/age range and the unresolved appearance. Three existing images were inspected; their identities and equipment conflict, so none is selected as the master reference. Final Asher art remains BLOCKED pending a creator decision.
+- Retrieved and reviewed Foundation #11 — Ember Companion Bible v1.0 from the Library. It confirms the rare original wild-dog/canid lineage, natural origin, believable athletic anatomy, and open exact visual breed characteristics.
+- Added [Ember Silhouette Study 01](BTV-PET-001_Ember_Visual_Silhouette_Study_01.md) and its three-option SVG asset. The options are proposals only; no option is selected.
+- Explicitly excluded the stylized fox companion preview as an authoritative BTV Ember reference.
+
