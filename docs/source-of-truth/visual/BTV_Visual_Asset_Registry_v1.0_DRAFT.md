@@ -293,3 +293,9 @@ The `btv_fox_companion_v03_preview.png` is a stylized fox model preview. It does
 - **Brief:** [BTV-PET-002 Ember Visual Exploration 01](BTV-PET-002_Ember_Visual_Exploration_01.md)
 - Three alternative silhouettes: lean/short coat, balanced/medium coat, sturdier/warm coat.
 - **Status:** PROPOSED / NOT CANON. Exact appearance remains open; do not rig or publish until selected and reviewed.
+
+## 22. Opening Sunday timed animatic plan
+
+- **Brief:** [BTV-STB-002 Timed Animatic Plan v0.1](BTV-STB-002_Opening_Sunday_Timed_Animatic_Plan_v0.1.md)
+- 12 shots, target runtime 90 seconds, preserving service order and post-service alert timing.
+- **Status:** PROPOSED / NOT APPROVED; timing and camera plan only, no animatic rendered.
