@@ -92,7 +92,7 @@ The following are environment work packages, not claims that final artwork exist
 | BTV-ENV-005 | School environment | WORLD CATEGORY / exact location UNKNOWN | No approved reference established | PROPOSED package | Do not invent a named school or claim a real institution. |
 | BTV-ENV-006 | Hospital environment | WORLD CATEGORY / exact location UNKNOWN | No approved reference established | PROPOSED package | Respect medical setting and avoid using a real hospital identity without approval. |
 | BTV-ENV-007 | Wilderness / Ember origin context | CANON DIRECTION | Exact location and final concept UNKNOWN | PROPOSED package | Ember's rare natural canid lineage and remote-wilderness origin; exact geography remains open. |
-| BTV-ENV-008 | Veil-affected location | Veil operational rules APPROVED DESIGN | Specific visual treatment scene-dependent | PROPOSED package | Follow the operational laws; do not define ultimate Veil origin. |
+| BTV-ENV-008 | Veil-affected location | Veil operational rules APPROVED DESIGN | Specific visual treatment scene-dependent | PROPOSED package | Follow the operational laws; do not define ultimate Veil origin. |\n| BTV-ENV-003 | Ridgeview investigation zones | Slice geography/beats LOCKED at high level | Three-zone concept SVG saved: approach, settlement, outlying work camp | PROPOSED / REVIEW | No children, graphic content, visible enemy, Devourer identification, or explicit Veil reveal. See [Ridgeview Concept Study 01](BTV-ENV-003_Ridgeview_Environment_Concept_Study_01.md). |
 
 ## 6. Faction, uniform, props, and UI assets
 
@@ -239,3 +239,12 @@ The `btv_fox_companion_v03_preview.png` is a stylized fox model preview. It does
 - **Source:** controlling Vertical Slice Specification v1.0, service phases and Ember Hold boundary.
 - **Not represented:** final Asher/Ember appearance, exact room layout, approved audio, final dialogue, or a final camera schedule.
 - **Implementation:** not started.
+
+## 16. Ridgeview environment concept update — 2026-11-18
+
+- **Asset:** `assets/concepts/environments/BTV-ENV-003_ridgeview_environment_concept-v01.svg`
+- **Brief:** [Ridgeview Environment Concept Study 01](BTV-ENV-003_Ridgeview_Environment_Concept_Study_01.md)
+- **Status:** PROPOSED / REVIEW — three-zone visual exploration.
+- **Zones:** approach, settlement, outlying work camp.
+- **Slice safeguards:** no children at Ridgeview; no graphic content; no visible or named Devourers; no Veil explanation; ordinary explanations remain plausible.
+- **Implementation:** not started; no Godot scene or Android test.
