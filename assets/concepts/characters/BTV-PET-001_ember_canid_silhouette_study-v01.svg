@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1000" viewBox="0 0 1800 1000" role="img" aria-labelledby="t d">
+<title id="t">BTV Ember canid silhouette exploration 01</title>
+<desc id="d">Three alternative natural wild-dog canid silhouette directions for Ember, with distinct proportions and coat markings. All are proposals; exact appearance remains open.</desc>
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#30383c"/><stop offset="1" stop-color="#171c20"/></linearGradient>
+ <linearGradient id="panel" x2="0" y2="1"><stop stop-color="#e6e0d4"/><stop offset="1" stop-color="#b9b1a4"/></linearGradient>
+ <linearGradient id="coat1" x2="0" y2="1"><stop stop-color="#b98655"/><stop offset="1" stop-color="#61412c"/></linearGradient>
+ <linearGradient id="coat2" x2="0" y2="1"><stop stop-color="#8e785d"/><stop offset="1" stop-color="#3d3933"/></linearGradient>
+ <linearGradient id="coat3" x2="0" y2="1"><stop stop-color="#c3a276"/><stop offset="1" stop-color="#76553b"/></linearGradient>
+</defs>
+<rect width="1800" height="1000" fill="url(#bg)"/>
+<text x="60" y="68" fill="#f4efe6" font-family="Arial,sans-serif" font-size="28" letter-spacing="6">BEYOND THE VEIL: THE LAST WATCH</text>
+<text x="60" y="112" fill="#d5b57d" font-family="Arial,sans-serif" font-size="18" letter-spacing="4">EMBER · NATURAL CANID SILHOUETTE EXPLORATION 01</text>
+<text x="1740" y="76" text-anchor="end" fill="#e4c78e" font-family="Arial,sans-serif" font-size="15" letter-spacing="2">PROPOSED OPTIONS · NO BREED SELECTED</text>
+<g font-family="Arial,sans-serif">
+<!-- option A -->
+<g transform="translate(60 155)">
+<rect width="540" height="650" rx="14" fill="url(#panel)" stroke="#b49a6f" stroke-width="3"/>
+<text x="24" y="42" fill="#342b22" font-size="19" letter-spacing="3">A · LEAN / LONG-STRIDE</text>
+<text x="24" y="72" fill="#5c5145" font-size="13">Athletic frame · longer legs · narrow waist</text>
+<path d="M82 380Q100 325 190 310Q270 278 348 312Q395 330 422 350L472 338L500 353L463 370Q438 395 396 396L360 435L344 505L324 505L328 418L260 423L230 510L208 510L218 408L155 400L130 480L109 480L120 390Q95 390 82 380Z" fill="url(#coat1)" stroke="#392b20" stroke-width="5"/>
+<path d="M145 324Q110 278 126 222L166 276L188 300Z" fill="#70482e" stroke="#392b20" stroke-width="5"/>
+<path d="M188 300Q180 250 211 214L226 286Z" fill="#70482e" stroke="#392b20" stroke-width="5"/>
+<path d="M415 350Q472 315 500 345Q468 405 410 395Z" fill="#805438" stroke="#392b20" stroke-width="5"/>
+<path d="M270 314Q310 350 330 394" fill="none" stroke="#d8b27c" stroke-width="14" opacity=".8"/>
+<circle cx="456" cy="353" r="6" fill="#171513"/>
+<path d="M100 360Q78 348 68 330" stroke="#392b20" stroke-width="7" fill="none"/>
+<text x="24" y="600" fill="#3d342c" font-size="14">Silhouette question: more endurance-runner or compact scout?</text>
+</g>
+<!-- option B -->
+<g transform="translate(630 155)">
+<rect width="540" height="650" rx="14" fill="url(#panel)" stroke="#b49a6f" stroke-width="3"/>
+<text x="24" y="42" fill="#342b22" font-size="19" letter-spacing="3">B · BALANCED / RESILIENT</text>
+<text x="24" y="72" fill="#5c5145" font-size="13">Moderate proportions · broad chest · sturdy paws</text>
+<path d="M72 380Q100 325 180 300Q250 275 335 310Q390 330 425 350L470 340L500 355L462 377Q438 405 395 402L370 455L370 505L345 505L342 422L270 420L250 505L225 505L232 410L155 405L145 485L120 485L125 390Q90 397 72 380Z" fill="url(#coat2)" stroke="#302a25" stroke-width="5"/>
+<path d="M140 320Q112 275 132 220L171 280L185 302Z" fill="#484238" stroke="#302a25" stroke-width="5"/>
+<path d="M185 302Q183 255 217 220L225 290Z" fill="#484238" stroke="#302a25" stroke-width="5"/>
+<path d="M408 350Q450 325 500 354Q475 400 415 400Z" fill="#5c4e3c" stroke="#302a25" stroke-width="5"/>
+<path d="M215 305Q265 315 300 360L282 412Q235 405 200 380Z" fill="#c4b59b" opacity=".85"/>
+<path d="M120 382L150 396L145 485L120 485Z" fill="#c4b59b" opacity=".8"/>
+<circle cx="456" cy="357" r="6" fill="#171513"/>
+<text x="24" y="600" fill="#3d342c" font-size="14">Silhouette question: strongest all-round natural canid build?</text>
+</g>
+<!-- option C -->
+<g transform="translate(1200 155)">
+<rect width="540" height="650" rx="14" fill="url(#panel)" stroke="#b49a6f" stroke-width="3"/>
+<text x="24" y="42" fill="#342b22" font-size="19" letter-spacing="3">C · AGILE / HIGH-AWARENESS</text>
+<text x="24" y="72" fill="#5c5145" font-size="13">Light frame · upright posture · expressive tail</text>
+<path d="M78 380Q100 330 182 315Q255 290 340 320Q395 342 425 350L465 330L500 350L468 370Q440 395 400 395L375 438L385 505L363 505L348 418L275 420L260 505L238 505L240 414L160 405L148 480L127 480L130 392Q98 394 78 380Z" fill="url(#coat3)" stroke="#463321" stroke-width="5"/>
+<path d="M140 325Q112 272 135 210L175 280L185 310Z" fill="#8b6542" stroke="#463321" stroke-width="5"/>
+<path d="M188 310Q190 250 225 212L230 300Z" fill="#8b6542" stroke="#463321" stroke-width="5"/>
+<path d="M408 350Q470 300 510 325Q495 380 430 395Z" fill="#9b7249" stroke="#463321" stroke-width="5"/>
+<path d="M275 317Q305 335 325 375" fill="none" stroke="#ead7b5" stroke-width="13"/>
+<path d="M180 405L165 475L145 475L155 405Z" fill="#ead7b5" opacity=".8"/>
+<circle cx="457" cy="350" r="6" fill="#171513"/>
+<text x="24" y="600" fill="#3d342c" font-size="14">Silhouette question: how alert should his natural posture read?</text>
+</g>
+</g>
+<rect x="60" y="845" width="1680" height="100" rx="12" fill="#20262c" stroke="#8e795a"/>
+<text x="86" y="885" fill="#f2eee6" font-family="Arial,sans-serif" font-size="17" letter-spacing="1">LOCKED</text>
+<text x="210" y="885" fill="#cfc7ba" font-family="Arial,sans-serif" font-size="15">Rare original wild-dog/canid lineage · natural creature · athletic, agile, resilient, expressive · believable anatomy · not a fantasy monster.</text>
+<text x="86" y="918" fill="#e4c78e" font-family="Arial,sans-serif" font-size="14" letter-spacing="1">OPEN</text>
+<text x="210" y="918" fill="#cfc7ba" font-family="Arial,sans-serif" font-size="15">Exact build, head shape, coat, markings, ears, tail, size, and breed-like visual traits. None of these three options is selected.</text>
+<text x="1740" y="980" text-anchor="end" fill="#d5b57d" font-family="Arial,sans-serif" font-size="13" letter-spacing="2">BTV-PET-001 · SILHOUETTE STUDY 01 · NOT APPROVED</text>
+</svg>
