@@ -104,7 +104,7 @@ The following are environment work packages, not claims that final artwork exist
 | BTV-UI-002 | Ember companion UI | LOCK / DIRECTION | Exact component implementation OPEN | Must reflect current Ember canon and official commands. |
 | BTV-LOG-002 | BTV game/channel logo | UNKNOWN unless a separately approved master asset is identified | BLOCKED for final branding | Do not assume an old mockup is official. |
 | BTV-THM-001 | BTV colour tokens | Direction exists; exact values OPEN | PROPOSED specification | Do not publish exact colour values as canon before approval. |
-| BTV-AUD-001 | Audio identity / score | UNKNOWN | PROPOSED | Original or appropriately licensed audio only. |\n| BTV-STB-001 | Opening Sunday storyboard | Slice service phases LOCKED; exact shot staging PROPOSED | Full 12-phase storyboard v0.2 saved; no character likenesses | PROPOSED / PARTIAL | Frames cover establishing, fellowship, worship, teaching, offering, and Communion. See storyboard brief. |
+| BTV-AUD-001 | Audio identity / score | UNKNOWN | PROPOSED | Original or appropriately licensed audio only. |\n| BTV-MOD-001 | Logos Rhema Temple 3D interior blockout | Proposed environment concept only | Private Blendstra CPU model job queued; zero-charge cap | IN PRODUCTION / NOT VERIFIED | Editable modular blockout planned; no GLB or Godot import confirmed. See [3D Blockout Brief](BTV-MOD-001_Logos_Rhema_Temple_3D_Blockout.md). |\n| BTV-STB-001 | Opening Sunday storyboard | Slice service phases LOCKED; exact shot staging PROPOSED | Full 12-phase storyboard v0.2 saved; no character likenesses | PROPOSED / PARTIAL | Frames cover establishing, fellowship, worship, teaching, offering, and Communion. See storyboard brief. |
 
 ## 7. Existing reference asset register
 
@@ -272,3 +272,9 @@ The `btv_fox_companion_v03_preview.png` is a stylized fox model preview. It does
 - **Coverage:** all approved service phases are represented in order; the post-service Covenant alert is shown only after service ends.
 - **Status:** PROPOSED / REVIEW — composition board only; not a timed animatic.
 - **v0.1:** retained as the earlier six-frame exploration.
+
+## 19. Ember source import and 3D environment work
+
+- Imported the Library's Foundation #11 — Ember Companion Bible v1.0 into the source-of-truth directory as Markdown, preserving its status labels and content.
+- **3D work item:** BTV-MOD-001, Logos Rhema Temple Interior Blockout v0.1. Private Blendstra CPU modeling job is queued with an explicit zero-USD maximum charge. No final model or export is confirmed yet.
+- The private model project link is provided in the conversation, not embedded in the repository.
