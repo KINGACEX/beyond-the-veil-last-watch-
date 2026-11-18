@@ -85,7 +85,7 @@ The following are environment work packages, not claims that final artwork exist
 
 | Asset ID | Environment | Setting status | Visual asset status | Production state | Guardrails |
 |---|---|---|---|---|---|
-| BTV-ENV-001 | Logos Rhema Temple | CONFIRMED fictional in-game church | No approved environment reference identified in reviewed sources | PROPOSED package | Living community; not HCI's real building/branding; not a Covenant base. |
+| BTV-ENV-001 | Logos Rhema Temple | CONFIRMED fictional in-game church | Greybox Library render inspected as REFERENCE CANDIDATE; new SVG concept study saved, pending creator approval | PROPOSED / REVIEW | Living community; not HCI's real building/branding; not a Covenant base. See [Concept Study 01](BTV-ENV-001_Logos_Rhema_Temple_Interior_Concept_Study_01.md). |
 | BTV-ENV-002 | Covenant facility | CONFIRMED setting category | No single final facility concept approved in this register | PROPOSED package | Functional operational space; preserve Christian identity and practical contemporary design. |
 | BTV-ENV-003 | Ridgeview | CONFIRMED vertical-slice location | Reference images require slice/canon audit before use | PROPOSED package | Follow Vertical Slice Specification; do not name/reveal restricted Devourer label to player or imply Ridgeview–Concordance connection. |
 | BTV-ENV-004 | Contemporary urban district | WORLD CATEGORY | Specific named district UNKNOWN | PROPOSED package | Civilian life and infrastructure must feel plausible. |
@@ -210,3 +210,23 @@ A prompt, generation, or draft image does not pass the approval gate automatical
 Maintain one source of truth, preserve originals, record provenance, and improve BTV without reinventing it.
 
 **End — Visual Asset Registry v1.0 (Draft).**
+
+
+## 14. Visual production update — 2026-11-18
+
+### BTV-ENV-001 concept study
+
+- **Created:** `assets/concepts/environments/BTV-ENV-001_logos-rhema-temple-interior_concept-v01.svg`
+- **Brief:** [Logos Rhema Temple Interior — Concept Study 01](BTV-ENV-001_Logos_Rhema_Temple_Interior_Concept_Study_01.md)
+- **Status:** PROPOSED VISUAL CONCEPT — NOT APPROVED / NOT CANON-LOCKED.
+- **Source basis:** existing Library file `chapel_actual_render.png`, inspected as a reference candidate. It shows the basic chapel greybox layout; it is not an approved final asset.
+- **Scope:** central aisle, paired seating, modest platform, lectern, cross, side windows, and three camera studies.
+- **New decisions:** none. Materials, plants, lighting, and all architectural details beyond the source-grounded layout remain proposed.
+- **Implementation:** none. No Godot scene, collision, navigation, NPC, lighting, or Android build changes.
+
+### Character-reference stop gate
+
+Two existing Asher images in the Library depict materially different facial identities, apparent ages, outfits, and equipment. The Character Bible and slice specification leave exact appearance UNKNOWN. They remain REFERENCE CANDIDATES and must not be blended or selected as definitive without a creator decision.
+
+The `btv_fox_companion_v03_preview.png` is a stylized fox model preview. It does not establish Ember's exact BTV appearance or lineage and remains a REFERENCE CANDIDATE only.
+
