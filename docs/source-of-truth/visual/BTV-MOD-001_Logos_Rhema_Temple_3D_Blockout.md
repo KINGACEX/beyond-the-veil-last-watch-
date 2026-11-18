@@ -1,6 +1,6 @@
 # BTV-MOD-001 — Logos Rhema Temple 3D Interior Blockout
 
-**Status:** IN PRODUCTION — CPU job queued; model not yet verified  
+**Status:** IN PRODUCTION — CPU job running in delivery; source checkpoint saved, final version not yet verified  
 **Target:** Godot 4.x environment prototype (future import; not yet imported)  
 **Design authority:** Proposed BTV-ENV-001 concept only; controlling canon and slice remain authoritative.
 
@@ -47,8 +47,9 @@ Create a modular, meter-scaled 3D blockout of the fictional Logos Rhema Temple i
 ## 6. Current job state
 
 - Model project title: `BTV — Logos Rhema Temple Interior Blockout v0.1`.
-- State at documentation time: QUEUED.
-- A saved GLB, inspection images, and final source version are not yet confirmed.
+- Latest job state: RUNNING / DELIVERY.
+- A 1.54 MB source checkpoint is saved; a provisional 0.69 MB preview exists.
+- Final version ID, final poster/inspection outputs, and terminal completion are not yet confirmed.
 - The project identifier and private workspace URL are deliberately not embedded in this repository document.
 
 ## 7. Acceptance criteria
