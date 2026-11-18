@@ -180,3 +180,14 @@ One Ember SVG creation call omitted the feature-branch argument and briefly crea
 - The job's maximum charge is explicitly zero USD; reported charged amount remains zero.
 - The model has not been accepted, exported to the repository, imported into Godot, or tested on Android.
 
+
+
+## 15. 3D blockout inspection and revision — 2026-11-18
+
+- v0.1 completed and saved privately in Blendstra.
+- Native source inspection reports 141 mesh objects and 14,684 triangles, with no animation.
+- The first poster and standard inspection views were too obstructed by the closed room shell to assess the interior reliably. This is a presentation/layout review issue; the model is not accepted.
+- A v0.2 revision is queued on the same project/version chain. It removes the rear wall and rear door leaves for a cutaway inspection view, adds a dedicated interior camera and soft area lighting, and requests a clearer poster plus reference/top views.
+- The cutaway is explicitly an inspection aid; a complete room shell must be restored or reworked before final runtime implementation.
+- No GLB has been imported into Godot. No Android test has been run.
+
