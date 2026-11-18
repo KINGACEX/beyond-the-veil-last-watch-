@@ -200,3 +200,14 @@ One Ember SVG creation call omitted the feature-branch argument and briefly crea
 - The v0.2 job remains capped at zero USD, with no charge reported.
 - The next verification is to inspect the revised camera view and confirm the interior is visible before marking the blockout acceptable.
 
+
+
+## 15. 3D blockout v0.1 generated — 2026-11-18
+
+- Blendstra CPU modeling job completed successfully under an explicit zero-dollar cap; charged amount $0.
+- Static native source saved; source inspection recorded 138 objects.
+- Optimized GLB preview is available (655,388 bytes); poster and two-view contact sheet are available.
+- Poster is readable as an interior blockout. The inspection contact sheet has overexposed highlights and is not suitable for final lighting evaluation.
+- This is a proposed, non-canonical blockout. No Godot import, collision, navmesh, Android test, or final engineering acceptance has occurred.
+- Binary output remains in the private modeling workspace. GitHub currently stores the source briefs, storyboard and registry, not the binary GLB.
+
