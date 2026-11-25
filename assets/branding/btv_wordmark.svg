@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="520" viewBox="0 0 1800 520">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4d58a"/><stop offset="1" stop-color="#b9853f"/></linearGradient>
+  </defs>
+  <g transform="translate(36 18) scale(.46)">
+    <rect width="1024" height="1024" rx="210" fill="#101c32"/>
+    <path d="M512 118 824 238v245c0 205-126 340-312 425C326 823 200 688 200 483V238z" fill="#0b1425" stroke="url(#gold)" stroke-width="24"/>
+    <path d="M512 220 700 292v174c0 133-69 231-188 304-119-73-188-171-188-304V292z" fill="#172943" stroke="#d7b36a" stroke-width="8"/>
+    <path d="M512 300v350" stroke="#f4d58a" stroke-width="54" stroke-linecap="round"/>
+    <path d="M365 603c42-82 92-125 147-125s105 43 147 125M350 635h324" fill="none" stroke="#e9c77f" stroke-width="18" stroke-linecap="round"/>
+  </g>
+  <text x="560" y="225" fill="#f4f0e6" font-family="Georgia,serif" font-size="112" letter-spacing="7">BEYOND THE VEIL</text>
+  <path d="M565 275h1080" stroke="#bd9653" stroke-width="5"/>
+  <text x="570" y="370" fill="#e3c37f" font-family="Arial,sans-serif" font-size="52" letter-spacing="18">THE LAST WATCH</text>
+</svg>
