@@ -1,14 +1,19 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/ridgeview_resident.tscn" id="2_resident"]
 [ext_resource type="PackedScene" path="res://scenes/touch_controls.tscn" id="3_touch_controls"]
+[ext_resource type="PackedScene" path="res://scenes/game_hud.tscn" id="4_hud"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(40, 1, 40)
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 size = Vector3(40, 1, 40)
+
+[sub_resource type="StandardMaterial3D" id="GroundMaterial"]
+albedo_color = Color(0.16, 0.22, 0.18, 1)
+roughness = 0.95
 
 [node name="BTVPrototype" type="Node3D"]
 
@@ -30,6 +35,7 @@ shape = SubResource("BoxShape3D_floor")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
 mesh = SubResource("BoxMesh_floor")
+material_override = SubResource("GroundMaterial")
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector3(0, 0, 0)
@@ -38,3 +44,5 @@ position = Vector3(0, 0, 0)
 position = Vector3(0, 0, -3.5)
 
 [node name="TouchControls" parent="." instance=ExtResource("3_touch_controls")]
+
+[node name="GameHUD" parent="." instance=ExtResource("4_hud")]
