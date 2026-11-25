@@ -60,6 +60,7 @@ jobs:
         run: |
           godot --headless --editor --path . --quit
           godot --headless --path . --script res://tests/nli_smoke_test.gd
+          godot --headless --path . --script res://tests/character_scene_smoke_test.gd
           godot --headless --path . --quit-after 10
 
       - name: Export Android debug APK
