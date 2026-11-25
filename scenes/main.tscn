@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="1_player"]
-[ext_resource type="PackedScene" path="res://scenes/test_interactable.tscn" id="2_test_interactable"]
+[ext_resource type="PackedScene" path="res://scenes/ridgeview_resident.tscn" id="2_resident"]
 [ext_resource type="PackedScene" path="res://scenes/touch_controls.tscn" id="3_touch_controls"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
@@ -12,9 +12,15 @@ size = Vector3(40, 1, 40)
 
 [node name="BTVPrototype" type="Node3D"]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="WorldEnvironmentLight" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-55, -25, 0)
 shadow_enabled = true
+light_energy = 1.15
+
+[node name="FillLight" type="OmniLight3D" parent="."]
+position = Vector3(2, 4, -4)
+light_energy = 0.65
+omni_range = 14.0
 
 [node name="Floor" type="StaticBody3D" parent="."]
 position = Vector3(0, -0.5, 0)
@@ -28,7 +34,7 @@ mesh = SubResource("BoxMesh_floor")
 [node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector3(0, 0, 0)
 
-[node name="TestInteractable" parent="." instance=ExtResource("2_test_interactable")]
+[node name="RidgeviewResident" parent="." instance=ExtResource("2_resident")]
 position = Vector3(0, 0, -3.5)
 
 [node name="TouchControls" parent="." instance=ExtResource("3_touch_controls")]
