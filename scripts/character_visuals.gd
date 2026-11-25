@@ -66,9 +66,9 @@ func _build_character() -> void:
 
 func _limb(part_name: String, part_position: Vector3, part_scale: Vector3, material: Material, tilt: float = 0.0) -> void:
 	var mesh := CapsuleMesh.new()
-	mesh.radius = 0.105
-	mesh.height = 0.52
-	_part(part_name, mesh, part_position, part_scale, material, Vector3(0, 0, tilt))
+	mesh.radius = part_scale.x
+	mesh.height = part_scale.y
+	_part(part_name, mesh, part_position, Vector3.ONE, material, Vector3(0, 0, tilt))
 
 
 func _part(part_name: String, mesh: PrimitiveMesh, part_position: Vector3, part_scale: Vector3, material: Material, part_rotation: Vector3 = Vector3.ZERO) -> void:
