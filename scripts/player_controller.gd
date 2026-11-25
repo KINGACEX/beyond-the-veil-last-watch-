@@ -1,8 +1,9 @@
 extends CharacterBody3D
 class_name BTVPlayerController
 
-## Minimal third-person greybox controller with a reusable proximity interaction sensor.
-## Keyboard input is for the first desktop smoke test; touch controls are a later gate.
+signal interaction_feedback(message: String)
+
+## Third-person prototype controller with a proximity interaction sensor.
 
 @export_range(0.5, 12.0, 0.1) var move_speed: float = 4.0
 @export_range(0.0, 30.0, 0.1) var turn_speed: float = 12.0
@@ -71,4 +72,8 @@ func _try_interact() -> void:
 			nearest = interactable
 
 	if nearest != null:
-		print(nearest.interact(self))
+		var response: String = nearest.interact(self)
+		print(response)
+		interaction_feedback.emit(response)
+	else:
+		interaction_feedback.emit("Move closer to someone or something you can interact with.")
