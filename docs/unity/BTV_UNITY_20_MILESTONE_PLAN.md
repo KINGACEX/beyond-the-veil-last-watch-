@@ -3,7 +3,7 @@
 **Branch:** `btv/unity-port-001`  
 **Strategy:** Parallel implementation; Godot remains preserved and active.  
 **Target:** Android-first, desktop validation retained.  
-**Status:** PLAN ONLY — milestones are not implementation claims.
+**Status:** ACTIVE PLAN — M1 partially assessed; exact editor/device validation BLOCKED. See `BTV_UNITY_M1_TOOLCHAIN_DECISION.md`.
 
 ## Non-negotiable workflow
 
@@ -20,7 +20,7 @@
 ## Milestones
 
 ### Group A — Project foundation (M1–M4)
-1. **Unity toolchain decision:** inspect current Unity LTS/editor availability, licensing constraints, Android build support, target-device requirements and free workflow. Record selected editor version and rationale; do not install paid dependencies.
+1. **Unity toolchain decision:** PARTIAL. Unity 6.3 LTS selected as the provisional version family from official support information. Exact editor patch, Android Build Support installation, target-device profile and free CI route remain BLOCKED/DEFERRED. See `BTV_UNITY_M1_TOOLCHAIN_DECISION.md`.
 2. **Project scaffold:** create isolated `UnityProject/` with version-controlled project settings, package manifest and documented setup. No gameplay framework yet.
 3. **Architecture and conventions:** define assembly boundaries, namespaces, folder layout, scene ownership, dependency rules and configuration strategy. Keep domain logic engine-independent where practical.
 4. **Bootstrap scene and diagnostics:** create minimal launch scene, deterministic startup, logging and configuration validation. No greybox presented as final art.
