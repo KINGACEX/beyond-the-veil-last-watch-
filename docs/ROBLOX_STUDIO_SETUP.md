@@ -1,22 +1,43 @@
-# Roblox Studio starter project
+# Build and play the Roblox prototype
 
-This repository currently contains a Godot project. The Roblox starter is an additional project scaffold; it does not replace the existing Godot files.
+This repository also contains a Godot project. The Roblox Studio project is a separate starter and does not replace the Godot files.
 
-## Requirements
+## What the Roblox starter includes
 
-- Roblox Studio, installed from the official Roblox Creator Hub / Roblox website.
-- [Rojo](https://rojo.space/) to sync the Luau source in this repository into Studio.
-- The Rojo Studio plugin, installed from the official Rojo documentation/plugin instructions.
+The Rojo project builds a small playable blockout: a spawn point, a ruined path, an objective HUD, and a watch bell players can activate with a ProximityPrompt. It uses only Roblox-built parts, so no asset imports are required.
 
-Roblox Studio is a desktop application, so it cannot be installed by a GitHub commit or from this repository. Install it on your computer, then follow these steps to open the starter:
+## One-time setup
 
-1. Install Roblox Studio and sign in.
-2. Install the Rojo command-line tool and Rojo plugin for Studio.
-3. Clone this repository and open a terminal in its root directory.
-4. Run `rojo serve`.
-5. In Roblox Studio, open a new Baseplate place, open the Rojo plugin, and connect it to the local server.
-6. Press **Play** to test the starter HUD and server bootstrap.
+1. Install Roblox Studio from the official Roblox website and sign in.
+2. Install the Rojo command-line tool and the Rojo Studio plugin, following the instructions at [rojo.space](https://rojo.space/).
+3. Clone this repository to your computer and open a terminal in the repository folder.
 
-The Rojo mapping is in `default.project.json`. Luau source lives in `src/` and maps to `ReplicatedStorage`, `ServerScriptService`, and `StarterPlayerScripts` in the Roblox data model. The current scaffold provides a title/objective HUD and a minimal server join hook; build out the world, interactions, and gameplay systems in Studio.
+## Option A: open a place file in Studio
 
-The existing Godot files remain unchanged.
+From the repository root, run:
+
+```sh
+rojo build -o LastWatch.rbxlx
+```
+
+Open `LastWatch.rbxlx` in Roblox Studio. Press **Play** to run the game locally. Walk down the path to the bell and use the on-screen prompt to ring it. Use **Stop** to end the test session; use **Play** again to reset the level.
+
+## Option B: sync edits live while Studio is open
+
+1. Open a Baseplate place in Studio.
+2. From the repository root, run `rojo serve` in a terminal.
+3. In Studio, open the Rojo plugin and connect to the local Rojo server.
+4. Press **Play**. Changes made to the Luau files can be synced into Studio through Rojo.
+
+## Create and publish your own Roblox experience
+
+In Studio, use **File → Publish to Roblox** (or **Publish to Roblox As…**) and follow the prompts to create an experience under your Roblox account. Publishing is optional for local testing. After publishing, continue building in Studio or edit the mapped Luau files in this repository and sync them with Rojo.
+
+## Project map
+
+- `default.project.json` — Rojo mapping.
+- `src/ServerScriptService/` — server startup and generated blockout world.
+- `src/ReplicatedStorage/Shared/` — shared game configuration.
+- `src/StarterPlayer/StarterPlayerScripts/` — client HUD and objective feedback.
+
+Roblox Studio itself is a desktop application and cannot be installed or launched by a GitHub commit. The setup above creates the project files and lets you run and test them on a computer with Studio installed.
